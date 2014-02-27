@@ -1,7 +1,0 @@
-C:\workspace\CommonsForNet\src\Test.Commons\bin\Debug\Test.Commons.dll
-C:\workspace\CommonsForNet\src\Test.Commons\bin\Debug\Test.Commons.pdb
-C:\workspace\CommonsForNet\src\Test.Commons\bin\Debug\nunit.framework.dll
-C:\workspace\CommonsForNet\src\Test.Commons\bin\Debug\nunit.framework.xml
-C:\workspace\CommonsForNet\src\Test.Commons\obj\Debug\Test.Commons.csprojResolveAssemblyReference.cache
-C:\workspace\CommonsForNet\src\Test.Commons\obj\Debug\Test.Commons.dll
-C:\workspace\CommonsForNet\src\Test.Commons\obj\Debug\Test.Commons.pdb

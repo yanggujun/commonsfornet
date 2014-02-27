@@ -1,5 +1,0 @@
-C:\workspace\CommonsForNet\src\Commons.Collections\bin\Debug\Commons.Collections.dll
-C:\workspace\CommonsForNet\src\Commons.Collections\bin\Debug\Commons.Collections.pdb
-C:\workspace\CommonsForNet\src\Commons.Collections\obj\Debug\Commons.Collections.dll
-C:\workspace\CommonsForNet\src\Commons.Collections\obj\Debug\Commons.Collections.pdb
-C:\workspace\CommonsForNet\src\Commons.Collections\obj\Debug\Commons.Collections.csprojResolveAssemblyReference.cache
