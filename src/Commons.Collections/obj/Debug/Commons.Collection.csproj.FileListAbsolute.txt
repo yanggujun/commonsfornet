@@ -1,0 +1,4 @@
+C:\workspace\CommonsForNet\src\Commons.Collection\bin\Debug\Commons.Collection.dll
+C:\workspace\CommonsForNet\src\Commons.Collection\bin\Debug\Commons.Collection.pdb
+C:\workspace\CommonsForNet\src\Commons.Collection\obj\Debug\Commons.Collection.dll
+C:\workspace\CommonsForNet\src\Commons.Collection\obj\Debug\Commons.Collection.pdb
