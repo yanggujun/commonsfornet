@@ -19,6 +19,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Commons.Collections;
+
 using NUnit;
 using NUnit.Framework;
 
@@ -39,8 +42,33 @@ namespace Test.Commons.Collections
         }
 
 		[Test]
-        public void TestBoundedQueue()
+        public void TestBoundedQueueNoAbsorb()
         {
+            BoundedQueue<int> queue = new BoundedQueue<int>(10);
+            for (int i = 0; i < 10; i++)
+            {
+                Assert.IsFalse(queue.IsFull);
+                queue.Enqueue(i);
+            }
+            Assert.AreEqual(queue.Count, 10);
+            Assert.That(queue.Contains(5));
+            Assert.IsTrue(queue.IsFull);
+            Assert.AreEqual(queue.Peek(), 0);
+            Assert.AreEqual(queue.Dequeue(), 0);
+            Assert.AreEqual(queue.Count, 9);
+        }
+
+		[Test]
+		[ExpectedException(typeof(InvalidOperationException))]
+        public void TestBoundedQueueNoAbsorbExceedLimit()
+        {
+            BoundedQueue<int> queue = new BoundedQueue<int>(10);
+			for (int i = 0; i < 10; i++)
+            {
+                queue.Enqueue(i);
+            }
+
+            queue.Enqueue(11);
         }
     }
 }

@@ -50,6 +50,12 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Commons.Collections\Commons.Collections.csproj">
+      <Project>{e8221711-1b2b-4ed7-b359-9a5d990b3abd}</Project>
+      <Name>Commons.Collections</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
