@@ -27,5 +27,45 @@ namespace Commons.Collections.Bag
 		protected AbstractBagDecorator(IBag<TItem> bag) : base(bag)
         {
         }
+
+        public int GetCount(TItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(TItem item, int copies = 1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(TItem item, int copies = 1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISet<TItem> UniqueSet()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ContainsAll(ICollection<TItem> collection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemoveAll(ICollection<TItem> collection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RetainAll(ICollection<TItem> collection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public new System.Collections.IEnumerator GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

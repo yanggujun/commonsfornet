@@ -24,5 +24,24 @@ namespace Commons.Collections.Bag
 {
     public abstract class AbstractSortedBagDecorator<TItem> : AbstractBagDecorator<TItem>, ISortedBag<TItem>
     {
+		protected AbstractSortedBagDecorator(IBag<TItem> bag) : base(bag)
+        {
+
+        }
+
+        public IComparer<TItem> Comparer
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public TItem First
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public TItem Last
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

@@ -24,5 +24,84 @@ namespace Commons.Collections.Bag
 {
     public abstract class AbstractMapBag<TItem> : IBag<TItem>
     {
+        public int GetCount(TItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(TItem item, int copies = 1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(TItem item, int copies = 1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISet<TItem> UniqueSet()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ContainsAll(ICollection<TItem> collection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemoveAll(ICollection<TItem> collection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RetainAll(ICollection<TItem> collection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(TItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(TItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(TItem[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Count
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool IsReadOnly
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool Remove(TItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<TItem> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
