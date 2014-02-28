@@ -56,6 +56,7 @@ namespace Test.Commons.Collections
             Assert.AreEqual(queue.Peek(), 0);
             Assert.AreEqual(queue.Dequeue(), 0);
             Assert.AreEqual(queue.Count, 9);
+            Assert.IsFalse(queue.IsFull);
         }
 
 		[Test]
@@ -69,6 +70,57 @@ namespace Test.Commons.Collections
             }
 
             queue.Enqueue(11);
+        }
+
+		[Test]
+		[ExpectedException(typeof(ArgumentException))]
+        public void TestBoundedQueueInvalidMaxSize()
+        {
+            BoundedQueue<int> queue = new BoundedQueue<int>(-10);
+        }
+
+		[Test]
+		public void TestBoundedQueueConstructedWithEnumrable()
+        {
+            BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 5);
+            Assert.That(queue.Count == 5);
+			int[] array = new int[10];
+            queue.CopyTo(array, 1);
+            Assert.That(array[0] == 0);
+            for (int i = 0; i < 5; i++)
+            {
+                Assert.That(array[i+1] == i);
+            }
+        }
+
+		[Test]
+		[ExpectedException(typeof(ArgumentNullException))]
+		public void TestBoundedQueueCopyToNullArray()
+        {
+			BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 5);
+            queue.CopyTo(null, 0);
+		}
+		
+		[Test]
+		public void TestBoundedQueueAbsorb()
+        {
+            BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 6, true);
+            Assert.That(queue.Count == 6);
+            Assert.That(queue.Peek() == 0);
+            queue.Enqueue(7);
+            Assert.That(queue.Count == 6);
+            Assert.That(queue.Peek() == 1);
+        }
+
+		[Test]
+        public void TestBoundedQueueAbsorbWithMaxsizeOne()
+        {
+            BoundedQueue<int> queue = new BoundedQueue<int>(1, true);
+            queue.Enqueue(0);
+            queue.Enqueue(10);
+            Assert.That(queue.Count == 1);
+            Assert.That(queue.Dequeue() == 10);
+            Assert.That(queue.Count == 0);
         }
     }
 }

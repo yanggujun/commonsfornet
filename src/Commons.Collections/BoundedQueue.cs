@@ -124,7 +124,7 @@ namespace Commons.Collections
             var objArray = array as T[];
 			if (null == objArray)
             {
-                throw new ArgumentException("The input array is invalid.");
+                throw new ArgumentNullException("The input array is invalid.");
             }
             queue.CopyTo(objArray, index);
         }
