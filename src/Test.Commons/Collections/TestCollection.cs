@@ -122,5 +122,70 @@ namespace Test.Commons.Collections
             Assert.That(queue.Dequeue() == 10);
             Assert.That(queue.Count == 0);
         }
+
+        [Test]
+        public void TestCompositeCollectionEmptyConstructor()
+        {
+            CompositeCollection<int> comp = new CompositeCollection<int>();
+            comp.Add(1);
+            comp.Add(2);
+            Assert.AreEqual(comp.Count, 2);
+            comp.AddAll(Enumerable.Range(3, 5).ToList());
+            Assert.AreEqual(comp.Count, 7);
+        }
+
+        [Test]
+        public void TestCompositeCollectionMultiparamConstructor()
+        {
+            List<int> list1 = Enumerable.Range(0, 10).ToList();
+            List<int> list2 = Enumerable.Range(8, 10).ToList();
+
+            CompositeCollection<int> comp = new CompositeCollection<int>(list1, list2);
+            Assert.AreEqual(comp.Count, 20);
+            comp.Add(30);
+            Assert.AreEqual(comp.Count, 21);
+            Assert.IsTrue(comp.Remove(9));
+            Assert.IsFalse(comp.Contains(9));
+            Assert.IsTrue(comp.Contains(8));
+            comp.Clear();
+            Assert.AreEqual(comp.Count, 0);
+        }
+
+        [Test]
+        public void TestCompositeCollectionUniqueList()
+        {
+            List<int> list1 = Enumerable.Range(0, 10).ToList();
+            List<int> list2 = Enumerable.Range(8, 10).ToList();
+            CompositeCollection<int> comp = new CompositeCollection<int>(list1, list2);
+
+            IList<int> result = comp.ToUnique();
+            Assert.AreEqual(result.Count, 18);
+            for (int i = 0; i < 18; i++)
+            {
+                Assert.AreEqual(result[i], i);
+            }
+        }
+
+        [Test]
+        public void TestCompositeCollectionEnumrator()
+        {
+            List<int> list1 = Enumerable.Range(0, 10).ToList();
+            List<int> list2 = Enumerable.Range(10, 10).ToList();
+            CompositeCollection<int> comp = new CompositeCollection<int>(list1, list2);
+            int i = 0;
+            foreach (var item in comp)
+            {
+                Assert.AreEqual(item, i);
+                i++;
+            }
+            Assert.AreEqual(i, 20);
+            int[] array = new int[25];
+            comp.CopyTo(array, 1);
+            Assert.AreEqual(0, array[0]);
+            for (int j = 1; j < 21; j++)
+            {
+                Assert.AreEqual(j - 1, array[j]);
+            }
+        }
     }
 }

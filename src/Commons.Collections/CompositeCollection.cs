@@ -256,9 +256,10 @@ namespace Commons.Collections
         {
 			foreach (var c in AllCollections)
             {
-                while (c.GetEnumerator().MoveNext())
+                var iter = c.GetEnumerator();
+                while (iter.MoveNext())
                 {
-                    yield return c.GetEnumerator().Current;
+                    yield return iter.Current;
                 }
             }
         }
