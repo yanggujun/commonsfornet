@@ -27,21 +27,21 @@ using NUnit.Framework;
 
 namespace Test.Commons.Collections
 {
-	[TestFixture]
+    [TestFixture]
     public class TestCollection
     {
-		[SetUp]
-		public void Setup()
+        [SetUp]
+        public void Setup()
         {
 
         }
-		[TearDown]
-		public void TearDown()
+        [TearDown]
+        public void TearDown()
         {
 
         }
 
-		[Test]
+        [Test]
         public void TestBoundedQueueNoAbsorb()
         {
             BoundedQueue<int> queue = new BoundedQueue<int>(10);
@@ -59,12 +59,12 @@ namespace Test.Commons.Collections
             Assert.IsFalse(queue.IsFull);
         }
 
-		[Test]
-		[ExpectedException(typeof(InvalidOperationException))]
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void TestBoundedQueueNoAbsorbExceedLimit()
         {
             BoundedQueue<int> queue = new BoundedQueue<int>(10);
-			for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 queue.Enqueue(i);
             }
@@ -72,19 +72,19 @@ namespace Test.Commons.Collections
             queue.Enqueue(11);
         }
 
-		[Test]
-		[ExpectedException(typeof(ArgumentException))]
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
         public void TestBoundedQueueInvalidMaxSize()
         {
             BoundedQueue<int> queue = new BoundedQueue<int>(-10);
         }
 
-		[Test]
-		public void TestBoundedQueueConstructedWithEnumrable()
+        [Test]
+        public void TestBoundedQueueConstructedWithEnumrable()
         {
             BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 5);
             Assert.That(queue.Count == 5);
-			int[] array = new int[10];
+            int[] array = new int[10];
             queue.CopyTo(array, 1);
             Assert.That(array[0] == 0);
             for (int i = 0; i < 5; i++)
@@ -93,16 +93,16 @@ namespace Test.Commons.Collections
             }
         }
 
-		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
-		public void TestBoundedQueueCopyToNullArray()
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void TestBoundedQueueCopyToNullArray()
         {
-			BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 5);
+            BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 5);
             queue.CopyTo(null, 0);
-		}
-		
-		[Test]
-		public void TestBoundedQueueAbsorb()
+        }
+        
+        [Test]
+        public void TestBoundedQueueAbsorb()
         {
             BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 6, true);
             Assert.That(queue.Count == 6);
@@ -112,7 +112,7 @@ namespace Test.Commons.Collections
             Assert.That(queue.Peek() == 1);
         }
 
-		[Test]
+        [Test]
         public void TestBoundedQueueAbsorbWithMaxsizeOne()
         {
             BoundedQueue<int> queue = new BoundedQueue<int>(1, true);
@@ -186,6 +186,42 @@ namespace Test.Commons.Collections
             {
                 Assert.AreEqual(j - 1, array[j]);
             }
+        }
+
+        [Test]
+        public void TestCompositeCollectionFuncComparer()
+        {
+            List<Order> orders1 = new List<Order>() { new Order() { Id = 1, Name = "Name1" }, new Order { Id = 2, Name = "Name2" }, new Order { Id = 3, Name = "Name3" } };
+            List<Order> orders2 = new List<Order>() { new Order() { Id = 3, Name = "Name3" }, new Order { Id = 4, Name = "Name4" }, new Order { Id = 5, Name = "Name5" } };
+            List<Order> orders3 = new List<Order>() { new Order() { Id = 6, Name = "Name6" }, new Order { Id = 7, Name = "Name7" }, new Order { Id = 8, Name = "Name8" } };
+            CompositeCollection<Order> orders = new CompositeCollection<Order>(orders1, orders2, orders3);
+            Order o1 = new Order() { Id = 1, Name = "whatever" };
+            Assert.IsTrue(orders.Contains(o1, (i1, i2) => i1.Id == i2.Id));
+            Order o2 = new Order() { Id = 1111, Name = "whatever" };
+            Assert.IsFalse(orders.Contains(o2, (i1, i2) => i1.Id == i2.Id));
+            var list = orders.ToUnique((i1, i2) => i1.Id == i2.Id);
+            Assert.AreEqual(list.Count, 8);
+
+            Assert.IsTrue(orders.Remove(o1, (i1, i2) => i1.Id == i2.Id));
+            Assert.IsFalse(orders.Remove(o2, (i1, i2) => i1.Id == i2.Id));
+        }
+
+        [Test]
+        public void TestCompositeCollectionEqualityComparer()
+        {
+            List<Order> orders1 = new List<Order>() { new Order() { Id = 1, Name = "Name1" }, new Order { Id = 2, Name = "Name2" }, new Order { Id = 3, Name = "Name3" } };
+            List<Order> orders2 = new List<Order>() { new Order() { Id = 3, Name = "Name3" }, new Order { Id = 4, Name = "Name4" }, new Order { Id = 5, Name = "Name5" } };
+            List<Order> orders3 = new List<Order>() { new Order() { Id = 6, Name = "Name6" }, new Order { Id = 7, Name = "Name7" }, new Order { Id = 8, Name = "Name8" } };
+            CompositeCollection<Order> orders = new CompositeCollection<Order>(orders1, orders2, orders3);
+            Order o1 = new Order() { Id = 1, Name = "whatever" };
+            Assert.IsTrue(orders.Contains(o1, new OrderEqualityComparer()));
+            Order o2 = new Order() { Id = 1111, Name = "whatever" };
+            Assert.IsFalse(orders.Contains(o2, new OrderEqualityComparer()));
+            var list = orders.ToUnique(new OrderEqualityComparer());
+            Assert.AreEqual(list.Count, 8);
+
+            Assert.IsTrue(orders.Remove(o1, new OrderEqualityComparer()));
+            Assert.IsFalse(orders.Remove(o2, new OrderEqualityComparer()));
         }
     }
 }

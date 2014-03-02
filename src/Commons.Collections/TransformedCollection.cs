@@ -22,14 +22,14 @@ using System.Threading.Tasks;
 
 namespace Commons.Collections
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <typeparam name="TItem"></typeparam>
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TItem"></typeparam>
     public class TransformedCollection<TItem> : AbstractCollectionDecorator<TItem>
     {
         private readonly Func<TItem, TItem> transformer;
-		public TransformedCollection(ICollection<TItem> collection, Func<TItem, TItem> transformer) : base(collection)
+        public TransformedCollection(ICollection<TItem> collection, Func<TItem, TItem> transformer) : base(collection)
         {
             this.transformer = transformer;
         }

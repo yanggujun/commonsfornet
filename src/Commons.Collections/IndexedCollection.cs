@@ -22,21 +22,21 @@ using System.Threading.Tasks;
 
 namespace Commons.Collections
 {
-	/// <summary>
-	/// The IndexedCollection provides a map like view on a collection. Other than specifying the key and value explicitly,
+    /// <summary>
+    /// The IndexedCollection provides a map like view on a collection. Other than specifying the key and value explicitly,
     /// the indexed collection generates the key from the value added to itself. How the key is generated is defined by 
     /// the client with a delegate.
     /// The inside map is a (key)-(collection of the value) pair.
     /// When unique index is false, items which generate the same key are added to a collection in the IMultiMap dictionary. 
-	/// </summary>
-	/// <typeparam name="TKey"></typeparam>
-	/// <typeparam name="TItem"></typeparam>
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TItem"></typeparam>
     public class IndexedCollection<TKey, TItem> : AbstractCollectionDecorator<TItem>
     {
         private readonly IMultiMap<TKey, TItem> map;
         private readonly Func<TItem, TKey> keyGenerator;
 
-		public IndexedCollection(ICollection<TItem> collection, IMultiMap<TKey, TItem> map, Func<TItem, TKey> keyGenerator) : base(collection)
+        public IndexedCollection(ICollection<TItem> collection, IMultiMap<TKey, TItem> map, Func<TItem, TKey> keyGenerator) : base(collection)
         {
             this.map = map;
             this.keyGenerator = keyGenerator;

@@ -24,7 +24,7 @@ namespace Commons.Collections.Bag
 {
     public abstract class AbstractSortedBagDecorator<TItem> : AbstractBagDecorator<TItem>, ISortedBag<TItem>
     {
-		protected AbstractSortedBagDecorator(IBag<TItem> bag) : base(bag)
+        protected AbstractSortedBagDecorator(IBag<TItem> bag) : base(bag)
         {
 
         }

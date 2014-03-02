@@ -26,7 +26,7 @@ namespace Commons.Collections
     public class DecoratedKeyedCollection<TKey, TItem> : KeyedCollection<TKey, TItem>
     {
         private readonly IndexedCollection<TKey, TItem> indexed;
-		public DecoratedKeyedCollection()
+        public DecoratedKeyedCollection()
         {
         }
 

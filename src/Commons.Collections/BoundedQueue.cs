@@ -26,20 +26,20 @@ namespace Commons.Collections
     /// throws OperationNotSupportedException.
     /// </summary>
     /// <typeparam name="T">The queued object</typeparam>
-	[Serializable]
+    [Serializable]
     public sealed class BoundedQueue<T> : IEnumerable<T>, IEnumerable, ICollection
     {
-		/// <summary>
-		/// The queue actually stores the data.
-		/// </summary>
+        /// <summary>
+        /// The queue actually stores the data.
+        /// </summary>
         private Queue<T> queue = new Queue<T>();
 
-		/// <summary>
-		/// Constructs an empty queue with specifying the max size.
-		/// </summary>
-		/// <param name="maxSize">The max size of the queue.</param>
-		/// <param name="absorb">whether to always enable the enqueue operation.</param>
-		public BoundedQueue(int maxSize, bool absorb = false)
+        /// <summary>
+        /// Constructs an empty queue with specifying the max size.
+        /// </summary>
+        /// <param name="maxSize">The max size of the queue.</param>
+        /// <param name="absorb">whether to always enable the enqueue operation.</param>
+        public BoundedQueue(int maxSize, bool absorb = false)
         {
             if (maxSize < 1)
             {
@@ -49,25 +49,25 @@ namespace Commons.Collections
             Absorb = absorb;
         }
 
-		/// <summary>
-		/// Constructs the queue with a collection, with the max size. If the collection count exceeds 
+        /// <summary>
+        /// Constructs the queue with a collection, with the max size. If the collection count exceeds 
         /// max size, eliminates the one not enumerated.
-		/// </summary>
-		/// <param name="collection">The collection</param>
-		/// <param name="maxSize">The max size of the queue.</param>
-		/// <param name="absorb">whether to always enable the enqueue operation.</param>
-		public BoundedQueue(IEnumerable<T> collection, int maxSize, bool absorb = false) : this(maxSize, absorb)
+        /// </summary>
+        /// <param name="collection">The collection</param>
+        /// <param name="maxSize">The max size of the queue.</param>
+        /// <param name="absorb">whether to always enable the enqueue operation.</param>
+        public BoundedQueue(IEnumerable<T> collection, int maxSize, bool absorb = false) : this(maxSize, absorb)
         {
-			foreach (var item in collection)
+            foreach (var item in collection)
             {
                 Enqueue(item);
-				if (queue.Count >= MaxSize)
+                if (queue.Count >= MaxSize)
                 {
                     break;
                 }
             }
         }
-		
+        
         /// <summary>
         /// The flag is used in the following case:
         /// When the collection is full and the flag is set to true, 
@@ -78,9 +78,9 @@ namespace Commons.Collections
         /// </summary>
         public bool Absorb { get; private set; }
 
-		/// <summary>
-		/// Whether the queue is full.
-		/// </summary>
+        /// <summary>
+        /// Whether the queue is full.
+        /// </summary>
         public bool IsFull
         {
             get { return Count >= MaxSize; }
@@ -92,17 +92,17 @@ namespace Commons.Collections
             private set;
         }
 
-		/// <summary>
-		/// When the queue is full, enqueue a new item will throw an exception.
-		/// </summary>
-		/// <param name="item"></param>
+        /// <summary>
+        /// When the queue is full, enqueue a new item will throw an exception.
+        /// </summary>
+        /// <param name="item"></param>
         public void Enqueue(T item)
         {
-			if (IsFull && !Absorb)
+            if (IsFull && !Absorb)
             {
                 throw new InvalidOperationException("The queue has reached the max size.");
             }
-			else if (IsFull && Absorb)
+            else if (IsFull && Absorb)
             {
                 Dequeue();
             }
@@ -122,7 +122,7 @@ namespace Commons.Collections
         public void CopyTo(Array array, int index)
         {
             var objArray = array as T[];
-			if (null == objArray)
+            if (null == objArray)
             {
                 throw new ArgumentNullException("The input array is invalid.");
             }

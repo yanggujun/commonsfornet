@@ -24,26 +24,26 @@ using System.Threading.Tasks;
 
 namespace Commons.Collections
 {
-	/// <summary>
-	/// The collection decorator for the concrete collections.
+    /// <summary>
+    /// The collection decorator for the concrete collections.
     /// The abstract class just calls the decorator for every operation.
-	/// </summary>
-	/// <typeparam name="T">The type of the item.</typeparam>
+    /// </summary>
+    /// <typeparam name="T">The type of the item.</typeparam>
     public class AbstractCollectionDecorator<T> : ICollection<T>
     {
-		/// <summary>
-		/// The decorated collection.
-		/// </summary>
+        /// <summary>
+        /// The decorated collection.
+        /// </summary>
         protected ICollection<T> Decorated { get; private set; }
-		/// <summary>
-		/// Ctor.
-		/// </summary>
-		/// <param name="collection">The collection to decorate.</param>
+        /// <summary>
+        /// Ctor.
+        /// </summary>
+        /// <param name="collection">The collection to decorate.</param>
         protected AbstractCollectionDecorator(ICollection<T> collection)
         {
-			if (null == collection)
+            if (null == collection)
             {
-				throw new ArgumentException("Collection cannot be null");
+                throw new ArgumentException("Collection cannot be null");
             }
             Decorated = collection;
         }
@@ -80,17 +80,17 @@ namespace Commons.Collections
 
         public virtual bool Remove(T item)
         {
-			return Decorated.Remove(item);
+            return Decorated.Remove(item);
         }
 
         public virtual IEnumerator<T> GetEnumerator()
         {
-			return Decorated.GetEnumerator();
+            return Decorated.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-			return Decorated.GetEnumerator();
+            return Decorated.GetEnumerator();
         }
 
         public override bool Equals(object obj)
