@@ -223,5 +223,38 @@ namespace Test.Commons.Collections
             Assert.IsTrue(orders.Remove(o1, new OrderEqualityComparer()));
             Assert.IsFalse(orders.Remove(o2, new OrderEqualityComparer()));
         }
+
+        [Test]
+        public void TestPredicatedCollection()
+        {
+            PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
+            pc.Add(1);
+            pc.Add(2);
+            Assert.AreEqual(2, pc.Count);
+            List<int> list = new List<int>() { 3, 4, 5 };
+            pc.AddAll(list);
+            Assert.AreEqual(5, pc.Count);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestPredicatedCollectionValidateFail()
+        {
+            PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
+            pc.Add(1);
+            pc.Add(2);
+            pc.Add(-1);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestPredicatedCollectionAddAllValidateFail()
+        {
+            PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
+            pc.Add(1);
+            pc.Add(2);
+            List<int> list = new List<int>() { 3, -1, 5 };
+            pc.AddAll(list);
+        }
     }
 }

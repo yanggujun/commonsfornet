@@ -28,10 +28,23 @@ namespace Commons.Collections
     /// <typeparam name="TItem"></typeparam>
     public class TransformedCollection<TItem> : AbstractCollectionDecorator<TItem>
     {
-        private readonly Func<TItem, TItem> transformer;
-        public TransformedCollection(ICollection<TItem> collection, Func<TItem, TItem> transformer) : base(collection)
+        private readonly Func<TItem, TItem> transform;
+        public TransformedCollection(ICollection<TItem> collection, Func<TItem, TItem> transform) : base(collection)
         {
-            this.transformer = transformer;
+            this.transform = transform;
+        }
+
+        public override void Add(TItem item)
+        {
+            Decorated.Add(transform(item));
+        }
+
+        public virtual void AddAll(ICollection<TItem> items)
+        {
+            foreach (var i in items)
+            {
+                Decorated.Add(transform(i));
+            }
         }
     }
 }
