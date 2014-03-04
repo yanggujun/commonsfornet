@@ -15,24 +15,23 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Commons.Collections
 {
-    public class DecoratedKeyedCollection<TKey, TItem> : KeyedCollection<TKey, TItem>
+    /// <summary>
+    /// The stub interface of map.
+    /// </summary>
+    /// <typeparam name="TKey">Type of the key</typeparam>
+    /// <typeparam name="TValue">Type of the value</typeparam>
+    /// TODO: is it necessary to extend serializable?
+    public interface IMap<TKey, TValue> : IDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>, 
+                                          IDictionary, ICollection, IReadOnlyDictionary<TKey, TValue>, 
+                                          IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
     {
-        private readonly IndexedCollection<TKey, TItem> indexed;
-        public DecoratedKeyedCollection()
-        {
-        }
-
-        protected override TKey GetKeyForItem(TItem item)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
