@@ -59,8 +59,8 @@
     <Compile Include="IMultiMap.cs" />
     <Compile Include="IndexedCollection.cs" />
     <Compile Include="IBoundedCollection.cs" />
-    <Compile Include="DecoratedKeyedCollection.cs" />
     <Compile Include="ISortedBag.cs" />
+    <Compile Include="IMap.cs" />
     <Compile Include="PredicatedCollection.cs" />
     <Compile Include="TransformedCollection.cs" />
   </ItemGroup>
