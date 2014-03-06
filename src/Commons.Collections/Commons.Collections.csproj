@@ -61,6 +61,8 @@
     <Compile Include="IBoundedCollection.cs" />
     <Compile Include="ISortedBag.cs" />
     <Compile Include="IMap.cs" />
+    <Compile Include="ITreeSet.cs" />
+    <Compile Include="LlTreeSet.cs" />
     <Compile Include="PredicatedCollection.cs" />
     <Compile Include="TransformedCollection.cs" />
   </ItemGroup>
