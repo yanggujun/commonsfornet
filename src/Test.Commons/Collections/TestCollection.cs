@@ -256,5 +256,90 @@ namespace Test.Commons.Collections
             List<int> list = new List<int>() { 3, -1, 5 };
             pc.AddAll(list);
         }
+
+        [Test]
+        public void TestTreeSetSimpleOperations()
+        {
+            ITreeSet<int> set = new LlrbTreeSet<int>();
+            set.Add(10);
+            set.Add(20);
+            set.Add(30);
+            set.Add(5);
+            set.Add(1);
+            Assert.IsTrue(set.Contains(20));
+            Assert.AreEqual(5, set.Count);
+            Assert.AreEqual(30, set.Max);
+            Assert.AreEqual(1, set.Min);
+
+            Assert.IsTrue(set.Remove(5));
+            Assert.AreEqual(4, set.Count);
+            Assert.IsFalse(set.Contains(5));
+
+            set.RemoveMin();
+            Assert.AreEqual(3, set.Count);
+            Assert.IsFalse(set.Contains(1));
+
+            set.Clear();
+            Assert.AreEqual(0, set.Count);
+        }
+
+        [Test]
+        public void TestTreeSetRandomOperations()
+        {
+            for (int j = 0; j < 100; j++)
+            {
+                ITreeSet<int> set = new LlrbTreeSet<int>();
+
+                Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+                List<int> list = new List<int>();
+                int testNumber = 1000;
+                while (set.Count < testNumber)
+                {
+                    int v = randomValue.Next();
+                    if (!set.Contains(v))
+                    {
+                        set.Add(v);
+                        list.Add(v);
+                    }
+                }
+
+                Assert.AreEqual(testNumber, set.Count);
+
+                Random randomIndex = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+                for (int i = 0; i < 100; i++)
+                {
+                    int index = randomIndex.Next();
+                    index = index < 0 ? (-index) : index;
+                    index %= testNumber;
+                    int testValue = list[index];
+                    Assert.IsTrue(set.Contains(testValue));
+                }
+
+                int max = list.Max();
+                Assert.AreEqual(max, set.Max);
+
+                for (int i = 0; i < 50; i++)
+                {
+                    int min = list.Min();
+                    Assert.AreEqual(min, set.Min);
+                    set.RemoveMin();
+                    Assert.AreEqual(testNumber - i - 1, set.Count);
+                    Assert.IsFalse(set.Contains(min));
+                    list.Remove(min);
+                }
+
+                for (int i = 0; i < 100; i++)
+                {
+                    int index = randomIndex.Next();
+                    index = index < 0 ? (-index) : index;
+                    index %= testNumber - 50 - i;
+                    int toRemove = list[index];
+                    Assert.IsTrue(set.Remove(toRemove));
+                    Assert.IsFalse(set.Contains(toRemove));
+                    Assert.AreEqual(testNumber - 50 - i - 1, set.Count);
+                    list.Remove(toRemove);
+                }
+            }
+        }
     }
 }

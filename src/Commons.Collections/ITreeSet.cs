@@ -27,7 +27,12 @@ namespace Commons.Collections
     /// Stub interface for tree set data structure.
     /// </summary>
     /// <typeparam name="T">The type of the set items.</typeparam>
-    public interface ITreeSet<T> : ISet<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
+    public interface ITreeSet<T> : ICollection<T>, IEnumerable<T>, IEnumerable
     {
+        void RemoveMin();
+        void RemoveMax();
+        T Max { get; }
+
+        T Min { get; }
     }
 }
