@@ -24,6 +24,7 @@ using Commons.Collections;
 
 using NUnit;
 using NUnit.Framework;
+using System.IO;
 
 namespace Test.Commons.Collections
 {
@@ -267,6 +268,7 @@ namespace Test.Commons.Collections
             set.Add(5);
             set.Add(1);
             Assert.IsTrue(set.Contains(20));
+            Assert.IsFalse(set.Contains(100));
             Assert.AreEqual(5, set.Count);
             Assert.AreEqual(30, set.Max);
             Assert.AreEqual(1, set.Min);
@@ -288,6 +290,7 @@ namespace Test.Commons.Collections
         {
             for (int j = 0; j < 100; j++)
             {
+                Console.WriteLine(j);
                 ITreeSet<int> set = new LlrbTreeSet<int>();
 
                 Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -334,6 +337,7 @@ namespace Test.Commons.Collections
                     index = index < 0 ? (-index) : index;
                     index %= testNumber - 50 - i;
                     int toRemove = list[index];
+                    Assert.IsTrue(set.Contains(toRemove));
                     Assert.IsTrue(set.Remove(toRemove));
                     Assert.IsFalse(set.Contains(toRemove));
                     Assert.AreEqual(testNumber - 50 - i - 1, set.Count);
@@ -341,5 +345,118 @@ namespace Test.Commons.Collections
                 }
             }
         }
+
+        [Test]
+        [Ignore]
+        public void TestTreeSetRandomDelete()
+        {
+            for (int j = 0; j < 100; j++)
+            {
+                Console.WriteLine(j);
+                ITreeSet<int> set = new LlrbTreeSet<int>();
+
+                Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+                List<int> list = new List<int>();
+                List<int> writeToFile = new List<int>();
+                List<int> deletes = new List<int>();
+                int testNumber = 1000;
+                while (set.Count < testNumber)
+                {
+                    int v = randomValue.Next();
+                    if (!set.Contains(v))
+                    {
+                        set.Add(v);
+                        list.Add(v);
+                        writeToFile.Add(v);
+                    }
+                }
+
+                Random randomIndex = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+
+                for (int i = 0; i < 100; i++)
+                {
+                    int index = randomIndex.Next();
+                    index = index < 0 ? (-index) : index;
+                    index %= testNumber - i;
+                    int toRemove = list[index];
+                    deletes.Add(toRemove);
+                    Assert.IsTrue(set.Contains(toRemove));
+                    Assert.IsTrue(set.Remove(toRemove));
+                    Assert.IsFalse(set.Contains(toRemove));
+                    Console.WriteLine("item to delete: " + toRemove);
+                    if (testNumber - i - 1 != set.Count)
+                    {
+                        using (FileStream fs = new FileStream(@"c:\misc\test.txt", FileMode.Create))
+                        {
+                            using (StreamWriter sw = new StreamWriter(fs))
+                            {
+                                foreach (var f in writeToFile)
+                                {
+                                    sw.WriteLine(f);
+                                }
+                                sw.Close();
+                            }
+                        }
+                        using (FileStream fs = new FileStream(@"c:\misc\delete.txt", FileMode.Create))
+                        {
+                            using (StreamWriter sw = new StreamWriter(fs))
+                            {
+                                foreach (var f in deletes)
+                                {
+                                    sw.WriteLine(f);
+                                }
+                                sw.Close();
+                            }
+                        }
+                    }
+                    Assert.AreEqual(testNumber - i - 1, set.Count);
+                    list.Remove(toRemove);
+                }
+            }
+        }
+
+        [Test]
+        [Ignore]
+        public void TestFixedValue()
+        {
+            ITreeSet<int> set = new LlrbTreeSet<int>();
+            List<int> list = new List<int>();
+            using (FileStream fs = new FileStream(@"c:\misc\test.txt", FileMode.Open))
+            {
+                using (StreamReader sr = new StreamReader(fs))
+                {
+                    string value = null;
+                    while (null != (value = sr.ReadLine()))
+                    {
+                        set.Add(int.Parse(value));
+                    }
+                }
+            }
+            using (FileStream fs = new FileStream(@"c:\misc\delete.txt", FileMode.Open))
+            {
+                using (StreamReader sr = new StreamReader(fs))
+                {
+                    string value = null;
+                    while (null != (value = sr.ReadLine()))
+                    {
+                        list.Add(int.Parse(value));
+                    }
+                }
+            }
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                Console.WriteLine("Round: " + i);
+                int b = set.Count;
+                if (i == list.Count - 1)
+                {
+
+                }
+                set.Remove(list[i]);
+                int a = set.Count;
+                Assert.AreEqual(b - 1, a);
+            }
+        }
+
     }
 }

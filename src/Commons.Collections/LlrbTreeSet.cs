@@ -264,6 +264,7 @@ namespace Commons.Collections
         {
             if (comparer.Compare(item, node.Item) < 0)
             {
+                // since before delete, it already checks the item exists, so here it can guarrantee that node.left exits.
                 if (!IsRed(node.Left) && !IsRed(node.Left.Left))
                 {
                     node = MoveRedLeft(node);
@@ -276,10 +277,12 @@ namespace Commons.Collections
                 {
                     node = RotateRight(node);
                 }
+                
                 if ((comparer.Compare(item, node.Item) == 0) && (node.Right == null))
                 {
                     return null;
                 }
+
                 if (!IsRed(node.Right) && !IsRed(node.Right.Left))
                 {
                     node = MoveRedRight(node);
@@ -357,6 +360,16 @@ namespace Commons.Collections
                 FlipColor(node);
             }
 
+            // make sure no right leaning red nodes.
+            if (null != node.Left && IsRed(node.Left.Right) && !IsRed(node.Left.Left))
+            {
+                node.Left = RotateLeft(node.Left);
+                if (IsRed(node.Left))
+                {
+                    node = RotateRight(node);
+                }
+            }
+
             return node;
         }
 
@@ -401,6 +414,10 @@ namespace Commons.Collections
                 node.Right = RotateRight(node.Right);
                 node = RotateLeft(node);
                 FlipColor(node);
+                if (IsRed(node.Right.Right))
+                {
+                    node.Right = RotateLeft(node.Right);
+                }
             }
             return node;
         }
@@ -408,7 +425,7 @@ namespace Commons.Collections
         private static TreeNode MoveRedRight(TreeNode node)
         {
             FlipColor(node);
-            if (null != node.Left && IsRed(node.Left.Left))
+            if ((null != node.Left) && IsRed(node.Left.Left))
             {
                 node = RotateRight(node);
                 FlipColor(node);
