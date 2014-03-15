@@ -29,10 +29,24 @@ namespace Commons.Collections
     /// <typeparam name="T">The type of the set items.</typeparam>
     public interface ITreeSet<T> : ICollection<T>, IEnumerable<T>, IEnumerable
     {
+        /// <summary>
+        /// Removes the minimum value in the set.
+        /// </summary>
         void RemoveMin();
+
+        /// <summary>
+        /// Removes the maximum value in the set.
+        /// </summary>
         void RemoveMax();
+
+        /// <summary>
+        /// Retrieves the maximum value in the set.
+        /// </summary>
         T Max { get; }
 
+        /// <summary>
+        /// Retrieves the minimum value in the set.
+        /// </summary>
         T Min { get; }
     }
 }

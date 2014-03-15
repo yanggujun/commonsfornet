@@ -141,13 +141,22 @@ namespace Commons.Collections
 
         public void RemoveMin()
         {
+            if (null == root)
+            {
+                throw new InvalidOperationException("The set is empty");
+            }
             root = DeleteMin(root);
             root.Color = BLACK;
         }
 
         public void RemoveMax()
         {
-
+            if (null == root)
+            {
+                throw new InvalidOperationException("The set is empty");
+            }
+            root = DeleteMax(root);
+            root.Color = BLACK;
         }
 
         public void CopyTo(T[] array, int arrayIndex)
@@ -345,9 +354,31 @@ namespace Commons.Collections
             return FixUp(node);
         }
 
+        private static TreeNode DeleteMax(TreeNode node)
+        {
+            if (IsRed(node.Left) && !IsRed(node.Right))
+            {
+                node = RotateRight(node);
+            }
+
+            if (null == node.Right)
+            {
+                return null;
+            }
+
+            if (!IsRed(node.Left) && !IsRed(node.Right))
+            {
+                node = MoveRedRight(node);
+            }
+
+            node.Right = DeleteMax(node.Right);
+
+            return FixUp(node);
+        }
+
         private static TreeNode FixUp(TreeNode node)
         {
-            if (IsRed(node.Right) && !IsRed(node.Left))
+            if (IsRed(node.Right))
             {
                 node = RotateLeft(node);
             }
