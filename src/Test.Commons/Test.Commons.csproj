@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Collections\TestCollection.cs" />
     <Compile Include="Collections\TreeSetLongTest.cs" />
+    <Compile Include="Collections\TreeSetPerformanceTest.cs" />
     <Compile Include="Order.cs" />
   </ItemGroup>
   <ItemGroup>

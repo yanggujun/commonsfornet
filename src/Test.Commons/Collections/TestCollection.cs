@@ -284,7 +284,5 @@ namespace Test.Commons.Collections
             set.Clear();
             Assert.AreEqual(0, set.Count);
         }
-
-
     }
 }

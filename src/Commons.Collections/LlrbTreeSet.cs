@@ -17,6 +17,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,8 +28,7 @@ namespace Commons.Collections
     /// <summary>
     /// A tree set with a left leaning red black tree implementation. The Left-Leaning RB tree is introduced by 
     /// Dr. Robert Sedgewick in a paper in Feb. 2008.
-    /// The LL RB tree is designated to reduce code compared with the standard RB tree implementation. The efficiency of insert
-    /// and removal is said to be faster than the standard version.
+    /// The LL RB tree is designated to reduce code compared with the standard RB tree implementation. 
     /// The code here is the implementation of c#, according to the java code which was presented in Dr. Sedgewick's paper.
     /// The depth of the tree is 2logn
     /// The time complexity of search is O(lgn), of insert is O(lgn), of delete if O(lgn)
@@ -146,7 +147,10 @@ namespace Commons.Collections
                 throw new InvalidOperationException("The set is empty");
             }
             root = DeleteMin(root);
+            if (null != root)
+            { 
             root.Color = BLACK;
+                }
         }
 
         public void RemoveMax()
@@ -156,7 +160,10 @@ namespace Commons.Collections
                 throw new InvalidOperationException("The set is empty");
             }
             root = DeleteMax(root);
-            root.Color = BLACK;
+            if (null != root)
+            {
+                root.Color = BLACK;
+            }
         }
 
         public void CopyTo(T[] array, int arrayIndex)
@@ -356,7 +363,7 @@ namespace Commons.Collections
 
         private static TreeNode DeleteMax(TreeNode node)
         {
-            if (IsRed(node.Left) && !IsRed(node.Right))
+            if (IsRed(node.Left))
             {
                 node = RotateRight(node);
             }
@@ -366,7 +373,7 @@ namespace Commons.Collections
                 return null;
             }
 
-            if (!IsRed(node.Left) && !IsRed(node.Right))
+            if (!IsRed(node.Right) && !IsRed(node.Right.Left))
             {
                 node = MoveRedRight(node);
             }
@@ -469,6 +476,60 @@ namespace Commons.Collections
             return node == null ? false : node.Color == RED;
         }
 
+#if DEBUG
+        private static void WriteNodeHtml(TreeNode node)
+        {
+            using (FileStream fs = new FileStream(@"c:\misc\node.html", FileMode.Create))
+            {
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    sw.Write(NodeHtmlDoc(node));
+                    sw.Flush();
+                    sw.Close();
+                }
+            }
+        }
+
+        private void WriteToHtml()
+        {
+            using (FileStream fs = new FileStream(@"c:\misc\tree.html", FileMode.Create))
+            {
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    sw.Write(this.HtmlDoc);
+                    sw.Flush();
+                    sw.Close();
+                }
+            }
+        }
+
+        private static string NodeHtmlDoc(TreeNode node)
+        {
+            return
+                    "<html>" +
+                    "<body>" +
+                        (null != node ? node.HtmlFragment : "[null]") +
+                    "</body>" +
+                "</html>";
+
+        }
+
+        private string HtmlDoc
+        {
+            get
+            {
+                return 
+                    "<html>" +
+                    "<body>" +
+                        (null != root ? root.HtmlFragment : "[null]") +
+                    "</body>" +
+                "</html>";
+
+            }
+        }
+
+        [DebuggerDisplay("Item = {Item}, Color = {Color}")]
+#endif
         private class TreeNode
         {
             public T Item { get; set; }
@@ -481,6 +542,26 @@ namespace Commons.Collections
                 Item = item;
                 Color = RED;
             }
+
+#if DEBUG
+            public string HtmlFragment
+            {
+                get
+                {
+                    return
+                            "<table border='1'>" +
+                                "<tr>" +
+                                    "<td colspan='2' align='center' bgcolor='" + (Color ? "red" : "grey") + "'>" + Item + "</td>" +
+                                "</tr>" +
+                                "<tr>" +
+                                    "<td valign='top'>" + (null != Left ? Left.HtmlFragment : "[null]") + "</td>" +
+                                    "<td valign='top'>" + (null != Right ? Right.HtmlFragment : "[null]") + "</td>" +
+                                "</tr>" +
+                            "</table>";
+
+                }
+            }
+#endif
         }
     }
 }
