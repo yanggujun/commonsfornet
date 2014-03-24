@@ -24,7 +24,7 @@ using Commons.Collections;
 namespace Test.Commons.Collections
 {
     [TestFixture]
-    public class TreeSetLongTest
+    public class TreeSetReliabilityTest
     {
         [Test]
         public void TestTreeSetRandomOperations()
@@ -180,7 +180,7 @@ namespace Test.Commons.Collections
         [Test]
         public void TestTreeSetRemoveMin()
         {
-            for (int j = 0; j < 5000; j++)
+            for (int j = 0; j < 1000; j++)
             {
                 Random randomValue = new Random((int)DateTime.Now.Ticks & 0x0000FFFFF);
                 LlrbTreeSet<int> set = new LlrbTreeSet<int>();
