@@ -29,7 +29,7 @@ using System.IO;
 namespace Test.Commons.Collections
 {
     [TestFixture]
-    public class TestCollection
+    public class CollectionTest
     {
         [SetUp]
         public void Setup()
@@ -262,6 +262,12 @@ namespace Test.Commons.Collections
         public void TestTreeSetSimpleOperations()
         {
             ITreeSet<int> set = new LlrbTreeSet<int>();
+            var count = 0;
+            foreach (var item in set)
+            {
+                count++;
+            }
+            Assert.IsTrue(count == 0);
             set.Add(10);
             set.Add(20);
             set.Add(30);
@@ -273,6 +279,27 @@ namespace Test.Commons.Collections
             Assert.AreEqual(30, set.Max);
             Assert.AreEqual(1, set.Min);
 
+            var list = new List<int>();
+
+            foreach (var item in set)
+            {
+                list.Add(item);
+            }
+
+            Assert.IsTrue(list.Count == set.Count);
+
+            foreach (var item in list)
+            {
+                Assert.IsTrue(set.Contains(item));
+            }
+
+            var array = new int[5];
+            set.CopyTo(array, 0);
+            foreach (var item in array)
+            {
+                Assert.IsTrue(set.Contains(item));
+            }
+
             Assert.IsTrue(set.Remove(5));
             Assert.AreEqual(4, set.Count);
             Assert.IsFalse(set.Contains(5));
@@ -283,6 +310,83 @@ namespace Test.Commons.Collections
 
             set.Clear();
             Assert.AreEqual(0, set.Count);
+        }
+
+        [Test]
+        public void TestTreeSetRandomOperations()
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                ITreeSet<int> set = new LlrbTreeSet<int>();
+
+                Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+                List<int> list = new List<int>();
+                int testNumber = 1000;
+                while (set.Count < testNumber)
+                {
+                    int v = randomValue.Next();
+                    if (!set.Contains(v))
+                    {
+                        set.Add(v);
+                        list.Add(v);
+                    }
+                }
+
+                int count = 0;
+                foreach (var item in set)
+                {
+                    Assert.IsTrue(list.Contains(item));
+                    count++;
+                }
+                Assert.IsTrue(count == set.Count);
+
+                Assert.AreEqual(testNumber, set.Count);
+
+                Random randomIndex = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+                for (int i = 0; i < 100; i++)
+                {
+                    int index = randomIndex.Next();
+                    index = index < 0 ? (-index) : index;
+                    index %= testNumber;
+                    int testValue = list[index];
+                    Assert.IsTrue(set.Contains(testValue));
+                }
+
+                for (int i = 0; i < 100; i++)
+                {
+                    int min = list.Min();
+                    Assert.AreEqual(min, set.Min);
+                    set.RemoveMin();
+                    Assert.AreEqual(testNumber - i - 1, set.Count);
+                    Assert.IsFalse(set.Contains(min));
+                    list.Remove(min);
+                }
+
+                testNumber -= 100;
+                for (int i = 0; i < 100; i++)
+                {
+                    int max = list.Max();
+                    Assert.AreEqual(max, set.Max);
+                    set.RemoveMax();
+                    Assert.AreEqual(testNumber - i - 1, set.Count);
+                    Assert.IsFalse(set.Contains(max));
+                    list.Remove(max);
+                }
+
+                testNumber -= 100;
+                for (int i = 0; i < 100; i++)
+                {
+                    int index = randomIndex.Next();
+                    index = index < 0 ? (-index) : index;
+                    index %= testNumber - i;
+                    int toRemove = list[index];
+                    Assert.IsTrue(set.Contains(toRemove));
+                    Assert.IsTrue(set.Remove(toRemove));
+                    Assert.IsFalse(set.Contains(toRemove));
+                    Assert.AreEqual(testNumber - i - 1, set.Count);
+                    list.Remove(toRemove);
+                }
+            }
         }
     }
 }

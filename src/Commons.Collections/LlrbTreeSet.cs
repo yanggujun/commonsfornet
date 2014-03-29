@@ -149,8 +149,8 @@ namespace Commons.Collections
             root = DeleteMin(root);
             if (null != root)
             { 
-            root.Color = BLACK;
-                }
+                root.Color = BLACK;
+            }
         }
 
         public void RemoveMax()
@@ -168,7 +168,10 @@ namespace Commons.Collections
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            foreach (var item in this)
+            {
+                array[arrayIndex++] = item;
+            }
         }
 
         public int Count
@@ -199,17 +202,18 @@ namespace Commons.Collections
 
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return CreateEnumerator(root).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return this.GetEnumerator();
         }
 
         public void CopyTo(Array array, int index)
         {
-            throw new NotImplementedException();
+            T[] items = array as T[];
+            CopyTo(items, index);
         }
 
         public bool IsSynchronized
@@ -220,6 +224,28 @@ namespace Commons.Collections
         public object SyncRoot
         {
             get { return null; }
+        }
+
+        private static IEnumerable<T> CreateEnumerator(TreeNode node)
+        {
+            if (null != node)
+            {
+                Stack<TreeNode> nodes = new Stack<TreeNode>();
+                nodes.Push(node);
+                while (nodes.Count != 0)
+                {
+                    TreeNode current = nodes.Pop();
+                    if (null != current.Right)
+                    {
+                        nodes.Push(current.Right);
+                    }
+                    yield return current.Item;
+                    if (null != current.Left)
+                    {
+                        nodes.Push(current.Left);
+                    }
+                }
+            }
         }
 
         private TreeNode Insert(TreeNode node, T item)
