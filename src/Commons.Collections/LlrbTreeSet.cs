@@ -31,7 +31,7 @@ namespace Commons.Collections
     /// The LL RB tree is designated to reduce code compared with the standard RB tree implementation. 
     /// The code here is the implementation of c#, according to the java code which was presented in Dr. Sedgewick's paper.
     /// The depth of the tree is 2logn
-    /// The time complexity of search is O(lgn), of insert is O(lgn), of delete if O(lgn)
+    /// The time complexity of search is O(lgn), of insert is O(lgn), of delete is O(lgn)
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class LlrbTreeSet<T> : ITreeSet<T>
