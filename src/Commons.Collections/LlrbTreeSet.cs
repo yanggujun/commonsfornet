@@ -34,7 +34,7 @@ namespace Commons.Collections
     /// The time complexity of search is O(lgn), of insert is O(lgn), of delete is O(lgn)
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class LlrbTreeSet<T> : ITreeSet<T>
+    internal class LlrbTreeSet<T> : ITreeSet<T>
     {
         private const bool RED = true;
         private const bool BLACK = false;

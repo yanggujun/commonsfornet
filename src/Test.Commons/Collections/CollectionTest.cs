@@ -261,7 +261,7 @@ namespace Test.Commons.Collections
         [Test]
         public void TestTreeSetSimpleOperations()
         {
-            ITreeSet<int> set = new LlrbTreeSet<int>();
+            ITreeSet<int> set = new TreeSet<int>();
             var count = 0;
             foreach (var item in set)
             {
@@ -317,7 +317,7 @@ namespace Test.Commons.Collections
         {
             for (int j = 0; j < 10; j++)
             {
-                ITreeSet<int> set = new LlrbTreeSet<int>();
+                ITreeSet<int> set = new TreeSet<int>();
 
                 Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
                 List<int> list = new List<int>();

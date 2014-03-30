@@ -32,7 +32,7 @@ namespace Test.Commons.Collections
             for (int j = 0; j < 1000; j++)
             {
                 Console.WriteLine(j);
-                ITreeSet<int> set = new LlrbTreeSet<int>();
+                ITreeSet<int> set = new TreeSet<int>();
 
                 Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
                 List<int> list = new List<int>();
@@ -102,7 +102,7 @@ namespace Test.Commons.Collections
             for (int j = 0; j < 1000; j++)
             {
                 Console.WriteLine("round: " + j);
-                ITreeSet<int> set = new LlrbTreeSet<int>();
+                ITreeSet<int> set = new TreeSet<int>();
 
                 Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
                 List<int> list = new List<int>();
@@ -141,7 +141,7 @@ namespace Test.Commons.Collections
             for (int j = 0; j < 1000; j++)
             {
                 Console.WriteLine(j);
-                ITreeSet<int> set = new LlrbTreeSet<int>();
+                ITreeSet<int> set = new TreeSet<int>();
 
                 Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
                 List<int> list = new List<int>();
@@ -183,7 +183,7 @@ namespace Test.Commons.Collections
             for (int j = 0; j < 1000; j++)
             {
                 Random randomValue = new Random((int)DateTime.Now.Ticks & 0x0000FFFFF);
-                LlrbTreeSet<int> set = new LlrbTreeSet<int>();
+                TreeSet<int> set = new TreeSet<int>();
                 List<int> list = new List<int>();
                 int testNumber = 10000;
                 while (set.Count < testNumber)
@@ -215,7 +215,7 @@ namespace Test.Commons.Collections
             for (int j = 0; j < 1000; j++)
             {
                 Random randomValue = new Random((int)DateTime.Now.Ticks & 0x0000FFFFF);
-                LlrbTreeSet<int> set = new LlrbTreeSet<int>();
+                TreeSet<int> set = new TreeSet<int>();
                 List<int> list = new List<int>();
                 int testNumber = 10000;
                 while (set.Count < testNumber)
@@ -243,7 +243,7 @@ namespace Test.Commons.Collections
 
         public void TestTreeSetFixedValue()
         {
-            ITreeSet<int> set = new LlrbTreeSet<int>();
+            ITreeSet<int> set = new TreeSet<int>();
             List<int> list = new List<int>();
             using (FileStream fs = new FileStream(@"c:\misc\test.txt", FileMode.Open))
             {

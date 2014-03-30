@@ -45,7 +45,7 @@ namespace Test.Commons.Collections
             SortedSet<int> sortedSet = new SortedSet<int>();
             var result2 = DoInsert(sortedSet, list);
             Console.WriteLine("Sorted set: " + result2);
-            LlrbTreeSet<int> set = new LlrbTreeSet<int>();
+            TreeSet<int> set = new TreeSet<int>();
             var result = DoInsert(set, list);
             Console.WriteLine("Tree set: " + result);
 
