@@ -65,6 +65,7 @@
     <Compile Include="LlrbTreeSet.cs" />
     <Compile Include="PredicatedCollection.cs" />
     <Compile Include="TransformedCollection.cs" />
+    <Compile Include="TreeMap.cs" />
     <Compile Include="TreeSet.cs" />
   </ItemGroup>
   <ItemGroup>

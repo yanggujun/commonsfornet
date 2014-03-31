@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,18 +27,46 @@ namespace Commons.Collections
     {
         LlrbTreeSet<KeyValuePair<TKey, TValue>> keyValueSet;
 
-        public TreeMap()
+        public TreeMap() : this(null, Comparer<TKey>.Default)
         {
-            keyValueSet = new LlrbTreeSet<KeyValuePair<TKey, TValue>>();
         }
+
+        public TreeMap(IComparer<TKey> comparer) : this(null, comparer)
+        {
+
+        }
+
+        public TreeMap(IDictionary<TKey, TValue> source) : this(source, Comparer<TKey>.Default)
+        {
+        }
+
+        public TreeMap(IDictionary<TKey, TValue> source, IComparer<TKey> comparer)
+        {
+            if (null != source)
+            {
+                foreach (var key in source.Keys)
+                {
+                    Add(key, source[key]);
+                }
+            }
+
+            var theComparer = comparer;
+            if (null == theComparer)
+            {
+                theComparer = Comparer<TKey>.Default;
+            }
+            keyValueSet = new LlrbTreeSet<KeyValuePair<TKey, TValue>>(source, new KeyValueComparer(comparer));
+        }
+
         public void Add(TKey key, TValue value)
         {
-            throw new NotImplementedException();
+            KeyValuePair<TKey, TValue> pair = new KeyValuePair<TKey, TValue>(key, value);
+            keyValueSet.Add(pair);
         }
 
         public bool ContainsKey(TKey key)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public ICollection<TKey> Keys
@@ -74,17 +103,17 @@ namespace Commons.Collections
 
         public void Add(KeyValuePair<TKey, TValue> item)
         {
-            throw new NotImplementedException();
+            keyValueSet.Add(item);
         }
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            keyValueSet.Clear();
         }
 
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            throw new NotImplementedException();
+            return keyValueSet.Contains(item);
         }
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
@@ -127,7 +156,7 @@ namespace Commons.Collections
             throw new NotImplementedException();
         }
 
-        System.Collections.IDictionaryEnumerator System.Collections.IDictionary.GetEnumerator()
+        IDictionaryEnumerator IDictionary.GetEnumerator()
         {
             throw new NotImplementedException();
         }
@@ -137,7 +166,7 @@ namespace Commons.Collections
             get { throw new NotImplementedException(); }
         }
 
-        System.Collections.ICollection System.Collections.IDictionary.Keys
+        ICollection IDictionary.Keys
         {
             get { throw new NotImplementedException(); }
         }
@@ -147,7 +176,7 @@ namespace Commons.Collections
             throw new NotImplementedException();
         }
 
-        System.Collections.ICollection System.Collections.IDictionary.Values
+        ICollection IDictionary.Values
         {
             get { throw new NotImplementedException(); }
         }
@@ -188,6 +217,19 @@ namespace Commons.Collections
         IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
         {
             get { throw new NotImplementedException(); }
+        }
+
+        private class KeyValueComparer : IComparer<KeyValuePair<TKey, TValue>>
+        {
+            IComparer<TKey> keyComparer;
+            public KeyValueComparer(IComparer<TKey> comparer)
+            {
+                this.keyComparer = comparer;
+            }
+            public int Compare(KeyValuePair<TKey, TValue> x, KeyValuePair<TKey, TValue> y)
+            {
+                return keyComparer.Compare(x.Key, y.Key);
+            }
         }
     }
 }
