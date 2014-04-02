@@ -23,9 +23,16 @@ using System.Threading.Tasks;
 
 namespace Commons.Collections
 {
+    /// <summary>
+    /// A tree map with the left leaning red black tree implementation. A tree map is a sorted dictionary.
+    /// </summary>
+    /// <typeparam name="TKey">The key type</typeparam>
+    /// <typeparam name="TValue">The value type</typeparam>
     public class TreeMap<TKey, TValue> : IMap<TKey, TValue>
     {
-        LlrbTreeSet<KeyValuePair<TKey, TValue>> keyValueSet;
+        private LlrbTreeSet<KeyValuePair<TKey, TValue>> keyValueSet;
+
+        private IComparer<TKey> comparer;
 
         public TreeMap() : this(null, Comparer<TKey>.Default)
         {
@@ -50,10 +57,13 @@ namespace Commons.Collections
                 }
             }
 
-            var theComparer = comparer;
-            if (null == theComparer)
+            if (null == comparer)
             {
-                theComparer = Comparer<TKey>.Default;
+                this.comparer = Comparer<TKey>.Default;
+            }
+            else
+            {
+                this.comparer = comparer;
             }
             keyValueSet = new LlrbTreeSet<KeyValuePair<TKey, TValue>>(source, new KeyValueComparer(comparer));
         }
@@ -71,22 +81,40 @@ namespace Commons.Collections
 
         public ICollection<TKey> Keys
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                var keys = new List<TKey>();
+                foreach (var item in keyValueSet)
+                {
+                    keys.Add(item.Key);
+                }
+
+                return keys;
+            }
         }
 
         public bool Remove(TKey key)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            throw new NotImplementedException();
+            value = default(TValue);
+            return false;
         }
 
         public ICollection<TValue> Values
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                var values = new List<TValue>();
+                foreach (var item in keyValueSet)
+                {
+                    values.Add(item.Value);
+                }
+                return values;
+            }
         }
 
         public TValue this[TKey key]
@@ -123,27 +151,27 @@ namespace Commons.Collections
 
         public int Count
         {
-            get { throw new NotImplementedException(); }
+            get { return keyValueSet.Count; }
         }
 
         public bool IsReadOnly
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            throw new NotImplementedException();
+            return keyValueSet.Remove(item);
         }
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return keyValueSet.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return keyValueSet.GetEnumerator();
         }
 
         public void Add(object key, object value)

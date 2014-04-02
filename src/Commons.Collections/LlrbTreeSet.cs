@@ -90,12 +90,16 @@ namespace Commons.Collections
 
         public bool Contains(T item)
         {
+            return Contains(item, (i1, i2) => comparer.Compare(i1, i2));
+        }
+
+        public bool Contains(T item, Comparison<T> comparator)
+        {
             var found = false;
             var node = root;
-
             while (null != node)
             {
-                var cmp = comparer.Compare(item, node.Item);
+                var cmp = comparator(item, node.Item);
                 if (cmp == 0)
                 {
                     found = true;
