@@ -30,30 +30,40 @@ namespace Commons.Collections
     /// <typeparam name="T"></typeparam>
     public class TreeSet<T> : ITreeSet<T>
     {
-        LlrbTreeSet<T> llrbTree;
+        LlrbTree<T, T> llrbTree;
         public TreeSet()
         {
-            llrbTree = new LlrbTreeSet<T>();
+            llrbTree = new LlrbTree<T, T>();
         }
 
         public TreeSet(IComparer<T> comparer)
         {
-            llrbTree = new LlrbTreeSet<T>(comparer);
         }
 
         public TreeSet(IEnumerable<T> items)
         {
-            llrbTree = new LlrbTreeSet<T>(items);
         }
 
         public TreeSet(IEnumerable<T> items, IComparer<T> comparer)
         {
-            llrbTree = new LlrbTreeSet<T>(items, comparer);
+            IComparer<T> theComparer = comparer;
+            if (null == comparer)
+            {
+                theComparer = Comparer<T>.Default;
+            }
+            llrbTree = new LlrbTree<T, T>(theComparer);
+            if (null != items)
+            {
+                foreach (var i in items)
+                {
+                    Add(i);
+                }
+            }
         }
 
         public void Add(T item)
         {
-            llrbTree.Add(item);
+            llrbTree.Add(item, item);
         }
 
         public void Clear()
@@ -70,7 +80,7 @@ namespace Commons.Collections
         {
             get
             {
-                return llrbTree.Max;
+                return llrbTree.Max.Key;
             }
         }
 
@@ -78,7 +88,7 @@ namespace Commons.Collections
         {
             get
             {
-                return llrbTree.Min;
+                return llrbTree.Min.Key;
             }
         }
 
@@ -94,7 +104,11 @@ namespace Commons.Collections
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            llrbTree.CopyTo(array, arrayIndex);
+            var index = 0;
+            foreach (var i in llrbTree)
+            {
+                array[index++] = i.Key;
+            }
         }
 
         public int Count
@@ -117,7 +131,7 @@ namespace Commons.Collections
 
         public IEnumerator<T> GetEnumerator()
         {
-            return llrbTree.GetEnumerator();
+            return CreateEnumerator().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -127,17 +141,26 @@ namespace Commons.Collections
 
         public void CopyTo(Array array, int index)
         {
-            llrbTree.CopyTo(array, index);
+            T[] a = (T[])array;
+            CopyTo(a, index);
         }
 
         public bool IsSynchronized
         {
-            get { return llrbTree.IsSynchronized; }
+            get { return false; }
         }
 
         public object SyncRoot
         {
-            get { return llrbTree.SyncRoot; }
+            get { return null; }
+        }
+
+        public IEnumerable<T> CreateEnumerator()
+        {
+            foreach (var item in llrbTree)
+            {
+                yield return item.Key;
+            }
         }
     }
 }

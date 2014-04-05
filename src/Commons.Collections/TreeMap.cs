@@ -30,7 +30,7 @@ namespace Commons.Collections
     /// <typeparam name="TValue">The value type</typeparam>
     public class TreeMap<TKey, TValue> : IMap<TKey, TValue>
     {
-        private LlrbTreeSet<KeyValuePair<TKey, TValue>> keyValueSet;
+        private LlrbTree<TKey, TValue> llrbTree;
 
         private IComparer<TKey> comparer;
 
@@ -49,14 +49,6 @@ namespace Commons.Collections
 
         public TreeMap(IDictionary<TKey, TValue> source, IComparer<TKey> comparer)
         {
-            if (null != source)
-            {
-                foreach (var key in source.Keys)
-                {
-                    Add(key, source[key]);
-                }
-            }
-
             if (null == comparer)
             {
                 this.comparer = Comparer<TKey>.Default;
@@ -65,18 +57,25 @@ namespace Commons.Collections
             {
                 this.comparer = comparer;
             }
-            keyValueSet = new LlrbTreeSet<KeyValuePair<TKey, TValue>>(source, new KeyValueComparer(comparer));
+            llrbTree = new LlrbTree<TKey, TValue>(this.comparer);
+
+            if (null != source)
+            {
+                foreach (var key in source.Keys)
+                {
+                    Add(key, source[key]);
+                }
+            }
         }
 
         public void Add(TKey key, TValue value)
         {
-            KeyValuePair<TKey, TValue> pair = new KeyValuePair<TKey, TValue>(key, value);
-            keyValueSet.Add(pair);
+            llrbTree.Add(key, value);
         }
 
         public bool ContainsKey(TKey key)
         {
-            return false;
+            return llrbTree.Contains(key);
         }
 
         public ICollection<TKey> Keys
@@ -84,7 +83,7 @@ namespace Commons.Collections
             get
             {
                 var keys = new List<TKey>();
-                foreach (var item in keyValueSet)
+                foreach (var item in llrbTree)
                 {
                     keys.Add(item.Key);
                 }
@@ -95,13 +94,19 @@ namespace Commons.Collections
 
         public bool Remove(TKey key)
         {
-            return false;
+            return llrbTree.Remove(key);
         }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
+            var hasValue = false;
+            if (llrbTree.Contains(key))
+            {
+                hasValue = true;
+                value = llrbTree[key];
+            }
             value = default(TValue);
-            return false;
+            return hasValue;
         }
 
         public ICollection<TValue> Values
@@ -109,7 +114,7 @@ namespace Commons.Collections
             get
             {
                 var values = new List<TValue>();
-                foreach (var item in keyValueSet)
+                foreach (var item in llrbTree)
                 {
                     values.Add(item.Value);
                 }
@@ -121,37 +126,46 @@ namespace Commons.Collections
         {
             get
             {
-                throw new NotImplementedException();
+                return llrbTree[key];
             }
             set
             {
-                throw new NotImplementedException();
+                llrbTree[key] = value;
             }
         }
 
         public void Add(KeyValuePair<TKey, TValue> item)
         {
-            keyValueSet.Add(item);
+            llrbTree.Add(item.Key, item.Value);
         }
 
         public void Clear()
         {
-            keyValueSet.Clear();
+            llrbTree.Clear();
         }
 
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            return keyValueSet.Contains(item);
+            var contains = false;
+            if (llrbTree.Contains(item.Key))
+            {
+                var v = llrbTree[item.Key];
+                if (v != null && v.Equals(item.Key))
+                {
+                    contains = true;
+                }
+            }
+            return contains;
         }
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            llrbTree.CopyTo(array, arrayIndex);
         }
 
         public int Count
         {
-            get { return keyValueSet.Count; }
+            get { return llrbTree.Count; }
         }
 
         public bool IsReadOnly
@@ -161,63 +175,80 @@ namespace Commons.Collections
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            return keyValueSet.Remove(item);
+            return llrbTree.Remove(item.Key);
         }
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            return keyValueSet.GetEnumerator();
+            return llrbTree.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return keyValueSet.GetEnumerator();
+            return llrbTree.GetEnumerator();
         }
 
         public void Add(object key, object value)
         {
-            throw new NotImplementedException();
+            llrbTree.Add((TKey)key, (TValue)value);
         }
 
         public bool Contains(object key)
         {
-            throw new NotImplementedException();
+            return llrbTree.Contains((TKey)key);
         }
 
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new MapEnumerator(this);
         }
+
 
         public bool IsFixedSize
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         ICollection IDictionary.Keys
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                List<TKey> list = new List<TKey>();
+                foreach (var item in this.Keys)
+                {
+                    list.Add(item);
+                }
+                return list;
+            }
         }
 
         public void Remove(object key)
         {
-            throw new NotImplementedException();
+            llrbTree.Remove((TKey)key);
         }
 
         ICollection IDictionary.Values
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                List<TValue> list = new List<TValue>();
+                foreach (var item in this.Values)
+                {
+                    list.Add(item);
+                }
+                return list;
+            }
         }
 
         public object this[object key]
         {
             get
             {
-                throw new NotImplementedException();
+                return llrbTree[(TKey)key];
             }
             set
             {
-                throw new NotImplementedException();
+                llrbTree[(TKey)key] = (TValue)value;
             }
         }
 
@@ -228,35 +259,89 @@ namespace Commons.Collections
 
         public bool IsSynchronized
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         public object SyncRoot
         {
-            get { throw new NotImplementedException(); }
+            get { return null; }
         }
-
 
         IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Keys; }
         }
 
         IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Values; }
         }
 
-        private class KeyValueComparer : IComparer<KeyValuePair<TKey, TValue>>
+        public ITreeSet<TKey> KeySet
         {
-            IComparer<TKey> keyComparer;
-            public KeyValueComparer(IComparer<TKey> comparer)
+            get
             {
-                this.keyComparer = comparer;
+                TreeSet<TKey> keySet = new TreeSet<TKey>(this.comparer);
+                foreach(var item in this)
+                {
+                    keySet.Add(item.Key);
+                }
+                return keySet;
             }
-            public int Compare(KeyValuePair<TKey, TValue> x, KeyValuePair<TKey, TValue> y)
+        }
+
+        private class MapEnumerator : IDictionaryEnumerator
+        {
+            private TreeMap<TKey, TValue> map;
+            private IEnumerator<KeyValuePair<TKey, TValue>> iter;
+            public MapEnumerator(TreeMap<TKey, TValue> map)
             {
-                return keyComparer.Compare(x.Key, y.Key);
+                this.map = map;
+                iter = this.map.GetEnumerator();
+            }
+            public DictionaryEntry Entry
+            {
+                get
+                {
+                    DictionaryEntry entry = new DictionaryEntry();
+                    entry.Key = iter.Current.Key;
+                    entry.Value = iter.Current.Value;
+                    return entry;
+                }
+            }
+
+            public object Key
+            {
+                get
+                {
+                    return Entry.Key;
+                }
+            }
+
+            public object Value
+            {
+                get
+                {
+                    return Entry.Value;
+                }
+            }
+
+            public object Current
+            {
+                get
+                {
+                    return Entry;
+                }
+            }
+
+            public bool MoveNext()
+            {
+                return iter.MoveNext();
+            }
+
+            public void Reset()
+            {
+                iter.Reset();
             }
         }
     }

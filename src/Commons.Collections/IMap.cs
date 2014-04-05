@@ -33,5 +33,6 @@ namespace Commons.Collections
                                           IDictionary, ICollection, IReadOnlyDictionary<TKey, TValue>, 
                                           IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
     {
+        ITreeSet<TKey> KeySet { get; }
     }
 }

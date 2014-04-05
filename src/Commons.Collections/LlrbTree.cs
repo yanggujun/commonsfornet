@@ -34,52 +34,27 @@ namespace Commons.Collections
     /// The time complexity of search is O(lgn), of insert is O(lgn), of delete is O(lgn)
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class LlrbTreeSet<T> : ITreeSet<T>
+    internal class LlrbTree<K, V> : IEnumerable<KeyValuePair<K, V>>
     {
         private const bool RED = true;
         private const bool BLACK = false;
 
         private TreeNode root;
 
-        private IComparer<T> comparer;
+        private IComparer<K> comparer;
 
-        public LlrbTreeSet() : this(null, Comparer<T>.Default)
+        public LlrbTree() : this(Comparer<K>.Default)
         {
         }
 
-        public LlrbTreeSet(IComparer<T> comparer) : this(null, comparer)
+        public LlrbTree(IComparer<K> comparer)
         {
-
+            this.comparer = comparer;
         }
 
-        public LlrbTreeSet(IEnumerable<T> items) : this(items, Comparer<T>.Default)
+        public void Add(K key, V value)
         {
-
-        }
-
-        public LlrbTreeSet(IEnumerable<T> items, IComparer<T> comparer)
-        {
-            if (null != items)
-            {
-                foreach (var i in items)
-                {
-                    Add(i);
-                }
-            }
-
-            if (null != comparer)
-            {
-                this.comparer = comparer;
-            }
-            else
-            {
-                this.comparer = Comparer<T>.Default;
-            }
-        }
-
-        public void Add(T item)
-        {
-            root = Insert(root, item);
+            root = Insert(root, new KeyValuePair<K, V>(key, value));
             root.Color = BLACK;
         }
 
@@ -88,18 +63,18 @@ namespace Commons.Collections
             root = null;
         }
 
-        public bool Contains(T item)
+        public bool Contains(K item)
         {
             return Contains(item, (i1, i2) => comparer.Compare(i1, i2));
         }
 
-        public bool Contains(T item, Comparison<T> comparator)
+        public bool Contains(K key, Comparison<K> comparator)
         {
             var found = false;
             var node = root;
             while (null != node)
             {
-                var cmp = comparator(item, node.Item);
+                var cmp = comparator(key, node.Item.Key);
                 if (cmp == 0)
                 {
                     found = true;
@@ -118,7 +93,7 @@ namespace Commons.Collections
             return found;
         }
 
-        public T Max
+        public KeyValuePair<K, V> Max
         {
             get
             {
@@ -131,7 +106,7 @@ namespace Commons.Collections
             }
         }
 
-        public T Min
+        public KeyValuePair<K, V> Min
         {
             get
             {
@@ -170,11 +145,33 @@ namespace Commons.Collections
             }
         }
 
-        public void CopyTo(T[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
         {
             foreach (var item in this)
             {
                 array[arrayIndex++] = item;
+            }
+        }
+
+        public V this[K key]
+        {
+            get
+            {
+                TreeNode found = GetNode(root, key);
+                if (null == found)
+                {
+                    throw new InvalidOperationException(string.Format("The key {0} does not exist in the map.", key));
+                }
+                return found.Item.Value;
+            }
+            set
+            {
+                TreeNode found = GetNode(root, key);
+                if (null == found)
+                {
+                    throw new InvalidOperationException(string.Format("The key {0} does not exist in the map.", key));
+                }
+                found.Item = new KeyValuePair<K, V>(key, value);
             }
         }
 
@@ -191,7 +188,7 @@ namespace Commons.Collections
             get { return false; }
         }
 
-        public bool Remove(T item)
+        public bool Remove(K item)
         {
             var removed = false;
             if (Contains(item))
@@ -204,7 +201,7 @@ namespace Commons.Collections
             return removed;
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
             return CreateEnumerator(root).GetEnumerator();
         }
@@ -214,23 +211,7 @@ namespace Commons.Collections
             return this.GetEnumerator();
         }
 
-        public void CopyTo(Array array, int index)
-        {
-            T[] items = array as T[];
-            CopyTo(items, index);
-        }
-
-        public bool IsSynchronized
-        {
-            get { return false; }
-        }
-
-        public object SyncRoot
-        {
-            get { return null; }
-        }
-
-        private static IEnumerable<T> CreateEnumerator(TreeNode node)
+        private static IEnumerable<KeyValuePair<K, V>> CreateEnumerator(TreeNode node)
         {
             if (null != node)
             {
@@ -252,7 +233,7 @@ namespace Commons.Collections
             }
         }
 
-        private TreeNode Insert(TreeNode node, T item)
+        private TreeNode Insert(TreeNode node, KeyValuePair<K, V> item)
         {
             if (null == node)
             {
@@ -265,7 +246,7 @@ namespace Commons.Collections
                 FlipColor(node);
             }
 
-            int result = this.comparer.Compare(item, node.Item);
+            int result = this.comparer.Compare(item.Key, node.Item.Key);
             if (result == 0)
             {
                 throw new ArgumentException("The item to add has already existed");
@@ -306,16 +287,16 @@ namespace Commons.Collections
             return count;
         }
 
-        private TreeNode Delete(TreeNode node, T item)
+        private TreeNode Delete(TreeNode node, K key)
         {
-            if (comparer.Compare(item, node.Item) < 0)
+            if (comparer.Compare(key, node.Item.Key) < 0)
             {
                 // since before delete, it already checks the item exists, so here it can guarrantee that node.left exits.
                 if (!IsRed(node.Left) && !IsRed(node.Left.Left))
                 {
                     node = MoveRedLeft(node);
                 }
-                node.Left = Delete(node.Left, item);
+                node.Left = Delete(node.Left, key);
             }
             else
             {
@@ -324,7 +305,7 @@ namespace Commons.Collections
                     node = RotateRight(node);
                 }
                 
-                if ((comparer.Compare(item, node.Item) == 0) && (node.Right == null))
+                if ((comparer.Compare(key, node.Item.Key) == 0) && (node.Right == null))
                 {
                     return null;
                 }
@@ -333,14 +314,14 @@ namespace Commons.Collections
                 {
                     node = MoveRedRight(node);
                 }
-                if (comparer.Compare(item, node.Item) == 0)
+                if (comparer.Compare(key, node.Item.Key) == 0)
                 {
                     node.Item = Minimum(node.Right).Item;
                     node.Right = DeleteMin(node.Right);
                 }
                 else
                 {
-                    node.Right = Delete(node.Right, item);
+                    node.Right = Delete(node.Right, key);
                 }
             }
             return FixUp(node);
@@ -506,6 +487,31 @@ namespace Commons.Collections
             return node == null ? false : node.Color == RED;
         }
 
+        private TreeNode GetNode(TreeNode node, K key)
+        {
+            TreeNode current = node;
+            TreeNode found = null;
+            while (null != current)
+            {
+                var cmp = comparer.Compare(key, node.Item.Key);
+                if (cmp == 0)
+                {
+                    found = node;
+                    break;
+                }
+                else if (cmp < 0)
+                {
+                    node = node.Left;
+                }
+                else
+                {
+                    node = node.Right;
+                }
+            }
+
+            return found;
+        }
+
 #if DEBUG
         private static void WriteNodeHtml(TreeNode node)
         {
@@ -562,12 +568,12 @@ namespace Commons.Collections
 #endif
         private class TreeNode
         {
-            public T Item { get; set; }
+            public KeyValuePair<K, V> Item { get; set; }
             public TreeNode Left { get; set; }
             public TreeNode Right { get; set; }
             public bool Color { get; set; }
 
-            public TreeNode(T item)
+            public TreeNode(KeyValuePair<K, V> item)
             {
                 Item = item;
                 Color = RED;
