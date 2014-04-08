@@ -254,7 +254,8 @@ namespace Commons.Collections
 
         public void CopyTo(Array array, int index)
         {
-            throw new NotImplementedException();
+            KeyValuePair<TKey, TValue>[] kvps = (KeyValuePair<TKey, TValue>[])array;
+            this.CopyTo(kvps, index);
         }
 
         public bool IsSynchronized

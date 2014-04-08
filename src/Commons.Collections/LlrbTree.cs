@@ -41,7 +41,7 @@ namespace Commons.Collections
 
         private TreeNode root;
 
-        private IComparer<K> comparer;
+        private readonly IComparer<K> comparer;
 
         public LlrbTree() : this(Comparer<K>.Default)
         {

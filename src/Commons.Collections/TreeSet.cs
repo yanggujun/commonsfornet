@@ -31,16 +31,15 @@ namespace Commons.Collections
     public class TreeSet<T> : ITreeSet<T>
     {
         LlrbTree<T, T> llrbTree;
-        public TreeSet()
-        {
-            llrbTree = new LlrbTree<T, T>();
-        }
-
-        public TreeSet(IComparer<T> comparer)
+        public TreeSet() : this(null, Comparer<T>.Default)
         {
         }
 
-        public TreeSet(IEnumerable<T> items)
+        public TreeSet(IComparer<T> comparer) : this(null, comparer)
+        {
+        }
+
+        public TreeSet(IEnumerable<T> items) : this(items, Comparer<T>.Default)
         {
         }
 
