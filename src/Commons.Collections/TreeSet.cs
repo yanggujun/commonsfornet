@@ -103,7 +103,7 @@ namespace Commons.Collections
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            var index = 0;
+            var index = arrayIndex;
             foreach (var i in llrbTree)
             {
                 array[index++] = i.Key;
