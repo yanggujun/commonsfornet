@@ -28,6 +28,7 @@ namespace Commons.Collections
     /// in which the red nodes are always leaning to the left.
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [CLSCompliant(true)]
     public class TreeSet<T> : ITreeSet<T>
     {
         LlrbTree<T, T> llrbTree;

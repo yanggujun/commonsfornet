@@ -28,6 +28,7 @@ namespace Commons.Collections
     /// </summary>
     /// <typeparam name="TKey">The key type</typeparam>
     /// <typeparam name="TValue">The value type</typeparam>
+    [CLSCompliant(true)]
     public class TreeMap<TKey, TValue> : IMap<TKey, TValue>
     {
         private LlrbTree<TKey, TValue> llrbTree;

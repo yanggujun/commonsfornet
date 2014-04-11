@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 
 namespace Commons.Collections.Bag
 {
+    [CLSCompliant(true)]
     public abstract class AbstractMapBag<TItem> : IBag<TItem>
     {
         public int GetCount(TItem item)

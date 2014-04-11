@@ -31,6 +31,7 @@ namespace Commons.Collections
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TItem"></typeparam>
+    [CLSCompliant(true)]
     public class IndexedCollection<TKey, TItem> : AbstractCollectionDecorator<TItem>
     {
         private readonly IMultiMap<TKey, TItem> map;

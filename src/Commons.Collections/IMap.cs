@@ -29,6 +29,7 @@ namespace Commons.Collections
     /// <typeparam name="TKey">Type of the key</typeparam>
     /// <typeparam name="TValue">Type of the value</typeparam>
     /// TODO: is it necessary to extend serializable?
+    [CLSCompliant(true)]
     public interface IMap<TKey, TValue> : IDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>, 
                                           IDictionary, ICollection, IReadOnlyDictionary<TKey, TValue>, 
                                           IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable

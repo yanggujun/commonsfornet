@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 
 namespace Commons.Collections
 {
+    [CLSCompliant(true)]
     public interface IBag<TItem> : ICollection<TItem>
     {
         int GetCount(TItem item);

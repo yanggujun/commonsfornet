@@ -29,6 +29,7 @@ namespace Commons.Collections
     /// The abstract class just calls the decorator for every operation.
     /// </summary>
     /// <typeparam name="T">The type of the item.</typeparam>
+    [CLSCompliant(true)]
     public class AbstractCollectionDecorator<T> : ICollection<T>
     {
         /// <summary>

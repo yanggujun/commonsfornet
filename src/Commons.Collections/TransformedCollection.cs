@@ -26,6 +26,7 @@ namespace Commons.Collections
     /// 
     /// </summary>
     /// <typeparam name="TItem"></typeparam>
+    [CLSCompliant(true)]
     public class TransformedCollection<TItem> : AbstractCollectionDecorator<TItem>
     {
         private readonly Func<TItem, TItem> transform;

@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 
 namespace Commons.Collections.Bag
 {
+    [CLSCompliant(true)]
     public abstract class AbstractBagDecorator<TItem> : AbstractCollectionDecorator<TItem>, IBag<TItem>
     {
         protected AbstractBagDecorator(IBag<TItem> bag) : base(bag)

@@ -30,6 +30,7 @@ namespace Commons.Collections
     /// The items in this collection is unordered. The items in the composite collection are not necessaryly unique, like the result of 
     /// System.Linq.Enumerable.Concat.
     /// </summary>
+    [CLSCompliant(true)]
     public class CompositeCollection<T> : ICollection<T>
     {
         private readonly List<ICollection<T>> allCollections = new List<ICollection<T>>();

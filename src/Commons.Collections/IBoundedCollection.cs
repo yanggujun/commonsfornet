@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 
 namespace Commons.Collections
@@ -24,6 +25,7 @@ namespace Commons.Collections
     /// The max size of the collection is pre-defined. It cannot be changed in the runtime.
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [CLSCompliant(true)]
     public interface IBoundedCollection<T> : ICollection<T>
     {
         /// <summary>

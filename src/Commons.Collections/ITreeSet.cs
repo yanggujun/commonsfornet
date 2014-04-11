@@ -27,6 +27,7 @@ namespace Commons.Collections
     /// Stub interface for tree set data structure.
     /// </summary>
     /// <typeparam name="T">The type of the set items.</typeparam>
+    [CLSCompliant(true)]
     public interface ITreeSet<T> : ICollection<T>, IEnumerable<T>, IEnumerable
     {
         /// <summary>

@@ -32,6 +32,7 @@ namespace Commons.Collections
     /// </remarks>
     /// <typeparam name="TItem">The type of the collection items.</typeparam>
     // TODO: covariance of TItem?
+    [CLSCompliant(true)]
     public class PredicatedCollection<TItem> : AbstractCollectionDecorator<TItem>
     {
         private readonly Func<TItem, bool> predicate;
