@@ -243,5 +243,22 @@ namespace Test.Commons.Collections
             }
             Assert.AreEqual(total, orderSet.Count);
         }
+
+        [Test]
+        public void TestTreeSetNoItem()
+        {
+            TreeSet<int> set = new TreeSet<int>();
+            var index = 0;
+            foreach (var item in set)
+            {
+                index++;
+            }
+            Assert.AreEqual(0, index);
+            Assert.IsFalse(set.Contains(5));
+            Assert.IsFalse(set.Remove(6));
+            var array = new int[5] { 0 , 0, 0, 0, 0 };
+            set.CopyTo(array, 0);
+            Assert.AreEqual(0, array[0]);
+        }
     }
 } 
