@@ -151,7 +151,7 @@ namespace Commons.Collections
             if (llrbTree.Contains(item.Key))
             {
                 var v = llrbTree[item.Key];
-                if (v != null && v.Equals(item.Key))
+                if (v != null && v.Equals(item.Value))
                 {
                     contains = true;
                 }
@@ -176,7 +176,18 @@ namespace Commons.Collections
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            return llrbTree.Remove(item.Key);
+            var removed = false;
+            if (llrbTree.Contains(item.Key))
+            {
+                var v = llrbTree[item.Key];
+                if (null != v && v.Equals(item.Value))
+                {
+                    llrbTree.Remove(item.Key);
+                    removed = true;
+                }
+            }
+
+            return removed;
         }
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
