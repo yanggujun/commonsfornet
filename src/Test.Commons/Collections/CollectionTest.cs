@@ -268,6 +268,7 @@ namespace Test.Commons.Collections
                 count++;
             }
             Assert.IsTrue(count == 0);
+            Assert.IsTrue(set.Count == 0);
             set.Add(10);
             set.Add(20);
             set.Add(30);

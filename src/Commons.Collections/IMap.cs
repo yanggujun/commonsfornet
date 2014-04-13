@@ -34,6 +34,29 @@ namespace Commons.Collections
                                           IDictionary, ICollection, IReadOnlyDictionary<TKey, TValue>, 
                                           IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
     {
+        /// <summary>
+        /// Puts the keys of the map to a tree set.
+        /// </summary>
         ITreeSet<TKey> KeySet { get; }
+
+        /// <summary>
+        /// Return a key value pair whose key is the maximum in the map.
+        /// </summary>
+        KeyValuePair<TKey, TValue> Max { get; }
+
+        /// <summary>
+        /// Return a key value pair whose key is the minimum in the map.
+        /// </summary>
+        KeyValuePair<TKey, TValue> Min { get; }
+
+        /// <summary>
+        /// Removes maximum item in the map.
+        /// </summary>
+        void RemoveMax();
+
+        /// <summary>
+        /// Removes minimum item in the map.
+        /// </summary>
+        void RemoveMin();
     }
 }

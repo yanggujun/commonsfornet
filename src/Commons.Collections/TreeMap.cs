@@ -29,25 +29,40 @@ namespace Commons.Collections
     /// <typeparam name="TKey">The key type</typeparam>
     /// <typeparam name="TValue">The value type</typeparam>
     [CLSCompliant(true)]
-    public class TreeMap<TKey, TValue> : IMap<TKey, TValue>
+    public sealed class TreeMap<TKey, TValue> : IMap<TKey, TValue>
     {
         private LlrbTree<TKey, TValue> llrbTree;
 
         private IComparer<TKey> comparer;
 
+        /// <summary>
+        /// Constructs an empty map, with the default comparer of the key.
+        /// </summary>
         public TreeMap() : this(null, Comparer<TKey>.Default)
         {
         }
 
+        /// <summary>
+        /// Constructs an empty map with the specified comparer of the key.
+        /// </summary>
+        /// <param name="comparer">The comparer of the key.</param>
         public TreeMap(IComparer<TKey> comparer) : this(null, comparer)
         {
-
         }
 
+        /// <summary>
+        /// Constructs a map with the items in the specified dictionary and using the default comparer of the key.
+        /// </summary>
+        /// <param name="source">The source dictionary.</param>
         public TreeMap(IDictionary<TKey, TValue> source) : this(source, Comparer<TKey>.Default)
         {
         }
 
+        /// <summary>
+        /// Constructs a mp with the items in the specified dictionary, by using the specified comparer of the key.
+        /// </summary>
+        /// <param name="source">The source dictionary.</param>
+        /// <param name="comparer">The comparer of the key.</param>
         public TreeMap(IDictionary<TKey, TValue> source, IComparer<TKey> comparer)
         {
             if (null == comparer)
@@ -69,16 +84,29 @@ namespace Commons.Collections
             }
         }
 
+        /// <summary>
+        /// Adds a key value paire to the map. If the map already contains the key, an exception is thrown.
+        /// </summary>
+        /// <param name="key">The key to add.</param>
+        /// <param name="value">The value to add.</param>
         public void Add(TKey key, TValue value)
         {
             llrbTree.Add(key, value);
         }
 
+        /// <summary>
+        /// Checks whether the specified key exists in the map.
+        /// </summary>
+        /// <param name="key">The key to search.</param>
+        /// <returns>True if the key exists. Otherwise false.</returns>
         public bool ContainsKey(TKey key)
         {
             return llrbTree.Contains(key);
         }
 
+        /// <summary>
+        /// Returns a collection of keys in the map.
+        /// </summary>
         public ICollection<TKey> Keys
         {
             get
@@ -93,11 +121,22 @@ namespace Commons.Collections
             }
         }
 
+        /// <summary>
+        /// Removes the item identified by the key.
+        /// </summary>
+        /// <param name="key">The key used to search the item to remove.</param>
+        /// <returns>True if the item identified by the key is removed. Otherwise false.</returns>
         public bool Remove(TKey key)
         {
             return llrbTree.Remove(key);
         }
 
+        /// <summary>
+        /// Try get value of the specified key. If the key does not exist in the map, it does not throw exception. It only returns false.The value is retrieved in the value param.
+        /// </summary>
+        /// <param name="key">The key of the value.</param>
+        /// <param name="value">The value to retrieved.</param>
+        /// <returns>True if key exists in the map. Otherwise false.</returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
             var hasValue = false;
@@ -110,6 +149,9 @@ namespace Commons.Collections
             return hasValue;
         }
 
+        /// <summary>
+        /// Returns a collection of values in the map.
+        /// </summary>
         public ICollection<TValue> Values
         {
             get
@@ -135,16 +177,28 @@ namespace Commons.Collections
             }
         }
 
+        /// <summary>
+        /// Adds a key value pair to the map.
+        /// </summary>
+        /// <param name="item">The key value pair.</param>
         public void Add(KeyValuePair<TKey, TValue> item)
         {
             llrbTree.Add(item.Key, item.Value);
         }
 
+        /// <summary>
+        /// Clears the map by removing everything in it.
+        /// </summary>
         public void Clear()
         {
             llrbTree.Clear();
         }
 
+        /// <summary>
+        /// Checks whether the key value pair exists in the map. Only if an item with the same key and value is considered existing.
+        /// </summary>
+        /// <param name="item">The key value paire to search.</param>
+        /// <returns>True if key and value exist. Otherwise false.</returns>
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             var contains = false;
@@ -214,7 +268,6 @@ namespace Commons.Collections
         {
             return new MapEnumerator(this);
         }
-
 
         public bool IsFixedSize
         {
@@ -301,6 +354,32 @@ namespace Commons.Collections
                 }
                 return keySet;
             }
+        }
+
+        public KeyValuePair<TKey, TValue> Max
+        {
+            get
+            {
+                return llrbTree.Max;
+            }
+        }
+
+        public KeyValuePair<TKey, TValue> Min
+        {
+            get
+            {
+                return llrbTree.Min;
+            }
+        }
+
+        public void RemoveMax()
+        {
+            llrbTree.RemoveMax();
+        }
+
+        public void RemoveMin()
+        {
+            llrbTree.RemoveMin();
         }
 
         private class MapEnumerator : IDictionaryEnumerator
