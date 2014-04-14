@@ -145,7 +145,10 @@ namespace Commons.Collections
                 hasValue = true;
                 value = llrbTree[key];
             }
-            value = default(TValue);
+            else
+            {
+                value = default(TValue);
+            }
             return hasValue;
         }
 

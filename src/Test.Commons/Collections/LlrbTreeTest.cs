@@ -273,6 +273,7 @@ namespace Test.Commons.Collections
                 index++;
             }
             Assert.AreEqual(0, index);
+            Assert.IsEmpty(set);
             Assert.IsFalse(set.Contains(5));
             Assert.IsFalse(set.Remove(6));
             var array = new int[5] { 0 , 0, 0, 0, 0 };
@@ -509,11 +510,221 @@ namespace Test.Commons.Collections
         [Test]
         public void TestMapEnumerator()
         {
+            Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+            TreeMap<Order, Bill> orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+            List<KeyValuePair<Order, Bill>> orderList = new List<KeyValuePair<Order, Bill>>();
+            for (var i = 0; i < 1000; )
+            {
+                var o = new Order();
+                o.Id = r.Next();
+                o.Name = i + " age4356A;";
+                var bill = new Bill();
+                bill.Id = o.Id;
+                bill.Count = o.Id % 1000;
+                if (!orderMap.ContainsKey(o))
+                {
+                    var os = new Order();
+                    os.Id = o.Id;
+                    os.Name = o.Name;
+                    var bs = new Bill();
+                    bs.Id = bill.Id;
+                    bs.Count = bill.Count;
+                    orderList.Add(new KeyValuePair<Order, Bill>(os, bs));
+                    orderMap.Add(o, bill);
+                    i++;
+                }
+            }
+
+            var total = 0;
+            foreach (var kvp in orderMap)
+            {
+                total++;
+                Assert.That(orderList.Contains(kvp, new OrderBillEqualityComparer()));
+            }
+            Assert.AreEqual(1000, total);
+        }
+
+        [Test]
+        public void TestMapIndexer()
+        {
+            TreeMap<Order, Bill> orderMap = null;
+            Dictionary<Order, Bill> orderDict = null;
+            InitializeMap(out orderMap, out orderDict);
+            foreach (var key in orderDict.Keys)
+            {
+                Assert.IsTrue(orderMap.ContainsKey(key));
+                Assert.AreEqual(orderDict[key].Id, orderMap[key].Id);
+                Assert.AreEqual(orderDict[key].Count, orderMap[key].Count);
+            }
+        }
+
+        [Test]
+        public void TestMapKeys()
+        {
+            TreeMap<Order, Bill> orderMap = null;
+            Dictionary<Order, Bill> orderDict = null;
+            InitializeMap(out orderMap, out orderDict);
+
+            foreach (var key in orderMap.Keys)
+            {
+                Assert.IsTrue(orderDict.ContainsKey(key));
+                Assert.AreEqual(orderDict[key].Id, orderMap[key].Id);
+                Assert.AreEqual(orderDict[key].Count, orderMap[key].Count);
+            }
+        }
+
+        [Test]
+        public void TestMapKeySet()
+        {
+            TreeMap<Order, Bill> orderMap = null;
+            Dictionary<Order, Bill> orderDict = null;
+            InitializeMap(out orderMap, out orderDict);
+
+            var set = orderMap.KeySet;
+            foreach (var item in set)
+            {
+                Assert.IsTrue(orderDict.ContainsKey(item));
+            }
+        }
+
+        [Test]
+        public void TestMapValues()
+        {
+            TreeMap<Order, Bill> orderMap = null;
+            Dictionary<Order, Bill> orderDict = null;
+            InitializeMap(out orderMap, out orderDict);
+
+            var values = orderDict.Values;
+            foreach (var v in orderMap.Values)
+            {
+                values.Contains(v, new BillEqualityComparer());
+            }
+        }
+
+        [Test]
+        public void TestMapTryGetValue()
+        {
+            TreeMap<Order, Bill> orderMap = null;
+            Dictionary<Order, Bill> orderDict = null;
+            InitializeMap(out orderMap, out orderDict);
+            foreach (var key in orderDict.Keys)
+            {
+                Bill bill = null;
+                Assert.IsTrue(orderMap.TryGetValue(key, out bill));
+                Assert.AreEqual(orderDict[key].Id, bill.Id);
+                Assert.AreEqual(orderDict[key].Count, bill.Count);
+            }
+
+            var notExist = new Order();
+
+            Bill b = null;
+            Assert.IsFalse(orderMap.TryGetValue(notExist, out b));
+            Assert.IsNull(b);
+        }
+
+        [Test]
+        public void TestMapAddRemoveKvp()
+        {
+            TreeMap<Order, Bill> orderMap = null;
+            Dictionary<Order, Bill> orderDict = null;
+            InitializeMap(out orderMap, out orderDict);
+            TreeMap<Order, Bill> newMap = new TreeMap<Order, Bill>(new OrderComparer());
+            foreach (var kvp in orderMap)
+            {
+                newMap.Add(kvp);
+            }
+            Assert.AreEqual(orderMap.Count, newMap.Count);
+
+            var count = 0;
+            foreach (var kvp in orderMap)
+            {
+                if (count++ < 500)
+                {
+                    Assert.IsTrue(newMap.Remove(kvp));
+                }
+            }
+
+            Assert.AreEqual(500, newMap.Count);
+            var kvps = new KeyValuePair<Order, Bill>[500];
+            newMap.CopyTo(kvps, 0);
+            var item = new KeyValuePair<Order, Bill>(kvps[250].Key, new Bill());
+            Assert.IsTrue(newMap.ContainsKey(item.Key));
+            Assert.IsFalse(newMap.Remove(item));
         }
 
         [Test]
         public void TestMapNoItem()
         {
+            TreeMap<int, string> map = new TreeMap<int, string>();
+            Assert.AreEqual(0, map.Count);
+            Assert.IsEmpty(map);
+            var count = 0;
+            foreach (var kvp in map)
+            {
+                count++;
+            }
+            Assert.AreEqual(0, count);
+            Assert.IsFalse(map.ContainsKey(0));
+            Assert.IsFalse(map.Remove(0));
+        }
+
+        private void InitializeMap(out TreeMap<Order, Bill> map, out Dictionary<Order, Bill> dict)
+        {
+            Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+            TreeMap<Order, Bill> orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+            Dictionary<Order, Bill> orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+            for (var i = 0; i < 1000; )
+            {
+                var o = new Order();
+                o.Id = r.Next();
+                o.Name = i + " age4356A;";
+                var bill = new Bill();
+                bill.Id = o.Id;
+                bill.Count = o.Id % 1000;
+                if (!orderMap.ContainsKey(o))
+                {
+                    var os = new Order();
+                    os.Id = o.Id;
+                    os.Name = o.Name;
+                    var bs = new Bill();
+                    bs.Id = bill.Id;
+                    bs.Count = bill.Count;
+                    orderDict.Add(os, bs);
+                    orderMap.Add(o, bill);
+                    i++;
+                }
+            }
+
+            map = orderMap;
+            dict = orderDict;
+        }
+        
+        private class OrderBillEqualityComparer : IEqualityComparer<KeyValuePair<Order, Bill>>
+        {
+
+            public bool Equals(KeyValuePair<Order, Bill> x, KeyValuePair<Order, Bill> y)
+            {
+                return (x.Key.Id == y.Key.Id) && (x.Key.Name == y.Key.Name) 
+                    && (x.Value.Id == y.Value.Id) && (x.Value.Count == y.Value.Count);
+            }
+
+            public int GetHashCode(KeyValuePair<Order, Bill> obj)
+            {
+                return 0;
+            }
+        }
+
+        private class BillEqualityComparer : IEqualityComparer<Bill>
+        {
+            public bool Equals(Bill x, Bill y)
+            {
+                return (x.Id == y.Id) && (x.Count == y.Count);
+            }
+
+            public int GetHashCode(Bill obj)
+            {
+                return 0;
+            }
         }
     }
 } 

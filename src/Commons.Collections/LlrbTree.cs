@@ -160,7 +160,7 @@ namespace Commons.Collections
                 TreeNode found = GetNode(root, key);
                 if (null == found)
                 {
-                    throw new InvalidOperationException(string.Format("The key {0} does not exist in the map.", key));
+                    throw new KeyNotFoundException(string.Format("The key {0} does not exist in the map.", key));
                 }
                 return found.Item.Value;
             }
@@ -169,7 +169,7 @@ namespace Commons.Collections
                 TreeNode found = GetNode(root, key);
                 if (null == found)
                 {
-                    throw new InvalidOperationException(string.Format("The key {0} does not exist in the map.", key));
+                    throw new KeyNotFoundException(string.Format("The key {0} does not exist in the map.", key));
                 }
                 found.Item = new KeyValuePair<K, V>(key, value);
             }
