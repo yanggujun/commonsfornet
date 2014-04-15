@@ -27,7 +27,6 @@ namespace Commons.Collections
     /// </summary>
     /// <typeparam name="T">The queued object</typeparam>
     [CLSCompliant(true)]
-    [Serializable]
     public sealed class BoundedQueue<T> : IEnumerable<T>, IEnumerable, ICollection
     {
         /// <summary>

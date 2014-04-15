@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -64,7 +65,7 @@ namespace Commons.Collections.Bag
             throw new NotImplementedException();
         }
 
-        public new System.Collections.IEnumerator GetEnumerator()
+        public new IEnumerator GetEnumerator()
         {
             throw new NotImplementedException();
         }

@@ -23,24 +23,24 @@ using System.Threading.Tasks;
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
-    public abstract class AbstractSortedBagDecorator<TItem> : AbstractBagDecorator<TItem>, ISortedBag<TItem>
+    public abstract class AbstractSortedBagDecorator<T> : AbstractBagDecorator<T>, ISortedBag<T>
     {
-        protected AbstractSortedBagDecorator(IBag<TItem> bag) : base(bag)
+        protected AbstractSortedBagDecorator(IBag<T> bag) : base(bag)
         {
 
         }
 
-        public IComparer<TItem> Comparer
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TItem First
+        public IComparer<T> Comparer
         {
             get { throw new NotImplementedException(); }
         }
 
-        public TItem Last
+        public T First
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public T Last
         {
             get { throw new NotImplementedException(); }
         }

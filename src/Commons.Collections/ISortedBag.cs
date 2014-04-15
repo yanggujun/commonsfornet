@@ -23,12 +23,10 @@ using System.Threading.Tasks;
 namespace Commons.Collections
 {
     [CLSCompliant(true)]
-    public interface ISortedBag<TItem> : IBag<TItem>
+    public interface ISortedBag<T> : IBag<T>
     {
-        IComparer<TItem> Comparer { get; }
+        T First { get; }
 
-        TItem First { get; }
-
-        TItem Last { get; }
+        T Last { get; }
     }
 }
