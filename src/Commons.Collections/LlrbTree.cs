@@ -41,7 +41,7 @@ namespace Commons.Collections
 
         private TreeNode root;
 
-        private readonly IComparer<K> comparer;
+        private readonly Comparison<K> comparison;
 
         public LlrbTree() : this(Comparer<K>.Default)
         {
@@ -49,7 +49,12 @@ namespace Commons.Collections
 
         public LlrbTree(IComparer<K> comparer)
         {
-            this.comparer = comparer;
+            this.comparison = (k1, k2) => comparer.Compare(k1, k2);
+        }
+
+        public LlrbTree(Comparison<K> comparison)
+        {
+            this.comparison = comparison;
         }
 
         public void Add(K key, V value)
@@ -63,18 +68,13 @@ namespace Commons.Collections
             root = null;
         }
 
-        public bool Contains(K item)
-        {
-            return Contains(item, (i1, i2) => comparer.Compare(i1, i2));
-        }
-
-        public bool Contains(K key, Comparison<K> comparator)
+        public bool Contains(K key)
         {
             var found = false;
             var node = root;
             while (null != node)
             {
-                var cmp = comparator(key, node.Item.Key);
+                var cmp = comparison(key, node.Item.Key);
                 if (cmp == 0)
                 {
                     found = true;
@@ -246,7 +246,7 @@ namespace Commons.Collections
                 FlipColor(node);
             }
 
-            int result = this.comparer.Compare(item.Key, node.Item.Key);
+            int result = comparison(item.Key, node.Item.Key);
             if (result == 0)
             {
                 throw new ArgumentException("The item to add has already existed");
@@ -289,7 +289,7 @@ namespace Commons.Collections
 
         private TreeNode Delete(TreeNode node, K key)
         {
-            if (comparer.Compare(key, node.Item.Key) < 0)
+            if (comparison(key, node.Item.Key) < 0)
             {
                 // since before delete, it already checks the item exists, so here it can guarrantee that node.left exits.
                 if (!IsRed(node.Left) && !IsRed(node.Left.Left))
@@ -305,7 +305,7 @@ namespace Commons.Collections
                     node = RotateRight(node);
                 }
                 
-                if ((comparer.Compare(key, node.Item.Key) == 0) && (node.Right == null))
+                if ((comparison(key, node.Item.Key) == 0) && (node.Right == null))
                 {
                     return null;
                 }
@@ -314,7 +314,7 @@ namespace Commons.Collections
                 {
                     node = MoveRedRight(node);
                 }
-                if (comparer.Compare(key, node.Item.Key) == 0)
+                if (comparison(key, node.Item.Key) == 0)
                 {
                     node.Item = Minimum(node.Right).Item;
                     node.Right = DeleteMin(node.Right);
@@ -493,7 +493,7 @@ namespace Commons.Collections
             TreeNode found = null;
             while (null != current)
             {
-                var cmp = comparer.Compare(key, node.Item.Key);
+                var cmp = comparison(key, node.Item.Key);
                 if (cmp == 0)
                 {
                     found = node;

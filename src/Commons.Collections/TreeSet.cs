@@ -60,14 +60,22 @@ namespace Commons.Collections
         /// </summary>
         /// <param name="items">The enumerable items.</param>
         /// <param name="comparer">The item comparer.</param>
-        public TreeSet(IEnumerable<T> items, IComparer<T> comparer)
+        public TreeSet(IEnumerable<T> items, IComparer<T> comparer) : this(items, (k1, k2) => comparer.Compare(k1, k2))
         {
-            IComparer<T> theComparer = comparer;
-            if (null == comparer)
+        }
+
+        public TreeSet(Comparison<T> comparison) : this(null, comparison)
+        {
+        }
+
+        public TreeSet(IEnumerable<T> items, Comparison<T> comparison)
+        {
+            Comparison<T> comp = comparison;
+            if (null == comp)
             {
-                theComparer = Comparer<T>.Default;
+                comp = (k1, k2) => Comparer<T>.Default.Compare(k1, k2);
             }
-            llrbTree = new LlrbTree<T, T>(theComparer);
+            llrbTree = new LlrbTree<T, T>(comp);
             if (null != items)
             {
                 foreach (var i in items)

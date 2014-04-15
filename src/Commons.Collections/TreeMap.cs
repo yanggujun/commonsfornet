@@ -33,7 +33,7 @@ namespace Commons.Collections
     {
         private LlrbTree<TKey, TValue> llrbTree;
 
-        private IComparer<TKey> comparer;
+        private Comparison<TKey> comparer;
 
         /// <summary>
         /// Constructs an empty map, with the default comparer of the key.
@@ -63,15 +63,23 @@ namespace Commons.Collections
         /// </summary>
         /// <param name="source">The source dictionary.</param>
         /// <param name="comparer">The comparer of the key.</param>
-        public TreeMap(IDictionary<TKey, TValue> source, IComparer<TKey> comparer)
+        public TreeMap(IDictionary<TKey, TValue> source, IComparer<TKey> comparer) : this(source, (k1, k2) => comparer.Compare(k1, k2))
         {
-            if (null == comparer)
+        }
+
+        public TreeMap(Comparison<TKey> comparison) : this(null, comparison)
+        {
+        }
+
+        public TreeMap(IDictionary<TKey, TValue> source, Comparison<TKey> comparison)
+        {
+            if (null == comparison)
             {
-                this.comparer = Comparer<TKey>.Default;
+                this.comparer = (k1, k2) => Comparer<TKey>.Default.Compare(k1, k2);
             }
             else
             {
-                this.comparer = comparer;
+                this.comparer = comparison;
             }
             llrbTree = new LlrbTree<TKey, TValue>(this.comparer);
 
