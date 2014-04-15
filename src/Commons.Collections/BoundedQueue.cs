@@ -87,6 +87,9 @@ namespace Commons.Collections
             get { return Count >= MaxSize; }
         }
 
+        /// <summary>
+        /// Max size limit of the queue.
+        /// </summary>
         public int MaxSize
         {
             get;
@@ -96,7 +99,7 @@ namespace Commons.Collections
         /// <summary>
         /// When the queue is full, enqueue a new item will throw an exception.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">The item to enqueue.</param>
         public void Enqueue(T item)
         {
             if (IsFull && !Absorb)
