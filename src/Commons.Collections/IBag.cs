@@ -23,20 +23,20 @@ using System.Threading.Tasks;
 namespace Commons.Collections
 {
     [CLSCompliant(true)]
-    public interface IBag<TItem> : ICollection<TItem>
+    public interface IBag<T> : ICollection<T>
     {
-        int GetCount(TItem item);
+        int GetCount(T item);
 
-        void Add(TItem item, int copies = 1);
+        void Add(T item, int copies = 1);
 
-        bool Remove(TItem item, int copies = 1);
+        bool Remove(T item, int copies);
 
-        ISet<TItem> UniqueSet();
+        ITreeSet<T> UniqueSet();
 
-        bool ContainsAll(ICollection<TItem> collection);
+        bool ContainsAll(ICollection<T> collection);
 
-        bool RemoveAll(ICollection<TItem> collection);
+        bool RemoveAll(ICollection<T> collection);
 
-        bool RetainAll(ICollection<TItem> collection);
+        bool RetainAll(ICollection<T> collection);
     }
 }

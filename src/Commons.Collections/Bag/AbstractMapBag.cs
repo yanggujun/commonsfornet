@@ -23,44 +23,82 @@ using System.Threading.Tasks;
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
-    public abstract class AbstractMapBag<TItem> : IBag<TItem>
+    public abstract class AbstractMapBag<T> : IBag<T>
     {
-        public int GetCount(TItem item)
+        protected IMap<T, int> Map { get; private set; }
+
+        protected AbstractMapBag(IMap<T, int> map)
+        {
+            Map = map;
+        }
+        public virtual int GetCount(T item)
+        {
+            return Map[item];
+        }
+
+        public virtual void Add(T item, int copies = 1)
+        {
+            if (Map.ContainsKey(item))
+            {
+                Map[item] += copies;
+            }
+            else
+            {
+                Map.Add(item, copies);
+            }
+        }
+
+        public virtual bool Remove(T item, int copies)
+        {
+            var removed = false;
+            if (Map.ContainsKey(item))
+            {
+                var count = Map[item];
+                if (count > copies)
+                {
+                    Map[item] -= copies;
+                }
+                else
+                {
+                    Remove(item);
+                }
+                removed = true;
+            }
+            return removed;
+        }
+
+        public virtual bool Remove(T item)
+        {
+            var removed = false;
+            if (Map.ContainsKey(item))
+            {
+                Map.Remove(item);
+                removed = true;
+            }
+            return removed;
+        }
+
+        public virtual ITreeSet<T> UniqueSet()
+        {
+            return null;
+        }
+
+        public bool ContainsAll(ICollection<T> collection)
         {
             throw new NotImplementedException();
         }
 
-        public void Add(TItem item, int copies = 1)
+        public bool RemoveAll(ICollection<T> collection)
         {
             throw new NotImplementedException();
         }
 
-        public bool Remove(TItem item, int copies = 1)
+        public bool RetainAll(ICollection<T> collection)
         {
             throw new NotImplementedException();
         }
 
-        public ISet<TItem> UniqueSet()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool ContainsAll(ICollection<TItem> collection)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool RemoveAll(ICollection<TItem> collection)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool RetainAll(ICollection<TItem> collection)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Add(TItem item)
+        public void Add(T item)
         {
             throw new NotImplementedException();
         }
@@ -70,12 +108,12 @@ namespace Commons.Collections.Bag
             throw new NotImplementedException();
         }
 
-        public bool Contains(TItem item)
+        public bool Contains(T item)
         {
             throw new NotImplementedException();
         }
 
-        public void CopyTo(TItem[] array, int arrayIndex)
+        public void CopyTo(T[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
@@ -90,12 +128,7 @@ namespace Commons.Collections.Bag
             get { throw new NotImplementedException(); }
         }
 
-        public bool Remove(TItem item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerator<TItem> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             throw new NotImplementedException();
         }

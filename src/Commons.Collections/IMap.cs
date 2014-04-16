@@ -25,8 +25,7 @@ namespace Commons.Collections
 {
     [CLSCompliant(true)]
     public interface IMap<TKey, TValue> : IDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>,
-                                          IDictionary, ICollection, IReadOnlyDictionary<TKey, TValue>,
-                                          IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
+                                          IDictionary, ICollection, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
     {
     }
 }

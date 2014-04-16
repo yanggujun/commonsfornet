@@ -30,11 +30,6 @@ namespace Commons.Collections.Bag
 
         }
 
-        public IComparer<T> Comparer
-        {
-            get { throw new NotImplementedException(); }
-        }
-
         public T First
         {
             get { throw new NotImplementedException(); }

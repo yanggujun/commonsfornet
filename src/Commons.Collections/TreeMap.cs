@@ -29,7 +29,7 @@ namespace Commons.Collections
     /// <typeparam name="TKey">The key type</typeparam>
     /// <typeparam name="TValue">The value type</typeparam>
     [CLSCompliant(true)]
-    public sealed class TreeMap<TKey, TValue> : ITreeMap<TKey, TValue>
+    public sealed class TreeMap<TKey, TValue> : ITreeMap<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
     {
         private LlrbTree<TKey, TValue> llrbTree;
 

@@ -24,50 +24,47 @@ using System.Threading.Tasks;
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
-    public abstract class AbstractBagDecorator<TItem> : AbstractCollectionDecorator<TItem>, IBag<TItem>
+    public abstract class AbstractBagDecorator<T> : AbstractCollectionDecorator<T>, IBag<T>
     {
-        protected AbstractBagDecorator(IBag<TItem> bag) : base(bag)
+        protected AbstractBagDecorator(IBag<T> bag) : base(bag)
         {
         }
 
-        public int GetCount(TItem item)
+        protected new IBag<T> Decorated { get { return (IBag<T>)base.Decorated; } }
+
+        public int GetCount(T item)
         {
-            throw new NotImplementedException();
+            return Decorated.GetCount(item);
         }
 
-        public void Add(TItem item, int copies = 1)
+        public void Add(T item, int copies = 1)
         {
-            throw new NotImplementedException();
+            Decorated.Add(item, copies);
         }
 
-        public bool Remove(TItem item, int copies = 1)
+        public bool Remove(T item, int copies = 1)
         {
-            throw new NotImplementedException();
+            return Decorated.Remove(item, copies);
         }
 
-        public ISet<TItem> UniqueSet()
+        public ITreeSet<T> UniqueSet()
         {
-            throw new NotImplementedException();
+            return Decorated.UniqueSet();
         }
 
-        public bool ContainsAll(ICollection<TItem> collection)
+        public bool ContainsAll(ICollection<T> collection)
         {
-            throw new NotImplementedException();
+            return Decorated.ContainsAll(collection);
         }
 
-        public bool RemoveAll(ICollection<TItem> collection)
+        public bool RemoveAll(ICollection<T> collection)
         {
-            throw new NotImplementedException();
+            return Decorated.RemoveAll(collection);
         }
 
-        public bool RetainAll(ICollection<TItem> collection)
+        public bool RetainAll(ICollection<T> collection)
         {
-            throw new NotImplementedException();
-        }
-
-        public new IEnumerator GetEnumerator()
-        {
-            throw new NotImplementedException();
+            return Decorated.RetainAll(collection);
         }
     }
 }
