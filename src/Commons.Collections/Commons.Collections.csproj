@@ -56,8 +56,8 @@
     <Compile Include="Bag\AbstractSortedBagDecorator.cs" />
     <Compile Include="BoundedQueue.cs" />
     <Compile Include="CompositeCollection.cs" />
+    <Compile Include="Functors.cs" />
     <Compile Include="IBag.cs" />
-    <Compile Include="IMap.cs" />
     <Compile Include="IMultiMap.cs" />
     <Compile Include="IndexedCollection.cs" />
     <Compile Include="IBoundedCollection.cs" />

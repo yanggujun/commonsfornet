@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,9 +26,9 @@ namespace Commons.Collections.Bag
     [CLSCompliant(true)]
     public abstract class AbstractMapBag<T> : IBag<T>
     {
-        protected IMap<T, int> Map { get; private set; }
+        protected IDictionary<T, int> Map { get; private set; }
 
-        protected AbstractMapBag(IMap<T, int> map)
+        protected AbstractMapBag(IDictionary<T, int> map)
         {
             Map = map;
         }
@@ -78,62 +79,87 @@ namespace Commons.Collections.Bag
             return removed;
         }
 
-        public virtual ITreeSet<T> UniqueSet()
+        public virtual ITreeSet<T> UniqueSet(Comparison<T> comp)
         {
-            return null;
+            ITreeSet<T> treeSet = new TreeSet<T>(Map.Keys, comp);
+
+            return treeSet;
         }
 
-        public bool ContainsAll(ICollection<T> collection)
+        public virtual bool ContainsAll(ICollection<T> collection)
         {
-            throw new NotImplementedException();
+            var result = true;
+            foreach (var item in collection)
+            {
+                if (!Map.ContainsKey(item))
+                {
+                    result = false;
+                    break;
+                }
+            }
+            return result;
         }
 
-        public bool RemoveAll(ICollection<T> collection)
+        public virtual bool RemoveAll(ICollection<T> collection)
         {
-            throw new NotImplementedException();
+            var result = false;
+            foreach (var item in collection)
+            {
+                result = result || Remove(item, 1);
+            }
+            return result;
         }
 
-        public bool RetainAll(ICollection<T> collection)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Add(T item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Clear()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Contains(T item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CopyTo(T[] array, int arrayIndex)
+        public virtual bool RetainAll(ICollection<T> collection)
         {
             throw new NotImplementedException();
         }
 
-        public int Count
+        public virtual void Add(T item)
         {
-            get { throw new NotImplementedException(); }
+            Add(item, 1);
         }
 
-        public bool IsReadOnly
+        public virtual void Clear()
         {
-            get { throw new NotImplementedException(); }
+            Map.Clear();
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public virtual bool Contains(T item)
+        {
+            return Map.ContainsKey(item);
+        }
+
+        public virtual void CopyTo(T[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        public virtual int Count
+        {
+            get
+            {
+                var count = 0;
+                foreach (var item in Map)
+                {
+                    count += item.Value;
+                }
+
+                return count;
+            }
+        }
+
+        public virtual bool IsReadOnly
+        {
+            get { return false; }
+        }
+
+        public virtual IEnumerator<T> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }

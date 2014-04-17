@@ -31,7 +31,7 @@ namespace Commons.Collections
 
         bool Remove(T item, int copies);
 
-        ITreeSet<T> UniqueSet();
+        ITreeSet<T> UniqueSet(Comparison<T> comp);
 
         bool ContainsAll(ICollection<T> collection);
 

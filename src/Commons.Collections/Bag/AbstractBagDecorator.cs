@@ -47,9 +47,9 @@ namespace Commons.Collections.Bag
             return Decorated.Remove(item, copies);
         }
 
-        public ITreeSet<T> UniqueSet()
+        public ITreeSet<T> UniqueSet(Comparison<T> comp)
         {
-            return Decorated.UniqueSet();
+            return Decorated.UniqueSet(comp);
         }
 
         public bool ContainsAll(ICollection<T> collection)

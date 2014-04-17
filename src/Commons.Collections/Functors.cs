@@ -14,18 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Commons.Collections
 {
-    [CLSCompliant(true)]
-    public interface IMap<TKey, TValue> : IDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>,
-                                          IDictionary, ICollection, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
-    {
-    }
+    public delegate bool Equality<in T>(T x, T y);
+
+    public delegate void Execution<in T>(T x);
 }
