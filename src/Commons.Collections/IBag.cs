@@ -31,12 +31,12 @@ namespace Commons.Collections
 
         bool Remove(T item, int copies);
 
-        ITreeSet<T> UniqueSet(Comparison<T> comp);
-
         bool ContainsAll(ICollection<T> collection);
 
         bool RemoveAll(ICollection<T> collection);
 
         bool RetainAll(ICollection<T> collection);
+
+        ISet<T> ToUnique();
     }
 }

@@ -32,6 +32,7 @@ namespace Commons.Collections.Bag
         {
             Map = map;
         }
+
         public virtual int GetCount(T item)
         {
             return Map[item];
@@ -79,13 +80,6 @@ namespace Commons.Collections.Bag
             return removed;
         }
 
-        public virtual ITreeSet<T> UniqueSet(Comparison<T> comp)
-        {
-            ITreeSet<T> treeSet = new TreeSet<T>(Map.Keys, comp);
-
-            return treeSet;
-        }
-
         public virtual bool ContainsAll(ICollection<T> collection)
         {
             var result = true;
@@ -112,7 +106,21 @@ namespace Commons.Collections.Bag
 
         public virtual bool RetainAll(ICollection<T> collection)
         {
-            throw new NotImplementedException();
+            var toRemove = new List<T>();
+            foreach (var item in Map.Keys)
+            {
+                if (!collection.Contains(item))
+                {
+                    toRemove.Add(item);
+                }
+            }
+
+            return RemoveAll(toRemove);
+        }
+
+        public virtual ISet<T> ToUnique()
+        {
+            return new SortedSet<T>(Map.Keys);
         }
 
         public virtual void Add(T item)
@@ -132,7 +140,10 @@ namespace Commons.Collections.Bag
 
         public virtual void CopyTo(T[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            foreach (var item in this)
+            {
+                array[arrayIndex++] = item;
+            }
         }
 
         public virtual int Count
@@ -156,12 +167,24 @@ namespace Commons.Collections.Bag
 
         public virtual IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return CreateEnumerator().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return this.GetEnumerator();
+        }
+
+        private IEnumerable<T> CreateEnumerator()
+        {
+            foreach (var key in Map.Keys)
+            {
+                var copies = Map[key];
+                for (var i = 0; i < copies; i++)
+                {
+                    yield return key;
+                }
+            }
         }
     }
 }

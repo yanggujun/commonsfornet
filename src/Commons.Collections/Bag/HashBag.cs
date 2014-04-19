@@ -14,30 +14,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Commons.Collections.Bag
 {
-    [CLSCompliant(true)]
-    public abstract class AbstractSortedBagDecorator<T> : AbstractBagDecorator<T>, ISortedBag<T>
+    public class HashBag<T> : AbstractMapBag<T>
     {
-        protected AbstractSortedBagDecorator(ISortedBag<T> bag) : base(bag)
+        public HashBag()
+            : base(new Dictionary<T, int>())
         {
-
         }
 
-        public T First
+        public HashBag(IEnumerable<T> items)
+            : base(new Dictionary<T, int>())
         {
-            get { throw new NotImplementedException(); }
-        }
-
-        public T Last
-        {
-            get { throw new NotImplementedException(); }
+            foreach (var item in items)
+            {
+                if (Map.ContainsKey(item))
+                {
+                    Map[item]++;
+                }
+                else
+                {
+                    Map.Add(item, 1);
+                }
+            }
         }
     }
 }

@@ -32,39 +32,39 @@ namespace Commons.Collections.Bag
 
         protected new IBag<T> Decorated { get { return (IBag<T>)base.Decorated; } }
 
-        public int GetCount(T item)
+        public virtual int GetCount(T item)
         {
             return Decorated.GetCount(item);
         }
 
-        public void Add(T item, int copies = 1)
+        public virtual void Add(T item, int copies = 1)
         {
             Decorated.Add(item, copies);
         }
 
-        public bool Remove(T item, int copies = 1)
+        public virtual bool Remove(T item, int copies = 1)
         {
             return Decorated.Remove(item, copies);
         }
 
-        public ITreeSet<T> UniqueSet(Comparison<T> comp)
-        {
-            return Decorated.UniqueSet(comp);
-        }
-
-        public bool ContainsAll(ICollection<T> collection)
+        public virtual bool ContainsAll(ICollection<T> collection)
         {
             return Decorated.ContainsAll(collection);
         }
 
-        public bool RemoveAll(ICollection<T> collection)
+        public virtual bool RemoveAll(ICollection<T> collection)
         {
             return Decorated.RemoveAll(collection);
         }
 
-        public bool RetainAll(ICollection<T> collection)
+        public virtual bool RetainAll(ICollection<T> collection)
         {
             return Decorated.RetainAll(collection);
+        }
+
+        public virtual ISet<T> ToUnique()
+        {
+            return Decorated.ToUnique();
         }
     }
 }

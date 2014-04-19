@@ -14,9 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 namespace Commons.Collections
 {
+    [CLSCompliant(true)]
     public delegate bool Equality<in T>(T x, T y);
 
-    public delegate void Execution<in T>(T x);
+    [CLSCompliant(true)]
+    public delegate void Closure<in T>(T x);
 }

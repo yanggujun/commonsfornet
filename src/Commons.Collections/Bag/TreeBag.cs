@@ -16,28 +16,51 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Commons.Collections.Bag
 {
-    [CLSCompliant(true)]
-    public abstract class AbstractSortedBagDecorator<T> : AbstractBagDecorator<T>, ISortedBag<T>
+    public class TreeBag<T> : AbstractMapBag<T>, ISortedBag<T>
     {
-        protected AbstractSortedBagDecorator(ISortedBag<T> bag) : base(bag)
+        public TreeBag()
+            : base(new TreeMap<T, int>())
         {
+        }
 
+        public TreeBag(Comparison<T> comp)
+            : base(new TreeMap<T, int>(comp))
+        {
+        }
+
+        public TreeBag(IEnumerable<T> items, Comparison<T> comp)
+            : base(new TreeMap<T, int>(comp))
+        {
+            foreach (var item in items)
+            {
+                if (Map.ContainsKey(item))
+                {
+                    Map[item]++;
+                }
+                else
+                {
+                    Map.Add(item, 1);
+                }
+            }
         }
 
         public T First
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return ((ITreeMap<T, int>)Map).Min.Key;
+            }
         }
 
         public T Last
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return ((ITreeMap<T, int>)Map).Max.Key;
+            }
         }
     }
 }
