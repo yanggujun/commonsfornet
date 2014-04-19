@@ -19,6 +19,7 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Bag
 {
+    [CLSCompliant(true)]
     public class TreeBag<T> : AbstractMapBag<T>, ISortedBag<T>
     {
         public TreeBag()
