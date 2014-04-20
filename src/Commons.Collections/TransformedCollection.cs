@@ -25,22 +25,22 @@ namespace Commons.Collections
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
+    /// <typeparam name="T"></typeparam>
     [CLSCompliant(true)]
-    public class TransformedCollection<TItem> : AbstractCollectionDecorator<TItem>
+    public class TransformedCollection<T> : AbstractCollectionDecorator<T>
     {
-        private readonly Func<TItem, TItem> transform;
-        public TransformedCollection(ICollection<TItem> collection, Func<TItem, TItem> transform) : base(collection)
+        private readonly Transformer<T, T> transform;
+        public TransformedCollection(ICollection<T> collection, Transformer<T, T> transform) : base(collection)
         {
             this.transform = transform;
         }
 
-        public override void Add(TItem item)
+        public override void Add(T item)
         {
             Decorated.Add(transform(item));
         }
 
-        public virtual void AddAll(ICollection<TItem> items)
+        public virtual void AddAll(ICollection<T> items)
         {
             foreach (var i in items)
             {

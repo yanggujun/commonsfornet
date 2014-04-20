@@ -33,27 +33,27 @@ namespace Commons.Collections
     /// <typeparam name="TItem">The type of the collection items.</typeparam>
     // TODO: covariance of TItem?
     [CLSCompliant(true)]
-    public class PredicatedCollection<TItem> : AbstractCollectionDecorator<TItem>
+    public class PredicatedCollection<T> : AbstractCollectionDecorator<T>
     {
-        private readonly Func<TItem, bool> predicate;
+        private readonly Predicate<T> predicate;
 
-        public PredicatedCollection(Func<TItem, bool> predicate): this(new List<TItem>(), predicate)
+        public PredicatedCollection(Predicate<T> predicate): this(new List<T>(), predicate)
         {
 
         }
 
-        public PredicatedCollection(ICollection<TItem> collection, Func<TItem, bool> predicate) : base(collection)
+        public PredicatedCollection(ICollection<T> collection, Predicate<T> predicate) : base(collection)
         {
             this.predicate = predicate;
         }
 
-        public override void Add(TItem item)
+        public override void Add(T item)
         {
             Validate(item);
             base.Add(item);
         }
 
-        public void AddAll(ICollection<TItem> collection)
+        public void AddAll(ICollection<T> collection)
         {
             foreach (var item in collection)
             {
@@ -62,7 +62,7 @@ namespace Commons.Collections
             }
         }
 
-        protected virtual void Validate(TItem item)
+        protected virtual void Validate(T item)
         {
             if (!predicate(item))
             {

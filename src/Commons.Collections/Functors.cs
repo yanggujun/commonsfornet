@@ -22,4 +22,7 @@ namespace Commons.Collections
 
     [CLSCompliant(true)]
     public delegate void Closure<in T>(T x);
+
+    [CLSCompliant(true)]
+    public delegate O Transformer<in T, out O>(T x);
 }

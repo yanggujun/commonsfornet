@@ -23,25 +23,51 @@ using System.Threading.Tasks;
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
-    public abstract class AbstractSortedBagDecorator<T> : AbstractBagDecorator<T>, ISortedBag<T>
+    public class PredicateBag<T> : AbstractBagDecorator<T>
     {
-        protected AbstractSortedBagDecorator(ISortedBag<T> bag) : base(bag)
+        private readonly Predicate<T> predicate;
+
+        public PredicateBag(IBag<T> bag, Predicate<T> predicate)
+            : base(bag)
         {
+            this.predicate = predicate;
         }
 
-        public virtual T First
+        public override void Add(T item, int copies = 1)
         {
-            get
+            Validate(item);
+            base.Add(item, copies);
+        }
+
+        public override bool Remove(T item, int copies = 1)
+        {
+            Validate(item);
+            return base.Remove(item, copies);
+        }
+
+        public override bool RemoveAll(ICollection<T> collection)
+        {
+            foreach (var item in collection)
             {
-                return ((ISortedBag<T>)Decorated).First;
+                Validate(item);
             }
+            return base.RemoveAll(collection);
         }
 
-        public virtual T Last
+        public override bool RetainAll(ICollection<T> collection)
         {
-            get
+            foreach (var item in collection)
             {
-                return ((ISortedBag<T>)Decorated).Last;
+                Validate(item);
+            }
+            return base.RetainAll(collection);
+        }
+
+        protected virtual void Validate(T item)
+        {
+            if (predicate(item))
+            {
+                throw new ArgumentException("The input item cannot be validated");
             }
         }
     }

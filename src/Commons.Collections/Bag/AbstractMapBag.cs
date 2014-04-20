@@ -120,7 +120,7 @@ namespace Commons.Collections.Bag
 
         public virtual ISet<T> ToUnique()
         {
-            return new SortedSet<T>(Map.Keys);
+            return new HashSet<T>(Map.Keys);
         }
 
         public virtual void Add(T item)

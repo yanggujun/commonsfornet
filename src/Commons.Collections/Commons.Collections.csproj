@@ -55,6 +55,7 @@
     <Compile Include="Bag\AbstractMapBag.cs" />
     <Compile Include="Bag\AbstractSortedBagDecorator.cs" />
     <Compile Include="Bag\HashBag.cs" />
+    <Compile Include="Bag\PredicateBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
     <Compile Include="BoundedQueue.cs" />
     <Compile Include="CompositeCollection.cs" />
