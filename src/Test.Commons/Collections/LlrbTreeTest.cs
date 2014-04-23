@@ -14,20 +14,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Commons.Collections;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Xunit;
+
+using Commons.Collections;
+
 namespace Test.Commons.Collections
 {
-    [TestFixture]
     public class LlrbTreeTest
     {
-        [Test]
+        [Fact]
         public void TestTreeSetContructor()
         {
             Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -45,18 +46,18 @@ namespace Test.Commons.Collections
             TreeSet<Order> orderSet = new TreeSet<Order>(orderList, new OrderComparer());
             foreach (var item in orderList)
             {
-                Assert.IsTrue(orderSet.Contains(item));
+                Assert.True(orderSet.Contains(item));
             }
 
             TreeSet<int> simpleSet = new TreeSet<int>(Enumerable.Range(0, 100));
             for (var i = 0; i < 100; i++)
             {
-                Assert.IsTrue(simpleSet.Contains(i));
+                Assert.True(simpleSet.Contains(i));
             }
-            Assert.IsFalse(simpleSet.Contains(101));
+            Assert.False(simpleSet.Contains(101));
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetAdd()
         {
             Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -80,17 +81,17 @@ namespace Test.Commons.Collections
                 }
             }
 
-            Assert.AreEqual(1000, orderSet.Count);
+            Assert.Equal(1000, orderSet.Count);
 
             foreach (var item in orderList)
             {
-                Assert.IsTrue(orderSet.Contains(item));
+                Assert.True(orderSet.Contains(item));
             }
             orderSet.Clear();
-            Assert.AreEqual(0, orderSet.Count);
+            Assert.Equal(0, orderSet.Count);
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetRemove()
         {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -115,17 +116,17 @@ namespace Test.Commons.Collections
             }
             for (var i = 0; i < 500; i++)
             {
-                Assert.IsTrue(orderSet.Remove(orderlist[i]));
-                Assert.IsFalse(orderSet.Contains(orderlist[i]));
+                Assert.True(orderSet.Remove(orderlist[i]));
+                Assert.False(orderSet.Contains(orderlist[i]));
             }
-            Assert.AreEqual(500, orderSet.Count);
+            Assert.Equal(500, orderSet.Count);
             var notExist = new Order();
             notExist.Id = 1;
             notExist.Name = "not exist";
-            Assert.IsFalse(orderSet.Remove(notExist));
+            Assert.False(orderSet.Remove(notExist));
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetRemoveMax()
         {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -153,18 +154,18 @@ namespace Test.Commons.Collections
             for (var i = 0; i < 50; i++)
             {
                 var maxOrder = orderedList[i];
-                Assert.IsTrue(orderSet.Contains(maxOrder));
+                Assert.True(orderSet.Contains(maxOrder));
                 var comparer = new OrderComparer();
-                Assert.That(comparer.Compare(maxOrder, orderSet.Max) == 0);
+                Assert.True(comparer.Compare(maxOrder, orderSet.Max) == 0);
                 orderSet.RemoveMax();
-                Assert.IsFalse(orderSet.Contains(maxOrder));
-                Assert.That(comparer.Compare(maxOrder, orderSet.Max) > 0);
+                Assert.False(orderSet.Contains(maxOrder));
+                Assert.True(comparer.Compare(maxOrder, orderSet.Max) > 0);
             }
 
-            Assert.AreEqual(150, orderSet.Count);
+            Assert.Equal(150, orderSet.Count);
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetRemoveMin()
         {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -192,18 +193,18 @@ namespace Test.Commons.Collections
             for (var i = 0; i < 50; i++)
             {
                 var minOrder = orderedList[i];
-                Assert.IsTrue(orderSet.Contains(minOrder));
+                Assert.True(orderSet.Contains(minOrder));
                 var comparer = new OrderComparer();
-                Assert.That(comparer.Compare(minOrder, orderSet.Min) == 0);
+                Assert.True(comparer.Compare(minOrder, orderSet.Min) == 0);
                 orderSet.RemoveMin();
-                Assert.IsFalse(orderSet.Contains(minOrder));
-                Assert.That(comparer.Compare(minOrder, orderSet.Min) < 0);
+                Assert.False(orderSet.Contains(minOrder));
+                Assert.True(comparer.Compare(minOrder, orderSet.Min) < 0);
             }
 
-            Assert.AreEqual(150, orderSet.Count);
+            Assert.Equal(150, orderSet.Count);
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetCopyTo()
         {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -223,15 +224,15 @@ namespace Test.Commons.Collections
             orderSet.CopyTo(orders, 3);
             for (var i = 3; i < 1003; i++)
             {
-                Assert.IsTrue(orderSet.Contains(orders[i]));
+                Assert.True(orderSet.Contains(orders[i]));
             }
             for (var i = 0; i < 3; i++)
             {
-                Assert.IsNull(orders[i]);
+                Assert.Null(orders[i]);
             }
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetEnumerator()
         {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -258,12 +259,12 @@ namespace Test.Commons.Collections
             foreach (var item in orderSet)
             {
                 total++;
-                Assert.IsTrue(orderlist.Contains(item, new OrderEqualityComparer()));
+                Assert.True(orderlist.Contains(item, new OrderEqualityComparer()));
             }
-            Assert.AreEqual(total, orderSet.Count);
+            Assert.Equal(total, orderSet.Count);
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetNoItem()
         {
             TreeSet<int> set = new TreeSet<int>();
@@ -272,16 +273,16 @@ namespace Test.Commons.Collections
             {
                 index++;
             }
-            Assert.AreEqual(0, index);
-            Assert.IsEmpty(set);
-            Assert.IsFalse(set.Contains(5));
-            Assert.IsFalse(set.Remove(6));
+            Assert.Equal(0, index);
+            Assert.Empty(set);
+            Assert.False(set.Contains(5));
+            Assert.False(set.Remove(6));
             var array = new int[5] { 0 , 0, 0, 0, 0 };
             set.CopyTo(array, 0);
-            Assert.AreEqual(0, array[0]);
+            Assert.Equal(0, array[0]);
         }
 
-        [Test]
+        [Fact]
         public void TestMapContructor()
         {
             Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -299,7 +300,7 @@ namespace Test.Commons.Collections
             TreeMap<Order, Guid> orderMap = new TreeMap<Order, Guid>(orderDict, new OrderComparer());
             foreach (var item in orderDict.Keys)
             {
-                Assert.IsTrue(orderMap.ContainsKey(item));
+                Assert.True(orderMap.ContainsKey(item));
             }
 
             Dictionary<int, string> simpleDict = new Dictionary<int, string>();
@@ -308,14 +309,14 @@ namespace Test.Commons.Collections
                 simpleDict.Add(i, Guid.NewGuid().ToString());
             }
             TreeMap<int, string> simpleMap = new TreeMap<int, string>(simpleDict);
-            Assert.AreEqual(simpleDict.Count, simpleMap.Count);
+            Assert.Equal(simpleDict.Count, simpleMap.Count);
             foreach (var k in simpleDict.Keys)
             {
-                Assert.IsTrue(simpleMap.ContainsKey(k));
+                Assert.True(simpleMap.ContainsKey(k));
             }
         }
 
-        [Test]
+        [Fact]
         public void TestMapAdd()
         {
             Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -342,17 +343,17 @@ namespace Test.Commons.Collections
                 }
             }
 
-            Assert.AreEqual(1000, orderMap.Count);
+            Assert.Equal(1000, orderMap.Count);
 
             foreach (var item in orderList)
             {
-                Assert.IsTrue(orderMap.ContainsKey(item));
+                Assert.True(orderMap.ContainsKey(item));
             }
             orderMap.Clear();
-            Assert.AreEqual(0, orderMap.Count);
+            Assert.Equal(0, orderMap.Count);
         }
 
-        [Test]
+        [Fact]
         public void TestMapRemove()
         {
             Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -381,17 +382,17 @@ namespace Test.Commons.Collections
 
             for (var i = 0; i < 500; i++)
             {
-                Assert.IsTrue(orderMap.Remove(orderList[i]));
-                Assert.IsFalse(orderMap.Contains(orderList[i]));
+                Assert.True(orderMap.Remove(orderList[i]));
+                Assert.False(orderMap.Contains(orderList[i]));
             }
-            Assert.AreEqual(500, orderMap.Count);
+            Assert.Equal(500, orderMap.Count);
             var notExist = new Order();
             notExist.Id = 1;
             notExist.Name = "not exist";
-            Assert.IsFalse(orderMap.Remove(notExist));
+            Assert.False(orderMap.Remove(notExist));
         }
 
-        [Test]
+        [Fact]
         public void TestMapRemoveMax()
         {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -422,18 +423,18 @@ namespace Test.Commons.Collections
             for (var i = 0; i < 50; i++)
             {
                 var maxOrder = orderedList[i];
-                Assert.IsTrue(orderMap.Contains(maxOrder));
+                Assert.True(orderMap.Contains(maxOrder));
                 var comparer = new OrderComparer();
-                Assert.That(comparer.Compare(maxOrder, orderMap.Max.Key) == 0);
+                Assert.True(comparer.Compare(maxOrder, orderMap.Max.Key) == 0);
                 orderMap.RemoveMax();
-                Assert.IsFalse(orderMap.ContainsKey(maxOrder));
-                Assert.That(comparer.Compare(maxOrder, orderMap.Max.Key) > 0);
+                Assert.False(orderMap.ContainsKey(maxOrder));
+                Assert.True(comparer.Compare(maxOrder, orderMap.Max.Key) > 0);
             }
 
-            Assert.AreEqual(150, orderMap.Count);
+            Assert.Equal(150, orderMap.Count);
         }
 
-        [Test]
+        [Fact]
         public void TestMapRemoveMin()
         {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -464,18 +465,18 @@ namespace Test.Commons.Collections
             for (var i = 0; i < 50; i++)
             {
                 var minOrder = orderedList[i];
-                Assert.IsTrue(orderMap.Contains(minOrder));
+                Assert.True(orderMap.Contains(minOrder));
                 var comparer = new OrderComparer();
-                Assert.That(comparer.Compare(minOrder, orderMap.Min.Key) == 0);
+                Assert.True(comparer.Compare(minOrder, orderMap.Min.Key) == 0);
                 orderMap.RemoveMin();
-                Assert.IsFalse(orderMap.ContainsKey(minOrder));
-                Assert.That(comparer.Compare(minOrder, orderMap.Min.Key) < 0);
+                Assert.False(orderMap.ContainsKey(minOrder));
+                Assert.True(comparer.Compare(minOrder, orderMap.Min.Key) < 0);
             }
 
-            Assert.AreEqual(150, orderMap.Count);
+            Assert.Equal(150, orderMap.Count);
         }
 
-        [Test]
+        [Fact]
         public void TestMapCopyTo()
         {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -498,16 +499,16 @@ namespace Test.Commons.Collections
             orderMap.CopyTo(kvps, 3);
             for (var i = 3; i < 1003; i++)
             {
-                Assert.IsTrue(orderMap.Contains(kvps[i]));
+                Assert.True(orderMap.Contains(kvps[i]));
             }
             for (var i = 0; i < 3; i++)
             {
-                Assert.IsNull(kvps[i].Key);
-                Assert.IsNull(kvps[i].Value);
+                Assert.Null(kvps[i].Key);
+                Assert.Null(kvps[i].Value);
             }
         }
 
-        [Test]
+        [Fact]
         public void TestMapEnumerator()
         {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -539,12 +540,12 @@ namespace Test.Commons.Collections
             foreach (var kvp in orderMap)
             {
                 total++;
-                Assert.That(orderList.Contains(kvp, new OrderBillEqualityComparer()));
+                Assert.True(orderList.Contains(kvp, new OrderBillEqualityComparer()));
             }
-            Assert.AreEqual(1000, total);
+            Assert.Equal(1000, total);
         }
 
-        [Test]
+        [Fact]
         public void TestMapIndexer()
         {
             TreeMap<Order, Bill> orderMap = null;
@@ -552,13 +553,13 @@ namespace Test.Commons.Collections
             InitializeMap(out orderMap, out orderDict);
             foreach (var key in orderDict.Keys)
             {
-                Assert.IsTrue(orderMap.ContainsKey(key));
-                Assert.AreEqual(orderDict[key].Id, orderMap[key].Id);
-                Assert.AreEqual(orderDict[key].Count, orderMap[key].Count);
+                Assert.True(orderMap.ContainsKey(key));
+                Assert.Equal(orderDict[key].Id, orderMap[key].Id);
+                Assert.Equal(orderDict[key].Count, orderMap[key].Count);
             }
         }
 
-        [Test]
+        [Fact]
         public void TestMapKeys()
         {
             TreeMap<Order, Bill> orderMap = null;
@@ -567,13 +568,13 @@ namespace Test.Commons.Collections
 
             foreach (var key in orderMap.Keys)
             {
-                Assert.IsTrue(orderDict.ContainsKey(key));
-                Assert.AreEqual(orderDict[key].Id, orderMap[key].Id);
-                Assert.AreEqual(orderDict[key].Count, orderMap[key].Count);
+                Assert.True(orderDict.ContainsKey(key));
+                Assert.Equal(orderDict[key].Id, orderMap[key].Id);
+                Assert.Equal(orderDict[key].Count, orderMap[key].Count);
             }
         }
 
-        [Test]
+        [Fact]
         public void TestMapKeySet()
         {
             TreeMap<Order, Bill> orderMap = null;
@@ -583,11 +584,11 @@ namespace Test.Commons.Collections
             var set = orderMap.KeySet;
             foreach (var item in set)
             {
-                Assert.IsTrue(orderDict.ContainsKey(item));
+                Assert.True(orderDict.ContainsKey(item));
             }
         }
 
-        [Test]
+        [Fact]
         public void TestMapValues()
         {
             TreeMap<Order, Bill> orderMap = null;
@@ -601,7 +602,7 @@ namespace Test.Commons.Collections
             }
         }
 
-        [Test]
+        [Fact]
         public void TestMapTryGetValue()
         {
             TreeMap<Order, Bill> orderMap = null;
@@ -610,19 +611,19 @@ namespace Test.Commons.Collections
             foreach (var key in orderDict.Keys)
             {
                 Bill bill = null;
-                Assert.IsTrue(orderMap.TryGetValue(key, out bill));
-                Assert.AreEqual(orderDict[key].Id, bill.Id);
-                Assert.AreEqual(orderDict[key].Count, bill.Count);
+                Assert.True(orderMap.TryGetValue(key, out bill));
+                Assert.Equal(orderDict[key].Id, bill.Id);
+                Assert.Equal(orderDict[key].Count, bill.Count);
             }
 
             var notExist = new Order();
 
             Bill b = null;
-            Assert.IsFalse(orderMap.TryGetValue(notExist, out b));
-            Assert.IsNull(b);
+            Assert.False(orderMap.TryGetValue(notExist, out b));
+            Assert.Null(b);
         }
 
-        [Test]
+        [Fact]
         public void TestMapAddRemoveKvp()
         {
             TreeMap<Order, Bill> orderMap = null;
@@ -633,39 +634,39 @@ namespace Test.Commons.Collections
             {
                 newMap.Add(kvp);
             }
-            Assert.AreEqual(orderMap.Count, newMap.Count);
+            Assert.Equal(orderMap.Count, newMap.Count);
 
             var count = 0;
             foreach (var kvp in orderMap)
             {
                 if (count++ < 500)
                 {
-                    Assert.IsTrue(newMap.Remove(kvp));
+                    Assert.True(newMap.Remove(kvp));
                 }
             }
 
-            Assert.AreEqual(500, newMap.Count);
+            Assert.Equal(500, newMap.Count);
             var kvps = new KeyValuePair<Order, Bill>[500];
             newMap.CopyTo(kvps, 0);
             var item = new KeyValuePair<Order, Bill>(kvps[250].Key, new Bill());
-            Assert.IsTrue(newMap.ContainsKey(item.Key));
-            Assert.IsFalse(newMap.Remove(item));
+            Assert.True(newMap.ContainsKey(item.Key));
+            Assert.False(newMap.Remove(item));
         }
 
-        [Test]
+        [Fact]
         public void TestMapNoItem()
         {
             TreeMap<int, string> map = new TreeMap<int, string>();
-            Assert.AreEqual(0, map.Count);
-            Assert.IsEmpty(map);
+            Assert.Equal(0, map.Count);
+            Assert.Empty(map);
             var count = 0;
             foreach (var kvp in map)
             {
                 count++;
             }
-            Assert.AreEqual(0, count);
-            Assert.IsFalse(map.ContainsKey(0));
-            Assert.IsFalse(map.Remove(0));
+            Assert.Equal(0, count);
+            Assert.False(map.ContainsKey(0));
+            Assert.False(map.Remove(0));
         }
 
         private void InitializeMap(out TreeMap<Order, Bill> map, out Dictionary<Order, Bill> dict)

@@ -20,15 +20,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using NUnit.Framework;
+using Xunit;
+
 using Commons.Collections;
 
 namespace Test.Commons.Collections
 {
-    [TestFixture]
     public class TreeSetPerformanceTest
     {
-        [Test]
+        [Fact]
         public void TestTreeSetInsert()
         {
             Insert(100000);

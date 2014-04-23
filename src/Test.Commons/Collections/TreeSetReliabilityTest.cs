@@ -18,15 +18,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+
+using Xunit;
+
 using Commons.Collections;
 
 namespace Test.Commons.Collections
 {
-    [TestFixture]
     public class TreeSetReliabilityTest
     {
-        [Test]
+        [Fact]
         public void TestTreeSetRandomOperations()
         {
             for (int j = 0; j < 1000; j++)
@@ -47,7 +48,7 @@ namespace Test.Commons.Collections
                     }
                 }
 
-                Assert.AreEqual(testNumber, set.Count);
+                Assert.Equal(testNumber, set.Count);
 
                 Random randomIndex = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
                 for (int i = 0; i < 1000; i++)
@@ -56,16 +57,16 @@ namespace Test.Commons.Collections
                     index = index < 0 ? (-index) : index;
                     index %= testNumber;
                     int testValue = list[index];
-                    Assert.IsTrue(set.Contains(testValue));
+                    Assert.True(set.Contains(testValue));
                 }
 
                 for (int i = 0; i < 100; i++)
                 {
                     int min = list.Min();
-                    Assert.AreEqual(min, set.Min);
+                    Assert.Equal(min, set.Min);
                     set.RemoveMin();
-                    Assert.AreEqual(testNumber - i - 1, set.Count);
-                    Assert.IsFalse(set.Contains(min));
+                    Assert.Equal(testNumber - i - 1, set.Count);
+                    Assert.False(set.Contains(min));
                     list.Remove(min);
                 }
 
@@ -73,10 +74,10 @@ namespace Test.Commons.Collections
                 for (int i = 0; i < 100; i++)
                 {
                     int max = list.Max();
-                    Assert.AreEqual(max, set.Max);
+                    Assert.Equal(max, set.Max);
                     set.RemoveMax();
-                    Assert.AreEqual(testNumber - i - 1, set.Count);
-                    Assert.IsFalse(set.Contains(max));
+                    Assert.Equal(testNumber - i - 1, set.Count);
+                    Assert.False(set.Contains(max));
                     list.Remove(max);
                 }
 
@@ -87,16 +88,16 @@ namespace Test.Commons.Collections
                     index = index < 0 ? (-index) : index;
                     index %= testNumber - i;
                     int toRemove = list[index];
-                    Assert.IsTrue(set.Contains(toRemove));
-                    Assert.IsTrue(set.Remove(toRemove));
-                    Assert.IsFalse(set.Contains(toRemove));
-                    Assert.AreEqual(testNumber - i - 1, set.Count);
+                    Assert.True(set.Contains(toRemove));
+                    Assert.True(set.Remove(toRemove));
+                    Assert.False(set.Contains(toRemove));
+                    Assert.Equal(testNumber - i - 1, set.Count);
                     list.Remove(toRemove);
                 }
             }
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetRemove()
         {
             for (int j = 0; j < 1000; j++)
@@ -117,7 +118,7 @@ namespace Test.Commons.Collections
                     }
                 }
 
-                Assert.AreEqual(testNumber, set.Count);
+                Assert.Equal(testNumber, set.Count);
 
                 Random randomIndex = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
 
@@ -127,10 +128,10 @@ namespace Test.Commons.Collections
                     index = index < 0 ? (-index) : index;
                     index %= testNumber - i;
                     int toRemove = list[index];
-                    Assert.IsTrue(set.Contains(toRemove));
-                    Assert.IsTrue(set.Remove(toRemove));
-                    Assert.IsFalse(set.Contains(toRemove));
-                    Assert.AreEqual(testNumber - i - 1, set.Count);
+                    Assert.True(set.Contains(toRemove));
+                    Assert.True(set.Remove(toRemove));
+                    Assert.False(set.Contains(toRemove));
+                    Assert.Equal(testNumber - i - 1, set.Count);
                     list.Remove(toRemove);
                 }
             }
@@ -168,16 +169,16 @@ namespace Test.Commons.Collections
                     index %= testNumber - i;
                     int toRemove = list[index];
                     deletes.Add(toRemove);
-                    Assert.IsTrue(set.Contains(toRemove));
-                    Assert.IsTrue(set.Remove(toRemove));
-                    Assert.IsFalse(set.Contains(toRemove));
-                    Assert.AreEqual(testNumber - i - 1, set.Count);
+                    Assert.True(set.Contains(toRemove));
+                    Assert.True(set.Remove(toRemove));
+                    Assert.False(set.Contains(toRemove));
+                    Assert.Equal(testNumber - i - 1, set.Count);
                     list.Remove(toRemove);
                 }
             }
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetRemoveMin()
         {
             for (int j = 0; j < 1000; j++)
@@ -195,7 +196,7 @@ namespace Test.Commons.Collections
                         list.Add(v);
                     }
                 }
-                Assert.AreEqual(testNumber, set.Count);
+                Assert.Equal(testNumber, set.Count);
                 int removeMin = 10000;
                 List<int> remove = new List<int>();
                 for (int i = 0; i < removeMin; i++)
@@ -203,13 +204,13 @@ namespace Test.Commons.Collections
                     int min = set.Min;
                     remove.Add(min);
                     set.RemoveMin();
-                    Assert.AreEqual(testNumber - i - 1, set.Count);
-                    Assert.IsFalse(set.Contains(min));
+                    Assert.Equal(testNumber - i - 1, set.Count);
+                    Assert.False(set.Contains(min));
                 }
             }
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetRemoveMax()
         {
             for (int j = 0; j < 1000; j++)
@@ -227,7 +228,7 @@ namespace Test.Commons.Collections
                         list.Add(v);
                     }
                 }
-                Assert.AreEqual(testNumber, set.Count);
+                Assert.Equal(testNumber, set.Count);
                 int removeMax = 10000;
                 List<int> remove = new List<int>();
                 for (int i = 0; i < removeMax; i++)
@@ -235,8 +236,8 @@ namespace Test.Commons.Collections
                     int max = set.Max;
                     remove.Add(max);
                     set.RemoveMax();
-                    Assert.AreEqual(testNumber - i - 1, set.Count);
-                    Assert.IsFalse(set.Contains(max));
+                    Assert.Equal(testNumber - i - 1, set.Count);
+                    Assert.False(set.Contains(max));
                 }
             }
         }

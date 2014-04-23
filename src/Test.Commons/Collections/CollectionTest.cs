@@ -18,141 +18,137 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
+
+using Xunit;
 
 using Commons.Collections;
 
-using NUnit;
-using NUnit.Framework;
-using System.IO;
-
 namespace Test.Commons.Collections
 {
-    [TestFixture]
     public class CollectionTest
     {
-        [SetUp]
-        public void Setup()
-        {
-
-        }
-        [TearDown]
-        public void TearDown()
-        {
-
-        }
-
-        [Test]
+        [Fact]
         public void TestBoundedQueueNoAbsorb()
         {
             BoundedQueue<int> queue = new BoundedQueue<int>(10);
             for (int i = 0; i < 10; i++)
             {
-                Assert.IsFalse(queue.IsFull);
+                Assert.False(queue.IsFull);
                 queue.Enqueue(i);
             }
-            Assert.AreEqual(queue.Count, 10);
-            Assert.That(queue.Contains(5));
-            Assert.IsTrue(queue.IsFull);
-            Assert.AreEqual(queue.Peek(), 0);
-            Assert.AreEqual(queue.Dequeue(), 0);
-            Assert.AreEqual(queue.Count, 9);
-            Assert.IsFalse(queue.IsFull);
+            Assert.Equal(queue.Count, 10);
+            Assert.True(queue.Contains(5));
+            Assert.True(queue.IsFull);
+            Assert.Equal(queue.Peek(), 0);
+            Assert.Equal(queue.Dequeue(), 0);
+            Assert.Equal(queue.Count, 9);
+            Assert.False(queue.IsFull);
         }
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Fact]
         public void TestBoundedQueueNoAbsorbExceedLimit()
         {
-            BoundedQueue<int> queue = new BoundedQueue<int>(10);
-            for (int i = 0; i < 10; i++)
-            {
-                queue.Enqueue(i);
-            }
+            Assert.Throws<InvalidOperationException>(
+                delegate
+                {
+                    BoundedQueue<int> queue = new BoundedQueue<int>(10);
+                    for (int i = 0; i < 10; i++)
+                    {
+                        queue.Enqueue(i);
+                    }
 
-            queue.Enqueue(11);
+                    queue.Enqueue(11);
+                });
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
+        [Fact]
         public void TestBoundedQueueInvalidMaxSize()
         {
-            BoundedQueue<int> queue = new BoundedQueue<int>(-10);
+            Assert.Throws<ArgumentException>(
+                delegate
+                {
+                    BoundedQueue<int> queue = new BoundedQueue<int>(-10);
+                });
         }
 
-        [Test]
+        [Fact]
         public void TestBoundedQueueConstructedWithEnumrable()
         {
             BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 5);
-            Assert.That(queue.Count == 5);
+            Assert.True(queue.Count == 5);
             int[] array = new int[10];
             queue.CopyTo(array, 1);
-            Assert.That(array[0] == 0);
+            Assert.True(array[0] == 0);
             for (int i = 0; i < 5; i++)
             {
-                Assert.That(array[i+1] == i);
+                Assert.True(array[i+1] == i);
             }
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void TestBoundedQueueCopyToNullArray()
         {
-            BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 5);
-            queue.CopyTo(null, 0);
+            Assert.Throws<ArgumentNullException>(
+                delegate
+                {
+                    BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 5);
+                    queue.CopyTo(null, 0);
+                });
         }
         
-        [Test]
+        [Fact]
         public void TestBoundedQueueAbsorb()
         {
             BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 6, true);
-            Assert.That(queue.Count == 6);
-            Assert.That(queue.Peek() == 0);
+            Assert.True(queue.Count == 6);
+            Assert.True(queue.Peek() == 0);
             queue.Enqueue(7);
-            Assert.That(queue.Count == 6);
-            Assert.That(queue.Peek() == 1);
+            Assert.True(queue.Count == 6);
+            Assert.True(queue.Peek() == 1);
         }
 
-        [Test]
+        [Fact]
         public void TestBoundedQueueAbsorbWithMaxsizeOne()
         {
             BoundedQueue<int> queue = new BoundedQueue<int>(1, true);
             queue.Enqueue(0);
             queue.Enqueue(10);
-            Assert.That(queue.Count == 1);
-            Assert.That(queue.Dequeue() == 10);
-            Assert.That(queue.Count == 0);
+            Assert.True(queue.Count == 1);
+            Assert.True(queue.Dequeue() == 10);
+            Assert.True(queue.Count == 0);
         }
 
-        [Test]
+        [Fact]
         public void TestCompositeCollectionEmptyConstructor()
         {
             CompositeCollection<int> comp = new CompositeCollection<int>();
             comp.Add(1);
             comp.Add(2);
-            Assert.AreEqual(comp.Count, 2);
+            Assert.Equal(comp.Count, 2);
             comp.AddAll(Enumerable.Range(3, 5).ToList());
-            Assert.AreEqual(comp.Count, 7);
+            Assert.Equal(comp.Count, 7);
         }
 
-        [Test]
+        [Fact]
         public void TestCompositeCollectionMultiparamConstructor()
         {
             List<int> list1 = Enumerable.Range(0, 10).ToList();
             List<int> list2 = Enumerable.Range(8, 10).ToList();
 
             CompositeCollection<int> comp = new CompositeCollection<int>(list1, list2);
-            Assert.AreEqual(comp.Count, 20);
+            Assert.Equal(comp.Count, 20);
             comp.Add(30);
-            Assert.AreEqual(comp.Count, 21);
-            Assert.IsTrue(comp.Remove(9));
-            Assert.IsFalse(comp.Contains(9));
-            Assert.IsTrue(comp.Contains(8));
+            Assert.Equal(comp.Count, 21);
+            Assert.True(comp.Remove(9));
+            Assert.False(comp.Contains(9));
+            Assert.True(comp.Contains(8));
             comp.Clear();
-            Assert.AreEqual(comp.Count, 0);
+            Assert.Equal(comp.Count, 0);
         }
 
-        [Test]
+        [Fact]
         public void TestCompositeCollectionUniqueList()
         {
             List<int> list1 = Enumerable.Range(0, 10).ToList();
@@ -160,14 +156,14 @@ namespace Test.Commons.Collections
             CompositeCollection<int> comp = new CompositeCollection<int>(list1, list2);
 
             IList<int> result = comp.ToUnique();
-            Assert.AreEqual(result.Count, 18);
+            Assert.Equal(result.Count, 18);
             for (int i = 0; i < 18; i++)
             {
-                Assert.AreEqual(result[i], i);
+                Assert.Equal(result[i], i);
             }
         }
 
-        [Test]
+        [Fact]
         public void TestCompositeCollectionEnumrator()
         {
             List<int> list1 = Enumerable.Range(0, 10).ToList();
@@ -176,20 +172,20 @@ namespace Test.Commons.Collections
             int i = 0;
             foreach (var item in comp)
             {
-                Assert.AreEqual(item, i);
+                Assert.Equal(item, i);
                 i++;
             }
-            Assert.AreEqual(i, 20);
+            Assert.Equal(i, 20);
             int[] array = new int[25];
             comp.CopyTo(array, 1);
-            Assert.AreEqual(0, array[0]);
+            Assert.Equal(0, array[0]);
             for (int j = 1; j < 21; j++)
             {
-                Assert.AreEqual(j - 1, array[j]);
+                Assert.Equal(j - 1, array[j]);
             }
         }
 
-        [Test]
+        [Fact]
         public void TestCompositeCollectionFuncComparer()
         {
             List<Order> orders1 = new List<Order>() { new Order() { Id = 1, Name = "Name1" }, new Order { Id = 2, Name = "Name2" }, new Order { Id = 3, Name = "Name3" } };
@@ -197,17 +193,17 @@ namespace Test.Commons.Collections
             List<Order> orders3 = new List<Order>() { new Order() { Id = 6, Name = "Name6" }, new Order { Id = 7, Name = "Name7" }, new Order { Id = 8, Name = "Name8" } };
             CompositeCollection<Order> orders = new CompositeCollection<Order>(orders1, orders2, orders3);
             Order o1 = new Order() { Id = 1, Name = "whatever" };
-            Assert.IsTrue(orders.Contains(o1, (i1, i2) => i1.Id == i2.Id));
+            Assert.True(orders.Contains(o1, (i1, i2) => i1.Id == i2.Id));
             Order o2 = new Order() { Id = 1111, Name = "whatever" };
-            Assert.IsFalse(orders.Contains(o2, (i1, i2) => i1.Id == i2.Id));
+            Assert.False(orders.Contains(o2, (i1, i2) => i1.Id == i2.Id));
             var list = orders.ToUnique((i1, i2) => i1.Id == i2.Id);
-            Assert.AreEqual(list.Count, 8);
+            Assert.Equal(list.Count, 8);
 
-            Assert.IsTrue(orders.Remove(o1, (i1, i2) => i1.Id == i2.Id));
-            Assert.IsFalse(orders.Remove(o2, (i1, i2) => i1.Id == i2.Id));
+            Assert.True(orders.Remove(o1, (i1, i2) => i1.Id == i2.Id));
+            Assert.False(orders.Remove(o2, (i1, i2) => i1.Id == i2.Id));
         }
 
-        [Test]
+        [Fact]
         public void TestCompositeCollectionEqualityComparer()
         {
             List<Order> orders1 = new List<Order>() { new Order() { Id = 1, Name = "Name1" }, new Order { Id = 2, Name = "Name2" }, new Order { Id = 3, Name = "Name3" } };
@@ -215,50 +211,56 @@ namespace Test.Commons.Collections
             List<Order> orders3 = new List<Order>() { new Order() { Id = 6, Name = "Name6" }, new Order { Id = 7, Name = "Name7" }, new Order { Id = 8, Name = "Name8" } };
             CompositeCollection<Order> orders = new CompositeCollection<Order>(orders1, orders2, orders3);
             Order o1 = new Order() { Id = 1, Name = "whatever" };
-            Assert.IsTrue(orders.Contains(o1, new OrderEqualityComparer()));
+            Assert.True(orders.Contains(o1, new OrderEqualityComparer()));
             Order o2 = new Order() { Id = 1111, Name = "whatever" };
-            Assert.IsFalse(orders.Contains(o2, new OrderEqualityComparer()));
+            Assert.False(orders.Contains(o2, new OrderEqualityComparer()));
             var list = orders.ToUnique(new OrderEqualityComparer());
-            Assert.AreEqual(list.Count, 8);
+            Assert.Equal(list.Count, 8);
 
-            Assert.IsTrue(orders.Remove(o1, new OrderEqualityComparer()));
-            Assert.IsFalse(orders.Remove(o2, new OrderEqualityComparer()));
+            Assert.True(orders.Remove(o1, new OrderEqualityComparer()));
+            Assert.False(orders.Remove(o2, new OrderEqualityComparer()));
         }
 
-        [Test]
+        [Fact]
         public void TestPredicatedCollection()
         {
             PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
             pc.Add(1);
             pc.Add(2);
-            Assert.AreEqual(2, pc.Count);
+            Assert.Equal(2, pc.Count);
             List<int> list = new List<int>() { 3, 4, 5 };
             pc.AddAll(list);
-            Assert.AreEqual(5, pc.Count);
+            Assert.Equal(5, pc.Count);
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
+        [Fact]
         public void TestPredicatedCollectionValidateFail()
         {
-            PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
-            pc.Add(1);
-            pc.Add(2);
-            pc.Add(-1);
+            Assert.Throws<ArgumentException>(
+                delegate
+                {
+                    PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
+                    pc.Add(1);
+                    pc.Add(2);
+                    pc.Add(-1);
+                });
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
+        [Fact]
         public void TestPredicatedCollectionAddAllValidateFail()
         {
-            PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
-            pc.Add(1);
-            pc.Add(2);
-            List<int> list = new List<int>() { 3, -1, 5 };
-            pc.AddAll(list);
+            Assert.Throws<ArgumentException>(
+                delegate
+                {
+                    PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
+                    pc.Add(1);
+                    pc.Add(2);
+                    List<int> list = new List<int>() { 3, -1, 5 };
+                    pc.AddAll(list);
+                });
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetSimpleOperations()
         {
             ITreeSet<int> set = new TreeSet<int>();
@@ -267,18 +269,18 @@ namespace Test.Commons.Collections
             {
                 count++;
             }
-            Assert.IsTrue(count == 0);
-            Assert.IsTrue(set.Count == 0);
+            Assert.True(count == 0);
+            Assert.True(set.Count == 0);
             set.Add(10);
             set.Add(20);
             set.Add(30);
             set.Add(5);
             set.Add(1);
-            Assert.IsTrue(set.Contains(20));
-            Assert.IsFalse(set.Contains(100));
-            Assert.AreEqual(5, set.Count);
-            Assert.AreEqual(30, set.Max);
-            Assert.AreEqual(1, set.Min);
+            Assert.True(set.Contains(20));
+            Assert.False(set.Contains(100));
+            Assert.Equal(5, set.Count);
+            Assert.Equal(30, set.Max);
+            Assert.Equal(1, set.Min);
 
             var list = new List<int>();
 
@@ -287,33 +289,33 @@ namespace Test.Commons.Collections
                 list.Add(item);
             }
 
-            Assert.IsTrue(list.Count == set.Count);
+            Assert.True(list.Count == set.Count);
 
             foreach (var item in list)
             {
-                Assert.IsTrue(set.Contains(item));
+                Assert.True(set.Contains(item));
             }
 
             var array = new int[5];
             set.CopyTo(array, 0);
             foreach (var item in array)
             {
-                Assert.IsTrue(set.Contains(item));
+                Assert.True(set.Contains(item));
             }
 
-            Assert.IsTrue(set.Remove(5));
-            Assert.AreEqual(4, set.Count);
-            Assert.IsFalse(set.Contains(5));
+            Assert.True(set.Remove(5));
+            Assert.Equal(4, set.Count);
+            Assert.False(set.Contains(5));
 
             set.RemoveMin();
-            Assert.AreEqual(3, set.Count);
-            Assert.IsFalse(set.Contains(1));
+            Assert.Equal(3, set.Count);
+            Assert.False(set.Contains(1));
 
             set.Clear();
-            Assert.AreEqual(0, set.Count);
+            Assert.Equal(0, set.Count);
         }
 
-        [Test]
+        [Fact]
         public void TestTreeSetRandomOperations()
         {
             for (int j = 0; j < 10; j++)
@@ -336,12 +338,12 @@ namespace Test.Commons.Collections
                 int count = 0;
                 foreach (var item in set)
                 {
-                    Assert.IsTrue(list.Contains(item));
+                    Assert.True(list.Contains(item));
                     count++;
                 }
-                Assert.IsTrue(count == set.Count);
+                Assert.True(count == set.Count);
 
-                Assert.AreEqual(testNumber, set.Count);
+                Assert.Equal(testNumber, set.Count);
 
                 Random randomIndex = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
                 for (int i = 0; i < 100; i++)
@@ -350,16 +352,16 @@ namespace Test.Commons.Collections
                     index = index < 0 ? (-index) : index;
                     index %= testNumber;
                     int testValue = list[index];
-                    Assert.IsTrue(set.Contains(testValue));
+                    Assert.True(set.Contains(testValue));
                 }
 
                 for (int i = 0; i < 100; i++)
                 {
                     int min = list.Min();
-                    Assert.AreEqual(min, set.Min);
+                    Assert.Equal(min, set.Min);
                     set.RemoveMin();
-                    Assert.AreEqual(testNumber - i - 1, set.Count);
-                    Assert.IsFalse(set.Contains(min));
+                    Assert.Equal(testNumber - i - 1, set.Count);
+                    Assert.False(set.Contains(min));
                     list.Remove(min);
                 }
 
@@ -367,10 +369,10 @@ namespace Test.Commons.Collections
                 for (int i = 0; i < 100; i++)
                 {
                     int max = list.Max();
-                    Assert.AreEqual(max, set.Max);
+                    Assert.Equal(max, set.Max);
                     set.RemoveMax();
-                    Assert.AreEqual(testNumber - i - 1, set.Count);
-                    Assert.IsFalse(set.Contains(max));
+                    Assert.Equal(testNumber - i - 1, set.Count);
+                    Assert.False(set.Contains(max));
                     list.Remove(max);
                 }
 
@@ -381,10 +383,10 @@ namespace Test.Commons.Collections
                     index = index < 0 ? (-index) : index;
                     index %= testNumber - i;
                     int toRemove = list[index];
-                    Assert.IsTrue(set.Contains(toRemove));
-                    Assert.IsTrue(set.Remove(toRemove));
-                    Assert.IsFalse(set.Contains(toRemove));
-                    Assert.AreEqual(testNumber - i - 1, set.Count);
+                    Assert.True(set.Contains(toRemove));
+                    Assert.True(set.Remove(toRemove));
+                    Assert.False(set.Contains(toRemove));
+                    Assert.Equal(testNumber - i - 1, set.Count);
                     list.Remove(toRemove);
                 }
             }
