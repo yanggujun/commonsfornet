@@ -49,7 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractCollectionDecorator.cs" />
+    <Compile Include="BidiMap\IBidiMap.cs" />
+    <Compile Include="Collection\AbstractCollectionDecorator.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Bag\AbstractBagDecorator.cs" />
     <Compile Include="Bag\AbstractMapBag.cs" />
@@ -57,21 +58,23 @@
     <Compile Include="Bag\HashBag.cs" />
     <Compile Include="Bag\PredicateBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
-    <Compile Include="BoundedQueue.cs" />
-    <Compile Include="CompositeCollection.cs" />
-    <Compile Include="Functors.cs" />
-    <Compile Include="IBag.cs" />
-    <Compile Include="IMultiMap.cs" />
-    <Compile Include="IndexedCollection.cs" />
-    <Compile Include="IBoundedCollection.cs" />
-    <Compile Include="ISortedBag.cs" />
-    <Compile Include="ITreeMap.cs" />
-    <Compile Include="ITreeSet.cs" />
-    <Compile Include="LlrbTree.cs" />
-    <Compile Include="PredicatedCollection.cs" />
-    <Compile Include="TransformedCollection.cs" />
-    <Compile Include="TreeMap.cs" />
-    <Compile Include="TreeSet.cs" />
+    <Compile Include="Deque\IDeque.cs" />
+    <Compile Include="Json\JsonObject.cs" />
+    <Compile Include="Queue\BoundedQueue.cs" />
+    <Compile Include="Collection\CompositeCollection.cs" />
+    <Compile Include="Functor\Functors.cs" />
+    <Compile Include="Bag\IBag.cs" />
+    <Compile Include="Map\IMultiMap.cs" />
+    <Compile Include="Collection\IndexedCollection.cs" />
+    <Compile Include="Collection\IBoundedCollection.cs" />
+    <Compile Include="Bag\ISortedBag.cs" />
+    <Compile Include="Map\ITreeMap.cs" />
+    <Compile Include="Set\ITreeSet.cs" />
+    <Compile Include="Tree\LlrbTree.cs" />
+    <Compile Include="Collection\PredicatedCollection.cs" />
+    <Compile Include="Collection\TransformedCollection.cs" />
+    <Compile Include="Map\TreeMap.cs" />
+    <Compile Include="Set\TreeSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

@@ -18,7 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Commons.Collections
+namespace Commons.Collections.Queue
 {
     /// <summary>
     /// Defines a queue whose size is limited. When the queue is full, if the 

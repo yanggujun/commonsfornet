@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Generic;
 
+using Commons.Collections.Map;
+
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]

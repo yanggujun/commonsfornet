@@ -24,6 +24,9 @@ using System.Threading.Tasks;
 using Xunit;
 
 using Commons.Collections;
+using Commons.Collections.Set;
+using Commons.Collections.Queue;
+using Commons.Collections.Collection;
 
 namespace Test.Commons.Collections
 {

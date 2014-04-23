@@ -18,7 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Commons.Collections
+namespace Commons.Collections.Collection
 {
     /// <summary>
     /// Provides a collection same with how System.Linq.Enumerable.Concat method provides

@@ -21,33 +21,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Commons.Collections
+using Commons.Collections.Set;
+
+namespace Commons.Collections.Map
 {
     /// <summary>
-    /// Stub interface for tree set data structure.
+    /// The stub interface of map.
     /// </summary>
-    /// <typeparam name="T">The type of the set items.</typeparam>
+    /// <typeparam name="TKey">Type of the key</typeparam>
+    /// <typeparam name="TValue">Type of the value</typeparam>
     [CLSCompliant(true)]
-    public interface ITreeSet<T> : ICollection<T>, IEnumerable<T>, IEnumerable
+    public interface ITreeMap<TKey, TValue> : IDictionary<TKey, TValue>
     {
         /// <summary>
-        /// Removes the minimum value in the set.
+        /// Puts the keys of the map to a tree set.
         /// </summary>
-        void RemoveMin();
+        ITreeSet<TKey> KeySet { get; }
 
         /// <summary>
-        /// Removes the maximum value in the set.
+        /// Return a key value pair whose key is the maximum in the map.
+        /// </summary>
+        KeyValuePair<TKey, TValue> Max { get; }
+
+        /// <summary>
+        /// Return a key value pair whose key is the minimum in the map.
+        /// </summary>
+        KeyValuePair<TKey, TValue> Min { get; }
+
+        /// <summary>
+        /// Removes maximum item in the map.
         /// </summary>
         void RemoveMax();
 
         /// <summary>
-        /// Retrieves the maximum value in the set.
+        /// Removes minimum item in the map.
         /// </summary>
-        T Max { get; }
-
-        /// <summary>
-        /// Retrieves the minimum value in the set.
-        /// </summary>
-        T Min { get; }
+        void RemoveMin();
     }
 }

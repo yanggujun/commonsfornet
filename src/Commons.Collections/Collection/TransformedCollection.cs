@@ -20,23 +20,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Commons.Collections
+namespace Commons.Collections.Collection
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [CLSCompliant(true)]
-    public interface IBag<T> : ICollection<T>
+    public class TransformedCollection<T> : AbstractCollectionDecorator<T>
     {
-        int GetCount(T item);
+        private readonly Transformer<T, T> transform;
+        public TransformedCollection(ICollection<T> collection, Transformer<T, T> transform) : base(collection)
+        {
+            this.transform = transform;
+        }
 
-        void Add(T item, int copies = 1);
+        public override void Add(T item)
+        {
+            Decorated.Add(transform(item));
+        }
 
-        bool Remove(T item, int copies);
-
-        bool ContainsAll(ICollection<T> collection);
-
-        bool RemoveAll(ICollection<T> collection);
-
-        bool RetainAll(ICollection<T> collection);
-
-        ISet<T> ToUnique();
+        public virtual void AddAll(ICollection<T> items)
+        {
+            foreach (var i in items)
+            {
+                Decorated.Add(transform(i));
+            }
+        }
     }
 }

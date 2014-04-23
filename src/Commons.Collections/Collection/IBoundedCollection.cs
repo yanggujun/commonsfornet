@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Commons.Collections
+namespace Commons.Collections.Collection
 {
     /// <summary>
     /// Defines a collection that is size limited. The size of the collection can vary, but it 

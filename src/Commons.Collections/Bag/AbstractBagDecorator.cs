@@ -21,6 +21,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Commons.Collections.Collection;
+
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]

@@ -15,45 +15,28 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Commons.Collections
+namespace Commons.Collections.Bag
 {
-    /// <summary>
-    /// The stub interface of map.
-    /// </summary>
-    /// <typeparam name="TKey">Type of the key</typeparam>
-    /// <typeparam name="TValue">Type of the value</typeparam>
     [CLSCompliant(true)]
-    public interface ITreeMap<TKey, TValue> : IDictionary<TKey, TValue>
+    public interface IBag<T> : ICollection<T>
     {
-        /// <summary>
-        /// Puts the keys of the map to a tree set.
-        /// </summary>
-        ITreeSet<TKey> KeySet { get; }
+        int GetCount(T item);
 
-        /// <summary>
-        /// Return a key value pair whose key is the maximum in the map.
-        /// </summary>
-        KeyValuePair<TKey, TValue> Max { get; }
+        void Add(T item, int copies = 1);
 
-        /// <summary>
-        /// Return a key value pair whose key is the minimum in the map.
-        /// </summary>
-        KeyValuePair<TKey, TValue> Min { get; }
+        bool Remove(T item, int copies);
 
-        /// <summary>
-        /// Removes maximum item in the map.
-        /// </summary>
-        void RemoveMax();
+        bool ContainsAll(ICollection<T> collection);
 
-        /// <summary>
-        /// Removes minimum item in the map.
-        /// </summary>
-        void RemoveMin();
+        bool RemoveAll(ICollection<T> collection);
+
+        bool RetainAll(ICollection<T> collection);
+
+        ISet<T> ToUnique();
     }
 }

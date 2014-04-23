@@ -20,7 +20,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Commons.Collections
+using Commons.Collections.Map;
+
+namespace Commons.Collections.Collection
 {
     /// <summary>
     /// The IndexedCollection provides a map like view on a collection. Other than specifying the key and value explicitly,

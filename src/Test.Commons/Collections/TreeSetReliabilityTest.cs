@@ -22,6 +22,7 @@ using System.Linq;
 using Xunit;
 
 using Commons.Collections;
+using Commons.Collections.Set;
 
 namespace Test.Commons.Collections
 {

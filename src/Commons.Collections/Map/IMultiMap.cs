@@ -20,32 +20,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Commons.Collections
+namespace Commons.Collections.Map
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
     [CLSCompliant(true)]
-    public class TransformedCollection<T> : AbstractCollectionDecorator<T>
+    public class IMultiMap<TKey, TItem>
     {
-        private readonly Transformer<T, T> transform;
-        public TransformedCollection(ICollection<T> collection, Transformer<T, T> transform) : base(collection)
-        {
-            this.transform = transform;
-        }
-
-        public override void Add(T item)
-        {
-            Decorated.Add(transform(item));
-        }
-
-        public virtual void AddAll(ICollection<T> items)
-        {
-            foreach (var i in items)
-            {
-                Decorated.Add(transform(i));
-            }
-        }
     }
 }

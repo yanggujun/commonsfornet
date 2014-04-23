@@ -22,7 +22,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Commons.Collections
+namespace Commons.Collections.Collection
 {
     /// <summary>
     /// The collection decorator for the concrete collections.

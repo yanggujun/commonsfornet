@@ -21,7 +21,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Commons.Collections
+using Commons.Collections.Set;
+using Commons.Collections.Tree;
+
+namespace Commons.Collections.Map
 {
     /// <summary>
     /// A tree map with the left leaning red black tree implementation. A tree map is a sorted dictionary.

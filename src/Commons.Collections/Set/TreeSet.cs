@@ -21,7 +21,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Commons.Collections
+using Commons.Collections.Tree;
+
+namespace Commons.Collections.Set
 {
     /// <summary>
     /// Tree set implemented as a left leaning red black tree. A left leaning red black tree is a red black tree 

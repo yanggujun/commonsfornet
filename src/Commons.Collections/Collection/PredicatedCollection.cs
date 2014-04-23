@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Commons.Collections
+namespace Commons.Collections.Collection
 {
     /// <summary>
     /// Decorates another collection to validate the conditions to match a specfied predicate.

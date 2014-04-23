@@ -23,6 +23,8 @@ using System.Threading.Tasks;
 using Xunit;
 
 using Commons.Collections;
+using Commons.Collections.Map;
+using Commons.Collections.Set;
 
 namespace Test.Commons.Collections
 {

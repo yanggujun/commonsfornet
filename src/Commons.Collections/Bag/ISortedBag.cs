@@ -20,10 +20,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Commons.Collections
+namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
-    public class IMultiMap<TKey, TItem>
+    public interface ISortedBag<T> : IBag<T>
     {
+        T First { get; }
+
+        T Last { get; }
     }
 }

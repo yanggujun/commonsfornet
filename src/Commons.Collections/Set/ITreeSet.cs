@@ -15,18 +15,39 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Commons.Collections
+namespace Commons.Collections.Set
 {
+    /// <summary>
+    /// Stub interface for tree set data structure.
+    /// </summary>
+    /// <typeparam name="T">The type of the set items.</typeparam>
     [CLSCompliant(true)]
-    public interface ISortedBag<T> : IBag<T>
+    public interface ITreeSet<T> : ICollection<T>, IEnumerable<T>, IEnumerable
     {
-        T First { get; }
+        /// <summary>
+        /// Removes the minimum value in the set.
+        /// </summary>
+        void RemoveMin();
 
-        T Last { get; }
+        /// <summary>
+        /// Removes the maximum value in the set.
+        /// </summary>
+        void RemoveMax();
+
+        /// <summary>
+        /// Retrieves the maximum value in the set.
+        /// </summary>
+        T Max { get; }
+
+        /// <summary>
+        /// Retrieves the minimum value in the set.
+        /// </summary>
+        T Min { get; }
     }
 }
