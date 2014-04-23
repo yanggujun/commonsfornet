@@ -225,45 +225,6 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
-        public void TestPredicatedCollection()
-        {
-            PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
-            pc.Add(1);
-            pc.Add(2);
-            Assert.Equal(2, pc.Count);
-            List<int> list = new List<int>() { 3, 4, 5 };
-            pc.AddAll(list);
-            Assert.Equal(5, pc.Count);
-        }
-
-        [Fact]
-        public void TestPredicatedCollectionValidateFail()
-        {
-            Assert.Throws<ArgumentException>(
-                () =>
-                {
-                    PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
-                    pc.Add(1);
-                    pc.Add(2);
-                    pc.Add(-1);
-                });
-        }
-
-        [Fact]
-        public void TestPredicatedCollectionAddAllValidateFail()
-        {
-            Assert.Throws<ArgumentException>(
-                () =>
-                {
-                    PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
-                    pc.Add(1);
-                    pc.Add(2);
-                    List<int> list = new List<int>() { 3, -1, 5 };
-                    pc.AddAll(list);
-                });
-        }
-
-        [Fact]
         public void TestTreeSetSimpleOperations()
         {
             ITreeSet<int> set = new TreeSet<int>();

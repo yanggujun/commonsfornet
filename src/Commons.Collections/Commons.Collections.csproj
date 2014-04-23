@@ -56,7 +56,6 @@
     <Compile Include="Bag\AbstractMapBag.cs" />
     <Compile Include="Bag\AbstractSortedBagDecorator.cs" />
     <Compile Include="Bag\HashBag.cs" />
-    <Compile Include="Bag\PredicateBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
     <Compile Include="Deque\IDeque.cs" />
     <Compile Include="Json\JsonObject.cs" />
@@ -71,8 +70,6 @@
     <Compile Include="Map\ITreeMap.cs" />
     <Compile Include="Set\ITreeSet.cs" />
     <Compile Include="Tree\LlrbTree.cs" />
-    <Compile Include="Collection\PredicatedCollection.cs" />
-    <Compile Include="Collection\TransformedCollection.cs" />
     <Compile Include="Map\TreeMap.cs" />
     <Compile Include="Set\TreeSet.cs" />
   </ItemGroup>
