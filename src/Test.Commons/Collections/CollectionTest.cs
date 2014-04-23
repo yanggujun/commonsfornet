@@ -51,7 +51,7 @@ namespace Test.Commons.Collections
         public void TestBoundedQueueNoAbsorbExceedLimit()
         {
             Assert.Throws<InvalidOperationException>(
-                delegate
+                () =>
                 {
                     BoundedQueue<int> queue = new BoundedQueue<int>(10);
                     for (int i = 0; i < 10; i++)
@@ -67,7 +67,7 @@ namespace Test.Commons.Collections
         public void TestBoundedQueueInvalidMaxSize()
         {
             Assert.Throws<ArgumentException>(
-                delegate
+                () =>
                 {
                     BoundedQueue<int> queue = new BoundedQueue<int>(-10);
                 });
@@ -91,7 +91,7 @@ namespace Test.Commons.Collections
         public void TestBoundedQueueCopyToNullArray()
         {
             Assert.Throws<ArgumentNullException>(
-                delegate
+                () =>
                 {
                     BoundedQueue<int> queue = new BoundedQueue<int>(Enumerable.Range(0, 10), 5);
                     queue.CopyTo(null, 0);
@@ -237,7 +237,7 @@ namespace Test.Commons.Collections
         public void TestPredicatedCollectionValidateFail()
         {
             Assert.Throws<ArgumentException>(
-                delegate
+                () =>
                 {
                     PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
                     pc.Add(1);
@@ -250,7 +250,7 @@ namespace Test.Commons.Collections
         public void TestPredicatedCollectionAddAllValidateFail()
         {
             Assert.Throws<ArgumentException>(
-                delegate
+                () =>
                 {
                     PredicatedCollection<int> pc = new PredicatedCollection<int>(i => i > 0);
                     pc.Add(1);
