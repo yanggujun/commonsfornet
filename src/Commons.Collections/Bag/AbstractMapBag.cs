@@ -33,6 +33,23 @@ namespace Commons.Collections.Bag
             Map = map;
         }
 
+        protected AbstractMapBag(IEnumerable<T> items, IDictionary<T, int> map)
+        {
+            Map = map;
+            foreach (var item in items)
+            {
+                if (Map.ContainsKey(item))
+                {
+                    Map[item]++;
+                }
+                else
+                {
+                    Map.Add(item, 1);
+                }
+            }
+
+        }
+
         public virtual int GetCount(T item)
         {
             return Map[item];

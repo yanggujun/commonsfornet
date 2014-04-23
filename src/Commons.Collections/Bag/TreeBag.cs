@@ -35,19 +35,8 @@ namespace Commons.Collections.Bag
         }
 
         public TreeBag(IEnumerable<T> items, Comparison<T> comp)
-            : base(new TreeMap<T, int>(comp))
+            : base(items, new TreeMap<T, int>(comp))
         {
-            foreach (var item in items)
-            {
-                if (Map.ContainsKey(item))
-                {
-                    Map[item]++;
-                }
-                else
-                {
-                    Map.Add(item, 1);
-                }
-            }
         }
 
         public T First

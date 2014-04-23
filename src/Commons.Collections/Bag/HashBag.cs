@@ -28,19 +28,8 @@ namespace Commons.Collections.Bag
         }
 
         public HashBag(IEnumerable<T> items)
-            : base(new Dictionary<T, int>())
+            : base(items, new Dictionary<T, int>())
         {
-            foreach (var item in items)
-            {
-                if (Map.ContainsKey(item))
-                {
-                    Map[item]++;
-                }
-                else
-                {
-                    Map.Add(item, 1);
-                }
-            }
         }
     }
 }
