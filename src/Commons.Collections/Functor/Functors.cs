@@ -18,7 +18,7 @@ using System;
 namespace Commons.Collections
 {
     [CLSCompliant(true)]
-    public delegate bool Equality<in T>(T x, T y);
+    public delegate bool Equator<in T>(T x, T y);
 
     [CLSCompliant(true)]
     public delegate void Closure<in T>(T x);
