@@ -69,7 +69,7 @@
     <Compile Include="Bag\ISortedBag.cs" />
     <Compile Include="Map\ITreeMap.cs" />
     <Compile Include="Set\ITreeSet.cs" />
-    <Compile Include="Tree\LlrbTree.cs" />
+    <Compile Include="Common\LlrbTree.cs" />
     <Compile Include="Map\TreeMap.cs" />
     <Compile Include="Set\TreeSet.cs" />
   </ItemGroup>

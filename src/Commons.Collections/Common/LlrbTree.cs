@@ -23,7 +23,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Commons.Collections.Tree
+namespace Commons.Collections.Common
 {
     /// <summary>
     /// A tree set with a left leaning red black tree implementation. The Left-Leaning RB tree is introduced by 
