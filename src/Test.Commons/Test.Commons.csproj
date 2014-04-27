@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\CollectionTest.cs" />
+    <Compile Include="Collections\HashTest.cs" />
     <Compile Include="Collections\TreeSetReliabilityTest.cs" />
     <Compile Include="Collections\TreeSetPerformanceTest.cs" />
     <Compile Include="Collections\LlrbTreeTest.cs" />

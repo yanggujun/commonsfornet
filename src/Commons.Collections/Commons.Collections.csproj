@@ -57,6 +57,9 @@
     <Compile Include="Bag\AbstractSortedBagDecorator.cs" />
     <Compile Include="Bag\HashBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
+    <Compile Include="Common\IHasher.cs" />
+    <Compile Include="Common\MurmurHash32.cs" />
+    <Compile Include="Map\OptimizedStringMap.cs" />
     <Compile Include="Deque\IDeque.cs" />
     <Compile Include="Json\JsonObject.cs" />
     <Compile Include="Queue\BoundedQueue.cs" />
