@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET. Author: Gujun Yang. email: gujun.yang@gmail.com
+﻿// Copyright CommonsForNET 2014.
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -15,7 +15,7 @@
 // limitations under the License.
 
 using System;
-namespace Commons.Collections
+namespace Commons.Collections.Common
 {
     [CLSCompliant(true)]
     public delegate bool Equator<in T>(T x, T y);

@@ -65,7 +65,7 @@
     <Compile Include="Json\JsonObject.cs" />
     <Compile Include="Queue\BoundedQueue.cs" />
     <Compile Include="Collection\CompositeCollection.cs" />
-    <Compile Include="Functor\Functors.cs" />
+    <Compile Include="Common\Functors.cs" />
     <Compile Include="Bag\IBag.cs" />
     <Compile Include="Map\IMultiMap.cs" />
     <Compile Include="Collection\IndexedCollection.cs" />
