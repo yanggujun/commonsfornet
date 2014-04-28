@@ -21,7 +21,7 @@ namespace Commons.Collections.Common
     /// <summary>
     /// Defines a hash algorithm interface. A hash alogrithm requires the bytes to hash and the hash seed.
     /// </summary>
-    internal interface IHasher
+    internal interface IHashStrategy
     {
         UInt32[] Hash(Byte[] bytes);
     }

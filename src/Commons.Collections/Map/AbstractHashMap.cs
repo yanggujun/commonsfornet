@@ -14,49 +14,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Commons.Collections.Common;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Collections;
+
+using Commons.Collections.Common;
 
 namespace Commons.Collections.Map
 {
     /// <summary>
-    /// The data structure is a hash map intended for large map whose key is a string. 
-    /// The map can be used as the primary data structure to store large JSON object.
-    /// Different from the normal hash table which uses the object.GetHashCode() to generate the hash, 
-    /// the OptimizedStringMap uses 32bit MurmurHash3 algorithm to generate hash code. The purpose is to reduce
-    /// the collision and calculation cost for large string.
-    /// The map will be in inefficient when the item number is small.
+    /// The abstract class provides an alternative skeleton class for dictionary.
+    /// The purpose is to enable the alternative hash algorithms.
     /// </summary>
-    /// <typeparam name="T">The type of the value item in the map.</typeparam>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
     [CLSCompliant(true)]
-    public class OptimizedStringMap<T> : IDictionary<string, T>, IEnumerable<KeyValuePair<string, T>>
+    public abstract class AbstractHashMap<K, V> : IDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>
     {
-        private const int DefaultCapacity = 128;
-        private const int MaxCapacity = 1 << 30;
-        private const double LoadFactor = 0.75f;
-        private int capacity = DefaultCapacity;
-        private int threshold = (int)(DefaultCapacity * LoadFactor);
-        private IHasher hasher;
-        private HashEntry[] Entries { get; set; }
+        protected int Capacity { get; set; }
+        protected int Threshold { get; set; }
+        protected HashEntry[] Entries { get; set; }
 
-        public OptimizedStringMap() : this(DefaultCapacity)
-        {
-        }
-
-        public OptimizedStringMap(int capacity) : this(capacity, null)
-        {
-        }
-
-        public OptimizedStringMap(int capacity, IEnumerable<KeyValuePair<string, T>> items)
+        protected AbstractHashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items)
         {
             Count = 0;
-            this.capacity = CalculateCapacity(capacity);
-            this.threshold = (int)(this.capacity * LoadFactor);
-            Entries = new HashEntry[this.capacity];
-            hasher = new MurmurHash32();
+            this.Capacity = CalculateCapacity(capacity);
+            Entries = new HashEntry[this.Capacity];
             if (null != items)
             {
                 foreach (var item in items)
@@ -66,17 +50,17 @@ namespace Commons.Collections.Map
             }
         }
 
-        public void Add(string key, T value)
+        public void Add(K key, V value)
         {
-            var newEntry = new HashEntry(new KeyValuePair<string, T>(key, value));
+            var newEntry = new HashEntry(new KeyValuePair<K, V>(key, value));
             // space to optmize?
             Put(Entries, newEntry);
-            if (Count > threshold)
+            if (Count > Threshold)
             {
-                var newCapacity = CalculateCapacity(capacity << 1);
-                if (newCapacity > capacity)
+                var newCapacity = CalculateCapacity(Capacity << 1);
+                if (newCapacity > Capacity)
                 {
-                    capacity = newCapacity;
+                    Capacity = newCapacity;
                     Rehash();
                 }
             }
@@ -85,8 +69,7 @@ namespace Commons.Collections.Map
         private void Put(HashEntry[] buckets, HashEntry entry)
         {
             var key = entry.Entry.Key;
-            var hash = Hash(key);
-            var index = HashIndex(hash);
+            var index = HashIndex(key);
 
             var item = buckets[index];
             if (null == item)
@@ -110,30 +93,21 @@ namespace Commons.Collections.Map
             Count++;
         }
 
-        private uint Hash(string key)
-        {
-            var bytes = new byte[key.Length * sizeof(char)];
-            Buffer.BlockCopy(key.ToCharArray(), 0, bytes, 0, bytes.Length);
-            var hash = hasher.Hash(bytes);
-            return hash[0];
-        }
-
         private void Rehash()
         {
-            HashEntry[] newEntries = new HashEntry[capacity];
+            HashEntry[] newEntries = new HashEntry[Capacity];
             Count = 0;
             foreach (var entry in this)
             {
                 var item = entry;
-                Put(newEntries, new HashEntry(new KeyValuePair<string, T>(entry.Key, entry.Value)));
+                Put(newEntries, new HashEntry(new KeyValuePair<K, V>(entry.Key, entry.Value)));
             }
             Entries = newEntries;
         }
 
-        public bool ContainsKey(string key)
+        public bool ContainsKey(K key)
         {
-            var hash = Hash(key);
-            var index = HashIndex(hash);
+            var index = HashIndex(key);
             var item = Entries[index];
             var contains = false;
             while (null != item)
@@ -149,11 +123,11 @@ namespace Commons.Collections.Map
             return contains;
         }
 
-        public ICollection<string> Keys
+        public ICollection<K> Keys
         {
             get
             {
-                List<string> keys = new List<string>();
+                List<K> keys = new List<K>();
                 foreach (var entry in Entries)
                 {
                     var item = entry;
@@ -168,11 +142,10 @@ namespace Commons.Collections.Map
             }
         }
 
-        public bool Remove(string key)
+        public bool Remove(K key)
         {
             var removed = false;
-            var hash = Hash(key);
-            var index = HashIndex(hash);
+            var index = HashIndex(key);
             var entry = Entries[index];
             if (null != entry)
             {
@@ -203,7 +176,7 @@ namespace Commons.Collections.Map
             return removed;
         }
 
-        public bool TryGetValue(string key, out T value)
+        public bool TryGetValue(K key, out V value)
         {
             var contains = false;
             if (ContainsKey(key))
@@ -213,17 +186,17 @@ namespace Commons.Collections.Map
             }
             else
             {
-                value = default(T);
+                value = default(V);
             }
 
             return contains;
         }
 
-        public ICollection<T> Values
+        public ICollection<V> Values
         {
             get
             {
-                List<T> values = new List<T>();
+                List<V> values = new List<V>();
                 foreach (var entry in Entries)
                 {
                     var item = entry;
@@ -238,7 +211,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public T this[string key]
+        public V this[K key]
         {
             get
             {
@@ -247,10 +220,9 @@ namespace Commons.Collections.Map
                     throw new ArgumentException("The key does not exist in the map");
                 }
 
-                var hash = Hash(key);
-                var index = HashIndex(hash);
+                var index = HashIndex(key);
                 var entry = Entries[index];
-                T v = default(T);
+                V v = default(V);
                 while (null != entry)
                 {
                     if (entry.Entry.Key.Equals(key))
@@ -272,14 +244,13 @@ namespace Commons.Collections.Map
                     throw new ArgumentException("The key does not exist in the map");
                 }
 
-                var hash = Hash(key);
-                var index = HashIndex(hash);
+                var index = HashIndex(key);
                 var entry = Entries[index];
                 while (null != entry)
                 {
                     if (entry.Entry.Key.Equals(key))
                     {
-                        entry.Entry = new KeyValuePair<string, T>(key, value);
+                        entry.Entry = new KeyValuePair<K, V>(key, value);
                         break;
                     }
                     else
@@ -291,7 +262,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public void Add(KeyValuePair<string, T> item)
+        public void Add(KeyValuePair<K, V> item)
         {
             this.Add(item.Key, item.Value);
         }
@@ -304,12 +275,12 @@ namespace Commons.Collections.Map
             }
         }
 
-        public bool Contains(KeyValuePair<string, T> item)
+        public bool Contains(KeyValuePair<K, V> item)
         {
             return ContainsKey(item.Key) && this[item.Key].Equals(item.Value);
         }
 
-        public void CopyTo(KeyValuePair<string, T>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
         {
             var index = 0;
             foreach (var entry in this)
@@ -328,12 +299,17 @@ namespace Commons.Collections.Map
             }
         }
 
-        public bool Remove(KeyValuePair<string, T> item)
+        public bool Remove(KeyValuePair<K, V> item)
         {
-            throw new NotImplementedException();
+            var removed = false;
+            if (Contains(item))
+            {
+                removed = Remove(item.Key);
+            }
+            return removed;
         }
 
-        public IEnumerator<KeyValuePair<string, T>> GetEnumerator()
+        public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
             return CreateEnumerator().GetEnumerator();
         }
@@ -343,7 +319,7 @@ namespace Commons.Collections.Map
             return this.GetEnumerator();
         }
 
-        private IEnumerable<KeyValuePair<string, T>> CreateEnumerator()
+        private IEnumerable<KeyValuePair<K, V>> CreateEnumerator()
         {
             foreach (var entry in Entries)
             {
@@ -356,41 +332,20 @@ namespace Commons.Collections.Map
             }
         }
 
-        private int CalculateCapacity(int proposedCapacity)
-        {
-            int newCapacity = 1;
-            if (proposedCapacity > MaxCapacity)
-            {
-                newCapacity = MaxCapacity;
-            }
-            else
-            {
-                while (newCapacity < proposedCapacity)
-                {
-                    newCapacity <<= 1;
-                }
-                newCapacity = newCapacity > MaxCapacity ? MaxCapacity : newCapacity;
-            }
-            threshold = (int) (newCapacity * LoadFactor);
+        protected abstract int CalculateCapacity(int proposedCapacity);
 
-            return newCapacity;
-        }
-
-        private uint HashIndex(uint hash)
-        {
-            return (uint)(hash & capacity - 1);
-        }
+        protected abstract long HashIndex(K key);
 
 #if DEBUG
         [DebuggerDisplay("Entry = {Output}")]
 #endif
-        private class HashEntry
+        protected class HashEntry
         {
-            public HashEntry(KeyValuePair<string, T> entry)
+            public HashEntry(KeyValuePair<K, V> entry)
             {
                 this.Entry = entry;
             }
-            public KeyValuePair<string, T> Entry { get; set; }
+            public KeyValuePair<K, V> Entry { get; set; }
             public HashEntry Next { get; set; }
 
 #if DEBUG

@@ -36,7 +36,7 @@ namespace Test.Commons.Collections
                 keys[i] = Guid.NewGuid().ToString();
             }
 
-            OptimizedStringMap<Order> orders = new OptimizedStringMap<Order>(4);
+            StringMap<Order> orders = new StringMap<Order>(4);
             var idIndex = 0;
             foreach (var key in keys)
             {
@@ -46,7 +46,8 @@ namespace Test.Commons.Collections
                 orders.Add(key, order);
             }
             Assert.Equal(keys.Length, orders.Count);
-            var total = 0; foreach (var o in orders)
+            var total = 0; 
+            foreach (var o in orders)
             {
                 total++;
             }

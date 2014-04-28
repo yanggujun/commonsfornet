@@ -21,7 +21,7 @@ namespace Commons.Collections.Common
     /// <summary>
     /// A 32bit murmur hash implementation.
     /// </summary>
-    internal class MurmurHash32 : IHasher
+    internal class MurmurHash32 : IHashStrategy
     {
         public UInt32[] Hash(Byte[] bytes)
         {
