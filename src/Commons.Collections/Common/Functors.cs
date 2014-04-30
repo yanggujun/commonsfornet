@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System;
+
 namespace Commons.Collections.Common
 {
     [CLSCompliant(true)]
@@ -25,4 +26,7 @@ namespace Commons.Collections.Common
 
     [CLSCompliant(true)]
     public delegate O Transformer<in T, out O>(T x);
+
+    [CLSCompliant(true)]
+    public delegate T Factory<out T>();
 }

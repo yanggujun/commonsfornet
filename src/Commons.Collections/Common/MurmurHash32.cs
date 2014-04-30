@@ -19,14 +19,14 @@ using System;
 namespace Commons.Collections.Common
 {
     /// <summary>
-    /// A 32bit murmur hash implementation.
+    /// A 32bit murmur hash3 implementation.
     /// </summary>
-    internal class MurmurHash32 : IHashStrategy
+    public class MurmurHash32 : IHashStrategy
     {
-        public UInt32[] Hash(Byte[] bytes)
+        public long[] Hash(Byte[] bytes)
         {
-            UInt32[] result = new UInt32[1];
-            result[0] = Calc(bytes);
+            long[] result = new long[1];
+            result[0] = (long)Calc(bytes);
             return result;
         }
 
