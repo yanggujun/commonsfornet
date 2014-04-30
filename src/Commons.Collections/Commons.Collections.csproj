@@ -60,7 +60,7 @@
     <Compile Include="Common\IHashStrategy.cs" />
     <Compile Include="Common\MurmurHash32.cs" />
     <Compile Include="Map\AbstractHashMap.cs" />
-    <Compile Include="Map\StringMap.cs" />
+    <Compile Include="Map\HashMap.cs" />
     <Compile Include="Deque\IDeque.cs" />
     <Compile Include="Queue\BoundedQueue.cs" />
     <Compile Include="Collection\CompositeCollection.cs" />

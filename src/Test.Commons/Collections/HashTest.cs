@@ -36,7 +36,7 @@ namespace Test.Commons.Collections
                 keys[i] = Guid.NewGuid().ToString();
             }
 
-            StringMap<Order> orders = new StringMap<Order>(4);
+            var orders = new HashMap<string, Order>(4);
             var idIndex = 0;
             foreach (var key in keys)
             {

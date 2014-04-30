@@ -30,7 +30,7 @@ namespace Commons.Collections.Map
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
     [CLSCompliant(true)]
-    public abstract class AbstractHashMap<K, V> : IDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>
+    public abstract class AbstractHashMap<K, V> : IDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>, IEnumerable, IDictionary, ICollection, ICollection<KeyValuePair<K, V>>, IReadOnlyDictionary<K, V>
     {
         protected int Capacity { get; set; }
         protected int Threshold { get; set; }
@@ -335,6 +335,134 @@ namespace Commons.Collections.Map
         protected abstract int CalculateCapacity(int proposedCapacity);
 
         protected abstract long HashIndex(K key);
+        void IDictionary.Add(object key, object value)
+        {
+            this.Add((K)key, (V)value);
+        }
+
+        void IDictionary.Clear()
+        {
+            this.Clear();
+        }
+
+        bool IDictionary.Contains(object key)
+        {
+            return this.ContainsKey((K)key);
+        }
+
+        IDictionaryEnumerator IDictionary.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IDictionary.IsFixedSize
+        {
+            get { return false; }
+        }
+
+        bool IDictionary.IsReadOnly
+        {
+            get { return false; }
+        }
+
+        ICollection IDictionary.Keys
+        {
+            get
+            {
+                var keys = new List<K>();
+                foreach (var k in Keys)
+                {
+                    keys.Add(k);
+                }
+                return keys;
+            }
+        }
+
+        void IDictionary.Remove(object key)
+        {
+            this.Remove((K)key);
+        }
+
+        ICollection IDictionary.Values
+        {
+            get
+            {
+                var values = new List<V>();
+                foreach (var v in Values)
+                {
+                    values.Add(v);
+                }
+                return values;
+            }
+        }
+
+        object IDictionary.this[object key]
+        {
+            get
+            {
+                return this[(K)key];
+            }
+            set
+            {
+                this[(K)key] = (V)value;
+            }
+        }
+
+        void ICollection.CopyTo(Array array, int index)
+        {
+            var items = (KeyValuePair<K, V>[])array;
+            this.CopyTo(items, index);
+        }
+
+        int ICollection.Count
+        {
+            get { return this.Count; }
+        }
+
+        bool ICollection.IsSynchronized
+        {
+            get { return false; }
+        }
+
+        object ICollection.SyncRoot
+        {
+            get { return null; }
+        }
+
+        bool IReadOnlyDictionary<K, V>.ContainsKey(K key)
+        {
+            return this.ContainsKey(key);
+        }
+
+        IEnumerable<K> IReadOnlyDictionary<K, V>.Keys
+        {
+            get { return this.Keys; }
+        }
+
+        bool IReadOnlyDictionary<K, V>.TryGetValue(K key, out V value)
+        {
+            return this.TryGetValue(key, out value);
+        }
+
+        IEnumerable<V> IReadOnlyDictionary<K, V>.Values
+        {
+            get { return this.Values; }
+        }
+
+        V IReadOnlyDictionary<K, V>.this[K key]
+        {
+            get { return this[key]; }
+        }
+
+        int IReadOnlyCollection<KeyValuePair<K, V>>.Count
+        {
+            get { return this.Count; }
+        }
+
+        IEnumerator<KeyValuePair<K, V>> IEnumerable<KeyValuePair<K, V>>.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
 
 #if DEBUG
         [DebuggerDisplay("Entry = {Output}")]
