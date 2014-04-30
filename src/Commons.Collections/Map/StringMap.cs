@@ -63,7 +63,7 @@ namespace Commons.Collections.Map
             var bytes = new byte[key.Length * sizeof(char)];
             Buffer.BlockCopy(key.ToCharArray(), 0, bytes, 0, bytes.Length);
             var hash = hasher.Hash(bytes);
-            return hash[0];
+            return (uint)hash[0];
         }
 
         protected override int CalculateCapacity(int proposedCapacity)
@@ -99,17 +99,17 @@ namespace Commons.Collections.Map
 
         void IDictionary.Add(object key, object value)
         {
-            throw new NotImplementedException();
+            this.Add((string)key, (T)value);
         }
 
         void IDictionary.Clear()
         {
-            throw new NotImplementedException();
+            this.Clear();
         }
 
         bool IDictionary.Contains(object key)
         {
-            throw new NotImplementedException();
+            return this.ContainsKey((string)key);
         }
 
         IDictionaryEnumerator IDictionary.GetEnumerator()
@@ -119,99 +119,116 @@ namespace Commons.Collections.Map
 
         bool IDictionary.IsFixedSize
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         bool IDictionary.IsReadOnly
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         ICollection IDictionary.Keys
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                var keys = new List<string>();
+                foreach (var k in Keys)
+                {
+                    keys.Add(k);
+                }
+                return keys;
+            }
         }
 
         void IDictionary.Remove(object key)
         {
-            throw new NotImplementedException();
+            this.Remove((string)key);
         }
 
         ICollection IDictionary.Values
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                var values = new List<T>();
+                foreach (var v in Values)
+                {
+                    values.Add(v);
+                }
+                return values;
+            }
         }
 
         object IDictionary.this[object key]
         {
             get
             {
-                throw new NotImplementedException();
+                return this[(string)key];
             }
             set
             {
-                throw new NotImplementedException();
+                this[(string)key] = (T)value;
             }
         }
 
         void ICollection.CopyTo(Array array, int index)
         {
-            throw new NotImplementedException();
+            var items = (KeyValuePair<string, T>[])array;
+            this.CopyTo(items, index);
         }
 
         int ICollection.Count
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Count; }
         }
 
         bool ICollection.IsSynchronized
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         object ICollection.SyncRoot
         {
-            get { throw new NotImplementedException(); }
+            get { return null; }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return this.GetEnumerator();
         }
 
         bool IReadOnlyDictionary<string, T>.ContainsKey(string key)
         {
-            throw new NotImplementedException();
+            return this.ContainsKey(key);
         }
 
         IEnumerable<string> IReadOnlyDictionary<string, T>.Keys
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Keys; }
         }
 
         bool IReadOnlyDictionary<string, T>.TryGetValue(string key, out T value)
         {
-            throw new NotImplementedException();
+            return this.TryGetValue(key, out value);
         }
 
         IEnumerable<T> IReadOnlyDictionary<string, T>.Values
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Values; }
         }
 
         T IReadOnlyDictionary<string, T>.this[string key]
         {
-            get { throw new NotImplementedException(); }
+            get { return this[key]; }
         }
 
         int IReadOnlyCollection<KeyValuePair<string, T>>.Count
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Count; }
         }
 
         IEnumerator<KeyValuePair<string, T>> IEnumerable<KeyValuePair<string, T>>.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return this.GetEnumerator();
         }
     }
 }
