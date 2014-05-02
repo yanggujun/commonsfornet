@@ -161,7 +161,7 @@ namespace Commons.Collections.Map
                         var item = entry.Next;
                         if (item.Entry.Key.Equals(key))
                         {
-                            entry = item.Next;
+                            entry.Next = item.Next;
                             removed = true;
                             break;
                         }

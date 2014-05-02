@@ -23,6 +23,11 @@ namespace Commons.Collections.Common
     /// </summary>
     public class MurmurHash32 : IHashStrategy
     {
+        uint seed;
+        public MurmurHash32()
+        {
+            seed = (uint)DateTime.Now.Ticks & 0x0000ffff;
+        }
         public long[] Hash(Byte[] bytes)
         {
             long[] result = new long[1];
@@ -32,7 +37,6 @@ namespace Commons.Collections.Common
 
         private uint Calc(byte[] bytes)
         {
-            var seed = (uint)DateTime.Now.Ticks & 0x0000ffff;
             var length = bytes.Length;
             var blockNumber = length / 4;
             var h1 = seed;

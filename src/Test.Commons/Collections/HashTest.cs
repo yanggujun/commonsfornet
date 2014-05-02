@@ -22,11 +22,28 @@ using System.Threading.Tasks;
 
 using Commons.Collections.Map;
 using Xunit;
+using Commons.Collections.Common;
 
 namespace Test.Commons.Collections
 {
     public class HashTest
     {
+        [Fact]
+        public void TestMurmurHash32()
+        {
+            for (var i = 0; i < 100; i++)
+            {
+                MurmurHash32 hasher = new MurmurHash32();
+                string guid = Guid.NewGuid().ToString();
+                string guid2 = guid;
+                var bytes1 = new byte[guid.Length * sizeof(char)];
+                Buffer.BlockCopy(guid.ToCharArray(), 0, bytes1, 0, bytes1.Length);
+                var bytes2 = new byte[guid2.Length * sizeof(char)];
+                Buffer.BlockCopy(guid.ToCharArray(), 0, bytes2, 0, bytes2.Length);
+                Assert.Equal(hasher.Hash(bytes1)[0], hasher.Hash(bytes2)[0]);
+            }
+        }
+
         [Fact]
         public void TestHashAbility()
         {
@@ -37,6 +54,7 @@ namespace Test.Commons.Collections
             }
 
             var orders = new HashMap<string, Order>(4);
+            var orderDict = new Dictionary<string, Order>();
             var idIndex = 0;
             foreach (var key in keys)
             {
@@ -44,14 +62,38 @@ namespace Test.Commons.Collections
                 order.Id = idIndex++;
                 order.Name = Guid.NewGuid().ToString();
                 orders.Add(key, order);
+                orderDict.Add(key, order);
             }
             Assert.Equal(keys.Length, orders.Count);
+            foreach (var key in keys)
+            {
+                Assert.True(orders.ContainsKey(key));
+            }
+            foreach (var key in orderDict.Keys)
+            {
+                Assert.Equal(orderDict[key], orders[key]);
+            }
+            
+            for (var i = 0; i < 3000; i++)
+            {
+                Assert.True(orders.Remove(keys[3000 + i]));
+            }
             var total = 0; 
             foreach (var o in orders)
             {
                 total++;
             }
             Assert.Equal(total, orders.Count);
+        }
+
+        [Fact]
+        public void TestHashMapContains()
+        {
+            var orders = new HashMap<string, Order>();
+            var key = Guid.NewGuid().ToString();
+            var order = new Order();
+            orders.Add(key, order);
+            Assert.True(orders.ContainsKey(key));
         }
     }
 }

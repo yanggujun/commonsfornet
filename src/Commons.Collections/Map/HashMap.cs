@@ -24,7 +24,7 @@ namespace Commons.Collections.Map
 {
     public class HashMap<K, V> : AbstractHashMap<K, V>
     {
-        private const int DefaultCapacity = 128;
+        private const int DefaultCapacity = 64;
         private const int MaxCapacity = 1 << 30;
         private const double LoadFactor = 0.75f;
 
