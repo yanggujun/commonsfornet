@@ -55,7 +55,7 @@ namespace Commons.Collections.Bag
             return Map[item];
         }
 
-        public virtual void Add(T item, int copies = 1)
+        public virtual void Add(T item, int copies)
         {
             if (Map.ContainsKey(item))
             {
