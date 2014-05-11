@@ -40,9 +40,16 @@ namespace Commons.Collections.Collection
         private readonly IMultiMap<K, V> map;
         private readonly Transformer<V, K> transform;
 
-        public IndexedCollection(ICollection<V> collection, Transformer<V, K> transform) : base(collection)
+        public IndexedCollection(ICollection<V> valueCollection, Transformer<V, K> transform) : base(valueCollection)
         {
             this.transform = transform;
+        }
+
+        public IndexedCollection(ICollection<V> valueCollection, IMultiMap<K, V> map, Transformer<V, K> transform)
+            : base(valueCollection)
+        {
+            this.transform = transform;
+            this.map = map;
         }
 
     }
