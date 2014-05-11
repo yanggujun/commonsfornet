@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET. Author: Gujun Yang. email: gujun.yang@gmail.com
+﻿// Copyright CommonsForNET 2014.
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -23,7 +23,16 @@ using System.Threading.Tasks;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class IMultiMap<TKey, TItem>
+    public interface IMultiMap<K, V> : IDictionary<K, ICollection<V>>
     {
+        bool RemoveItem(K key, V value);
+
+        int GetCount(K key);
+
+        bool ContainsValue(K key, V value);
+
+        bool ContainsValue(V value);
+
+        ICollection<V> Get(K key);
     }
 }

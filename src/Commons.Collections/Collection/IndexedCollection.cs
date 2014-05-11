@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Commons.Collections.Map;
+using Commons.Collections.Common;
 
 namespace Commons.Collections.Collection
 {
@@ -31,18 +32,17 @@ namespace Commons.Collections.Collection
     /// The inside map is a (key)-(collection of the value) pair.
     /// When unique index is false, items which generate the same key are added to a collection in the IMultiMap dictionary. 
     /// </summary>
-    /// <typeparam name="TKey"></typeparam>
-    /// <typeparam name="TItem"></typeparam>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
     [CLSCompliant(true)]
-    public class IndexedCollection<TKey, TItem> : AbstractCollectionDecorator<TItem>
+    public class IndexedCollection<K, V> : AbstractCollectionDecorator<V>
     {
-        private readonly IMultiMap<TKey, TItem> map;
-        private readonly Func<TItem, TKey> keyGenerator;
+        private readonly IMultiMap<K, V> map;
+        private readonly Transformer<V, K> transform;
 
-        public IndexedCollection(ICollection<TItem> collection, IMultiMap<TKey, TItem> map, Func<TItem, TKey> keyGenerator) : base(collection)
+        public IndexedCollection(ICollection<V> collection, Transformer<V, K> transform) : base(collection)
         {
-            this.map = map;
-            this.keyGenerator = keyGenerator;
+            this.transform = transform;
         }
 
     }
