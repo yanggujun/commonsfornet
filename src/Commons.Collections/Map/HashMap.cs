@@ -28,7 +28,7 @@ namespace Commons.Collections.Map
         private const int MaxCapacity = 1 << 30;
         private const double LoadFactor = 0.75f;
 
-        private Transformer<K, byte[]> transform;
+        private readonly Transformer<K, byte[]> transform;
 
         private IHashStrategy hasher;
 

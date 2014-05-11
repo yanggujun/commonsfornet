@@ -78,6 +78,7 @@ namespace Test.Commons.Collections
             {
                 Assert.True(orders.Remove(keys[3000 + i]));
             }
+            Assert.Equal(keys.Length - 3000, orders.Count);
             var total = 0; 
             foreach (var o in orders)
             {
