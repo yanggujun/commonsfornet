@@ -30,6 +30,8 @@ namespace Commons.Collections.Map
 
         private readonly Transformer<K, byte[]> transform;
 
+        private readonly Equator<K> isEqual;
+
         private IHashStrategy hasher;
 
         public HashMap() : this(DefaultCapacity)
@@ -43,24 +45,35 @@ namespace Commons.Collections.Map
                     var bytes = new byte[key.Length * sizeof(char)];
                     Buffer.BlockCopy(key.ToCharArray(), 0, bytes, 0, bytes.Length);
                     return bytes;
-                })
+                }, EqualityComparer<K>.Default)
         {
         }
 
-        public HashMap(IHashStrategy hasher, Transformer<K, byte[]> transformer) : this(DefaultCapacity, hasher, transformer)
+        public HashMap(IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> equals) : this(DefaultCapacity, hasher, transformer, equals)
         {
         }
 
-        public HashMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer)
-            : this(capacity, null, hasher, transformer)
+        public HashMap(IHashStrategy hasher, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer)
+            : this(DefaultCapacity, hasher, transformer, comparer)
+        { 
+        }
+
+        public HashMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> equals)
+            : this(capacity, null, hasher, transformer, equals)
         {
         }
 
-        public HashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IHashStrategy hasher, Transformer<K, byte[]> transformer)
+        public HashMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer) 
+            : this(capacity, hasher, transformer, (x1, x2) => null == comparer ? EqualityComparer<K>.Default.Equals(x1, x2) : comparer.Equals(x1, x2))
+        {
+        }
+
+        public HashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> equals)
             : base(capacity, items)
         {
             this.transform = transformer;
             this.hasher = hasher;
+            this.isEqual = equals;
         }
 
         private uint Hash(K key)
