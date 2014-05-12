@@ -30,8 +30,6 @@ namespace Commons.Collections.Map
 
         private readonly Transformer<K, byte[]> transform;
 
-        private readonly Equator<K> isEqual;
-
         private IHashStrategy hasher;
 
         public HashMap() : this(DefaultCapacity)
@@ -69,11 +67,10 @@ namespace Commons.Collections.Map
         }
 
         public HashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> equals)
-            : base(capacity, items)
+            : base(capacity, items, equals)
         {
             this.transform = transformer;
             this.hasher = hasher;
-            this.isEqual = equals;
         }
 
         private uint Hash(K key)
