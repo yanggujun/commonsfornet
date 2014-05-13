@@ -16,9 +16,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 using Commons.Collections.Common;
-using System;
+using Commons.Collections.Extension;
 
 namespace Commons.Collections.Map
 {
@@ -37,13 +38,7 @@ namespace Commons.Collections.Map
         }
 
         public HashMap(int capacity)
-            : this(capacity, new MurmurHash32(), x =>
-                {
-                    var key = x.ToString();
-                    var bytes = new byte[key.Length * sizeof(char)];
-                    Buffer.BlockCopy(key.ToCharArray(), 0, bytes, 0, bytes.Length);
-                    return bytes;
-                }, EqualityComparer<K>.Default)
+            : this(capacity, new MurmurHash32(), x => x.ToString().ToBytes(), EqualityComparer<K>.Default)
         {
         }
 
