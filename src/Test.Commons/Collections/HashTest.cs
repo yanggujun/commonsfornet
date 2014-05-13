@@ -31,7 +31,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestMurmurHash32()
         {
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 MurmurHash32 hasher = new MurmurHash32();
                 string guid = Guid.NewGuid().ToString();
@@ -47,13 +47,17 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestHashAbility()
         {
+            var orders = new HashMap<string, Order>(4);
+            HashAbility(orders);
+        }
+        private void HashAbility(HashMap<string, Order> orders)
+        {
             var keys = new string[10000];
             for (var i = 0; i < keys.Length; i++)
             {
                 keys[i] = Guid.NewGuid().ToString();
             }
 
-            var orders = new HashMap<string, Order>(4);
             var orderDict = new Dictionary<string, Order>();
             var idIndex = 0;
             foreach (var key in keys)
@@ -77,6 +81,7 @@ namespace Test.Commons.Collections
             for (var i = 0; i < 3000; i++)
             {
                 Assert.True(orders.Remove(keys[3000 + i]));
+                Assert.False(orders.ContainsKey(keys[3000 + i]));
             }
             Assert.Equal(keys.Length - 3000, orders.Count);
             var total = 0; 
@@ -95,6 +100,58 @@ namespace Test.Commons.Collections
             var order = new Order();
             orders.Add(key, order);
             Assert.True(orders.ContainsKey(key));
+        }
+
+        [Fact]
+        public void TestHashMapConstructors()
+        {
+            var orders = new HashMap<string, Order>();
+            HashAbility(orders);
+
+            var orders2 = new HashMap<string, Order>(1000);
+            HashAbility(orders2);
+
+            var orders3 = new HashMap<string, Order>(new MurmurHash32(), x =>
+            {
+                var bytes = new byte[x.Length * sizeof(char)];
+                Buffer.BlockCopy(x.ToCharArray(), 0, bytes, 0, bytes.Length);
+                return bytes;
+            });
+            HashAbility(orders3);
+
+            var orders4 = new HashMap<string, Order>(new MurmurHash32(), x =>
+            {
+                var bytes = new byte[x.Length * sizeof(char)];
+                Buffer.BlockCopy(x.ToCharArray(), 0, bytes, 0, bytes.Length);
+                return bytes;
+            }, (x1, x2) => x1 == x2);
+            HashAbility(orders4);
+
+            var orders5 = new HashMap<string, Order>(new MurmurHash32(), x =>
+            {
+                var bytes = new byte[x.Length * sizeof(char)];
+                Buffer.BlockCopy(x.ToCharArray(), 0, bytes, 0, bytes.Length);
+                return bytes;
+            }, EqualityComparer<string>.Default);
+            HashAbility(orders5);
+
+            var orders6 = new HashMap<string, Order>(1000, new MurmurHash32(), x =>
+            {
+                var bytes = new byte[x.Length * sizeof(char)];
+                Buffer.BlockCopy(x.ToCharArray(), 0, bytes, 0, bytes.Length);
+                return bytes;
+
+            }, EqualityComparer<string>.Default);
+            HashAbility(orders6);
+
+            var orders7 = new HashMap<string, Order>(1000, new MurmurHash32(), x =>
+            {
+                var bytes = new byte[x.Length * sizeof(char)];
+                Buffer.BlockCopy(x.ToCharArray(), 0, bytes, 0, bytes.Length);
+                return bytes;
+
+            }, (x1, x2) => x1 == x2);
+            HashAbility(orders7);
         }
     }
 }

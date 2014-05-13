@@ -47,7 +47,13 @@ namespace Commons.Collections.Map
         {
         }
 
-        public HashMap(IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual) : this(DefaultCapacity, hasher, transformer, isEqual)
+        public HashMap(IHashStrategy hasher, Transformer<K, byte[]> transformer)
+            : this(DefaultCapacity, hasher, transformer, EqualityComparer<K>.Default)
+        {
+        }
+
+        public HashMap(IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual) 
+            : this(DefaultCapacity, hasher, transformer, isEqual)
         {
         }
 
