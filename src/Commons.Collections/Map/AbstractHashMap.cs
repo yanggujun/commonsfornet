@@ -35,13 +35,13 @@ namespace Commons.Collections.Map
         protected int Capacity { get; set; }
         protected int Threshold { get; set; }
         protected HashEntry[] Entries { get; set; }
-        protected Equator<K> IsEqual { get; set; }
+        private readonly Equator<K> isEqual;
 
-        protected AbstractHashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, Equator<K> equals)
+        protected AbstractHashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, Equator<K> isEqual)
         {
             Count = 0;
             this.Capacity = CalculateCapacity(capacity);
-            this.IsEqual = equals;
+            this.isEqual = isEqual;
             Entries = new HashEntry[this.Capacity];
             if (null != items)
             {
@@ -83,7 +83,7 @@ namespace Commons.Collections.Map
                 HashEntry cursor = null;
                 while (null != item)
                 {
-                    if (IsEqual(item.Entry.Key, key))
+                    if (isEqual(item.Entry.Key, key))
                     {
                         throw new ArgumentException("The key already exists in the map.");
                     }
@@ -114,7 +114,7 @@ namespace Commons.Collections.Map
             var contains = false;
             while (null != item)
             {
-                if (IsEqual(item.Entry.Key, key))
+                if (isEqual(item.Entry.Key, key))
                 {
                     contains = true;
                     break;
@@ -151,7 +151,7 @@ namespace Commons.Collections.Map
             var entry = Entries[index];
             if (null != entry)
             {
-                if (IsEqual(entry.Entry.Key, key))
+                if (isEqual(entry.Entry.Key, key))
                 {
                     Entries[index] = entry.Next;
                     removed = true;
@@ -161,7 +161,7 @@ namespace Commons.Collections.Map
                     while (null != entry.Next)
                     {
                         var item = entry.Next;
-                        if (IsEqual(item.Entry.Key, key))
+                        if (isEqual(item.Entry.Key, key))
                         {
                             entry.Next = item.Next;
                             removed = true;
@@ -227,7 +227,7 @@ namespace Commons.Collections.Map
                 V v = default(V);
                 while (null != entry)
                 {
-                    if (IsEqual(entry.Entry.Key, key))
+                    if (isEqual(entry.Entry.Key, key))
                     {
                         v = entry.Entry.Value;
                         break;
@@ -250,7 +250,7 @@ namespace Commons.Collections.Map
                 var entry = Entries[index];
                 while (null != entry)
                 {
-                    if (IsEqual(entry.Entry.Key, key))
+                    if (isEqual(entry.Entry.Key, key))
                     {
                         entry.Entry = new KeyValuePair<K, V>(key, value);
                         break;

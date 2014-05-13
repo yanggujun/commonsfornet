@@ -47,7 +47,7 @@ namespace Commons.Collections.Map
         {
         }
 
-        public HashMap(IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> equals) : this(DefaultCapacity, hasher, transformer, equals)
+        public HashMap(IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual) : this(DefaultCapacity, hasher, transformer, isEqual)
         {
         }
 
@@ -56,8 +56,8 @@ namespace Commons.Collections.Map
         { 
         }
 
-        public HashMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> equals)
-            : this(capacity, null, hasher, transformer, equals)
+        public HashMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
+            : this(capacity, null, hasher, transformer, isEqual)
         {
         }
 
@@ -66,8 +66,8 @@ namespace Commons.Collections.Map
         {
         }
 
-        public HashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> equals)
-            : base(capacity, items, equals)
+        public HashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
+            : base(capacity, items, isEqual)
         {
             this.transform = transformer;
             this.hasher = hasher;
