@@ -20,9 +20,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Commons.Collections.Map;
 using Xunit;
+
+using Commons.Collections.Map;
 using Commons.Collections.Common;
+using Commons.Collections.Extension;
 
 namespace Test.Commons.Collections
 {
@@ -111,47 +113,23 @@ namespace Test.Commons.Collections
             var orders2 = new HashMap<string, Order>(1000);
             HashAbility(orders2);
 
-            var orders3 = new HashMap<string, Order>(new MurmurHash32(), x =>
-            {
-                var bytes = new byte[x.Length * sizeof(char)];
-                Buffer.BlockCopy(x.ToCharArray(), 0, bytes, 0, bytes.Length);
-                return bytes;
-            });
+            var orders3 = new HashMap<string, Order>(new MurmurHash32(), x => x.ToBytes());
             HashAbility(orders3);
 
-            var orders4 = new HashMap<string, Order>(new MurmurHash32(), x =>
-            {
-                var bytes = new byte[x.Length * sizeof(char)];
-                Buffer.BlockCopy(x.ToCharArray(), 0, bytes, 0, bytes.Length);
-                return bytes;
-            }, (x1, x2) => x1 == x2);
+            var orders4 = new HashMap<string, Order>(new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
             HashAbility(orders4);
 
-            var orders5 = new HashMap<string, Order>(new MurmurHash32(), x =>
-            {
-                var bytes = new byte[x.Length * sizeof(char)];
-                Buffer.BlockCopy(x.ToCharArray(), 0, bytes, 0, bytes.Length);
-                return bytes;
-            }, EqualityComparer<string>.Default);
+            var orders5 = new HashMap<string, Order>(new MurmurHash32(), x => x.ToBytes(), EqualityComparer<string>.Default);
             HashAbility(orders5);
 
-            var orders6 = new HashMap<string, Order>(1000, new MurmurHash32(), x =>
-            {
-                var bytes = new byte[x.Length * sizeof(char)];
-                Buffer.BlockCopy(x.ToCharArray(), 0, bytes, 0, bytes.Length);
-                return bytes;
-
-            }, EqualityComparer<string>.Default);
+            var orders6 = new HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), EqualityComparer<string>.Default);
             HashAbility(orders6);
 
-            var orders7 = new HashMap<string, Order>(1000, new MurmurHash32(), x =>
-            {
-                var bytes = new byte[x.Length * sizeof(char)];
-                Buffer.BlockCopy(x.ToCharArray(), 0, bytes, 0, bytes.Length);
-                return bytes;
-
-            }, (x1, x2) => x1 == x2);
+            var orders7 = new HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
             HashAbility(orders7);
+
+            var orders8 = new HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (IEqualityComparer<string>)null);
+            HashAbility(orders8);
         }
     }
 }

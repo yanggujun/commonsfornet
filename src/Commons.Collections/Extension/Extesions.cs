@@ -24,7 +24,7 @@ namespace Commons.Collections.Extension
         {
             if (string.IsNullOrEmpty(str))
             {
-                throw new ArgumentException("The input string is null");
+                throw new ArgumentException("The input string is null or empty.");
             }
             var bytes = new byte[str.Length * sizeof(char)];
             Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
