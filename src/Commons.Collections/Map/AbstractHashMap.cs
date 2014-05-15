@@ -54,6 +54,7 @@ namespace Commons.Collections.Map
 
         public void Add(K key, V value)
         {
+            Guarder.CheckNull(key);
             var newEntry = new HashEntry(new KeyValuePair<K, V>(key, value));
             // space to optmize?
             Put(Entries, newEntry);
@@ -109,6 +110,7 @@ namespace Commons.Collections.Map
 
         public bool ContainsKey(K key)
         {
+            Guarder.CheckNull(key);
             var index = HashIndex(key);
             var item = Entries[index];
             var contains = false;
@@ -132,11 +134,11 @@ namespace Commons.Collections.Map
                 List<K> keys = new List<K>();
                 foreach (var entry in Entries)
                 {
-                    var item = entry;
-                    while (null != item)
+                    var cursor = entry;
+                    while (null != cursor)
                     {
                         keys.Add(entry.Entry.Key);
-                        item = entry.Next;
+                        cursor = cursor.Next;
                     }
                 }
 
@@ -146,6 +148,7 @@ namespace Commons.Collections.Map
 
         public bool Remove(K key)
         {
+            Guarder.CheckNull(key);
             var removed = false;
             var index = HashIndex(key);
             var entry = Entries[index];
@@ -180,6 +183,7 @@ namespace Commons.Collections.Map
 
         public bool TryGetValue(K key, out V value)
         {
+            Guarder.CheckNull(key);
             var contains = false;
             if (ContainsKey(key))
             {
@@ -273,8 +277,10 @@ namespace Commons.Collections.Map
         {
             for (var i = 0; i < Entries.Length; i++)
             {
+                //TODO: possible memory leak
                 Entries[i] = null;
             }
+            Count = 0;
         }
 
         public bool Contains(KeyValuePair<K, V> item)
@@ -284,6 +290,7 @@ namespace Commons.Collections.Map
 
         public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
         {
+            Guarder.CheckNull(array);
             var index = 0;
             foreach (var entry in this)
             {

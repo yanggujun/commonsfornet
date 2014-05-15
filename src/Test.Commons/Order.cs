@@ -57,4 +57,18 @@ namespace Test.Commons
             return x.Id - y.Id;
         }
     }
+
+    public class BillEqualityComparer : IEqualityComparer<Bill>
+    {
+
+        public bool Equals(Bill x, Bill y)
+        {
+            return x.Id == y.Id && x.Count == y.Count;
+        }
+
+        public int GetHashCode(Bill obj)
+        {
+            return obj.GetHashCode();
+        }
+    }
 }

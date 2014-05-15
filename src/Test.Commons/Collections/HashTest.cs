@@ -24,7 +24,6 @@ using Xunit;
 
 using Commons.Collections.Map;
 using Commons.Collections.Common;
-using Commons.Collections.Extension;
 
 namespace Test.Commons.Collections
 {
@@ -130,6 +129,82 @@ namespace Test.Commons.Collections
 
             var orders8 = new HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (IEqualityComparer<string>)null);
             HashAbility(orders8);
+
+            var orders9 = new HashMap<string, Order>(1000, x => x.ToBytes());
+            HashAbility(orders9);
+        }
+
+        [Fact]
+        public void TestHashMapOperations()
+        {
+            var orders = new Order[1000];
+            for (var i = 0; i < orders.Length; i++)
+            {
+                orders[i] = new Order() { Id = i, Name = Guid.NewGuid().ToString() };
+            }
+
+            var bills = new Bill[1000];
+            for (var i = 0; i < bills.Length; i++)
+            {
+                bills[i] = new Bill() { Id = i, Count = i };
+            }
+
+            IDictionary<Order, Bill> orderMap = new HashMap<Order, Bill>(1000, x => x.Name.ToBytes());
+            Assert.Equal(0, orderMap.Keys.Count);
+            Assert.Equal(0, orderMap.Values.Count);
+            for (var i = 0; i < orders.Length; i++)
+            {
+                orderMap.Add(orders[i], bills[i]);
+            }
+            Assert.Equal(orders.Length, orderMap.Count);
+            var keys = orderMap.Keys;
+            Assert.Equal(orders.Length, keys.Count);
+            foreach (var key in keys)
+            {
+                Assert.True(orders.Contains(key, new OrderEqualityComparer()));
+            }
+            var values = orderMap.Values;
+            Assert.Equal(bills.Length, values.Count);
+            foreach (var v in values)
+            {
+                Assert.True(bills.Contains(v, new BillEqualityComparer()));
+            }
+
+            var order = new Order() { Id = 564, Name = "000000000000" };
+            Bill b;
+            Assert.False(orderMap.TryGetValue(order, out b));
+            Assert.Equal(null, b);
+
+            for (var i = 0; i < 150; i++)
+            {
+                Bill bill;
+                Assert.Contains(new KeyValuePair<Order, Bill>(orders[200 + i], bills[200 + i]), orderMap);
+                Assert.True(orderMap.Contains(new KeyValuePair<Order, Bill>(orders[100 + i], bills[100 + i])));
+                Assert.True(orderMap.TryGetValue(orders[500], out bill));
+                Assert.Equal(orderMap[orders[500]], bill, new BillEqualityComparer());
+            }
+
+            foreach (var item in orderMap)
+            {
+                Assert.Contains(item.Key, orders, new OrderEqualityComparer());
+                Assert.Contains(item.Value, bills, new BillEqualityComparer());
+            }
+
+            var kvps1 = new KeyValuePair<Order, Bill>[1010];
+            orderMap.CopyTo(kvps1, 5);
+            for (var i = 0; i < 1000; i++)
+            {
+                Assert.Contains(kvps1[i + 5].Key, orders, new OrderEqualityComparer());
+                Assert.Contains(kvps1[i + 5].Value, bills, new BillEqualityComparer());
+            }
+
+            orderMap.Clear();
+            Assert.Equal(0, orderMap.Count);
+            Assert.Empty(orderMap);
+            foreach (var item in orderMap)
+            {
+                Assert.Equal(0, 1);
+            }
         }
     }
 }

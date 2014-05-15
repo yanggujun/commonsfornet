@@ -16,19 +16,19 @@
 
 using System;
 
-namespace Commons.Collections.Extension
+namespace Commons.Collections.Common
 {
-    public static class Extesions
+    internal static class Guarder
     {
-        public static byte[] ToBytes(this string str)
+        public static void CheckNull(params object[] objs)
         {
-            if (string.IsNullOrEmpty(str))
+            foreach (var obj in objs)
             {
-                throw new ArgumentException("The input string is null or empty.");
+                if (null == obj)
+                {
+                    throw new ArgumentNullException("The input argument is null");
+                }
             }
-            var bytes = new byte[str.Length * sizeof(char)];
-            Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
         }
     }
 }

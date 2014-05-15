@@ -65,6 +65,7 @@ namespace Commons.Collections.Common
 
         public void Clear()
         {
+            //TODO: possible memory leak
             root = null;
         }
 

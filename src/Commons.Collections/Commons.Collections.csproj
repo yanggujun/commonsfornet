@@ -57,9 +57,10 @@
     <Compile Include="Bag\AbstractSortedBagDecorator.cs" />
     <Compile Include="Bag\HashBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
+    <Compile Include="Common\Guarder.cs" />
     <Compile Include="Common\IHashStrategy.cs" />
     <Compile Include="Common\MurmurHash32.cs" />
-    <Compile Include="Extension\Extesions.cs" />
+    <Compile Include="Common\Extesions.cs" />
     <Compile Include="Map\AbstractHashMap.cs" />
     <Compile Include="Map\HashMap.cs" />
     <Compile Include="Deque\IDeque.cs" />

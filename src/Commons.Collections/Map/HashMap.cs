@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System;
 
 using Commons.Collections.Common;
-using Commons.Collections.Extension;
 
 namespace Commons.Collections.Map
 {
@@ -39,6 +38,11 @@ namespace Commons.Collections.Map
 
         public HashMap(int capacity)
             : this(capacity, new MurmurHash32(), x => x.ToString().ToBytes(), EqualityComparer<K>.Default)
+        {
+        }
+
+        public HashMap(int capacity, Transformer<K, byte[]> transformer)
+            : this(capacity, new MurmurHash32(), transformer, EqualityComparer<K>.Default)
         {
         }
 
@@ -70,6 +74,7 @@ namespace Commons.Collections.Map
         public HashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
             : base(capacity, items, isEqual)
         {
+            Guarder.CheckNull(hasher, transformer, isEqual);
             this.transform = transformer;
             this.hasher = hasher;
         }
