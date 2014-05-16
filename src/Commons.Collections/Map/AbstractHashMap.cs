@@ -52,7 +52,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public void Add(K key, V value)
+        public virtual void Add(K key, V value)
         {
             Guarder.CheckNull(key);
             var newEntry = new HashEntry(new KeyValuePair<K, V>(key, value));
@@ -108,7 +108,7 @@ namespace Commons.Collections.Map
             Entries = newEntries;
         }
 
-        public bool ContainsKey(K key)
+        public virtual bool ContainsKey(K key)
         {
             Guarder.CheckNull(key);
             var index = HashIndex(key);
@@ -127,7 +127,7 @@ namespace Commons.Collections.Map
             return contains;
         }
 
-        public ICollection<K> Keys
+        public virtual ICollection<K> Keys
         {
             get
             {
@@ -146,7 +146,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public bool Remove(K key)
+        public virtual bool Remove(K key)
         {
             Guarder.CheckNull(key);
             var removed = false;
@@ -181,7 +181,7 @@ namespace Commons.Collections.Map
             return removed;
         }
 
-        public bool TryGetValue(K key, out V value)
+        public virtual bool TryGetValue(K key, out V value)
         {
             Guarder.CheckNull(key);
             var contains = false;
@@ -198,7 +198,7 @@ namespace Commons.Collections.Map
             return contains;
         }
 
-        public ICollection<V> Values
+        public virtual ICollection<V> Values
         {
             get
             {
@@ -217,7 +217,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public V this[K key]
+        public virtual V this[K key]
         {
             get
             {
@@ -270,12 +270,12 @@ namespace Commons.Collections.Map
             }
         }
 
-        public void Add(KeyValuePair<K, V> item)
+        public virtual void Add(KeyValuePair<K, V> item)
         {
             this.Add(item.Key, item.Value);
         }
 
-        public void Clear()
+        public virtual void Clear()
         {
             for (var i = 0; i < Entries.Length; i++)
             {
@@ -285,12 +285,12 @@ namespace Commons.Collections.Map
             Count = 0;
         }
 
-        public bool Contains(KeyValuePair<K, V> item)
+        public virtual bool Contains(KeyValuePair<K, V> item)
         {
             return ContainsKey(item.Key) && this[item.Key].Equals(item.Value);
         }
 
-        public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
+        public virtual void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
         {
             Guarder.CheckNull(array);
             var index = 0;
@@ -300,9 +300,9 @@ namespace Commons.Collections.Map
             }
         }
 
-        public int Count { get; private set; }
+        public virtual int Count { get; private set; }
 
-        public bool IsReadOnly
+        public virtual bool IsReadOnly
         {
             get
             {
@@ -310,7 +310,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public bool Remove(KeyValuePair<K, V> item)
+        public virtual bool Remove(KeyValuePair<K, V> item)
         {
             var removed = false;
             if (Contains(item))
@@ -320,7 +320,7 @@ namespace Commons.Collections.Map
             return removed;
         }
 
-        public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
+        public virtual IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
             return CreateEnumerator().GetEnumerator();
         }

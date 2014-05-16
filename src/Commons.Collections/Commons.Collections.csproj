@@ -63,6 +63,8 @@
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Map\AbstractHashMap.cs" />
     <Compile Include="Map\HashMap.cs" />
+    <Compile Include="Map\IOrderedMap.cs" />
+    <Compile Include="Map\LinkedMap.cs" />
     <Compile Include="Queue\BoundedQueue.cs" />
     <Compile Include="Collection\CompositeCollection.cs" />
     <Compile Include="Common\Functors.cs" />
