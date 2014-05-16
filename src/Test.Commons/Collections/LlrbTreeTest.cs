@@ -285,6 +285,17 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
+        public void TestTreeSetExceptions()
+        {
+            var set = new TreeSet<Order>();
+            Assert.Throws(typeof(ArgumentNullException), () => set.Add(null));
+            Assert.Throws(typeof(ArgumentNullException), () => set.Remove(null));
+            Assert.Throws(typeof(ArgumentNullException), () => set.Contains(null));
+            Assert.Throws(typeof(ArgumentNullException), () => set.CopyTo(null, 0));
+        }
+
+
+        [Fact]
         public void TestMapContructor()
         {
             Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -671,6 +682,20 @@ namespace Test.Commons.Collections
             Assert.False(map.Remove(0));
         }
 
+        [Fact]
+        public void TestMapExceptions()
+        {
+            var map = new TreeMap<Order, Bill>();
+            Bill b;
+            Assert.Throws(typeof(ArgumentNullException), () => map.Add(null, null));
+            Assert.Throws(typeof(ArgumentNullException), () => map[null] = null);
+            Assert.Throws(typeof(ArgumentNullException), () => { var v = map[null]; });
+            Assert.Throws(typeof(ArgumentNullException), () => map.Remove(null));
+            Assert.Throws(typeof(ArgumentNullException), () => map.TryGetValue(null, out b));
+            Assert.Throws(typeof(ArgumentNullException), () => map.ContainsKey(null));
+            Assert.Throws(typeof(ArgumentNullException), () => map.CopyTo(null, 0));
+        }
+
         private void InitializeMap(out TreeMap<Order, Bill> map, out Dictionary<Order, Bill> dict)
         {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -712,19 +737,6 @@ namespace Test.Commons.Collections
             }
 
             public int GetHashCode(KeyValuePair<Order, Bill> obj)
-            {
-                return 0;
-            }
-        }
-
-        private class BillEqualityComparer : IEqualityComparer<Bill>
-        {
-            public bool Equals(Bill x, Bill y)
-            {
-                return (x.Id == y.Id) && (x.Count == y.Count);
-            }
-
-            public int GetHashCode(Bill obj)
             {
                 return 0;
             }

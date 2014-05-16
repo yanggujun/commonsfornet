@@ -22,6 +22,7 @@ using Commons.Collections.Common;
 
 namespace Commons.Collections.Map
 {
+    [CLSCompliant(true)]
     public class HashMap<K, V> : AbstractHashMap<K, V>
     {
         private const int DefaultCapacity = 64;

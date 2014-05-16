@@ -18,7 +18,8 @@ using System;
 
 namespace Commons.Collections.Common
 {
-    public static class Extesions
+    [CLSCompliant(true)]
+    public static class Extensions
     {
         public static byte[] ToBytes(this string str)
         {

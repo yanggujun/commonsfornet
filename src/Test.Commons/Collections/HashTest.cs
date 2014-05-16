@@ -206,5 +206,20 @@ namespace Test.Commons.Collections
                 Assert.Equal(0, 1);
             }
         }
+
+        [Fact]
+        public void TestMapExceptions()
+        {
+            var map = new HashMap<Order, Bill>();
+            Bill b;
+            Assert.Throws(typeof(ArgumentNullException), () => map.Add(null, null));
+            Assert.Throws(typeof(ArgumentNullException), () => map[null] = null);
+            Assert.Throws(typeof(ArgumentNullException), () => { var v = map[null]; });
+            Assert.Throws(typeof(ArgumentNullException), () => map.Remove(null));
+            Assert.Throws(typeof(ArgumentNullException), () => map.TryGetValue(null, out b));
+            Assert.Throws(typeof(ArgumentNullException), () => map.ContainsKey(null));
+            Assert.Throws(typeof(ArgumentNullException), () => map.CopyTo(null, 0));
+        }
+
     }
 }

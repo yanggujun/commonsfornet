@@ -59,6 +59,7 @@ namespace Commons.Collections.Common
 
         public void Add(K key, V value)
         {
+            Guarder.CheckNull(key);
             root = Insert(root, new KeyValuePair<K, V>(key, value));
             root.Color = BLACK;
         }
@@ -71,6 +72,7 @@ namespace Commons.Collections.Common
 
         public bool Contains(K key)
         {
+            Guarder.CheckNull(key);
             var found = false;
             var node = root;
             while (null != node)
@@ -148,6 +150,7 @@ namespace Commons.Collections.Common
 
         public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
         {
+            Guarder.CheckNull(array);
             foreach (var item in this)
             {
                 array[arrayIndex++] = item;
@@ -158,6 +161,7 @@ namespace Commons.Collections.Common
         {
             get
             {
+                Guarder.CheckNull(key);
                 TreeNode found = GetNode(root, key);
                 if (null == found)
                 {
@@ -167,6 +171,7 @@ namespace Commons.Collections.Common
             }
             set
             {
+                Guarder.CheckNull(key);
                 TreeNode found = GetNode(root, key);
                 if (null == found)
                 {
@@ -191,6 +196,7 @@ namespace Commons.Collections.Common
 
         public bool Remove(K item)
         {
+            Guarder.CheckNull(item);
             var removed = false;
             if (Contains(item))
             {

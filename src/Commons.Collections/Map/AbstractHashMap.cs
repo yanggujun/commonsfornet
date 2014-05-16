@@ -221,6 +221,7 @@ namespace Commons.Collections.Map
         {
             get
             {
+                Guarder.CheckNull(key);
                 if (!ContainsKey(key))
                 {
                     throw new ArgumentException("The key does not exist in the map");
@@ -245,6 +246,7 @@ namespace Commons.Collections.Map
             }
             set
             {
+                Guarder.CheckNull(key);
                 if (!ContainsKey(key))
                 {
                     throw new ArgumentException("The key does not exist in the map");
@@ -344,6 +346,7 @@ namespace Commons.Collections.Map
         protected abstract int CalculateCapacity(int proposedCapacity);
 
         protected abstract long HashIndex(K key);
+
         void IDictionary.Add(object key, object value)
         {
             this.Add((K)key, (V)value);

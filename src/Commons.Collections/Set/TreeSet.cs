@@ -164,6 +164,7 @@ namespace Commons.Collections.Set
         /// <param name="arrayIndex">The index to start to copy the items.</param>
         public void CopyTo(T[] array, int arrayIndex)
         {
+            Guarder.CheckNull(array);
             var index = arrayIndex;
             foreach (var i in llrbTree)
             {
@@ -226,6 +227,7 @@ namespace Commons.Collections.Set
         /// <param name="index">The start index of the array.</param>
         public void CopyTo(Array array, int index)
         {
+            Guarder.CheckNull(array);
             T[] a = (T[])array;
             CopyTo(a, index);
         }

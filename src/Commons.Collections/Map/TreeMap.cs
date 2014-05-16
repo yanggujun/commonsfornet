@@ -151,6 +151,7 @@ namespace Commons.Collections.Map
         /// <returns>True if key exists in the map. Otherwise false.</returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
+            Guarder.CheckNull(key);
             var hasValue = false;
             if (llrbTree.Contains(key))
             {
@@ -230,6 +231,7 @@ namespace Commons.Collections.Map
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
+            Guarder.CheckNull(array);
             llrbTree.CopyTo(array, arrayIndex);
         }
 
