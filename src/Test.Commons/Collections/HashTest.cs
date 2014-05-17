@@ -208,7 +208,7 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
-        public void TestMapExceptions()
+        public void TestMapNullExceptions()
         {
             var map = new HashMap<Order, Bill>();
             Bill b;
@@ -219,6 +219,28 @@ namespace Test.Commons.Collections
             Assert.Throws(typeof(ArgumentNullException), () => map.TryGetValue(null, out b));
             Assert.Throws(typeof(ArgumentNullException), () => map.ContainsKey(null));
             Assert.Throws(typeof(ArgumentNullException), () => map.CopyTo(null, 0));
+
+            var simpleMap = new HashMap<int, string>();
+            Assert.DoesNotThrow(() => simpleMap.Add(0, null));
+        }
+
+        [Fact]
+        public void TestMapArgumentExceptions()
+        {
+            var map = new HashMap<Order, Bill>(5, new MurmurHash32(), x => x.Id.ToString().ToBytes(), (x1, x2) => x1.Id == x2.Id);
+            for (var i = 0; i < 5; i++)
+            {
+                var order = new Order() { Id = i, Name = Guid.NewGuid().ToString() };
+                map.Add(order, new Bill() { Id = i, Count = i });
+            }
+
+            var notExistingOrder = new Order() { Id = 10, Name = Guid.NewGuid().ToString() };
+            Assert.Throws(typeof(ArgumentException), () => { var v = map[notExistingOrder]; });
+            Assert.Throws(typeof(ArgumentException), () => map[notExistingOrder] = new Bill());
+            Assert.False(map.Remove(notExistingOrder));
+
+            var existingOrder = new Order() { Id = 1, Name = "  " };
+            Assert.Throws(typeof(ArgumentException), () => map.Add(existingOrder, new Bill()));
         }
 
     }
