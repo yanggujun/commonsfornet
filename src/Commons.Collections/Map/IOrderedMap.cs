@@ -22,16 +22,19 @@ namespace Commons.Collections.Map
     [CLSCompliant(true)]
     public interface IOrderedMap<K, V> : IDictionary<K, V>
     {
-        K FirstKey { get; }
-
         KeyValuePair<K, V> First { get; }
-
-        K LastKey { get; }
 
         KeyValuePair<K, V> Last { get; }
 
-        K NextOf(K key);
+        KeyValuePair<K, V> After(K key);
 
-        K PreviousOf(K key);
+        KeyValuePair<K, V> Before(K key);
+
+        /// <summary>
+        /// Get the item in the specified index of the ordered map.
+        /// </summary>
+        /// <param name="index">The index of the item, starting from 0.</param>
+        /// <returns>The item on the index.</returns>
+        KeyValuePair<K, V> GetIndex(int index);
     }
 }

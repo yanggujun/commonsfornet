@@ -32,6 +32,9 @@ namespace Commons.Collections.Map
     [CLSCompliant(true)]
     public abstract class AbstractHashMap<K, V> : IDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>, IEnumerable, IDictionary, ICollection, ICollection<KeyValuePair<K, V>>, IReadOnlyDictionary<K, V>
     {
+        private const int MaxCapacity = 1 << 30;
+        private const double LoadFactor = 0.75f;
+
         protected int Capacity { get; set; }
         protected int Threshold { get; set; }
         protected HashEntry[] Entries { get; set; }
@@ -39,6 +42,7 @@ namespace Commons.Collections.Map
 
         protected AbstractHashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, Equator<K> isEqual)
         {
+            Guarder.CheckNull(isEqual);
             Count = 0;
             this.Capacity = CalculateCapacity(capacity);
             this.isEqual = isEqual;
@@ -55,7 +59,7 @@ namespace Commons.Collections.Map
         public virtual void Add(K key, V value)
         {
             Guarder.CheckNull(key);
-            var newEntry = new HashEntry(new KeyValuePair<K, V>(key, value));
+            var newEntry = CreateEntry(key, value);
             // space to optmize?
             Put(Entries, newEntry);
             if (Count > Threshold)
@@ -67,45 +71,7 @@ namespace Commons.Collections.Map
                     Rehash();
                 }
             }
-        }
 
-        private void Put(HashEntry[] buckets, HashEntry entry)
-        {
-            var key = entry.Entry.Key;
-            var index = HashIndex(key);
-
-            var item = buckets[index];
-            if (null == item)
-            {
-                buckets[index] = entry;
-            }
-            else
-            {
-                HashEntry cursor = null;
-                while (null != item)
-                {
-                    if (isEqual(item.Entry.Key, key))
-                    {
-                        throw new ArgumentException("The key already exists in the map.");
-                    }
-                    cursor = item;
-                    item = item.Next;
-                }
-                cursor.Next = entry;
-            }
-            Count++;
-        }
-
-        private void Rehash()
-        {
-            HashEntry[] newEntries = new HashEntry[Capacity];
-            Count = 0;
-            foreach (var entry in this)
-            {
-                var item = entry;
-                Put(newEntries, new HashEntry(new KeyValuePair<K, V>(entry.Key, entry.Value)));
-            }
-            Entries = newEntries;
         }
 
         public virtual bool ContainsKey(K key)
@@ -343,9 +309,97 @@ namespace Commons.Collections.Map
             }
         }
 
-        protected abstract int CalculateCapacity(int proposedCapacity);
+        protected virtual int CalculateCapacity(int proposedCapacity)
+        {
+            int newCapacity = 1;
+            if (proposedCapacity > MaxCapacity)
+            {
+                newCapacity = MaxCapacity;
+            }
+            else
+            {
+                while (newCapacity < proposedCapacity)
+                {
+                    newCapacity <<= 1;
+                }
+                Threshold = (int)(newCapacity * LoadFactor);
+                while (proposedCapacity > Threshold)
+                {
+                    newCapacity <<= 1;
+                    Threshold = (int)(newCapacity * LoadFactor);
+                }
+                newCapacity = newCapacity > MaxCapacity ? MaxCapacity : newCapacity;
+            }
+
+            return newCapacity;
+        }
 
         protected abstract long HashIndex(K key);
+
+        protected virtual HashEntry CreateEntry(K key, V value)
+        {
+            return new HashEntry(new KeyValuePair<K, V>(key, value));
+        }
+
+        protected HashEntry GetEntry(K key)
+        {
+            var index = HashIndex(key);
+            var entry = Entries[index];
+            HashEntry target = null;
+            while (null != entry)
+            {
+                if (isEqual(entry.Entry.Key, key))
+                {
+                    target = entry;
+                    break;
+                }
+                else
+                {
+                    entry = entry.Next;
+                }
+            }
+            return target;
+        }
+
+        private void Put(HashEntry[] buckets, HashEntry entry)
+        {
+            var key = entry.Entry.Key;
+            var index = HashIndex(key);
+
+            var item = buckets[index];
+            if (null == item)
+            {
+                buckets[index] = entry;
+            }
+            else
+            {
+                HashEntry cursor = null;
+                while (null != item)
+                {
+                    if (isEqual(item.Entry.Key, key))
+                    {
+                        throw new ArgumentException("The key already exists in the map.");
+                    }
+                    cursor = item;
+                    item = item.Next;
+                }
+                cursor.Next = entry;
+            }
+            Count++;
+        }
+
+        private void Rehash()
+        {
+            HashEntry[] newEntries = new HashEntry[Capacity];
+            Count = 0;
+            foreach (var entry in this)
+            {
+                var item = entry;
+                Put(newEntries, new HashEntry(new KeyValuePair<K, V>(entry.Key, entry.Value)));
+            }
+            Entries = newEntries;
+        }
+
 
         void IDictionary.Add(object key, object value)
         {

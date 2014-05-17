@@ -26,8 +26,6 @@ namespace Commons.Collections.Map
     public class HashMap<K, V> : AbstractHashMap<K, V>
     {
         private const int DefaultCapacity = 64;
-        private const int MaxCapacity = 1 << 30;
-        private const double LoadFactor = 0.75f;
 
         private readonly Transformer<K, byte[]> transform;
 
@@ -85,31 +83,6 @@ namespace Commons.Collections.Map
             var bytes = transform(key);
             var hash = hasher.Hash(bytes);
             return (uint)hash[0];
-        }
-
-        protected override int CalculateCapacity(int proposedCapacity)
-        {
-            int newCapacity = 1;
-            if (proposedCapacity > MaxCapacity)
-            {
-                newCapacity = MaxCapacity;
-            }
-            else
-            {
-                while (newCapacity < proposedCapacity)
-                {
-                    newCapacity <<= 1;
-                }
-                Threshold = (int)(newCapacity * LoadFactor);
-                while (proposedCapacity > Threshold)
-                {
-                    newCapacity <<= 1;
-                    Threshold = (int)(newCapacity * LoadFactor);
-                }
-                newCapacity = newCapacity > MaxCapacity ? MaxCapacity : newCapacity;
-            }
-
-            return newCapacity;
         }
 
         protected override long HashIndex(K key)
