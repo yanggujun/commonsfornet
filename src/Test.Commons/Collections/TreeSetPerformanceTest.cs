@@ -32,7 +32,18 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestTreeSetInsert()
         {
-            Insert(100000);
+            Insert(1000000);
+        }
+
+        private void Warmup()
+        {
+            var set = new TreeSet<int>();
+            set.Add(10);
+            set.Remove(10);
+
+            var sorted = new SortedSet<int>();
+            sorted.Add(10);
+            sorted.Remove(10);
         }
 
         private void Insert(int count)
@@ -45,10 +56,10 @@ namespace Test.Commons.Collections
             }
             SortedSet<int> sortedSet = new SortedSet<int>();
             var result2 = DoInsert(sortedSet, list);
-            Console.WriteLine("Sorted set: " + result2);
+            Console.WriteLine("Sorted set insert: " + result2);
             TreeSet<int> set = new TreeSet<int>();
             var result = DoInsert(set, list);
-            Console.WriteLine("Tree set: " + result);
+            Console.WriteLine("Tree set insert: " + result);
 
             int removeCount = count / 10;
             List<int> removeList = new List<int>();
