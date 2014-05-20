@@ -201,7 +201,10 @@ namespace Commons.Collections.Common
             if (Contains(item))
             {
                 root = Delete(root, item);
-                root.Color = BLACK;
+                if (null != root)
+                {
+                    root.Color = BLACK;
+                }
                 removed = true;
             }
 
