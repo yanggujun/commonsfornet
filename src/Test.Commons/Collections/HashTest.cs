@@ -112,13 +112,13 @@ namespace Test.Commons.Collections
             var orders2 = new HashMap<string, Order>(1000);
             HashAbility(orders2);
 
-            var orders3 = new HashMap<string, Order>(new MurmurHash32(), x => x.ToBytes());
+            var orders3 = new HashMap<string, Order>(100, x => x.ToBytes());
             HashAbility(orders3);
 
-            var orders4 = new HashMap<string, Order>(new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
+            var orders4 = new HashMap<string, Order>(500, x => x.ToBytes(), (x1, x2) => x1 == x2);
             HashAbility(orders4);
 
-            var orders5 = new HashMap<string, Order>(new MurmurHash32(), x => x.ToBytes(), EqualityComparer<string>.Default);
+            var orders5 = new HashMap<string, Order>(60, x => x.ToBytes(), EqualityComparer<string>.Default);
             HashAbility(orders5);
 
             var orders6 = new HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), EqualityComparer<string>.Default);
@@ -130,8 +130,9 @@ namespace Test.Commons.Collections
             var orders8 = new HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (IEqualityComparer<string>)null);
             HashAbility(orders8);
 
-            var orders9 = new HashMap<string, Order>(1000, x => x.ToBytes());
-            HashAbility(orders9);
+            var orders9 = new HashMap<string, Order>(10000, orders8, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
+            Assert.NotEmpty(orders9);
+            Assert.Equal(orders8.Count, orders9.Count);
         }
 
         [Fact]

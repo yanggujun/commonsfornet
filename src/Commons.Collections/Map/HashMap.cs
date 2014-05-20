@@ -29,7 +29,7 @@ namespace Commons.Collections.Map
 
         private readonly Transformer<K, byte[]> transform;
 
-        private IHashStrategy hasher;
+        private readonly IHashStrategy hasher;
 
         public HashMap() : this(DefaultCapacity)
         {
@@ -45,18 +45,13 @@ namespace Commons.Collections.Map
         {
         }
 
-        public HashMap(IHashStrategy hasher, Transformer<K, byte[]> transformer)
-            : this(DefaultCapacity, hasher, transformer, EqualityComparer<K>.Default)
+        public HashMap(int capacity, Transformer<K, byte[]> transformer, Equator<K> isEqual)
+            : this(DefaultCapacity, new MurmurHash32(), transformer, isEqual)
         {
         }
 
-        public HashMap(IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual) 
-            : this(DefaultCapacity, hasher, transformer, isEqual)
-        {
-        }
-
-        public HashMap(IHashStrategy hasher, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer)
-            : this(DefaultCapacity, hasher, transformer, comparer)
+        public HashMap(int capacity, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer)
+            : this(capacity, new MurmurHash32(), transformer, comparer)
         { 
         }
 
@@ -71,11 +66,18 @@ namespace Commons.Collections.Map
         }
 
         public HashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
-            : base(capacity, items, isEqual)
+            : base(capacity, isEqual)
         {
             Guarder.CheckNull(hasher, transformer, isEqual);
             this.transform = transformer;
             this.hasher = hasher;
+            if (null != items)
+            {
+                foreach (var item in items)
+                {
+                    Add(item);
+                }
+            }
         }
 
         private uint Hash(K key)

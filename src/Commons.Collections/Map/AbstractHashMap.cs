@@ -40,20 +40,13 @@ namespace Commons.Collections.Map
         protected HashEntry[] Entries { get; set; }
         private readonly Equator<K> isEqual;
 
-        protected AbstractHashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, Equator<K> isEqual)
+        protected AbstractHashMap(int capacity, Equator<K> isEqual)
         {
             Guarder.CheckNull(isEqual);
             Count = 0;
             this.Capacity = CalculateCapacity(capacity);
             this.isEqual = isEqual;
             Entries = new HashEntry[this.Capacity];
-            if (null != items)
-            {
-                foreach (var item in items)
-                {
-                    Add(item.Key, item.Value);
-                }
-            }
         }
 
         public virtual void Add(K key, V value)

@@ -29,12 +29,12 @@ namespace Commons.Collections.Map
         private LinkedHashEntry Header { get; set; }
 
         public LinkedHashMap()
-            : base(DefaultCapacity, null, null)
+            : base(DefaultCapacity, null)
         {
         }
 
         public LinkedHashMap(int capacity)
-            : base(capacity, null, null)
+            : base(capacity, null)
         {
         }
 
@@ -59,8 +59,15 @@ namespace Commons.Collections.Map
         }
 
         public LinkedHashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, Equator<K> equator)
-            : base(capacity, items, equator)
+            : base(capacity, equator)
         {
+            if (null != items)
+            {
+                foreach (var item in items)
+                {
+                    this.Add(item);
+                }
+            }
         }
 
         protected override long HashIndex(K key)
@@ -70,7 +77,7 @@ namespace Commons.Collections.Map
 
         public override bool Remove(K key)
         {
-            LinkedHashEntry entry = (LinkedHashEntry)GetEntry(key);
+            var entry = (LinkedHashEntry)GetEntry(key);
             entry.Before.After = entry.After;
             entry.After.Before = entry.Before;
             entry.Before = null;
