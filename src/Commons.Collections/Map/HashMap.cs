@@ -14,9 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 using Commons.Collections.Common;
 
@@ -25,52 +24,28 @@ namespace Commons.Collections.Map
     [CLSCompliant(true)]
     public class HashMap<K, V> : AbstractHashMap<K, V>
     {
-        private const int DefaultCapacity = 64;
-
-        private readonly Transformer<K, byte[]> transform;
-
-        private readonly IHashStrategy hasher;
+        private const int DefaultCapacity = 16;
 
         public HashMap() : this(DefaultCapacity)
         {
         }
 
-        public HashMap(int capacity)
-            : this(capacity, new MurmurHash32(), x => x.ToString().ToBytes(), EqualityComparer<K>.Default)
+        public HashMap(int capacity) : this(capacity, EqualityComparer<K>.Default)
         {
         }
 
-        public HashMap(int capacity, Transformer<K, byte[]> transformer)
-            : this(capacity, new MurmurHash32(), transformer, EqualityComparer<K>.Default)
+        public HashMap(int capacity, IEqualityComparer<K> comparer) 
+            : this(capacity, (x1, x2) => comparer == null ? EqualityComparer<K>.Default.Equals(x1, x1) : comparer.Equals(x1, x2))
         {
         }
 
-        public HashMap(int capacity, Transformer<K, byte[]> transformer, Equator<K> isEqual)
-            : this(DefaultCapacity, new MurmurHash32(), transformer, isEqual)
+        public HashMap(int capacity, Equator<K> equator) : base(capacity, equator)
         {
         }
 
-        public HashMap(int capacity, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer)
-            : this(capacity, new MurmurHash32(), transformer, comparer)
-        { 
-        }
-
-        public HashMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
-            : this(capacity, null, hasher, transformer, isEqual)
+        public HashMap(IEnumerable<KeyValuePair<K, V>> items, int capacity, Equator<K> equator)
+            : base(capacity, equator)
         {
-        }
-
-        public HashMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer) 
-            : this(capacity, hasher, transformer, (x1, x2) => null == comparer ? EqualityComparer<K>.Default.Equals(x1, x2) : comparer.Equals(x1, x2))
-        {
-        }
-
-        public HashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
-            : base(capacity, isEqual)
-        {
-            Guarder.CheckNull(hasher, transformer, isEqual);
-            this.transform = transformer;
-            this.hasher = hasher;
             if (null != items)
             {
                 foreach (var item in items)
@@ -80,18 +55,10 @@ namespace Commons.Collections.Map
             }
         }
 
-        private uint Hash(K key)
-        {
-            var bytes = transform(key);
-            var hash = hasher.Hash(bytes);
-            return (uint)hash[0];
-        }
-
         protected override long HashIndex(K key)
         {
-            var hash = Hash(key);
-            return hash & (Capacity - 1);
+            var hash = (uint) key.GetHashCode();
+            return hash % Capacity;
         }
-
     }
 }
