@@ -57,11 +57,13 @@
     <Compile Include="Bag\AbstractSortedBagDecorator.cs" />
     <Compile Include="Bag\HashBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
+    <Compile Include="Common\FnvHash32.cs" />
     <Compile Include="Common\Guarder.cs" />
     <Compile Include="Common\IHashStrategy.cs" />
     <Compile Include="Common\MurmurHash32.cs" />
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Map\AbstractHashMap.cs" />
+    <Compile Include="Map\Customized32HashMap.cs" />
     <Compile Include="Map\HashMap.cs" />
     <Compile Include="Map\IOrderedMap.cs" />
     <Compile Include="Map\LinkedHashMap.cs" />
