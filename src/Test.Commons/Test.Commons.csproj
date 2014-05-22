@@ -45,7 +45,7 @@
     <Compile Include="Collections\CollectionTest.cs" />
     <Compile Include="Collections\HashTest.cs" />
     <Compile Include="Collections\TreeSetReliabilityTest.cs" />
-    <Compile Include="Collections\TreeSetPerformanceTest.cs" />
+    <Compile Include="Collections\PerformanceTest.cs" />
     <Compile Include="Collections\LlrbTreeTest.cs" />
     <Compile Include="Order.cs" />
   </ItemGroup>

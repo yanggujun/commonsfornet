@@ -24,26 +24,16 @@ using Xunit;
 
 using Commons.Collections;
 using Commons.Collections.Set;
+using Commons.Collections.Common;
 
 namespace Test.Commons.Collections
 {
-    public class TreeSetPerformanceTest
+    public class PerformanceTest
     {
         [Fact]
         public void TestTreeSetInsert()
         {
             Insert(1000000);
-        }
-
-        private void Warmup()
-        {
-            var set = new TreeSet<int>();
-            set.Add(10);
-            set.Remove(10);
-
-            var sorted = new SortedSet<int>();
-            sorted.Add(10);
-            sorted.Remove(10);
         }
 
         private void Insert(int count)
@@ -101,6 +91,16 @@ namespace Test.Commons.Collections
             }
             TimeSpan span = DateTime.Now - start;
             return span.TotalMilliseconds;
+        }
+
+        private static double Evaluate(Closure<int> executor)
+        {
+            var start = DateTime.Now;
+            executor(1000000);
+            var elapsed = (DateTime.Now - start).TotalMilliseconds;
+
+            return elapsed;
+
         }
     }
 }

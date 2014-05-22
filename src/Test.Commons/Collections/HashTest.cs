@@ -48,10 +48,10 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestHashAbility()
         {
-            var orders = new HashMap<string, Order>(4);
+            var orders = new Customized32HashMap<string, Order>(4);
             HashAbility(orders);
         }
-        private void HashAbility(HashMap<string, Order> orders)
+        private void HashAbility(IDictionary<string, Order> orders)
         {
             var keys = new string[10000];
             for (var i = 0; i < keys.Length; i++)
@@ -96,7 +96,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestHashMapContains()
         {
-            var orders = new HashMap<string, Order>();
+            var orders = new Customized32HashMap<string, Order>();
             var key = Guid.NewGuid().ToString();
             var order = new Order();
             orders.Add(key, order);
@@ -106,31 +106,31 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestHashMapConstructors()
         {
-            var orders = new HashMap<string, Order>();
+            var orders = new Customized32HashMap<string, Order>();
             HashAbility(orders);
 
-            var orders2 = new HashMap<string, Order>(1000);
+            var orders2 = new Customized32HashMap<string, Order>(1000);
             HashAbility(orders2);
 
-            var orders3 = new HashMap<string, Order>(100, x => x.ToBytes());
+            var orders3 = new Customized32HashMap<string, Order>(100, x => x.ToBytes());
             HashAbility(orders3);
 
-            var orders4 = new HashMap<string, Order>(500, x => x.ToBytes(), (x1, x2) => x1 == x2);
+            var orders4 = new Customized32HashMap<string, Order>(500, x => x.ToBytes(), (x1, x2) => x1 == x2);
             HashAbility(orders4);
 
-            var orders5 = new HashMap<string, Order>(60, x => x.ToBytes(), EqualityComparer<string>.Default);
+            var orders5 = new Customized32HashMap<string, Order>(60, x => x.ToBytes(), EqualityComparer<string>.Default);
             HashAbility(orders5);
 
-            var orders6 = new HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), EqualityComparer<string>.Default);
+            var orders6 = new Customized32HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), EqualityComparer<string>.Default);
             HashAbility(orders6);
 
-            var orders7 = new HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
+            var orders7 = new Customized32HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
             HashAbility(orders7);
 
-            var orders8 = new HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (IEqualityComparer<string>)null);
+            var orders8 = new Customized32HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (IEqualityComparer<string>)null);
             HashAbility(orders8);
 
-            var orders9 = new HashMap<string, Order>(10000, orders8, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
+            var orders9 = new Customized32HashMap<string, Order>(10000, orders8, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
             Assert.NotEmpty(orders9);
             Assert.Equal(orders8.Count, orders9.Count);
         }
@@ -150,7 +150,7 @@ namespace Test.Commons.Collections
                 bills[i] = new Bill() { Id = i, Count = i };
             }
 
-            IDictionary<Order, Bill> orderMap = new HashMap<Order, Bill>(1000, x => x.Name.ToBytes());
+            IDictionary<Order, Bill> orderMap = new Customized32HashMap<Order, Bill>(1000, x => x.Name.ToBytes());
             Assert.Equal(0, orderMap.Keys.Count);
             Assert.Equal(0, orderMap.Values.Count);
             for (var i = 0; i < orders.Length; i++)
@@ -211,7 +211,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestMapNullExceptions()
         {
-            var map = new HashMap<Order, Bill>();
+            var map = new Customized32HashMap<Order, Bill>();
             Bill b;
             Assert.Throws(typeof(ArgumentNullException), () => map.Add(null, null));
             Assert.Throws(typeof(ArgumentNullException), () => map[null] = null);
@@ -221,14 +221,14 @@ namespace Test.Commons.Collections
             Assert.Throws(typeof(ArgumentNullException), () => map.ContainsKey(null));
             Assert.Throws(typeof(ArgumentNullException), () => map.CopyTo(null, 0));
 
-            var simpleMap = new HashMap<int, string>();
+            var simpleMap = new Customized32HashMap<int, string>();
             Assert.DoesNotThrow(() => simpleMap.Add(0, null));
         }
 
         [Fact]
         public void TestMapArgumentExceptions()
         {
-            var map = new HashMap<Order, Bill>(5, new MurmurHash32(), x => x.Id.ToString().ToBytes(), (x1, x2) => x1.Id == x2.Id);
+            var map = new Customized32HashMap<Order, Bill>(5, new MurmurHash32(), x => x.Id.ToString().ToBytes(), (x1, x2) => x1.Id == x2.Id);
             for (var i = 0; i < 5; i++)
             {
                 var order = new Order() { Id = i, Name = Guid.NewGuid().ToString() };
@@ -242,6 +242,13 @@ namespace Test.Commons.Collections
 
             var existingOrder = new Order() { Id = 1, Name = "  " };
             Assert.Throws(typeof(ArgumentException), () => map.Add(existingOrder, new Bill()));
+        }
+
+        [Fact]
+        public void TestPlainHashMapOperations()
+        {
+            var map = new HashMap<string, Order>();
+            HashAbility(map);
         }
 
     }
