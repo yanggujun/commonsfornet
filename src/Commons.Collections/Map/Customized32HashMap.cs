@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System;
 
 using Commons.Collections.Common;
+using System.Text;
 
 namespace Commons.Collections.Map
 {
@@ -36,7 +37,7 @@ namespace Commons.Collections.Map
         }
 
         public Customized32HashMap(int capacity)
-            : this(capacity, new MurmurHash32(), x => x.ToString().ToBytes(), EqualityComparer<K>.Default)
+            : this(capacity, new MurmurHash32(), x => Encoding.ASCII.GetBytes(x.ToString()), EqualityComparer<K>.Default)
         {
         }
 
@@ -90,7 +91,7 @@ namespace Commons.Collections.Map
         protected override long HashIndex(K key)
         {
             var hash = Hash(key);
-            return hash & (Capacity - 1);
+            return hash % Capacity;
         }
 
     }

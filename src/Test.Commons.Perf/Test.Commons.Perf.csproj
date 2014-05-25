@@ -4,15 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0564B84F-2300-42CC-97BD-50411F37FADC}</ProjectGuid>
+    <ProjectGuid>{9F775531-9C52-4EB9-8C73-2073BA580AAB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test.Commons</RootNamespace>
-    <AssemblyName>Test.Commons</AssemblyName>
+    <RootNamespace>Test.Commons.Perf</RootNamespace>
+    <AssemblyName>Test.Commons.Perf</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Commons.Collections">
+      <HintPath>..\Commons.Collections\bin\Release\Commons.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,28 +45,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collections\CollectionTest.cs" />
-    <Compile Include="Collections\HashTest.cs" />
-    <Compile Include="Collections\LlrbTreeTest.cs" />
-    <Compile Include="Order.cs" />
+    <Compile Include="PerformanceTest.cs" />
+    <Compile Include="PerformanceTestSuite.cs" />
+    <Compile Include="TreeSetReliabilityTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Commons.Collections\Commons.Collections.csproj">
-      <Project>{e8221711-1b2b-4ed7-b359-9a5d990b3abd}</Project>
-      <Name>Commons.Collections</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

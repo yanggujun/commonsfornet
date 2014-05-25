@@ -34,7 +34,7 @@ namespace Commons.Collections.Common
                 }
             }
 
-            return new long[] { (long)hash };
+            return new [] { (long)hash };
         }
     }
 }
