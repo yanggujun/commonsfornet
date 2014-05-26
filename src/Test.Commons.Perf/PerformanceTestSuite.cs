@@ -31,8 +31,9 @@ namespace Test.Commons.Perf
         [Fact]
         public void CompareHash()
         {
+            var guids = BuildTestCollection(1000000).ToList();
             var murmur = new MurmurHash32();
-            var result1 = Evaluate(x =>
+            var result1 = Evaluate(guids, x =>
             {
                 foreach (var item in x)
                 {
@@ -42,7 +43,7 @@ namespace Test.Commons.Perf
             Console.WriteLine("Murmurhash32: " + result1);
 
             var fnv = new FnvHash32();
-            var result2 = Evaluate(x =>
+            var result2 = Evaluate(guids, x =>
             {
                 foreach (var item in x)
                 {
@@ -51,7 +52,7 @@ namespace Test.Commons.Perf
             });
             Console.WriteLine("FNV Hash: " + result2);
 
-            var result3 = Evaluate(x =>
+            var result3 = Evaluate(guids, x =>
                 {
                     foreach(var item in x)
                     {
@@ -62,31 +63,33 @@ namespace Test.Commons.Perf
         }
 
         [Fact]
-        public void TestHashDuplicate()
+        public void CompareHashCollision()
         {
+            var guids = BuildTestCollection(1000000).ToList();
             var murmur = new MurmurHash32();
-            Console.WriteLine("Mumurhash duplicate: " + EvaluateDuplicate(str => (uint)murmur.Hash(str.ToBytes())[0]));
+            Console.WriteLine("Mumurhash duplicate: " + EvaluateCollision(guids, str => (uint)murmur.Hash(str.ToBytes())[0]));
             var fnv = new FnvHash32();
-            Console.WriteLine("FNV duplicate: " + EvaluateDuplicate(str => (uint)fnv.Hash(str.ToBytes())[0]));
-            Console.WriteLine("Plain hash duplicate: " + EvaluateDuplicate(str => (uint)str.GetHashCode()));
+            Console.WriteLine("FNV duplicate: " + EvaluateCollision(guids, str => (uint)fnv.Hash(str.ToBytes())[0]));
+            Console.WriteLine("Plain hash duplicate: " + EvaluateCollision(guids, str => (uint)str.GetHashCode()));
         }
 
         [Fact]
         public void CompareDictPerf()
         {
+            var guids = BuildTestCollection(1000000).ToList();
             var map = new HashMap<string, string>();
-            Console.WriteLine("Hash Map add: " + Test(map));
+            Console.WriteLine("Hash Map add: " + Test(guids, map));
 
             var dict = new Dictionary<string, string>();
-            Console.WriteLine("Dict add: " + Test(dict));
+            Console.WriteLine("Dict add: " + Test(guids, dict));
 
             var customized = new Customized32HashMap<string, string>(16, x => Encoding.ASCII.GetBytes(x));
-            Console.WriteLine("Customized: " + Test(customized));
+            Console.WriteLine("Customized: " + Test(guids, customized));
         }
 
-        private static double Test(IDictionary<string, string> collection)
+        private static double Test(IList<string> guids, IDictionary<string, string> collection)
         {
-            return Evaluate(items =>
+            return Evaluate(guids, items =>
                 {
                     foreach (var item in items)
                     {
@@ -95,25 +98,21 @@ namespace Test.Commons.Perf
                 });
         }
 
-        private static double Evaluate(Closure<IEnumerable<string>> executor)
+        private static double Evaluate(IList<string> guids, Closure<IEnumerable<string>> executor)
         {
-            var guids = BuildTestCollection(1000000);
-
             var start = DateTime.Now;
             executor(guids);
             return (DateTime.Now - start).TotalMilliseconds;
         }
 
-        private static int EvaluateDuplicate(Transformer<string, uint> hash)
+        private static int EvaluateCollision(IList<string> guids, Transformer<string, uint> hash)
         {
-            var guids = BuildTestCollection(1000000);
-
             var duplicated = 0;
             var set = new TreeSet<uint>();
             foreach (var item in guids)
             {
                 var code = hash(item);
-                code = (code >> 22) ^ (code & 2097151);
+                code &= (1 << 21) - 1;
                 if (!set.Contains(code))
                 {
                     set.Add(code);
@@ -131,7 +130,7 @@ namespace Test.Commons.Perf
             var list = new List<string>();
             for (var i = 0; i < itemNumber; i++)
             {
-                list.Add(Guid.NewGuid().ToString() + Guid.NewGuid().ToString() + Guid.NewGuid().ToString());
+                list.Add(Guid.NewGuid().ToString());
             }
 
             return list;

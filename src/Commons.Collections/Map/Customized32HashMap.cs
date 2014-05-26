@@ -91,7 +91,7 @@ namespace Commons.Collections.Map
         protected override long HashIndex(K key)
         {
             var hash = Hash(key);
-            return hash % Capacity;
+            return hash & (Capacity - 1);
         }
 
     }
