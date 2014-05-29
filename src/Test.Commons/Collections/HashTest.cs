@@ -251,5 +251,12 @@ namespace Test.Commons.Collections
             HashAbility(map);
         }
 
+        [Fact]
+        public void TestPlainHashMapBoundaries()
+        {
+            var map = new HashMap<string, string>(100);
+            Assert.False(map.Remove("a"));
+        }
+
     }
 }
