@@ -24,14 +24,15 @@ using Commons.Collections.Map;
 using Commons.Collections.Set;
 
 using Xunit;
+
 namespace Test.Commons.Perf
 {
     public class PerformanceTestSuite
     {
         [Fact]
-        public void CompareHash()
+        public void CompareStringHashPerf()
         {
-            var guids = BuildTestCollection(1000000).ToList();
+            var guids = BuildTestCollection(1000000, () => Guid.NewGuid().ToString()).ToList();
             var murmur = new MurmurHash32();
             var result1 = Evaluate(guids, x =>
             {
@@ -63,33 +64,112 @@ namespace Test.Commons.Perf
         }
 
         [Fact]
-        public void CompareHashCollision()
+        public void CompareStringHashCollision()
         {
-            var guids = BuildTestCollection(1000000).ToList();
+            var guids = BuildTestCollection(1000000, () => Guid.NewGuid().ToString()).ToList();
             var murmur = new MurmurHash32();
-            Console.WriteLine("Mumurhash duplicate: " + EvaluateCollision(guids, str => (uint)murmur.Hash(str.ToBytes())[0]));
+            Console.WriteLine("Mumurhash duplicate: " + EvaluateCollision(guids, str => (int)murmur.Hash(str.ToBytes())[0]));
             var fnv = new FnvHash32();
-            Console.WriteLine("FNV duplicate: " + EvaluateCollision(guids, str => (uint)fnv.Hash(str.ToBytes())[0]));
-            Console.WriteLine("Plain hash duplicate: " + EvaluateCollision(guids, str => (uint)str.GetHashCode()));
+            Console.WriteLine("FNV duplicate: " + EvaluateCollision(guids, str => (int)fnv.Hash(str.ToBytes())[0]));
+            Console.WriteLine("Plain hash duplicate: " + EvaluateCollision(guids, str => str.GetHashCode()));
         }
 
         [Fact]
-        public void CompareDictPerf()
+        public void CompareStringDictPerf()
         {
-            var guids = BuildTestCollection(1000000).ToList();
-            var map = new HashMap<string, string>();
-            Console.WriteLine("Hash Map add: " + Test(guids, map));
+            var guids = BuildTestCollection(1000000, () => Guid.NewGuid().ToString()).ToList();
+            var map = new HashMap<string, string>(1000000);
+            Console.WriteLine("Hash Map add: " + TestMapAddPerf(guids, map));
 
-            var dict = new Dictionary<string, string>();
-            Console.WriteLine("Dict add: " + Test(guids, dict));
+            var dict = new Dictionary<string, string>(1000000);
+            Console.WriteLine("Dict add: " + TestMapAddPerf(guids, dict));
 
-            var customized = new Customized32HashMap<string, string>(16, x => Encoding.ASCII.GetBytes(x));
-            Console.WriteLine("Customized: " + Test(guids, customized));
+            var customized = new Customized32HashMap<string, string>(1000000, x => Encoding.ASCII.GetBytes(x));
+            Console.WriteLine("Customized: " + TestMapAddPerf(guids, customized));
         }
 
-        private static double Test(IList<string> guids, IDictionary<string, string> collection)
+        [Fact]
+        public void CompareStringDictRemovePerf()
         {
-            return Evaluate(guids, items =>
+            var items = BuildTestCollection(1000000, () => Guid.NewGuid().ToString()).ToList();
+            var map = new HashMap<string, string>(1000000);
+            Console.WriteLine("Hash Map remove: " + TestMapRemovePerf(items, map));
+            var dict = new Dictionary<string, string>(1000000);
+            Console.WriteLine("Dict remove: " + TestMapRemovePerf(items, dict));
+
+            var customized = new Customized32HashMap<string, string>(1000000, x => Encoding.ASCII.GetBytes(x));
+            Console.WriteLine("Customized remove: " + TestMapRemovePerf(items, customized));
+        }
+
+        [Fact]
+        public void CompareIntMapPerf()
+        {
+            var rand = new Random((int)(DateTime.Now.Ticks & 0x0000ffff));
+            var numbers = BuildTestCollection(1000000, () => rand.Next()).ToList();
+            var dict = new Dictionary<int, int>(1000000);
+            Console.WriteLine("Int Dict: " + TestMapAddPerf(numbers, dict));
+            var map = new HashMap<int, int>(1000000);
+            Console.WriteLine("Int Hash Map: " + TestMapAddPerf(numbers, map));
+            var customizedMap = new Customized32HashMap<int, int>(1000000, x => ConvertIntToBytes(x));
+            Console.WriteLine("Customized Int Hash Map: " + TestMapAddPerf(numbers, customizedMap));
+        }
+
+        [Fact]
+        public void CompareIntHashPerf()
+        {
+            var rand = new Random((int)(DateTime.Now.Ticks & 0x0000ffff));
+            var numbers = BuildTestCollection(1000000, () => rand.Next()).ToList();
+            var murmur = new MurmurHash32();
+            var murmurResult = Evaluate(numbers, x => x.ToList().ForEach(y => murmur.Hash(ConvertIntToBytes(y))));
+            Console.WriteLine("Murmur Hash int: " + murmurResult);
+            var fnv = new FnvHash32();
+            var fnvResult = Evaluate(numbers, x => x.ToList().ForEach(y => fnv.Hash(ConvertIntToBytes(y))));
+            Console.WriteLine("FNV Hash int: " + fnvResult);
+            var plainResult = Evaluate(numbers, x => x.ToList().ForEach(y => y.GetHashCode()));
+            Console.WriteLine("Plain hash int: " + plainResult);
+        }
+
+        [Fact]
+        public void CompareGuidHashPerf()
+        {
+            var items = BuildTestCollection(1000000, () => Guid.NewGuid()).ToList();
+            var murmur = new MurmurHash32();
+            var murmurResult = Evaluate(items, x => x.ToList().ForEach(y => murmur.Hash(y.ToByteArray())));
+            Console.WriteLine("Murmur Hash GUID: " + murmurResult);
+            var fnv = new FnvHash32();
+            var fnvResult = Evaluate(items, x => x.ToList().ForEach(y => fnv.Hash(y.ToByteArray())));
+            Console.WriteLine("FNV Hash GUID: " + fnvResult);
+            var plainResult = Evaluate(items, x => x.ToList().ForEach(y => y.GetHashCode()));
+            Console.WriteLine("Plain Hash GUID: " + plainResult);
+        }
+
+        [Fact]
+        public void CompareIntHashCollision()
+        {
+            var rand = new Random((int)(DateTime.Now.Ticks & 0x0000ffff));
+            var numbers = BuildTestCollection(1000000, () => rand.Next()).ToList();
+            var murmur = new MurmurHash32();
+            Console.WriteLine("Murmurhash int collision: " + EvaluateCollision(numbers, x => (int)murmur.Hash(ConvertIntToBytes(x))[0]));
+            var fnv = new FnvHash32();
+            Console.WriteLine("Fnv int collision: " + EvaluateCollision(numbers, x => (int)fnv.Hash(ConvertIntToBytes(x))[0]));
+            Console.WriteLine("Dict int collision: " + EvaluateCollision(numbers, x => x.GetHashCode()));
+        }
+
+        public byte[] ConvertIntToBytes(int number32)
+        {
+            var bytes = new byte[4];
+            bytes[0] = (byte)(number32 >> 24);
+            bytes[1] = (byte)(number32 >> 16);
+            bytes[2] = (byte)(number32 >> 8);
+            bytes[3] = (byte)number32;
+
+            return bytes;
+
+        }
+
+        private static double TestMapAddPerf<T>(IList<T> source, IDictionary<T, T> collection)
+        {
+            return Evaluate(source, items =>
                 {
                     foreach (var item in items)
                     {
@@ -98,17 +178,28 @@ namespace Test.Commons.Perf
                 });
         }
 
-        private static double Evaluate(IList<string> guids, Closure<IEnumerable<string>> executor)
+        private static double TestMapRemovePerf<T>(IList<T> source, IDictionary<T, T> collection)
+        {
+            return Evaluate(source, items =>
+                {
+                    foreach (var item in items)
+                    {
+                        collection.Remove(item);
+                    }
+                });
+        }
+
+        private static double Evaluate<T>(IList<T> source, Closure<IEnumerable<T>> executor)
         {
             var start = DateTime.Now;
-            executor(guids);
+            executor(source);
             return (DateTime.Now - start).TotalMilliseconds;
         }
 
-        private static int EvaluateCollision(IList<string> guids, Transformer<string, uint> hash)
+        private static int EvaluateCollision<T>(IList<T> guids, Transformer<T, int> hash)
         {
             var duplicated = 0;
-            var set = new TreeSet<uint>();
+            var set = new TreeSet<int>();
             foreach (var item in guids)
             {
                 var code = hash(item);
@@ -125,15 +216,21 @@ namespace Test.Commons.Perf
             return duplicated;
         }
 
-        private static IEnumerable<string> BuildTestCollection(int itemNumber)
+        private static IEnumerable<T> BuildTestCollection<T>(int itemNumber, Factory<T> create)
         {
-            var list = new List<string>();
-            for (var i = 0; i < itemNumber; i++)
+            var set = new TreeSet<T>();
+            var index = 0;
+            while (index < itemNumber)
             {
-                list.Add(Guid.NewGuid().ToString());
+                T item = create();
+                if (!set.Contains(item))
+                {
+                    set.Add(item);
+                    index++;
+                }
             }
 
-            return list;
+            return set;
         }
 
     }
