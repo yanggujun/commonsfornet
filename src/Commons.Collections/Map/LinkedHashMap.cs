@@ -72,17 +72,23 @@ namespace Commons.Collections.Map
 
         protected override long HashIndex(K key)
         {
-            return 0;
+            return key.GetHashCode() & (Capacity - 1);
         }
 
         public override bool Remove(K key)
         {
+            Guarder.CheckNull(key);
             var entry = (LinkedHashEntry)GetEntry(key);
-            entry.Before.After = entry.After;
-            entry.After.Before = entry.Before;
-            entry.Before = null;
-            entry.After = null;
-            return base.Remove(key);
+            var removed = false;
+            if (base.Remove(key))
+            {
+                entry.Before.After = entry.After;
+                entry.After.Before = entry.Before;
+                entry.Before = null;
+                entry.After = null;
+                removed = true;
+            }
+            return removed;
         }
 
         public KeyValuePair<K, V> First
