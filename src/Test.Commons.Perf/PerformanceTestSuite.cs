@@ -96,7 +96,6 @@ namespace Test.Commons.Perf
             Console.WriteLine("Hash Map remove: " + TestMapRemovePerf(items, map));
             var dict = new Dictionary<string, string>(1000000);
             Console.WriteLine("Dict remove: " + TestMapRemovePerf(items, dict));
-
             var customized = new Customized32HashMap<string, string>(1000000, x => Encoding.ASCII.GetBytes(x));
             Console.WriteLine("Customized remove: " + TestMapRemovePerf(items, customized));
         }
@@ -180,6 +179,10 @@ namespace Test.Commons.Perf
 
         private static double TestMapRemovePerf<T>(IList<T> source, IDictionary<T, T> collection)
         {
+            foreach (var item in source)
+            {
+                collection.Add(item, item);
+            }
             return Evaluate(source, items =>
                 {
                     foreach (var item in items)
