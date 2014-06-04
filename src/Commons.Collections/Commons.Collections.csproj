@@ -67,6 +67,7 @@
     <Compile Include="Map\AbstractHashMap.cs" />
     <Compile Include="Map\Customized32HashMap.cs" />
     <Compile Include="Map\HashMap.cs" />
+    <Compile Include="Map\INavigableMap.cs" />
     <Compile Include="Map\IOrderedMap.cs" />
     <Compile Include="Map\LinkedHashMap.cs" />
     <Compile Include="Queue\BoundedQueue.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Collection\IBoundedCollection.cs" />
     <Compile Include="Bag\ISortedBag.cs" />
     <Compile Include="Map\ITreeMap.cs" />
+    <Compile Include="Set\INavigableSet.cs" />
     <Compile Include="Set\ITreeSet.cs" />
     <Compile Include="Common\LlrbTree.cs" />
     <Compile Include="Map\TreeMap.cs" />

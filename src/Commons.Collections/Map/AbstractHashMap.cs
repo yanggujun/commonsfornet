@@ -75,7 +75,7 @@ namespace Commons.Collections.Map
             var contains = false;
             while (null != item)
             {
-                if (isEqual(item.Entry.Key, key))
+                if (isEqual(item.Key, key))
                 {
                     contains = true;
                     break;
@@ -96,7 +96,7 @@ namespace Commons.Collections.Map
                     var cursor = entry;
                     while (null != cursor)
                     {
-                        keys.Add(entry.Entry.Key);
+                        keys.Add(entry.Key);
                         cursor = cursor.Next;
                     }
                 }
@@ -113,7 +113,7 @@ namespace Commons.Collections.Map
             var entry = Entries[index];
             if (null != entry)
             {
-                if (isEqual(entry.Entry.Key, key))
+                if (isEqual(entry.Key, key))
                 {
                     Entries[index] = entry.Next;
                     removed = true;
@@ -123,7 +123,7 @@ namespace Commons.Collections.Map
                     while (null != entry.Next)
                     {
                         var item = entry.Next;
-                        if (isEqual(item.Entry.Key, key))
+                        if (isEqual(item.Key, key))
                         {
                             entry.Next = item.Next;
                             removed = true;
@@ -167,7 +167,7 @@ namespace Commons.Collections.Map
                     var item = entry;
                     while (null != item)
                     {
-                        values.Add(item.Entry.Value);
+                        values.Add(item.Value);
                         item = item.Next;
                     }
                 }
@@ -191,9 +191,9 @@ namespace Commons.Collections.Map
                 V v = default(V);
                 while (null != entry)
                 {
-                    if (isEqual(entry.Entry.Key, key))
+                    if (isEqual(entry.Key, key))
                     {
-                        v = entry.Entry.Value;
+                        v = entry.Value;
                         break;
                     }
                     else
@@ -215,9 +215,9 @@ namespace Commons.Collections.Map
                 var entry = Entries[index];
                 while (null != entry)
                 {
-                    if (isEqual(entry.Entry.Key, key))
+                    if (isEqual(entry.Key, key))
                     {
-                        entry.Entry = new KeyValuePair<K, V>(key, value);
+                        entry.Value = value;
                         break;
                     }
                     else
@@ -296,7 +296,7 @@ namespace Commons.Collections.Map
                 var item = entry;
                 while (null != item)
                 {
-                    yield return item.Entry;
+                    yield return new KeyValuePair<K, V>(item.Key, item.Value);
                     item = item.Next;
                 }
             }
@@ -331,7 +331,7 @@ namespace Commons.Collections.Map
 
         protected virtual HashEntry CreateEntry(K key, V value)
         {
-            return new HashEntry(new KeyValuePair<K, V>(key, value));
+            return new HashEntry(key, value);
         }
 
         protected HashEntry GetEntry(K key)
@@ -341,7 +341,7 @@ namespace Commons.Collections.Map
             HashEntry target = null;
             while (null != entry)
             {
-                if (isEqual(entry.Entry.Key, key))
+                if (isEqual(entry.Key, key))
                 {
                     target = entry;
                     break;
@@ -356,7 +356,7 @@ namespace Commons.Collections.Map
 
         private void Put(HashEntry[] buckets, HashEntry entry)
         {
-            var key = entry.Entry.Key;
+            var key = entry.Key;
             var index = HashIndex(key);
 
             var item = buckets[index];
@@ -369,7 +369,7 @@ namespace Commons.Collections.Map
                 HashEntry cursor = null;
                 while (null != item)
                 {
-                    if (isEqual(item.Entry.Key, key))
+                    if (isEqual(item.Key, key))
                     {
                         throw new ArgumentException("The key already exists in the map.");
                     }
@@ -388,7 +388,7 @@ namespace Commons.Collections.Map
             foreach (var entry in this)
             {
                 var item = entry;
-                Put(newEntries, new HashEntry(new KeyValuePair<K, V>(entry.Key, entry.Value)));
+                Put(newEntries, new HashEntry(entry.Key, entry.Value));
             }
             Entries = newEntries;
         }
@@ -530,9 +530,16 @@ namespace Commons.Collections.Map
         {
             public HashEntry(KeyValuePair<K, V> entry)
             {
-                this.Entry = entry;
+                Key = entry.Key;
+                Value = entry.Value;
             }
-            public KeyValuePair<K, V> Entry { get; set; }
+            public HashEntry(K key, V value)
+            {
+                Key = key;
+                Value = value;
+            }
+            public K Key { get; set; }
+            public V Value { get; set; }
             public HashEntry Next { get; set; }
 
 #if DEBUG

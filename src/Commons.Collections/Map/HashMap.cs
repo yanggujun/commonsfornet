@@ -57,7 +57,7 @@ namespace Commons.Collections.Map
 
         protected override long HashIndex(K key)
         {
-            var hash = (uint) key.GetHashCode();
+            var hash = key.GetHashCode();
             return hash & (Capacity - 1);
         }
     }

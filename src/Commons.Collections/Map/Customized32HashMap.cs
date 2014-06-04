@@ -81,11 +81,11 @@ namespace Commons.Collections.Map
             }
         }
 
-        private uint Hash(K key)
+        private long Hash(K key)
         {
             var bytes = transform(key);
             var hash = hasher.Hash(bytes);
-            return (uint)hash[0];
+            return hash[0];
         }
 
         protected override long HashIndex(K key)

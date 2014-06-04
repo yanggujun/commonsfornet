@@ -96,7 +96,7 @@ namespace Commons.Collections.Map
             get
             {
                 CheckEmpty("get first item");
-                return Header.Entry;
+                return new KeyValuePair<K, V>(Header.Key, Header.Value);
             }
         }
 
@@ -105,7 +105,7 @@ namespace Commons.Collections.Map
             get
             {
                 CheckEmpty("get last item");
-                return Header.Before.Entry;
+                return new KeyValuePair<K, V>(Header.Before.Key, Header.Before.Value);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Commons.Collections.Map
             CheckEmpty("get After item");
 
             var entry = (LinkedHashEntry)GetEntry(key);
-            return entry.After.Entry;
+            return new KeyValuePair<K, V>(entry.After.Key, entry.After.Value);
         }
 
         public KeyValuePair<K, V> Before(K key)
@@ -123,7 +123,7 @@ namespace Commons.Collections.Map
             Guarder.CheckNull(key);
             CheckEmpty("get Before item");
             var entry = (LinkedHashEntry)GetEntry(key);
-            return entry.Before.Entry;
+            return new KeyValuePair<K, V>(entry.Before.Key, entry.Before.Value);
         }
  
         public KeyValuePair<K, V> GetIndex(int index)
@@ -154,12 +154,12 @@ namespace Commons.Collections.Map
                 }
             }
 
-            return cursor.Entry;
+            return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
         }
 
         protected override AbstractHashMap<K, V>.HashEntry CreateEntry(K key, V value)
         {
-            var linkedEntry = new LinkedHashEntry(new KeyValuePair<K, V>(key, value));
+            var linkedEntry = new LinkedHashEntry(key, value);
             if (Header == null)
             {
                 Header.Before = Header.After = Header = linkedEntry;
@@ -185,7 +185,7 @@ namespace Commons.Collections.Map
 
         protected class LinkedHashEntry : HashEntry
         {
-            public LinkedHashEntry(KeyValuePair<K, V> entry) : base(entry)
+            public LinkedHashEntry(K key, V value) : base(key, value)
             {
             }
             public LinkedHashEntry Before { get; set; }
