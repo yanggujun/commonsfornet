@@ -547,7 +547,7 @@ namespace Commons.Collections.Map
             {
                 get
                 {
-                    return this.Entry.Key + (this.Next == null ? string.Empty : " Next: " + this.Next.Output);
+                    return this.Key + (this.Next == null ? string.Empty : " Next: " + this.Next.Output);
                 }
             }
 #endif
