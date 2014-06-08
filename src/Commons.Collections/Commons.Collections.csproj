@@ -64,6 +64,9 @@
     <Compile Include="Common\IHashStrategy.cs" />
     <Compile Include="Common\MurmurHash32.cs" />
     <Compile Include="Common\Extensions.cs" />
+    <Compile Include="Json\JsonObject.cs" />
+    <Compile Include="Json\JsonParser.cs" />
+    <Compile Include="Json\JsonValue.cs" />
     <Compile Include="Map\AbstractHashMap.cs" />
     <Compile Include="Map\Customized32HashMap.cs" />
     <Compile Include="Map\HashMap.cs" />

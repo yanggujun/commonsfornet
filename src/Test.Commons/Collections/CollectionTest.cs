@@ -27,6 +27,7 @@ using Commons.Collections;
 using Commons.Collections.Set;
 using Commons.Collections.Queue;
 using Commons.Collections.Collection;
+using Commons.Collections.Json;
 
 namespace Test.Commons.Collections
 {
@@ -354,6 +355,18 @@ namespace Test.Commons.Collections
                     list.Remove(toRemove);
                 }
             }
+        }
+
+        [Fact]
+        public void TestJsonObject()
+        {
+            dynamic json = new JsonObject();
+            json.Cities = new string[] { "Shanghai", "Beijing", "Guangzhou" };
+            json.Fruites = new JsonObject();
+            json.Fruites.Apple = 5;
+            json.Fruites.Orange = 9;
+            json.Fruites.Banana = 7;
+            Console.WriteLine(json.ToString());
         }
     }
 }
