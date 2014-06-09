@@ -33,22 +33,27 @@ namespace Test.Commons.Perf
         public void CompareStringHashPerf()
         {
             var guids = BuildTestCollection(1000000, () => Guid.NewGuid().ToString()).ToList();
+			var items = new List<byte[]>();
+			foreach (var i in guids)
+			{
+				items.Add(Encoding.ASCII.GetBytes(i));
+			}
             var murmur = new MurmurHash32();
-            var result1 = Evaluate(guids, x =>
+            var result1 = Evaluate(items, x =>
             {
                 foreach (var item in x)
                 {
-                    var hash = murmur.Hash(Encoding.ASCII.GetBytes(item));
+					var hash = murmur.Hash(item);
                 }
             });
             Console.WriteLine("Murmurhash32: " + result1);
 
             var fnv = new FnvHash32();
-            var result2 = Evaluate(guids, x =>
+            var result2 = Evaluate(items, x =>
             {
                 foreach (var item in x)
                 {
-                    var hash = fnv.Hash(Encoding.ASCII.GetBytes(item));
+					var hash = fnv.Hash(item);
                 }
             });
             Console.WriteLine("FNV Hash: " + result2);
@@ -68,9 +73,9 @@ namespace Test.Commons.Perf
         {
             var guids = BuildTestCollection(1000000, () => Guid.NewGuid().ToString()).ToList();
             var murmur = new MurmurHash32();
-            Console.WriteLine("Mumurhash duplicate: " + EvaluateCollision(guids, str => (int)murmur.Hash(str.ToBytes())[0]));
+            Console.WriteLine("Mumurhash duplicate: " + EvaluateCollision(guids, str => (int)murmur.Hash(Encoding.ASCII.GetBytes(str))[0]));
             var fnv = new FnvHash32();
-            Console.WriteLine("FNV duplicate: " + EvaluateCollision(guids, str => (int)fnv.Hash(str.ToBytes())[0]));
+            Console.WriteLine("FNV duplicate: " + EvaluateCollision(guids, str => (int)fnv.Hash(Encoding.ASCII.GetBytes(str))[0]));
             Console.WriteLine("Plain hash duplicate: " + EvaluateCollision(guids, str => str.GetHashCode()));
         }
 
@@ -97,8 +102,25 @@ namespace Test.Commons.Perf
             var dict = new Dictionary<string, string>(1000000);
             Console.WriteLine("Dict remove: " + TestMapRemovePerf(items, dict));
             var customized = new Customized32HashMap<string, string>(1000000, x => Encoding.ASCII.GetBytes(x));
-            Console.WriteLine("Customized remove: " + TestMapRemovePerf(items, customized));
+            Console.WriteLine("Customized Murmur remove: " + TestMapRemovePerf(items, customized));
+            var customizedFnv = new Customized32HashMap<string, string>(1000000, new FnvHash32(), x => Encoding.ASCII.GetBytes(x), EqualityComparer<string>.Default);
+            Console.WriteLine("Customized FNV remove: " + TestMapRemovePerf(items, customizedFnv));
         }
+
+        [Fact]
+        public void CompareStringDictUpdatePerf()
+        {
+            var items = BuildTestCollection(1000000, () => Guid.NewGuid().ToString()).ToList();
+            var map = new HashMap<string, string>(1000000);
+            Console.WriteLine("Hash Map update: " + TestMapUpdatePerf(items, map));
+            var dict = new Dictionary<string, string>(1000000);
+            Console.WriteLine("Dict update: " + TestMapUpdatePerf(items, dict));
+            var customized = new Customized32HashMap<string, string>(1000000, x => Encoding.ASCII.GetBytes(x));
+            Console.WriteLine("Customized update: " + TestMapUpdatePerf(items, customized));
+            var customizedFnv = new Customized32HashMap<string, string>(1000000, new FnvHash32(), x => Encoding.ASCII.GetBytes(x), EqualityComparer<string>.Default);
+            Console.WriteLine("Customized FNV update: " + TestMapUpdatePerf(items, customizedFnv));
+        }
+
 
         [Fact]
         public void CompareIntMapPerf()
@@ -177,6 +199,22 @@ namespace Test.Commons.Perf
                 });
         }
 
+        private static double TestMapUpdatePerf<T>(IList<T> source, IDictionary<T, T> collection)
+        {
+            foreach (var item in source)
+            {
+                collection.Add(item, item);
+            }
+            return Evaluate(source, items =>
+                {
+                    var index = 0;
+                    foreach (var item in items)
+                    {
+                        collection[item] = item;
+                    }
+                });
+        }
+
         private static double TestMapRemovePerf<T>(IList<T> source, IDictionary<T, T> collection)
         {
             foreach (var item in source)
@@ -202,18 +240,18 @@ namespace Test.Commons.Perf
         private static int EvaluateCollision<T>(IList<T> guids, Transformer<T, int> hash)
         {
             var duplicated = 0;
-            var set = new TreeSet<int>();
+            var map = new HashMap<int, int>();
             foreach (var item in guids)
             {
                 var code = hash(item);
-                code &= (1 << 21) - 1;
-                if (!set.Contains(code))
+                if (!map.ContainsKey(code))
                 {
-                    set.Add(code);
+                    map.Add(code, 1);
                 }
                 else
                 {
                     duplicated++;
+                    map[code]++;
                 }
             }
             return duplicated;

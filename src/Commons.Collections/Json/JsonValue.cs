@@ -65,7 +65,7 @@ namespace Commons.Collections.Json
                 }
                 obj = items;
             }
-            else if (type == typeof(IEnumerable))
+            else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 var items = value as IEnumerable;
                 var list = new ArrayList();

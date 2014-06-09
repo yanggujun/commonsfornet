@@ -362,6 +362,9 @@ namespace Test.Commons.Collections
         {
             dynamic json = new JsonObject();
             json.Cities = new string[] { "Shanghai", "Beijing", "Guangzhou" };
+			json.Teams = new List<string>() { "Brazil", "Argentina", "France", "Italy" };
+			json.Child.Name = "Alan";
+			json.Child.Age = 5;
             json.Fruites = new JsonObject();
             json.Fruites.Apple = 5;
             json.Fruites.Orange = 9;

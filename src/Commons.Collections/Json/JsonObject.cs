@@ -55,7 +55,13 @@ namespace Commons.Collections.Json
             JsonValue jvalue;
             var success = valueMap.TryGetValue(name, out jvalue);
             result = jvalue;
-            return success;
+			if (!success)
+			{
+				var obj = new JsonObject();
+				valueMap.Add(name, new JsonValue(obj));
+				result = obj;
+			}
+			return true;
         }
 
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
