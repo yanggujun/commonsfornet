@@ -128,7 +128,7 @@ namespace Commons.Collections.Map
  
         public KeyValuePair<K, V> GetIndex(int index)
         {
-            if (index <= 0)
+            if (index < 0)
             {
                 throw new ArgumentException("The order cannot be less than zero");
             }
