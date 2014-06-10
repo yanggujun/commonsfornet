@@ -29,7 +29,7 @@ namespace Commons.Collections.Map
         private LinkedHashEntry Header { get; set; }
 
         public LinkedHashMap()
-            : base(DefaultCapacity, null)
+            : this(DefaultCapacity, EqualityComparer<K>.Default)
         {
         }
 
@@ -157,12 +157,23 @@ namespace Commons.Collections.Map
             return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
         }
 
+        public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()
+        {
+            var cursor = Header;
+            do
+            {
+                yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
+                cursor = cursor.After;
+            } while (cursor != Header);
+        }
+
         protected override AbstractHashMap<K, V>.HashEntry CreateEntry(K key, V value)
         {
             var linkedEntry = new LinkedHashEntry(key, value);
             if (Header == null)
             {
-                Header.Before = Header.After = Header = linkedEntry;
+                Header = linkedEntry;
+                Header.Before = Header.After = Header;
             }
             else
             {

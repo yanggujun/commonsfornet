@@ -361,15 +361,15 @@ namespace Test.Commons.Collections
         public void TestJsonObject()
         {
             dynamic worldCup = new JsonObject();
-			worldCup.Host = "Brazil";
-			worldCup.TotalTeams = 32;
-			worldCup.Started = false;
-			worldCup.Groups.GroupA.Teams = new[] { "Brazil", "Crotia", "Mexico", "Cameroon" };
-			worldCup.Groups.GroupB = new[] { "Spain", "Netherland", "Chile", "Austrilia" };
-			worldCup.Groups.GroupC = new[] { "Columbia", "Greece", "Cote Divoire", "Japan" };
-			worldCup.Cities = new[] { "Rio", "Brazilia", "San Paulo", "Salvador"};
-			worldCup.Groups.GroupA.TimeStart = new DateTime(2014, 6, 17);
-			Console.WriteLine(worldCup);
+            worldCup.Host = "Brazil";
+            worldCup.TotalTeams = 32;
+            worldCup.Started = false;
+            worldCup.Groups.GroupA.Teams = new[] { "Brazil", "Crotia", "Mexico", "Cameroon" };
+            worldCup.Groups.GroupB = new[] { "Spain", "Netherland", "Chile", "Austrilia" };
+            worldCup.Groups.GroupC = new[] { "Columbia", "Greece", "Cote Divoire", "Japan" };
+            worldCup.Cities = new[] { "Rio", "Brazilia", "San Paulo", "Salvador"};
+            worldCup.Groups.GroupA.TimeStart = new DateTime(2014, 6, 17);
+            Console.WriteLine(worldCup);
         }
     }
 }

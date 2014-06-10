@@ -106,7 +106,7 @@ namespace Commons.Collections.Json
             if (null != jobj)
             {
                 dynamic obj = jobj;
-				obj[binder.Name] = value;
+                obj[binder.Name] = value;
                 success = true;
             }
             else
@@ -136,14 +136,14 @@ namespace Commons.Collections.Json
         {
             var type = jvalue.GetType();
             var str = string.Empty;
-			if (type.IsPrimitive || type == typeof(bool))
-			{
-				str = jvalue.ToString();
-			}
-			else if (type == typeof(string))
+            if (type.IsPrimitive || type == typeof(bool))
+            {
+                str = jvalue.ToString();
+            }
+            else if (type == typeof(string))
             {
                 var builder = new StringBuilder();
-				builder.Append("\"").Append(jvalue).Append("\"");
+                builder.Append("\"").Append(jvalue).Append("\"");
                 str = builder.ToString();
             }
             else if (type == typeof(JsonObject))

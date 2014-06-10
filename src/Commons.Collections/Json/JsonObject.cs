@@ -24,7 +24,7 @@ namespace Commons.Collections.Json
 {
     public class JsonObject : DynamicObject
     {
-        private readonly HashMap<string, JsonValue> valueMap = new HashMap<string, JsonValue>();
+        private readonly LinkedHashMap<string, JsonValue> valueMap = new LinkedHashMap<string, JsonValue>();
 
         public JsonObject()
         {
@@ -55,13 +55,13 @@ namespace Commons.Collections.Json
             JsonValue jvalue;
             var success = valueMap.TryGetValue(name, out jvalue);
             result = jvalue;
-			if (!success)
-			{
-				var obj = new JsonObject();
-				valueMap.Add(name, new JsonValue(obj));
-				result = obj;
-			}
-			return true;
+            if (!success)
+            {
+                var obj = new JsonObject();
+                valueMap.Add(name, new JsonValue(obj));
+                result = obj;
+            }
+            return true;
         }
 
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)

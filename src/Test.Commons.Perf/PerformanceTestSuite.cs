@@ -33,17 +33,17 @@ namespace Test.Commons.Perf
         public void CompareStringHashPerf()
         {
             var guids = BuildTestCollection(1000000, () => Guid.NewGuid().ToString()).ToList();
-			var items = new List<byte[]>();
-			foreach (var i in guids)
-			{
-				items.Add(Encoding.ASCII.GetBytes(i));
-			}
+            var items = new List<byte[]>();
+            foreach (var i in guids)
+            {
+                items.Add(Encoding.ASCII.GetBytes(i));
+            }
             var murmur = new MurmurHash32();
             var result1 = Evaluate(items, x =>
             {
                 foreach (var item in x)
                 {
-					var hash = murmur.Hash(item);
+                    var hash = murmur.Hash(item);
                 }
             });
             Console.WriteLine("Murmurhash32: " + result1);
@@ -53,7 +53,7 @@ namespace Test.Commons.Perf
             {
                 foreach (var item in x)
                 {
-					var hash = fnv.Hash(item);
+                    var hash = fnv.Hash(item);
                 }
             });
             Console.WriteLine("FNV Hash: " + result2);
@@ -207,7 +207,6 @@ namespace Test.Commons.Perf
             }
             return Evaluate(source, items =>
                 {
-                    var index = 0;
                     foreach (var item in items)
                     {
                         collection[item] = item;
