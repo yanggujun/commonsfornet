@@ -360,16 +360,16 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestJsonObject()
         {
-            dynamic json = new JsonObject();
-            json.Cities = new string[] { "Shanghai", "Beijing", "Guangzhou" };
-			json.Teams = new List<string>() { "Brazil", "Argentina", "France", "Italy" };
-			json.Child.Name = "Alan";
-			json.Child.Age = 5;
-            json.Fruites = new JsonObject();
-            json.Fruites.Apple = 5;
-            json.Fruites.Orange = 9;
-            json.Fruites.Banana = 7;
-            Console.WriteLine(json.ToString());
+            dynamic worldCup = new JsonObject();
+			worldCup.Host = "Brazil";
+			worldCup.TotalTeams = 32;
+			worldCup.Started = false;
+			worldCup.Groups.GroupA.Teams = new[] { "Brazil", "Crotia", "Mexico", "Cameroon" };
+			worldCup.Groups.GroupB = new[] { "Spain", "Netherland", "Chile", "Austrilia" };
+			worldCup.Groups.GroupC = new[] { "Columbia", "Greece", "Cote Divoire", "Japan" };
+			worldCup.Cities = new[] { "Rio", "Brazilia", "San Paulo", "Salvador"};
+			worldCup.Groups.GroupA.TimeStart = new DateTime(2014, 6, 17);
+			Console.WriteLine(worldCup);
         }
     }
 }
