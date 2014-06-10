@@ -32,7 +32,7 @@ namespace Commons.Collections.Map
     /// <typeparam name="TKey">The key type</typeparam>
     /// <typeparam name="TValue">The value type</typeparam>
     [CLSCompliant(true)]
-    public sealed class TreeMap<TKey, TValue> : ITreeMap<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>, 
+    public sealed class TreeMap<TKey, TValue> : ISortedMap<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>, 
         IDictionary, ICollection, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
     {
         private LlrbTree<TKey, TValue> llrbTree;
@@ -360,7 +360,7 @@ namespace Commons.Collections.Map
             get { return this.Values; }
         }
 
-        public ITreeSet<TKey> KeySet
+        public ISortedSet<TKey> KeySet
         {
             get
             {

@@ -31,7 +31,7 @@ namespace Commons.Collections.Set
     /// </summary>
     /// <typeparam name="T">Type of the items in the set.</typeparam>
     [CLSCompliant(true)]
-    public sealed class TreeSet<T> : ITreeSet<T>
+    public sealed class TreeSet<T> : ISortedSet<T>
     {
         LlrbTree<T, T> llrbTree;
         /// <summary>
