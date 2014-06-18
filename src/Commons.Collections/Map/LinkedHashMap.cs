@@ -34,7 +34,7 @@ namespace Commons.Collections.Map
         }
 
         public LinkedHashMap(int capacity)
-            : base(capacity, null)
+            : this(capacity, EqualityComparer<K>.Default)
         {
         }
 
@@ -54,7 +54,7 @@ namespace Commons.Collections.Map
         }
 
         public LinkedHashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IEqualityComparer<K> comparer)
-            : this(capacity, null, (x1, x2) => null == comparer ? EqualityComparer<K>.Default.Equals(x1, x2) : comparer.Equals(x1, x2))
+            : this(capacity, items, (x1, x2) => null == comparer ? EqualityComparer<K>.Default.Equals(x1, x2) : comparer.Equals(x1, x2))
         {
         }
 
@@ -160,11 +160,14 @@ namespace Commons.Collections.Map
         public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
             var cursor = Header;
-            do
+            if (null != cursor)
             {
-                yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
-                cursor = cursor.After;
-            } while (cursor != Header);
+                do
+                {
+                    yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
+                    cursor = cursor.After;
+                } while (cursor != Header);
+            }
         }
 
         protected override AbstractHashMap<K, V>.HashEntry CreateEntry(K key, V value)

@@ -30,5 +30,20 @@ namespace Commons.Collections.Common
                 }
             }
         }
+
+        public static void ValidateString(params string[] inputs)
+        {
+            foreach (var item in inputs)
+            {
+                if (string.IsNullOrEmpty(item))
+                {
+                    throw new ArgumentNullException("The input string argument is null");
+                }
+                if (string.IsNullOrEmpty(item.Trim()))
+                {
+                    throw new ArgumentNullException("the input string argument is empty");
+                }
+            }
+        }
     }
 }

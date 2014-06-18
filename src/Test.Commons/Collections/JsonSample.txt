@@ -1,0 +1,10 @@
+﻿{
+    "Host": "Brazil",
+    "Teams": 32,
+    "Groups": {
+        "GroupA": "Brazil",
+        "GroupB": "Spain"
+    },
+    "Started": true,
+    "Champion": null
+}

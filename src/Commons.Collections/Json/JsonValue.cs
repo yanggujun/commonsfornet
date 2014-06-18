@@ -31,29 +31,16 @@ namespace Commons.Collections.Json
 
         public JsonValue(object value)
         {
-            Guarder.CheckNull(value);
-            jvalue = Convert(value);
+            jvalue = value == null ? null : Convert(value);
         }
 
         private static object Convert(object value)
         {
             var type = value.GetType();
             object obj = null;
-            if (type.IsPrimitive || type == typeof(bool) || type == typeof(JsonObject))
+            if (type.IsPrimitive || type == typeof(bool) || type == typeof(string) || type == typeof(JsonObject))
             {
                 obj = value;
-            }
-            else if (type == typeof(string))
-            {
-                var jstr = value as string;
-                if (jstr != null)
-                {
-                    obj = jstr.ToJson();
-                    if (null == obj)
-                    {
-                        obj = jstr;
-                    }
-                }
             }
             else if (type.IsArray)
             {
@@ -134,6 +121,10 @@ namespace Commons.Collections.Json
 
         public override string ToString()
         {
+            if (jvalue == null)
+            {
+                return "null";
+            }
             var type = jvalue.GetType();
             var str = string.Empty;
             if (type.IsPrimitive || type == typeof(bool))

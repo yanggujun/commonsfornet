@@ -371,5 +371,26 @@ namespace Test.Commons.Collections
             worldCup.Groups.GroupA.TimeStart = new DateTime(2014, 6, 17);
             Console.WriteLine(worldCup);
         }
+
+        [Fact]
+        public void TestParseJson()
+        {
+            string json;
+            using (var fs = new FileStream(@".\Collections\JsonSample.txt", FileMode.Open))
+            {
+                using (var sr = new StreamReader(fs))
+                {
+                    json = sr.ReadToEnd();
+                }
+            }
+            dynamic worldcup = JsonObject.Parse(json);
+            string host = worldcup.Host;
+            int teams = worldcup.Teams;
+            Assert.Equal("Brazil", host);
+            Assert.Equal(32, teams);
+            Assert.True((bool)worldcup.Started);
+            var champ = (string)worldcup.Champion;
+            Assert.Equal(null, champ);
+        }
     }
 }

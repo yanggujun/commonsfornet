@@ -14,11 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Commons.Collections.Map;
-using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
+
+using Commons.Collections.Map;
 
 namespace Commons.Collections.Json
 {
@@ -26,12 +26,9 @@ namespace Commons.Collections.Json
     {
         private readonly LinkedHashMap<string, JsonValue> valueMap = new LinkedHashMap<string, JsonValue>();
 
-        public JsonObject()
+        public static JsonObject Parse(string json)
         {
-        }
-
-        public JsonObject(string json)
-        {
+            return json.ToJson();
         }
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
