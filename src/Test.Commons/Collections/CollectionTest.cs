@@ -370,6 +370,10 @@ namespace Test.Commons.Collections
             worldCup.Cities = new[] { "Rio", "Brazilia", "San Paulo", "Salvador"};
             worldCup.Groups.GroupA.TimeStart = new DateTime(2014, 6, 17);
             Console.WriteLine(worldCup);
+			foreach (var item in worldCup.Groups.GroupB)
+			{
+				Console.WriteLine(item);
+			}
         }
 
         [Fact]

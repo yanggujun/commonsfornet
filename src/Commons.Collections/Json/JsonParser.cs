@@ -21,12 +21,15 @@ using System.Text;
 
 using Commons.Collections.Common;
 using System.Globalization;
+using Commons.Collections.Map;
+using System.Threading;
 
 namespace Commons.Collections.Json
 {
     internal static class JsonParser
     {
         private const string InvalidFormat = "The input JSON string format is invalid";
+
         private const char LeftBrace = '{';
         private const char RightBrace = '}';
         private const char LeftBracket = '[';
@@ -35,11 +38,104 @@ namespace Commons.Collections.Json
         private const char Colon = ':';
         private const char Quoter = '"';
         private const char Dot = '.';
+		private const string Tab = "    ";
+		private const char Space = ' ';
+
+		[ThreadStatic]
+		private static int tabNumber = 0;
+
         public static JsonObject ToJson(this string json)
         {
             Guarder.ValidateString(json);
             return ParseJson(json);
         }
+
+		public static string FormatJsonObject(this LinkedHashMap<string, JsonValue> valueMap)
+		{
+			var builder = new StringBuilder();
+			builder.Append(LeftBrace).AppendLine();
+			tabNumber++;
+			var count = 0;
+			var total = valueMap.Count;
+			foreach (var item in valueMap)
+			{
+				AppendTab(builder);
+				builder.Append(Quoter).Append(item.Key).Append(Quoter).Append(Colon).Append(Space);
+				using (var reader = new StringReader(item.Value.ToString()))
+				{
+					builder.Append(reader.ReadLine());
+					while (true)
+					{
+						var line = reader.ReadLine();
+						if (null == line)
+						{
+							break;
+						}
+						builder.AppendLine();
+						AppendTab(builder);
+						builder.Append(line);
+					}
+				}
+				count++;
+				if (count < total)
+				{
+					builder.Append(Comma).AppendLine();
+				}
+			}
+			builder.AppendLine().Append(RightBrace);
+			tabNumber--;
+			return builder.ToString();
+		}
+
+		private static void AppendTab(StringBuilder builder)
+		{
+			for (var i = 0; i < tabNumber; i++)
+			{
+				builder.Append(Tab);
+			}
+		}
+
+		public static string FormatJsonValue(this object jsonValue)
+		{
+			var type = jsonValue.GetType();
+			var str = string.Empty;
+			if (type.IsPrimitive || type == typeof(bool))
+			{
+				str = jsonValue.ToString();
+			}
+			else if (type == typeof(string))
+			{
+				var builder = new StringBuilder();
+				builder.Append(Quoter).Append(jsonValue).Append(Quoter);
+				str = builder.ToString();
+			}
+			else if (type == typeof(JsonObject))
+			{
+				str = jsonValue.ToString();
+			}
+			else if (type.IsArray)
+			{
+				var items = jsonValue as object[];
+				var builder = new StringBuilder();
+				var count = 0;
+				var total = items.Length;
+				builder.Append(LeftBracket).AppendLine();
+				tabNumber++;
+				foreach (var item in items)
+				{
+					builder.Append(item.ToString());
+					count++;
+					if (count < total)
+					{
+						builder.Append(Comma);
+					}
+				}
+				builder.AppendLine().Append(RightBracket);
+				tabNumber--;
+				str = builder.ToString();
+			}
+			return str;
+		}
 
         private static JsonObject ParseJson(string json)
         {

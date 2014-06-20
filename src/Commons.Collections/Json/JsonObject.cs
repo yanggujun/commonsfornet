@@ -123,21 +123,7 @@ namespace Commons.Collections.Json
 
         public override string ToString()
         {
-            var builder = new StringBuilder();
-            builder.Append("{\n");
-            var count = 0;
-            var total = valueMap.Count;
-            foreach (var item in valueMap)
-            {
-                builder.Append("\t").Append("\"").Append(item.Key).Append("\"").Append(": ").Append(item.Value.ToString());
-                count++;
-                if (count < total)
-                {
-                    builder.Append(",\n");
-                }
-            }
-            builder.Append("\n}");
-            return builder.ToString();
+			return valueMap.FormatJsonObject();
         }
     }
 }

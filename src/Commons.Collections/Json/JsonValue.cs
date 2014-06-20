@@ -14,24 +14,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
 
-using Commons.Collections.Common;
 using System.Text;
 
 namespace Commons.Collections.Json
 {
     public class JsonValue : DynamicObject
     {
-        private object jvalue;
+        private readonly object jsonValue;
 
         public JsonValue(object value)
         {
-            jvalue = value == null ? null : Convert(value);
+            jsonValue = value == null ? null : Convert(value);
         }
 
         private static object Convert(object value)
@@ -71,7 +67,7 @@ namespace Commons.Collections.Json
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            var jobj = jvalue as JsonObject;
+            var jobj = jsonValue as JsonObject;
             var success = false;
             if (null != jobj)
             {
@@ -88,7 +84,7 @@ namespace Commons.Collections.Json
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            var jobj = jvalue as JsonObject;
+            var jobj = jsonValue as JsonObject;
             var success = false;
             if (null != jobj)
             {
@@ -115,52 +111,13 @@ namespace Commons.Collections.Json
 
         public override bool TryConvert(ConvertBinder binder, out object result)
         {
-            result = jvalue;
+			result = jsonValue;
             return true;
         }
 
         public override string ToString()
         {
-            if (jvalue == null)
-            {
-                return "null";
-            }
-            var type = jvalue.GetType();
-            var str = string.Empty;
-            if (type.IsPrimitive || type == typeof(bool))
-            {
-                str = jvalue.ToString();
-            }
-            else if (type == typeof(string))
-            {
-                var builder = new StringBuilder();
-                builder.Append("\"").Append(jvalue).Append("\"");
-                str = builder.ToString();
-            }
-            else if (type == typeof(JsonObject))
-            {
-                str = jvalue.ToString();
-            }
-            else if (type.IsArray)
-            {
-                var items = jvalue as object[];
-                var builder = new StringBuilder();
-                var count = 0;
-                var total = items.Length;
-                builder.Append("[");
-                foreach (var item in items)
-                {
-                    builder.Append(item.ToString());
-                    count++;
-                    if (count < total)
-                    {
-                        builder.Append(",");
-                    }
-                }
-                builder.Append("]");
-                str = builder.ToString();
-            }
-            return str;
+			return jsonValue == null ? "null" : jsonValue.FormatJsonValue();
         }
     }
 }
