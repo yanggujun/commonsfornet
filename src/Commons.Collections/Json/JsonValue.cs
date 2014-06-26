@@ -101,19 +101,19 @@ namespace Commons.Collections.Json
 
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
         {
-			var gotValue = false;
-			int index;
-			if (jsonValue != null && jsonValue.GetType().IsArray && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
-			{
-				result = ((object[])jsonValue)[index];
-				gotValue = true;
-			}
-			else
-			{
-				gotValue = base.TryGetIndex(binder, indexes, out result);
-			}
+            var gotValue = false;
+            int index;
+            if (jsonValue != null && jsonValue.GetType().IsArray && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
+            {
+                result = ((object[])jsonValue)[index];
+                gotValue = true;
+            }
+            else
+            {
+                gotValue = base.TryGetIndex(binder, indexes, out result);
+            }
 
-			return gotValue;
+            return gotValue;
         }
 
         public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
@@ -123,13 +123,13 @@ namespace Commons.Collections.Json
 
         public override bool TryConvert(ConvertBinder binder, out object result)
         {
-			result = jsonValue;
+            result = jsonValue;
             return true;
         }
 
         public override string ToString()
         {
-			return jsonValue == null ? "null" : jsonValue.FormatJsonValue();
+            return jsonValue == null ? "null" : jsonValue.FormatJsonValue();
         }
     }
 }

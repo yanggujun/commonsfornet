@@ -69,17 +69,17 @@ namespace Commons.Collections.Json
             {
                 JsonValue jvalue;
                 success = valueMap.TryGetValue(name, out jvalue);
-				if (!success)
-				{
-					var obj = new JsonObject();
-					valueMap.Add(name, new JsonValue(obj));
-					result = obj;
-					success = true;
-				}
-				else
-				{
-					result = jvalue;
-				}
+                if (!success)
+                {
+                    var obj = new JsonObject();
+                    valueMap.Add(name, new JsonValue(obj));
+                    result = obj;
+                    success = true;
+                }
+                else
+                {
+                    result = jvalue;
+                }
             }
             else
             {
@@ -133,7 +133,7 @@ namespace Commons.Collections.Json
 
         public override string ToString()
         {
-			return valueMap.FormatJsonObject();
+            return valueMap.FormatJsonObject();
         }
     }
 }

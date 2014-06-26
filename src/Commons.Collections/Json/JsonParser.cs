@@ -40,13 +40,13 @@ namespace Commons.Collections.Json
         private const char Colon = ':';
         private const char Quoter = '"';
         private const char Dot = '.';
-		private const string Tab = "    ";
-		private const char Space = ' ';
+        private const string Tab = "    ";
+        private const char Space = ' ';
 
-		private static readonly char[] SpecialChars = { LeftBrace, RightBrace, LeftBracket, RightBracket, Comma, Colon };
+        private static readonly char[] SpecialChars = { LeftBrace, RightBrace, LeftBracket, RightBracket, Comma, Colon };
 
-		[ThreadStatic]
-		private static int tabNumber = 0;
+        [ThreadStatic]
+        private static int tabNumber = 0;
 
         public static JsonObject ToJson(this string json)
         {
@@ -54,90 +54,90 @@ namespace Commons.Collections.Json
             return ParseJson(json);
         }
 
-		public static string FormatJsonObject(this LinkedHashMap<string, JsonValue> valueMap)
-		{
-			var builder = new StringBuilder();
-			builder.Append(LeftBrace).AppendLine();
-			tabNumber++;
-			var count = 0;
-			var total = valueMap.Count;
-			foreach (var item in valueMap)
-			{
-				AppendTab(builder);
-				builder.Append(Quoter).Append(item.Key).Append(Quoter).Append(Colon).Append(Space);
-				using (var reader = new StringReader(item.Value.ToString()))
-				{
-					builder.Append(reader.ReadLine());
-					while (true)
-					{
-						var line = reader.ReadLine();
-						if (null == line)
-						{
-							break;
-						}
-						builder.AppendLine();
-						AppendTab(builder);
-						builder.Append(line);
-					}
-				}
-				count++;
-				if (count < total)
-				{
-					builder.Append(Comma).AppendLine();
-				}
-			}
-			builder.AppendLine().Append(RightBrace);
-			tabNumber--;
-			return builder.ToString();
-		}
+        public static string FormatJsonObject(this LinkedHashMap<string, JsonValue> valueMap)
+        {
+            var builder = new StringBuilder();
+            builder.Append(LeftBrace).AppendLine();
+            tabNumber++;
+            var count = 0;
+            var total = valueMap.Count;
+            foreach (var item in valueMap)
+            {
+                AppendTab(builder);
+                builder.Append(Quoter).Append(item.Key).Append(Quoter).Append(Colon).Append(Space);
+                using (var reader = new StringReader(item.Value.ToString()))
+                {
+                    builder.Append(reader.ReadLine());
+                    while (true)
+                    {
+                        var line = reader.ReadLine();
+                        if (null == line)
+                        {
+                            break;
+                        }
+                        builder.AppendLine();
+                        AppendTab(builder);
+                        builder.Append(line);
+                    }
+                }
+                count++;
+                if (count < total)
+                {
+                    builder.Append(Comma).AppendLine();
+                }
+            }
+            builder.AppendLine().Append(RightBrace);
+            tabNumber--;
+            return builder.ToString();
+        }
 
-		private static void AppendTab(StringBuilder builder)
-		{
-			for (var i = 0; i < tabNumber; i++)
-			{
-				builder.Append(Tab);
-			}
-		}
+        private static void AppendTab(StringBuilder builder)
+        {
+            for (var i = 0; i < tabNumber; i++)
+            {
+                builder.Append(Tab);
+            }
+        }
 
-		public static string FormatJsonValue(this object jsonValue)
-		{
-			var type = jsonValue.GetType();
-			var str = string.Empty;
-			if (type.IsPrimitive || type == typeof(bool))
-			{
-				str = jsonValue.ToString();
-			}
-			else if (type == typeof(string))
-			{
-				var builder = new StringBuilder();
-				builder.Append(Quoter).Append(jsonValue).Append(Quoter);
-				str = builder.ToString();
-			}
-			else if (type == typeof(JsonObject))
-			{
-				str = jsonValue.ToString();
-			}
-			else if (type.IsArray)
-			{
-				var items = jsonValue as object[];
-				var builder = new StringBuilder();
-				var count = 0;
-				var total = items.Length;
-				builder.Append(LeftBracket).AppendLine().Append(Tab);
-				foreach (var item in items)
-				{
-					builder.Append(item.ToString());
-					count++;
-					if (count < total)
-					{
-						builder.Append(Comma).Append(Space);
-					}
-				}
-				builder.AppendLine().Append(RightBracket);
-				str = builder.ToString();
-			}
-			return str;
-		}
+        public static string FormatJsonValue(this object jsonValue)
+        {
+            var type = jsonValue.GetType();
+            var str = string.Empty;
+            if (type.IsPrimitive || type == typeof(bool))
+            {
+                str = jsonValue.ToString();
+            }
+            else if (type == typeof(string))
+            {
+                var builder = new StringBuilder();
+                builder.Append(Quoter).Append(jsonValue).Append(Quoter);
+                str = builder.ToString();
+            }
+            else if (type == typeof(JsonObject))
+            {
+                str = jsonValue.ToString();
+            }
+            else if (type.IsArray)
+            {
+                var items = jsonValue as object[];
+                var builder = new StringBuilder();
+                var count = 0;
+                var total = items.Length;
+                builder.Append(LeftBracket).AppendLine().Append(Tab);
+                foreach (var item in items)
+                {
+                    builder.Append(item.ToString());
+                    count++;
+                    if (count < total)
+                    {
+                        builder.Append(Comma).Append(Space);
+                    }
+                }
+                builder.AppendLine().Append(RightBracket);
+                str = builder.ToString();
+            }
+            return str;
+        }
 
         private static JsonObject ParseJson(string json)
         {
@@ -147,7 +147,7 @@ namespace Commons.Collections.Json
                 var charStack = new Stack<char>();
                 var objectStack = new Stack<object>();
                 var currentFragment = new StringBuilder();
-				var currentIsQuoted = false;
+                var currentIsQuoted = false;
                 int intCh;
                 while ((intCh = reader.Read())!= -1)
                 {
@@ -156,11 +156,11 @@ namespace Commons.Collections.Json
                     {
                         throw new ArgumentException(InvalidFormat);
                     }
-					if (currentIsQuoted && SpecialChars.Any(x => x == ch))
-					{
-						currentFragment.Append(ch);
-						continue;
-					}
+                    if (currentIsQuoted && SpecialChars.Any(x => x == ch))
+                    {
+                        currentFragment.Append(ch);
+                        continue;
+                    }
                     switch (ch)
                     {
                         case LeftBrace:
@@ -168,55 +168,55 @@ namespace Commons.Collections.Json
                             objectStack.Push(new JsonObject());
                             break;
                         case LeftBracket: //[
-							objectStack.Push(new ArrayList());
-							charStack.Push(ch);
+                            objectStack.Push(new ArrayList());
+                            charStack.Push(ch);
                             break;
                         case RightBracket: //]
-							if (charStack.Peek() != LeftBracket || currentFragment.ToString().Trim() != string.Empty)
-							{
-								ExtractJsonValue(charStack, currentFragment, objectStack);
-							}
-							charStack.Pop().Verify(x => x == LeftBracket);
-							var array = objectStack.Pop() as ArrayList;
-							array.Verify(x => x != null);
-							var key = objectStack.Pop() as string;
-							key.Verify(x => !string.IsNullOrEmpty(x));
-							dynamic outerObj = objectStack.Peek();
-							outerObj[key] = array;
+                            if (charStack.Peek() != LeftBracket || currentFragment.ToString().Trim() != string.Empty)
+                            {
+                                ExtractJsonValue(charStack, currentFragment, objectStack);
+                            }
+                            charStack.Pop().Verify(x => x == LeftBracket);
+                            var array = objectStack.Pop() as ArrayList;
+                            array.Verify(x => x != null);
+                            var key = objectStack.Pop() as string;
+                            key.Verify(x => !string.IsNullOrEmpty(x));
+                            dynamic outerObj = objectStack.Peek();
+                            outerObj[key] = array;
                             charStack.Push(ch);
                             break;
                         case RightBrace:
-							//Potential problems here
-							if (charStack.Peek() != LeftBrace || currentFragment.ToString().Trim() != string.Empty)
-							{
-								ExtractJsonValue(charStack, currentFragment, objectStack);
-							}
-							charStack.Pop().Verify(x => x == LeftBrace);
-							var inner = objectStack.Pop() as JsonObject;
-							if (objectStack.Count > 0)
-							{
-								if (charStack.Count > 0 && charStack.Peek() == LeftBracket)
-								{
-									var lastArray = objectStack.Peek() as ArrayList;
-									lastArray.Verify(x => x != null);
-									lastArray.Add(inner);
-								}
-								else
-								{
-									var str = objectStack.Pop() as string;
-									str.Verify(x => !string.IsNullOrEmpty(x));
-									dynamic outer = objectStack.Peek();
-									outer[str] = inner;
-								}
-								charStack.Push(ch);
-							}
-							else
-							{
-								jsonObj = inner;
-							}
+                            //Potential problems here
+                            if (charStack.Peek() != LeftBrace || currentFragment.ToString().Trim() != string.Empty)
+                            {
+                                ExtractJsonValue(charStack, currentFragment, objectStack);
+                            }
+                            charStack.Pop().Verify(x => x == LeftBrace);
+                            var inner = objectStack.Pop() as JsonObject;
+                            if (objectStack.Count > 0)
+                            {
+                                if (charStack.Count > 0 && charStack.Peek() == LeftBracket)
+                                {
+                                    var lastArray = objectStack.Peek() as ArrayList;
+                                    lastArray.Verify(x => x != null);
+                                    lastArray.Add(inner);
+                                }
+                                else
+                                {
+                                    var str = objectStack.Pop() as string;
+                                    str.Verify(x => !string.IsNullOrEmpty(x));
+                                    dynamic outer = objectStack.Peek();
+                                    outer[str] = inner;
+                                }
+                                charStack.Push(ch);
+                            }
+                            else
+                            {
+                                jsonObj = inner;
+                            }
                             break;
                         case Comma:
-							ExtractJsonValue(charStack, currentFragment, objectStack);
+                            ExtractJsonValue(charStack, currentFragment, objectStack);
                             break;
                         case Colon:
                             charStack.Pop().Verify(x => x == Quoter);
@@ -227,15 +227,15 @@ namespace Commons.Collections.Json
                             currentFragment.Clear();
                             break;
                         case Quoter:
-							if (charStack.Peek() != Quoter)
-							{
-								charStack.Push(ch);
-								currentIsQuoted = true;
-							}
-							else
-							{
-								currentIsQuoted = false;
-							}
+                            if (charStack.Peek() != Quoter)
+                            {
+                                charStack.Push(ch);
+                                currentIsQuoted = true;
+                            }
+                            else
+                            {
+                                currentIsQuoted = false;
+                            }
                             currentFragment.Append(ch);
                             break;
                         default:
@@ -243,77 +243,77 @@ namespace Commons.Collections.Json
                             break;
                     }
                 }
-				if (charStack.Count > 0)
-				{
-					throw new ArgumentException(InvalidFormat);
-				}
+                if (charStack.Count > 0)
+                {
+                    throw new ArgumentException(InvalidFormat);
+                }
 
                 return jsonObj;
             }
         }
 
-	    private static void ExtractJsonValue(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
-	    {
-		    if (charStack.Peek() == RightBrace || charStack.Peek() == RightBracket)
-		    {
-			    currentFragment.ToString().Trim().Verify(x => string.IsNullOrEmpty(x));
-			    charStack.Pop();
-		    }
-		    else
-		    {
-			    ParseJsonValue(currentFragment, charStack, objectStack);
-		    }
-	    }
+        private static void ExtractJsonValue(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
+        {
+            if (charStack.Peek() == RightBrace || charStack.Peek() == RightBracket)
+            {
+                currentFragment.ToString().Trim().Verify(x => string.IsNullOrEmpty(x));
+                charStack.Pop();
+            }
+            else
+            {
+                ParseJsonValue(currentFragment, charStack, objectStack);
+            }
+        }
 
-	    private static void ParseJsonValue(StringBuilder currentFragment, Stack<char> charStack, Stack<object> objectStack)
+        private static void ParseJsonValue(StringBuilder currentFragment, Stack<char> charStack, Stack<object> objectStack)
         {
             object jsonValue;
             var value = currentFragment.ToString().Trim();
             var boolValue = false;
             if (charStack.Peek() == Quoter)
             {
-				charStack.Pop();
+                charStack.Pop();
                 value.Verify(x => !string.IsNullOrEmpty(x));
                 value.Verify(x => x[0] == Quoter && x[x.Length - 1] == Quoter);
-				jsonValue = value.Trim().Trim(Quoter);
+                jsonValue = value.Trim().Trim(Quoter);
             }
-			else if (bool.TryParse(value, out boolValue))
-			{
-				jsonValue = boolValue;
-			}
-			else if (value.ToLower(CultureInfo.InvariantCulture) == "null")
-			{
-				jsonValue = null;
-			}
-			else
-			{
-				if (value.IndexOf(Dot) != -1)
-				{
-					double number = 0;
-					value.Verify(x => double.TryParse(x, out number));
-					jsonValue = number;
-				}
-				else
-				{
-					var number = 0;
-					value.Verify(x => int.TryParse(x, out number));
-					jsonValue = number;
-				}
-			}
-			var last = objectStack.Peek();
-			if (last is ArrayList)
-			{
-				var array = last as ArrayList;
-				array.Add(jsonValue);
-			}
-			else
-			{
-				var key = objectStack.Pop() as string;
-				key.Verify(x => !string.IsNullOrEmpty(x));
-				dynamic jsonObject = objectStack.Peek();
-				jsonObject[key] = jsonValue;
-			}
-			currentFragment.Clear();
+            else if (bool.TryParse(value, out boolValue))
+            {
+                jsonValue = boolValue;
+            }
+            else if (value.ToLower(CultureInfo.InvariantCulture) == "null")
+            {
+                jsonValue = null;
+            }
+            else
+            {
+                if (value.IndexOf(Dot) != -1)
+                {
+                    double number = 0;
+                    value.Verify(x => double.TryParse(x, out number));
+                    jsonValue = number;
+                }
+                else
+                {
+                    var number = 0;
+                    value.Verify(x => int.TryParse(x, out number));
+                    jsonValue = number;
+                }
+            }
+            var last = objectStack.Peek();
+            if (last is ArrayList)
+            {
+                var array = last as ArrayList;
+                array.Add(jsonValue);
+            }
+            else
+            {
+                var key = objectStack.Pop() as string;
+                key.Verify(x => !string.IsNullOrEmpty(x));
+                dynamic jsonObject = objectStack.Peek();
+                jsonObject[key] = jsonValue;
+            }
+            currentFragment.Clear();
         }
 
         private static void Verify<T>(this T x, Predicate<T> check)
