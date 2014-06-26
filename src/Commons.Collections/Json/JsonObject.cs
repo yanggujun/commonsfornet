@@ -69,7 +69,17 @@ namespace Commons.Collections.Json
             {
                 JsonValue jvalue;
                 success = valueMap.TryGetValue(name, out jvalue);
-                result = jvalue;
+				if (!success)
+				{
+					var obj = new JsonObject();
+					valueMap.Add(name, new JsonValue(obj));
+					result = obj;
+					success = true;
+				}
+				else
+				{
+					result = jvalue;
+				}
             }
             else
             {

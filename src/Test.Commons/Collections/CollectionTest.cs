@@ -356,45 +356,5 @@ namespace Test.Commons.Collections
                 }
             }
         }
-
-        [Fact]
-        public void TestJsonObject()
-        {
-            dynamic worldCup = new JsonObject();
-            worldCup.Host = "Brazil";
-            worldCup.TotalTeams = 32;
-            worldCup.Started = false;
-            worldCup.Groups.GroupA.Teams = new[] { "Brazil", "Crotia", "Mexico", "Cameroon" };
-            worldCup.Groups.GroupB = new[] { "Spain", "Netherland", "Chile", "Austrilia" };
-            worldCup.Groups.GroupC = new[] { "Columbia", "Greece", "Cote Divoire", "Japan" };
-            worldCup.Cities = new[] { "Rio", "Brazilia", "San Paulo", "Salvador"};
-            worldCup.Groups.GroupA.TimeStart = new DateTime(2014, 6, 17);
-            Console.WriteLine(worldCup);
-			foreach (var item in worldCup.Groups.GroupB)
-			{
-				Console.WriteLine(item);
-			}
-        }
-
-        [Fact]
-        public void TestParseJson()
-        {
-            string json;
-            using (var fs = new FileStream(@".\Collections\JsonSample.txt", FileMode.Open))
-            {
-                using (var sr = new StreamReader(fs))
-                {
-                    json = sr.ReadToEnd();
-                }
-            }
-            dynamic worldcup = JsonObject.Parse(json);
-            string host = worldcup.Host;
-            int teams = worldcup.Teams;
-            Assert.Equal("Brazil", host);
-            Assert.Equal(32, teams);
-            Assert.True((bool)worldcup.Started);
-            var champ = (string)worldcup.Champion;
-            Assert.Equal(null, champ);
-        }
     }
 }
