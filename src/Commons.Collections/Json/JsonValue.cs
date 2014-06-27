@@ -15,8 +15,8 @@
 // limitations under the License.
 
 using System.Collections;
+using System.Collections.Generic;
 using System.Dynamic;
-
 using System.Text;
 
 namespace Commons.Collections.Json
@@ -41,7 +41,7 @@ namespace Commons.Collections.Json
             else if (type.IsArray)
             {
                 var values = value as object[];
-                var items = new object[values.Length];
+                var items = new JsonValue[values.Length];
                 for (var i = 0; i < values.Length; i++)
                 {
                     items[i] = new JsonValue(values[i]);
@@ -51,7 +51,7 @@ namespace Commons.Collections.Json
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 var items = value as IEnumerable;
-                var list = new ArrayList();
+				var list = new List<JsonValue>();
                 foreach (var item in items)
                 {
                     list.Add(new JsonValue(item));
@@ -101,24 +101,35 @@ namespace Commons.Collections.Json
 
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
         {
-            var gotValue = false;
+            var hasValue = false;
             int index;
             if (jsonValue != null && jsonValue.GetType().IsArray && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
             {
-                result = ((object[])jsonValue)[index];
-                gotValue = true;
+                result = ((JsonValue[])jsonValue)[index];
+                hasValue = true;
             }
             else
             {
-                gotValue = base.TryGetIndex(binder, indexes, out result);
+                hasValue = base.TryGetIndex(binder, indexes, out result);
             }
 
-            return gotValue;
+            return hasValue;
         }
 
         public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
         {
-            return base.TrySetIndex(binder, indexes, value);
+			var success = false;
+			int index;
+			if (jsonValue != null && jsonValue.GetType().IsArray && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
+			{
+				((JsonValue[])jsonValue)[index] = new JsonValue(value);
+				success = true;
+			}
+			else
+			{
+				success = base.TrySetIndex(binder, indexes, value);
+			}
+			return success;
         }
 
         public override bool TryConvert(ConvertBinder binder, out object result)

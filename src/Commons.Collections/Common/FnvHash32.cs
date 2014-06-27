@@ -14,8 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Commons.Collections.Common
 {
+	[CLSCompliant(true)]
     public class FnvHash32 : IHashStrategy
     {
         private const uint FNV_PRIME = 16777619;

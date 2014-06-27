@@ -40,13 +40,11 @@ namespace Commons.Collections.Json
         private const char Colon = ':';
         private const char Quoter = '"';
         private const char Dot = '.';
-        private const string Tab = "    ";
         private const char Space = ' ';
+		private const string Null = "null";
+        private const string Tab = "    ";
 
         private static readonly char[] SpecialChars = { LeftBrace, RightBrace, LeftBracket, RightBracket, Comma, Colon };
-
-        [ThreadStatic]
-        private static int tabNumber = 0;
 
         public static JsonObject ToJson(this string json)
         {
@@ -58,13 +56,11 @@ namespace Commons.Collections.Json
         {
             var builder = new StringBuilder();
             builder.Append(LeftBrace).AppendLine();
-            tabNumber++;
             var count = 0;
             var total = valueMap.Count;
             foreach (var item in valueMap)
             {
-                AppendTab(builder);
-                builder.Append(Quoter).Append(item.Key).Append(Quoter).Append(Colon).Append(Space);
+                builder.Append(Tab).Append(Quoter).Append(item.Key).Append(Quoter).Append(Colon).Append(Space);
                 using (var reader = new StringReader(item.Value.ToString()))
                 {
                     builder.Append(reader.ReadLine());
@@ -75,9 +71,7 @@ namespace Commons.Collections.Json
                         {
                             break;
                         }
-                        builder.AppendLine();
-                        AppendTab(builder);
-                        builder.Append(line);
+						builder.AppendLine().Append(Tab).Append(line);
                     }
                 }
                 count++;
@@ -87,16 +81,7 @@ namespace Commons.Collections.Json
                 }
             }
             builder.AppendLine().Append(RightBrace);
-            tabNumber--;
             return builder.ToString();
-        }
-
-        private static void AppendTab(StringBuilder builder)
-        {
-            for (var i = 0; i < tabNumber; i++)
-            {
-                builder.Append(Tab);
-            }
         }
 
         public static string FormatJsonValue(this object jsonValue)
@@ -281,7 +266,7 @@ namespace Commons.Collections.Json
             {
                 jsonValue = boolValue;
             }
-            else if (value.ToLower(CultureInfo.InvariantCulture) == "null")
+            else if (value.ToLower(CultureInfo.InvariantCulture) == Null)
             {
                 jsonValue = null;
             }

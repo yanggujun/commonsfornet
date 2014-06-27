@@ -38,6 +38,8 @@ namespace Test.Commons.Collections
             worldCup.Groups.GroupA.Teams = new[] { "Brazil", "Crotia", "Mexico", "Cameroon" };
             worldCup.Groups.GroupA.Results.Day1 = new[] { "Bra 3 : 1 Cro", "Mex 2 : 1 Cameroon" };
             worldCup.Groups.GroupA.Results.Day2 = new[] { "Bra 0 : 0 Mex", "Cro 4 : 0 Cameroon" };
+			worldCup.Groups.GroupA.Qualifiers.First = "Brazil";
+			worldCup.Groups.GroupA.Qualifiers.Second = "Mexico";
             worldCup.Groups.GroupB = new[] { "Spain", "Netherland", "Chile", "Austrilia" };
             worldCup.Groups.GroupC = new[] { "Columbia", "Greece", "Cote Divoire", "Japan" };
             worldCup.Cities = new[] { "Rio", "Brazilia", "San Paulo", "Salvador" };
@@ -111,6 +113,14 @@ namespace Test.Commons.Collections
             var json = "{\"test\": {}}";
             dynamic jobj = JsonObject.Parse(json);
             Assert.Equal(string.Empty, jobj.test.ToString().Trim('{', '}').Trim());
+        }
+
+        [Fact]
+        public void TestParseJsonNestedEmptyArrayObject()
+        {
+            var json = "{\"test\": [{}]}";
+            dynamic jobj = JsonObject.Parse(json);
+			Assert.Equal(string.Empty, jobj.test[0].ToString().Trim('{', '}').Trim());
         }
 
         [Fact]
@@ -218,5 +228,43 @@ namespace Test.Commons.Collections
             var json = "{\"test\": { \"nest\": {null}}}";
             Assert.Throws(typeof(ArgumentException), () => JsonObject.Parse(json));
         }
+
+		[Fact]
+		public void TestParseJsonSetSimpleValue()
+		{
+			var json = "{\"test\": { \"nest\": 1}}";
+			dynamic jobj = JsonObject.Parse(json);
+			Assert.Equal(1, (int)jobj.test.nest);
+			jobj.test.nest = "newstring";
+			var newJson = (string)jobj;
+			dynamic newObj = JsonObject.Parse(newJson);
+			Assert.Equal("newstring", (string)newObj.test.nest);
+		}
+
+		[Fact]
+		public void TestParseJsonSetArrayValue()
+		{
+			var json = "{\"test\": { \"nest\": [1, null]}}";
+			dynamic jobj = JsonObject.Parse(json);
+			jobj.test.nest[1] = 2;
+			var newJson = (string)jobj;
+			dynamic newObj = JsonObject.Parse(newJson);
+			Assert.Equal(2, (int)newObj.test.nest[1]);
+		}
+
+		[Fact]
+		public void TestParseJsonStrings()
+		{
+			var json4 = TestHelper.ReadFrom(@".\Collections\JsonSample4.txt");
+			Assert.DoesNotThrow(() => JsonObject.Parse(json4));
+			var json5 = TestHelper.ReadFrom(@".\Collections\JsonSample5.txt");
+			Assert.DoesNotThrow(() => JsonObject.Parse(json5));
+			var json6 = TestHelper.ReadFrom(@".\Collections\JsonSample6.txt");
+			Assert.DoesNotThrow(() => JsonObject.Parse(json6));
+			var json7 = TestHelper.ReadFrom(@".\Collections\JsonSample7.txt");
+			Assert.DoesNotThrow(() => JsonObject.Parse(json7));
+			var json8 = TestHelper.ReadFrom(@".\Collections\JsonSample8.txt");
+			Assert.DoesNotThrow(() => JsonObject.Parse(json8));
+		}
     }
 }

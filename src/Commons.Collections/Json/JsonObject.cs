@@ -17,11 +17,13 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
+using System;
 
 using Commons.Collections.Map;
 
 namespace Commons.Collections.Json
 {
+	[CLSCompliant(true)]
     public class JsonObject : DynamicObject
     {
         private readonly LinkedHashMap<string, JsonValue> valueMap = new LinkedHashMap<string, JsonValue>();
@@ -115,12 +117,6 @@ namespace Commons.Collections.Json
             if (targetType == typeof(string))
             {
                 result = ToString();
-                success = true;
-            }
-            else if (targetType == typeof(IDictionary<string, string>))
-            {
-                result = new HashMap<string, string>();
-                //TODO:
                 success = true;
             }
             else
