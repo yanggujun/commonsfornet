@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Commons.Collections.Json
 {
-    public class JsonValue : DynamicObject
+    internal class JsonValue : DynamicObject
     {
         private readonly object jsonValue;
 
