@@ -65,7 +65,7 @@ namespace Commons.Collections.Map
             {
                 foreach (var item in items)
                 {
-                    this.Add(item);
+                    Add(item);
                 }
             }
         }
@@ -159,16 +159,28 @@ namespace Commons.Collections.Map
 
         public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
-            var cursor = Header;
-            if (null != cursor)
-            {
-                do
-                {
-                    yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
-                    cursor = cursor.After;
-                } while (cursor != Header);
-            }
+			return CreateEnumerator().GetEnumerator();
         }
+
+		protected override void Rehash()
+		{
+			if (Header != null)
+			{
+				var newEntries = new HashEntry[Capacity];
+				Count = 0;
+				var cursor = Header;
+				var oldHeader = Header;
+				Header = null;
+				Put(newEntries, CreateEntry(cursor.Key, cursor.Value));
+				cursor = cursor.After;
+				while (!ReferenceEquals(cursor, oldHeader))
+				{
+					Put(newEntries, CreateEntry(cursor.Key, cursor.Value));
+					cursor = cursor.After;
+				}
+				Entries = newEntries;
+			}
+		}
 
         protected override AbstractHashMap<K, V>.HashEntry CreateEntry(K key, V value)
         {
@@ -188,6 +200,19 @@ namespace Commons.Collections.Map
 
             return linkedEntry;
         }
+
+		private IEnumerable<KeyValuePair<K, V>> CreateEnumerator()
+		{
+            var cursor = Header;
+            if (null != cursor)
+            {
+				do
+				{
+					yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
+					cursor = cursor.After;
+				} while (!ReferenceEquals(cursor, Header));
+            }
+		}
 
         private void CheckEmpty(string message)
         {

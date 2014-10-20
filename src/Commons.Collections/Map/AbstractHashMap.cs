@@ -49,7 +49,7 @@ namespace Commons.Collections.Map
             Entries = new HashEntry[this.Capacity];
         }
 
-        public virtual void Add(K key, V value)
+        public void Add(K key, V value)
         {
             Guarder.CheckNull(key);
             var newEntry = CreateEntry(key, value);
@@ -161,7 +161,7 @@ namespace Commons.Collections.Map
         {
             get
             {
-                List<V> values = new List<V>();
+                var values = new List<V>();
                 foreach (var entry in Entries)
                 {
                     var item = entry;
@@ -229,12 +229,12 @@ namespace Commons.Collections.Map
             }
         }
 
-        public virtual void Add(KeyValuePair<K, V> item)
+        public void Add(KeyValuePair<K, V> item)
         {
-            this.Add(item.Key, item.Value);
+            Add(item.Key, item.Value);
         }
 
-        public virtual void Clear()
+        public void Clear()
         {
             for (var i = 0; i < Entries.Length; i++)
             {
@@ -259,7 +259,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public virtual int Count { get; private set; }
+        public virtual int Count { get; protected set; }
 
         public virtual bool IsReadOnly
         {
@@ -302,7 +302,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        protected virtual int CalculateCapacity(int proposedCapacity)
+        protected int CalculateCapacity(int proposedCapacity)
         {
             int newCapacity = 1;
             if (proposedCapacity > MaxCapacity)
@@ -354,7 +354,7 @@ namespace Commons.Collections.Map
             return target;
         }
 
-        private void Put(HashEntry[] buckets, HashEntry entry)
+        protected void Put(HashEntry[] buckets, HashEntry entry)
         {
             var key = entry.Key;
             var index = HashIndex(key);
@@ -381,14 +381,18 @@ namespace Commons.Collections.Map
             Count++;
         }
 
-        private void Rehash()
+        protected virtual void Rehash()
         {
-            HashEntry[] newEntries = new HashEntry[Capacity];
+            var newEntries = new HashEntry[Capacity];
             Count = 0;
-            foreach (var entry in this)
+            foreach (var entry in Entries)
             {
-                var item = entry;
-                Put(newEntries, new HashEntry(entry.Key, entry.Value));
+				var item = entry;
+				while (item != null)
+				{ 
+					Put(newEntries, CreateEntry(item.Key, item.Value));
+					item = item.Next;
+				}
             }
             Entries = newEntries;
         }

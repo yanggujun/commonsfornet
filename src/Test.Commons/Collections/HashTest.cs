@@ -49,48 +49,7 @@ namespace Test.Commons.Collections
         public void TestHashAbility()
         {
             var orders = new Customized32HashMap<string, Order>(4);
-            HashAbility(orders);
-        }
-        private void HashAbility(IDictionary<string, Order> orders)
-        {
-            var keys = new string[10000];
-            for (var i = 0; i < keys.Length; i++)
-            {
-                keys[i] = Guid.NewGuid().ToString();
-            }
-
-            var orderDict = new Dictionary<string, Order>();
-            var idIndex = 0;
-            foreach (var key in keys)
-            {
-                Order order = new Order();
-                order.Id = idIndex++;
-                order.Name = Guid.NewGuid().ToString();
-                orders.Add(key, order);
-                orderDict.Add(key, order);
-            }
-            Assert.Equal(keys.Length, orders.Count);
-            foreach (var key in keys)
-            {
-                Assert.True(orders.ContainsKey(key));
-            }
-            foreach (var key in orderDict.Keys)
-            {
-                Assert.Equal(orderDict[key], orders[key]);
-            }
-            
-            for (var i = 0; i < 3000; i++)
-            {
-                Assert.True(orders.Remove(keys[3000 + i]));
-                Assert.False(orders.ContainsKey(keys[3000 + i]));
-            }
-            Assert.Equal(keys.Length - 3000, orders.Count);
-            var total = 0; 
-            foreach (var o in orders)
-            {
-                total++;
-            }
-            Assert.Equal(total, orders.Count);
+			orders.HashAbility();
         }
 
         [Fact]
@@ -107,28 +66,28 @@ namespace Test.Commons.Collections
         public void TestHashMapConstructors()
         {
             var orders = new Customized32HashMap<string, Order>();
-            HashAbility(orders);
+			orders.HashAbility();
 
             var orders2 = new Customized32HashMap<string, Order>(1000);
-            HashAbility(orders2);
+			orders2.HashAbility();
 
             var orders3 = new Customized32HashMap<string, Order>(100, x => x.ToBytes());
-            HashAbility(orders3);
+			orders3.HashAbility();
 
             var orders4 = new Customized32HashMap<string, Order>(500, x => x.ToBytes(), (x1, x2) => x1 == x2);
-            HashAbility(orders4);
+			orders4.HashAbility();
 
             var orders5 = new Customized32HashMap<string, Order>(60, x => x.ToBytes(), EqualityComparer<string>.Default);
-            HashAbility(orders5);
+			orders5.HashAbility();
 
             var orders6 = new Customized32HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), EqualityComparer<string>.Default);
-            HashAbility(orders6);
+			orders6.HashAbility();
 
             var orders7 = new Customized32HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
-            HashAbility(orders7);
+			orders7.HashAbility();
 
             var orders8 = new Customized32HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (IEqualityComparer<string>)null);
-            HashAbility(orders8);
+			orders8.HashAbility();
 
             var orders9 = new Customized32HashMap<string, Order>(10000, orders8, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
             Assert.NotEmpty(orders9);
@@ -248,7 +207,7 @@ namespace Test.Commons.Collections
         public void TestPlainHashMapOperations()
         {
             var map = new HashMap<string, Order>();
-            HashAbility(map);
+			map.HashAbility();
         }
 
         [Fact]
