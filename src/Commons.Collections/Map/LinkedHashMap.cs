@@ -78,7 +78,11 @@ namespace Commons.Collections.Map
         public override bool Remove(K key)
         {
             Guarder.CheckNull(key);
-            var entry = (LinkedHashEntry)GetEntry(key);
+			var entry = GetEntry(key) as LinkedHashEntry;
+			if (entry == null)
+			{
+				throw new ArgumentException("The key does not exist.");
+			}
             var removed = false;
             if (base.Remove(key))
             {
@@ -114,7 +118,16 @@ namespace Commons.Collections.Map
             Guarder.CheckNull(key);
             CheckEmpty("get After item");
 
-            var entry = (LinkedHashEntry)GetEntry(key);
+			var entry = GetEntry(key) as LinkedHashEntry;
+			if (entry == null)
+			{
+				throw new ArgumentException("The key does not exist.");
+			}
+			if (IsEqual(entry.Key, Header.Before.Key))
+			{
+				throw new ArgumentException("There is no more items after the searched key.");
+			}
+
             return new KeyValuePair<K, V>(entry.After.Key, entry.After.Value);
         }
 
@@ -122,7 +135,16 @@ namespace Commons.Collections.Map
         {
             Guarder.CheckNull(key);
             CheckEmpty("get Before item");
-            var entry = (LinkedHashEntry)GetEntry(key);
+			var entry = GetEntry(key) as LinkedHashEntry;
+			if (entry == null)
+			{
+				throw new ArgumentException("The key does not exist.");
+			}
+			if (IsEqual(entry.Key, Header.Key))
+			{
+				throw new ArgumentException("There is no item before the searched key.");
+			}
+
             return new KeyValuePair<K, V>(entry.Before.Key, entry.Before.Value);
         }
  

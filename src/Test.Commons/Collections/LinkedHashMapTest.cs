@@ -48,5 +48,43 @@ namespace Test.Commons.Collections
 			Assert.NotEmpty(orders9);
 			Assert.Equal(orders8.Count, orders9.Count);
 		}
+
+		[Fact]
+		public void TestOrderedMap()
+		{
+			var container = new LinkedHashMap<int, string>(10000);
+			for (var i = 0; i < 10000; i++)
+			{
+				container.Add(i, i.ToString());
+			}
+			Assert.Equal(0, container.First.Key);
+			Assert.Equal("0", container.First.Value);
+			Assert.Equal(9999, container.Last.Key);
+			Assert.Equal("9999", container.Last.Value);
+			Assert.Equal("0", container.GetIndex(0).Value);
+			Assert.Equal("4999", container.GetIndex(4999).Value);
+			Assert.Equal("11", container.After(10).Value);
+			Assert.Equal("100", container.After(99).Value);
+			Assert.Equal("1001", container.After(1000).Value);
+			Assert.Equal("5000", container.After(4999).Value);
+			Assert.Equal("50", container.Before(51).Value);
+			Assert.Equal("500", container.Before(501).Value);
+			Assert.Equal("1500", container.Before(1501).Value);
+			Assert.Equal("7900", container.Before(7901).Value);
+
+			for (var i = 2000; i < 5000; i++)
+			{
+				Assert.True(container.Remove(i));
+			}
+			Assert.Equal("0", container.First.Value);
+			Assert.Equal("9999", container.Last.Value);
+			Assert.Equal("1000", container.After(999).Value);
+			Assert.Equal("999", container.Before(1000).Value);
+			Assert.Equal("9000", container.After(8999).Value);
+			Assert.Equal("8999", container.Before(9000).Value);
+			Assert.Equal("8500", container.Before(8501).Value);
+			Assert.Equal("5000", container.After(1999).Value);
+			Assert.Equal("1999", container.Before(5000).Value);
+		}
 	}
 }
