@@ -15,10 +15,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Commons.Collections.Bag
 {
@@ -29,19 +25,19 @@ namespace Commons.Collections.Bag
         {
         }
 
-        public virtual T First
+        public virtual T Max
         {
             get
             {
-                return ((ISortedBag<T>)Decorated).First;
+                return ((ISortedBag<T>)Decorated).Max;
             }
         }
 
-        public virtual T Last
+        public virtual T Min
         {
             get
             {
-                return ((ISortedBag<T>)Decorated).Last;
+                return ((ISortedBag<T>)Decorated).Min;
             }
         }
     }

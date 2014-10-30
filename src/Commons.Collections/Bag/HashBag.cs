@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using Commons.Collections.Map;
 
 namespace Commons.Collections.Bag
 {
@@ -23,12 +24,12 @@ namespace Commons.Collections.Bag
     public class HashBag<T> : AbstractMapBag<T>
     {
         public HashBag()
-            : base(new Dictionary<T, int>())
+            : base(new HashMap<T, int>())
         {
         }
 
         public HashBag(IEnumerable<T> items)
-            : base(items, new Dictionary<T, int>())
+            : base(items, new HashMap<T, int>())
         {
         }
     }

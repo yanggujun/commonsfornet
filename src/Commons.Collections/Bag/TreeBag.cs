@@ -39,7 +39,7 @@ namespace Commons.Collections.Bag
         {
         }
 
-        public T First
+        public T Max
         {
             get
             {
@@ -47,7 +47,7 @@ namespace Commons.Collections.Bag
             }
         }
 
-        public T Last
+        public T Min
         {
             get
             {

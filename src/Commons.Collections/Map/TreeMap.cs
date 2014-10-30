@@ -17,9 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Commons.Collections.Set;
 using Commons.Collections.Common;
@@ -35,9 +32,9 @@ namespace Commons.Collections.Map
     public sealed class TreeMap<TKey, TValue> : ISortedMap<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>, 
         IDictionary, ICollection, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
     {
-        private LlrbTree<TKey, TValue> llrbTree;
+        private readonly LlrbTree<TKey, TValue> llrbTree;
 
-        private Comparison<TKey> comparer;
+        private readonly Comparison<TKey> comparer;
 
         /// <summary>
         /// Constructs an empty map, with the default comparer of the key.

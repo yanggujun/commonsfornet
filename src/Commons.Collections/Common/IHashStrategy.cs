@@ -19,7 +19,7 @@ using System;
 namespace Commons.Collections.Common
 {
     /// <summary>
-    /// Defines a hash algorithm interface. A hash alogrithm requires the bytes to hash and the hash seed.
+    /// Defines a hash algorithm interface. A hash algorithm requires the bytes to hash and the hash seed.
     /// </summary>
     [CLSCompliant(true)]
     public interface IHashStrategy

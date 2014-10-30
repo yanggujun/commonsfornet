@@ -27,7 +27,7 @@ namespace Commons.Collections.Collection
     /// And it has the capability to add and remove items from the composite collection.
     /// When two collections are needed to be concatenated and new items are required to be added to the new collection,
     /// the CompositeCollection will be faster than System.Linq.Enumerable.Concat. 
-    /// The items in this collection is unordered. The items in the composite collection are not necessaryly unique, like the result of 
+    /// The items in this collection is unordered. The items in the composite collection are not necessarily unique, like the result of 
     /// System.Linq.Enumerable.Concat.
     /// </summary>
     [CLSCompliant(true)]

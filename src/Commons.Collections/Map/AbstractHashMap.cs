@@ -53,7 +53,7 @@ namespace Commons.Collections.Map
         {
             Guarder.CheckNull(key);
             var newEntry = CreateEntry(key, value);
-            // space to optmize?
+            // space to optimize?
             Put(Entries, newEntry);
             if (Count > Threshold)
             {
