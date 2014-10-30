@@ -53,6 +53,10 @@ namespace Test.Commons.Collections
 		public void TestOrderedMap()
 		{
 			var container = new LinkedHashMap<int, string>(10000);
+			Assert.Throws(typeof(InvalidOperationException), () => container.First);
+			Assert.Throws(typeof(InvalidOperationException), () => container.Last);
+			Assert.Throws(typeof(InvalidOperationException), () => container.After(1));
+			Assert.Throws(typeof(InvalidOperationException), () => container.Before(1));
 			for (var i = 0; i < 10000; i++)
 			{
 				container.Add(i, i.ToString());
@@ -62,6 +66,9 @@ namespace Test.Commons.Collections
 			Assert.Equal(9999, container.Last.Key);
 			Assert.Equal("9999", container.Last.Value);
 			Assert.Equal("0", container.GetIndex(0).Value);
+			Assert.Equal("1000", container.GetIndex(1000).Value);
+			Assert.Equal("1600", container.GetIndex(1600).Value);
+			Assert.Equal("2749", container.GetIndex(2749).Value);
 			Assert.Equal("4999", container.GetIndex(4999).Value);
 			Assert.Equal("11", container.After(10).Value);
 			Assert.Equal("100", container.After(99).Value);
@@ -71,6 +78,10 @@ namespace Test.Commons.Collections
 			Assert.Equal("500", container.Before(501).Value);
 			Assert.Equal("1500", container.Before(1501).Value);
 			Assert.Equal("7900", container.Before(7901).Value);
+			Assert.Throws(typeof(ArgumentException), () => container.After(9999));
+			Assert.Throws(typeof(ArgumentException), () => container.Before(0));
+			Assert.Throws(typeof(ArgumentException), () => container.Before(10000));
+			Assert.Throws(typeof(ArgumentException), () => container.After(10000));
 
 			for (var i = 2000; i < 5000; i++)
 			{
@@ -85,6 +96,20 @@ namespace Test.Commons.Collections
 			Assert.Equal("8500", container.Before(8501).Value);
 			Assert.Equal("5000", container.After(1999).Value);
 			Assert.Equal("1999", container.Before(5000).Value);
+			
+			for (var i = 7000; i < 8000; i++)
+			{
+				Assert.True(container.Remove(i));
+			}
+			Assert.Equal("0", container.First.Value);
+			Assert.Equal("9999", container.Last.Value);
+			Assert.Equal("1000", container.After(999).Value);
+			Assert.Equal("999", container.Before(1000).Value);
+			Assert.Equal("9000", container.After(8999).Value);
+			Assert.Equal("8999", container.Before(9000).Value);
+			Assert.Equal("8500", container.Before(8501).Value);
+			Assert.Equal("8000", container.After(6999).Value);
+			Assert.Equal("6999", container.Before(8000).Value);
 		}
 	}
 }
