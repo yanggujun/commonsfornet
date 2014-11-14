@@ -47,9 +47,16 @@ namespace Commons.Collections.Bag
 
         }
 
-        public virtual int GetCount(T item)
+        public virtual int this[T item]
         {
-            return Map[item];
+			get
+			{
+				if (!Map.ContainsKey(item))
+				{
+					throw new ArgumentException("The item does not exist in the bag");
+				}
+				return Map[item];
+			}
         }
 
         public virtual void Add(T item, int copies)
@@ -92,44 +99,6 @@ namespace Commons.Collections.Bag
                 removed = true;
             }
             return removed;
-        }
-
-        public virtual bool ContainsAll(ICollection<T> collection)
-        {
-            var result = true;
-            foreach (var item in collection)
-            {
-                if (!Map.ContainsKey(item))
-                {
-                    result = false;
-                    break;
-                }
-            }
-            return result;
-        }
-
-        public virtual bool RemoveAll(ICollection<T> collection)
-        {
-            var result = false;
-            foreach (var item in collection)
-            {
-                result = result || Remove(item, 1);
-            }
-            return result;
-        }
-
-        public virtual bool RetainAll(ICollection<T> collection)
-        {
-            var toRemove = new List<T>();
-            foreach (var item in Map.Keys)
-            {
-                if (!collection.Contains(item))
-                {
-                    toRemove.Add(item);
-                }
-            }
-
-            return RemoveAll(toRemove);
         }
 
         public virtual ISet<T> ToUnique()

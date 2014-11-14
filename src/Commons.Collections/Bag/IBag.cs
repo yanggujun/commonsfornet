@@ -22,17 +22,11 @@ namespace Commons.Collections.Bag
     [CLSCompliant(true)]
     public interface IBag<T> : ICollection<T>
     {
-        int GetCount(T item);
+		int this[T item] { get; }
 
-        void Add(T item, int copies = 1);
+        void Add(T item, int copies);
 
         bool Remove(T item, int copies);
-
-        bool ContainsAll(ICollection<T> collection);
-
-        bool RemoveAll(ICollection<T> collection);
-
-        bool RetainAll(ICollection<T> collection);
 
         ISet<T> ToUnique();
     }

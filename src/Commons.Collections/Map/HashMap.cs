@@ -30,6 +30,10 @@ namespace Commons.Collections.Map
         {
         }
 
+		public HashMap(Equator<K> equator) : this(DefaultCapacity, equator)
+		{
+		}
+
         public HashMap(int capacity) : this(capacity, EqualityComparer<K>.Default)
         {
         }

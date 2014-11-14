@@ -44,6 +44,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\BagTest.cs" />
     <Compile Include="Collections\CollectionTest.cs" />
     <Compile Include="Collections\HashTest.cs" />
     <Compile Include="Collections\JsonTest.cs" />

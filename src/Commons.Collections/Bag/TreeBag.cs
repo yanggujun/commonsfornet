@@ -43,7 +43,7 @@ namespace Commons.Collections.Bag
         {
             get
             {
-                return ((ISortedMap<T, int>)Map).Min.Key;
+                return ((ISortedMap<T, int>)Map).Max.Key;
             }
         }
 
@@ -51,7 +51,7 @@ namespace Commons.Collections.Bag
         {
             get
             {
-                return ((ISortedMap<T, int>)Map).Max.Key;
+                return ((ISortedMap<T, int>)Map).Min.Key;
             }
         }
     }
