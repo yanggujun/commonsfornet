@@ -33,7 +33,7 @@ namespace Commons.Collections.Set
     [CLSCompliant(true)]
     public sealed class TreeSet<T> : ISortedSet<T>
     {
-        LlrbTree<T, T> llrbTree;
+        private readonly LlrbTree<T, T> llrbTree;
         /// <summary>
         /// Constructs an empty tree set using the default item comparer.
         /// </summary>

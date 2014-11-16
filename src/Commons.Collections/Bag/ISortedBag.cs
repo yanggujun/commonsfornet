@@ -15,18 +15,14 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
     public interface ISortedBag<T> : IBag<T>
     {
-        T First { get; }
+        T Max { get; }
 
-        T Last { get; }
+        T Min { get; }
     }
 }

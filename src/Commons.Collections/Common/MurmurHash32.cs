@@ -24,15 +24,15 @@ namespace Commons.Collections.Common
 	[CLSCompliant(true)]
     public class MurmurHash32 : IHashStrategy
     {
-        uint seed;
+        private readonly uint seed;
         public MurmurHash32()
         {
-            Random rand = new Random((int)(DateTime.Now.Ticks & 0x0000ffff));
+            var rand = new Random((int)(DateTime.Now.Ticks & 0x0000ffff));
             seed = (uint)rand.Next();
         }
         public long[] Hash(Byte[] bytes)
         {
-            long[] result = new long[1];
+            var result = new long[1];
             result[0] = (long)Calc(bytes);
             return result;
         }

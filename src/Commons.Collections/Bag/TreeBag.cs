@@ -39,19 +39,19 @@ namespace Commons.Collections.Bag
         {
         }
 
-        public T First
-        {
-            get
-            {
-                return ((ISortedMap<T, int>)Map).Min.Key;
-            }
-        }
-
-        public T Last
+        public T Max
         {
             get
             {
                 return ((ISortedMap<T, int>)Map).Max.Key;
+            }
+        }
+
+        public T Min
+        {
+            get
+            {
+                return ((ISortedMap<T, int>)Map).Min.Key;
             }
         }
     }

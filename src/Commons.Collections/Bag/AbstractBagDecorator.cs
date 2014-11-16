@@ -15,11 +15,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Commons.Collections.Collection;
 
@@ -34,9 +30,12 @@ namespace Commons.Collections.Bag
 
         protected new IBag<T> Decorated { get { return (IBag<T>)base.Decorated; } }
 
-        public virtual int GetCount(T item)
+        public virtual int this[T item]
         {
-            return Decorated.GetCount(item);
+			get
+			{
+				return Decorated[item];
+			}
         }
 
         public virtual void Add(T item, int copies = 1)
@@ -47,21 +46,6 @@ namespace Commons.Collections.Bag
         public virtual bool Remove(T item, int copies = 1)
         {
             return Decorated.Remove(item, copies);
-        }
-
-        public virtual bool ContainsAll(ICollection<T> collection)
-        {
-            return Decorated.ContainsAll(collection);
-        }
-
-        public virtual bool RemoveAll(ICollection<T> collection)
-        {
-            return Decorated.RemoveAll(collection);
-        }
-
-        public virtual bool RetainAll(ICollection<T> collection)
-        {
-            return Decorated.RetainAll(collection);
         }
 
         public virtual ISet<T> ToUnique()
