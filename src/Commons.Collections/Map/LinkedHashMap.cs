@@ -154,7 +154,7 @@ namespace Commons.Collections.Map
             {
                 throw new ArgumentException("The order cannot be less than zero");
             }
-            if (index > Count)
+            if (index >= Count)
             {
                 throw new ArgumentException("The order is larger than the item count");
             }

@@ -43,6 +43,10 @@ namespace Commons.Collections.Bag
         {
             get
             {
+				if (Map.Count <= 0)
+				{
+					throw new InvalidOperationException("The bag is empty");
+				}
                 return ((ISortedMap<T, int>)Map).Max.Key;
             }
         }
@@ -51,6 +55,10 @@ namespace Commons.Collections.Bag
         {
             get
             {
+				if (Map.Count <= 0)
+				{
+					throw new InvalidOperationException("The bag is empty");
+				}
                 return ((ISortedMap<T, int>)Map).Min.Key;
             }
         }

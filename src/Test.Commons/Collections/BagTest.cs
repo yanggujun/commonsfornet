@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Commons.Collections.Bag;
 using Xunit;
 
@@ -65,6 +66,37 @@ namespace Test.Commons.Collections
 				bag.Remove(new Order { Id = i });
 				Assert.False(bag.Contains(new Order { Id = i }));
 			}
+		}
+
+		[Fact]
+		public void TestBagNotExistItem()
+		{
+			TestBagItemNotExist(new HashBag<string>());
+			TestBagItemNotExist(new TreeBag<string>());
+		}
+
+		[Fact]
+		public void TestBagNoItem()
+		{
+			var bag = new TreeBag<string>();
+			Assert.Throws(typeof(InvalidOperationException), () => bag.Max);
+			Assert.Throws(typeof(InvalidOperationException), () => bag.Min);
+		}
+
+		private static void TestBagItemNotExist(IBag<string> bag)
+		{
+			for (var i = 0; i < 100; i++)
+			{
+				for (var j = 0; j < 10; j++)
+				{ 
+					bag.Add(i.ToString());
+				}
+			}
+			Assert.True(bag.Contains("50"));
+			Assert.False(bag.Contains("200"));
+			Assert.Throws(typeof(ArgumentException), () => bag["150"]);
+			Assert.False(bag.Remove("199"));
+			Assert.True(bag.Remove("99"));
 		}
 
 		private static void TestBagOperation(IBag<Order> bag)
