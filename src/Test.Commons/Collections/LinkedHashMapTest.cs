@@ -82,6 +82,8 @@ namespace Test.Commons.Collections
 			Assert.Throws(typeof(ArgumentException), () => container.Before(0));
 			Assert.Throws(typeof(ArgumentException), () => container.Before(10000));
 			Assert.Throws(typeof(ArgumentException), () => container.After(10000));
+            Assert.Throws(typeof(ArgumentException), () => container.GetIndex(-100));
+            Assert.Throws(typeof(ArgumentException), () => container.GetIndex(20000));
 
 			for (var i = 2000; i < 5000; i++)
 			{
@@ -111,5 +113,17 @@ namespace Test.Commons.Collections
 			Assert.Equal("8000", container.After(6999).Value);
 			Assert.Equal("6999", container.Before(8000).Value);
 		}
+
+        [Fact]
+        public void TestEmptyHashMap()
+        {
+            var orders = new LinkedHashMap<string, Order>();
+            Assert.Throws(typeof(InvalidOperationException), () => orders.First);
+            Assert.Throws(typeof(InvalidOperationException), () => orders.Last);
+            Assert.Throws(typeof(InvalidOperationException), () => orders.After("1"));
+            Assert.Throws(typeof(InvalidOperationException), () => orders.Before("2"));
+            Assert.Throws(typeof(ArgumentException), () => orders.GetIndex(0));
+            Assert.Throws(typeof(ArgumentException), () => orders.GetIndex(1));
+        }
 	}
 }

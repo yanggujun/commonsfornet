@@ -78,19 +78,18 @@ namespace Commons.Collections.Map
         public override bool Remove(K key)
         {
             Guarder.CheckNull(key);
-			var entry = GetEntry(key) as LinkedHashEntry;
-			if (entry == null)
-			{
-				throw new ArgumentException("The key does not exist.");
-			}
             var removed = false;
-            if (base.Remove(key))
+			var entry = GetEntry(key) as LinkedHashEntry;
+            if (entry != null)
             {
-                entry.Before.After = entry.After;
-                entry.After.Before = entry.Before;
-                entry.Before = null;
-                entry.After = null;
-                removed = true;
+                if (base.Remove(key))
+                {
+                    entry.Before.After = entry.After;
+                    entry.After.Before = entry.Before;
+                    entry.Before = null;
+                    entry.After = null;
+                    removed = true;
+                }
             }
             return removed;
         }
