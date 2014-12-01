@@ -36,12 +36,12 @@ namespace Commons.Collections.Map
         }
 
         public Customized32HashMap(int capacity)
-            : this(capacity, new MurmurHash32(), x => Encoding.ASCII.GetBytes(x.ToString()), EqualityComparer<K>.Default)
+            : this(capacity, x => Encoding.ASCII.GetBytes(x.ToString()))
         {
         }
 
         public Customized32HashMap(int capacity, Transformer<K, byte[]> transformer)
-            : this(capacity, new MurmurHash32(), transformer, EqualityComparer<K>.Default)
+            : this(capacity, new MurmurHash32(), transformer, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
         {
         }
 
@@ -50,18 +50,8 @@ namespace Commons.Collections.Map
         {
         }
 
-        public Customized32HashMap(int capacity, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer)
-            : this(capacity, new MurmurHash32(), transformer, comparer)
-        { 
-        }
-
         public Customized32HashMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
             : this(capacity, null, hasher, transformer, isEqual)
-        {
-        }
-
-        public Customized32HashMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer) 
-            : this(capacity, hasher, transformer, (x1, x2) => null == comparer ? EqualityComparer<K>.Default.Equals(x1, x2) : comparer.Equals(x1, x2))
         {
         }
 

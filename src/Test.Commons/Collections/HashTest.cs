@@ -77,21 +77,13 @@ namespace Test.Commons.Collections
             var orders4 = new Customized32HashMap<string, Order>(500, x => x.ToBytes(), (x1, x2) => x1 == x2);
 			orders4.HashAbility();
 
-            var orders5 = new Customized32HashMap<string, Order>(60, x => x.ToBytes(), EqualityComparer<string>.Default);
-			orders5.HashAbility();
-
-            var orders6 = new Customized32HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), EqualityComparer<string>.Default);
-			orders6.HashAbility();
-
             var orders7 = new Customized32HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
 			orders7.HashAbility();
 
-            var orders8 = new Customized32HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (IEqualityComparer<string>)null);
-			orders8.HashAbility();
 
-            var orders9 = new Customized32HashMap<string, Order>(10000, orders8, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
+            var orders9 = new Customized32HashMap<string, Order>(10000, orders7, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
             Assert.NotEmpty(orders9);
-            Assert.Equal(orders8.Count, orders9.Count);
+            Assert.Equal(orders7.Count, orders9.Count);
         }
 
         [Fact]
@@ -223,21 +215,19 @@ namespace Test.Commons.Collections
 			var orders = new LinkedHashMap<string, Order>();
 			orders.HashAbility();
 
-			var orders2 = new LinkedHashMap<string, Order>(1000);
+			var orders2 = new LinkedHashMap<string, Order>(10000);
 			orders2.HashAbility();
 
 			var orders4 = new LinkedHashMap<string, Order>(500, (x1, x2) => x1 == x2);
 			orders4.HashAbility();
 
-			var orders6 = new LinkedHashMap<string, Order>(1000, EqualityComparer<string>.Default);
-			orders6.HashAbility();
+			var orders5 = new LinkedHashMap<string, Order>(1000, orders2);
+			Assert.NotEmpty(orders5);
+			Assert.Equal(orders2.Count, orders5.Count);
 
-			var orders8 = new LinkedHashMap<string, Order>(1000, (IEqualityComparer<string>)null);
-			orders8.HashAbility();
-
-			var orders9 = new LinkedHashMap<string, Order>(10000, orders8, (x1, x2) => x1 == x2);
+			var orders9 = new LinkedHashMap<string, Order>(1000, orders2, (x1, x2) => x1 == x2);
 			Assert.NotEmpty(orders9);
-			Assert.Equal(orders8.Count, orders9.Count);
+			Assert.Equal(orders2.Count, orders9.Count);
 		}
 
 		[Fact]

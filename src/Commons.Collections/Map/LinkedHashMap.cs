@@ -29,32 +29,22 @@ namespace Commons.Collections.Map
         private LinkedHashEntry Header { get; set; }
 
         public LinkedHashMap()
-            : this(DefaultCapacity, EqualityComparer<K>.Default)
+            : this(DefaultCapacity)
         {
         }
 
         public LinkedHashMap(int capacity)
-            : this(capacity, EqualityComparer<K>.Default)
+            : this(capacity, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
         {
         }
 
         public LinkedHashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items)
-            : this(capacity, items, EqualityComparer<K>.Default)
+            : this(capacity, items, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
         {
         }
 
         public LinkedHashMap(int capacity, Equator<K> equator)
             : this(capacity, null, equator)
-        {
-        }
-
-        public LinkedHashMap(int capacity, IEqualityComparer<K> comparer)
-            : this(capacity, null, comparer)
-        {
-        }
-
-        public LinkedHashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IEqualityComparer<K> comparer)
-            : this(capacity, items, (x1, x2) => null == comparer ? EqualityComparer<K>.Default.Equals(x1, x2) : comparer.Equals(x1, x2))
         {
         }
 

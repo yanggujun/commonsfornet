@@ -34,12 +34,7 @@ namespace Commons.Collections.Map
 		{
 		}
 
-        public HashMap(int capacity) : this(capacity, EqualityComparer<K>.Default)
-        {
-        }
-
-        public HashMap(int capacity, IEqualityComparer<K> comparer) 
-            : this(capacity, (x1, x2) => comparer == null ? EqualityComparer<K>.Default.Equals(x1, x1) : comparer.Equals(x1, x2))
+        public HashMap(int capacity) : this(capacity, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
         {
         }
 
