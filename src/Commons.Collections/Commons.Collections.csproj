@@ -77,6 +77,7 @@
     <Compile Include="Collection\IBoundedCollection.cs" />
     <Compile Include="Bag\ISortedBag.cs" />
     <Compile Include="Map\ISortedMap.cs" />
+    <Compile Include="Queue\Deque.cs" />
     <Compile Include="Set\INavigableSet.cs" />
     <Compile Include="Set\ISortedSet.cs" />
     <Compile Include="Map\TreeMap.cs" />

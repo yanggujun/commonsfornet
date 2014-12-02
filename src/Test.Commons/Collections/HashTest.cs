@@ -295,6 +295,17 @@ namespace Test.Commons.Collections
 		}
 
         [Fact]
+        public void TestOneItemLinkedHashMap()
+        {
+            var orders = new LinkedHashMap<int, string>();
+            orders.Add(1, "1");
+            Assert.Equal(1, orders.First.Key);
+            Assert.Equal(1, orders.Last.Key);
+            Assert.Throws(typeof(ArgumentException), () => orders.Before(1));
+            Assert.Throws(typeof(ArgumentException), () => orders.After(1));
+        }
+
+        [Fact]
         public void TestEmptyLinkedHashMap()
         {
             var orders = new LinkedHashMap<string, Order>();
@@ -304,6 +315,47 @@ namespace Test.Commons.Collections
             Assert.Throws(typeof(InvalidOperationException), () => orders.Before("2"));
             Assert.Throws(typeof(ArgumentException), () => orders.GetIndex(0));
             Assert.Throws(typeof(ArgumentException), () => orders.GetIndex(1));
+        }
+
+        [Fact]
+        public void TestReferenceMapConstructor()
+        {
+            var map1 = new ReferenceMap<string, Order>();
+            map1.HashAbility();
+
+            var map2 = new ReferenceMap<string, Order>(10000);
+            map2.HashAbility();
+        }
+
+        [Fact]
+        public void TestReferenceMap()
+        {
+            var orderList = new List<Order>();
+            for (var i = 0; i < 10000; i++)
+            {
+                orderList.Add(new Order { Id = i, Name = i.ToString() });
+            }
+            var map = new ReferenceMap<Order, Bill>();
+            foreach (var order in orderList)
+            {
+                map.Add(order, new Bill { Id = order.Id, Count = order.Id });
+            }
+
+            foreach (var order in orderList)
+            {
+                Assert.True(map.ContainsKey(order));
+            }
+
+            var newOrderList = new List<Order>();
+            for (var i = 0; i < 10000; i++)
+            {
+                orderList.Add(new Order { Id = i, Name = i.ToString() });
+            }
+
+            foreach (var order in newOrderList)
+            {
+                Assert.False(map.ContainsKey(order));
+            }
         }
     }
 }

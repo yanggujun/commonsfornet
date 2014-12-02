@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.Collections", "Comm
 		{EA220245-82AC-455E-B108-70D48F43AC2B} = {EA220245-82AC-455E-B108-70D48F43AC2B}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test.Commons", "Test.Commons", "{C86E7139-E80B-4865-B621-91D32B374C84}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "99_Test.Commons", "99_Test.Commons", "{C86E7139-E80B-4865-B621-91D32B374C84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Commons", "Test.Commons\Test.Commons.csproj", "{0564B84F-2300-42CC-97BD-50411F37FADC}"
 	ProjectSection(ProjectDependencies) = postProject
