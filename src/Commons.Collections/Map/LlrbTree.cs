@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET. Author: Gujun Yang. email: gujun.yang@gmail.com
+﻿// Copyright CommonsForNET.
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -19,11 +19,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Commons.Utils;
 
-namespace Commons.Collections.Common
+namespace Commons.Collections.Map
 {
     /// <summary>
     /// A tree set with a left leaning red black tree implementation. The Left-Leaning RB tree is introduced by 

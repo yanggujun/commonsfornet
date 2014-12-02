@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET 2014.
+﻿// Copyright CommonsForNET.
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -15,15 +15,14 @@
 // limitations under the License.
 
 using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
-namespace Commons.Collections.Common
-{
-    /// <summary>
-    /// Defines a hash algorithm interface. A hash algorithm requires the bytes to hash and the hash seed.
-    /// </summary>
-    [CLSCompliant(true)]
-    public interface IHashStrategy
-    {
-        long[] Hash(Byte[] bytes);
-    }
-}
+[assembly: AssemblyCopyright("Copyright ©  2014, Apache License v2")]
+[assembly: ComVisible(false)]
+
+[assembly: Guid("84e7ec63-7b50-4dc1-ae96-c3b56626efd7")]
+
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
+[assembly: CLSCompliant(true)]

@@ -15,17 +15,16 @@
 // limitations under the License.
 
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
-using Commons.Collections.Common;
-using System.Globalization;
-using Commons.Collections.Map;
 using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using Commons.Collections.Map;
+using Commons.Utils;
 
-namespace Commons.Collections.Json
+namespace Commons.Json
 {
     internal static class JsonParser
     {
@@ -59,7 +58,7 @@ namespace Commons.Collections.Json
             var total = valueMap.Count;
             foreach (var item in valueMap)
             {
-                builder.Append(Tab).Append(Quoter).Append(item.Key).Append(Quoter).Append(Colon).Append(Space);
+                builder.Append(Tab).Append(Quoter).Append((string) item.Key).Append(Quoter).Append(Colon).Append(Space);
                 using (var reader = new StringReader(item.Value.ToString()))
                 {
                     builder.Append(reader.ReadLine());

@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET 2014.
+﻿// Copyright CommonsForNET.
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -16,34 +16,28 @@
 
 using System;
 
-namespace Commons.Collections.Common
+namespace Commons.Utils
 {
-    internal static class Guarder
+	[CLSCompliant(true)]
+    public class FnvHash32 : IHashStrategy
     {
-        public static void CheckNull(params object[] objs)
-        {
-            foreach (var obj in objs)
-            {
-                if (null == obj)
-                {
-                    throw new ArgumentNullException("The input argument is null");
-                }
-            }
-        }
+        private const uint FNV_PRIME = 16777619;
+        private const uint OFFSET_BASIS = 2166136261;
 
-        public static void ValidateString(params string[] inputs)
+        public long[] Hash(byte[] bytes)
         {
-            foreach (var item in inputs)
+            Guarder.CheckNull(bytes);
+            var hash = OFFSET_BASIS;
+            foreach (var b in bytes)
             {
-                if (string.IsNullOrEmpty(item))
+                unchecked
                 {
-                    throw new ArgumentNullException("The input string argument is null");
-                }
-                if (string.IsNullOrEmpty(item.Trim()))
-                {
-                    throw new ArgumentNullException("the input string argument is empty");
+                    hash *= FNV_PRIME;
+                    hash ^= b;
                 }
             }
+
+            return new [] { (long)hash };
         }
     }
 }

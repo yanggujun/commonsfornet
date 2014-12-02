@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E8221711-1B2B-4ED7-B359-9A5D990B3ABD}</ProjectGuid>
+    <ProjectGuid>{EA220245-82AC-455E-B108-70D48F43AC2B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Commons.Collections</RootNamespace>
-    <AssemblyName>Commons.Collections</AssemblyName>
+    <RootNamespace>Commons.Utils</RootNamespace>
+    <AssemblyName>Commons.Utils</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -26,8 +26,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -37,9 +36,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\FullKey.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <DelaySign>false</DelaySign>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -54,32 +50,12 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="BidiMap\IBidiMap.cs" />
-    <Compile Include="Collection\AbstractCollectionDecorator.cs" />
-    <Compile Include="Bag\AbstractBagDecorator.cs" />
-    <Compile Include="Bag\AbstractMapBag.cs" />
-    <Compile Include="Bag\AbstractSortedBagDecorator.cs" />
-    <Compile Include="Bag\HashBag.cs" />
-    <Compile Include="Bag\TreeBag.cs" />
-    <Compile Include="Map\AbstractHashMap.cs" />
-    <Compile Include="Map\Customized32HashMap.cs" />
-    <Compile Include="Map\HashMap.cs" />
-    <Compile Include="Map\INavigableMap.cs" />
-    <Compile Include="Map\IOrderedMap.cs" />
-    <Compile Include="Map\LinkedHashMap.cs" />
-    <Compile Include="Map\LlrbTree.cs" />
-    <Compile Include="Queue\BoundedQueue.cs" />
-    <Compile Include="Collection\CompositeCollection.cs" />
-    <Compile Include="Bag\IBag.cs" />
-    <Compile Include="Map\IMultiMap.cs" />
-    <Compile Include="Collection\IndexedCollection.cs" />
-    <Compile Include="Collection\IBoundedCollection.cs" />
-    <Compile Include="Bag\ISortedBag.cs" />
-    <Compile Include="Map\ISortedMap.cs" />
-    <Compile Include="Set\INavigableSet.cs" />
-    <Compile Include="Set\ISortedSet.cs" />
-    <Compile Include="Map\TreeMap.cs" />
-    <Compile Include="Set\TreeSet.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="FnvHash32.cs" />
+    <Compile Include="Functors.cs" />
+    <Compile Include="Guarder.cs" />
+    <Compile Include="IHashStrategy.cs" />
+    <Compile Include="MurmurHash32.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
@@ -88,12 +64,6 @@
     <None Include="..\FullKey.snk">
       <Link>FullKey.snk</Link>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj">
-      <Project>{ea220245-82ac-455e-b108-70d48f43ac2b}</Project>
-      <Name>Commons.Utils</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

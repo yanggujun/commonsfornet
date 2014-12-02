@@ -14,12 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Dynamic;
 using System;
-
+using System.Dynamic;
 using Commons.Collections.Map;
 
-namespace Commons.Collections.Json
+namespace Commons.Json
 {
 	[CLSCompliant(true)]
     public class JsonObject : DynamicObject
@@ -127,7 +126,7 @@ namespace Commons.Collections.Json
 
         public override string ToString()
         {
-            return valueMap.FormatJsonObject();
+            return JsonParser.FormatJsonObject(valueMap);
         }
     }
 }

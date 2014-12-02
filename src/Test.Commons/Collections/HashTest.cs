@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET 2014.
+﻿// Copyright CommonsForNET.
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -19,11 +19,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Commons.Utils;
 using Xunit;
 
 using Commons.Collections.Map;
-using Commons.Collections.Common;
 
 namespace Test.Commons.Collections
 {

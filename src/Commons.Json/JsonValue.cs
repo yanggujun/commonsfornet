@@ -18,7 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 
-namespace Commons.Collections.Json
+namespace Commons.Json
 {
     internal class JsonValue : DynamicObject
     {

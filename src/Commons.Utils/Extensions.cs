@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET 2014.
+﻿// Copyright CommonsForNET.
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -16,17 +16,20 @@
 
 using System;
 
-namespace Commons.Collections.Common
+namespace Commons.Utils
 {
     [CLSCompliant(true)]
-    public delegate bool Equator<in T>(T x, T y);
-
-    [CLSCompliant(true)]
-    public delegate void Closure<in T>(T x);
-
-    [CLSCompliant(true)]
-    public delegate O Transformer<in T, out O>(T x);
-
-    [CLSCompliant(true)]
-    public delegate T Factory<out T>();
+    public static class Extensions
+    {
+        public static byte[] ToBytes(this string str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                throw new ArgumentException("The input string is null or empty.");
+            }
+            var bytes = new byte[str.Length * sizeof(char)];
+            Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+            return bytes;
+        }
+    }
 }

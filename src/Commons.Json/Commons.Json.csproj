@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9F775531-9C52-4EB9-8C73-2073BA580AAB}</ProjectGuid>
+    <ProjectGuid>{1EEB9B63-C564-4C51-A88B-5D253BC68C99}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test.Commons.Perf</RootNamespace>
-    <AssemblyName>Test.Commons.Perf</AssemblyName>
+    <RootNamespace>Commons.Json</RootNamespace>
+    <AssemblyName>Commons.Json</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -29,10 +29,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\FullKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Commons.Collections">
-      <HintPath>..\Commons.Collections\bin\Release\Commons.Collections.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,20 +43,32 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="xunit">
-      <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PerformanceTest.cs" />
-    <Compile Include="PerformanceTestSuite.cs" />
-    <Compile Include="TreeSetReliabilityTest.cs" />
+    <Compile Include="..\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="JsonObject.cs" />
+    <Compile Include="JsonParser.cs" />
+    <Compile Include="JsonValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <ProjectReference Include="..\Commons.Collections\Commons.Collections.csproj">
+      <Project>{e8221711-1b2b-4ed7-b359-9a5d990b3abd}</Project>
+      <Name>Commons.Collections</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj">
+      <Project>{ea220245-82ac-455e-b108-70d48f43ac2b}</Project>
+      <Name>Commons.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\FullKey.snk">
+      <Link>FullKey.snk</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

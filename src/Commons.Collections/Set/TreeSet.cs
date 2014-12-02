@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET. Author: Gujun Yang. email: gujun.yang@gmail.com
+﻿// Copyright CommonsForNET.
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -20,8 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using Commons.Collections.Common;
+using Commons.Collections.Map;
+using Commons.Utils;
 
 namespace Commons.Collections.Set
 {
