@@ -68,6 +68,7 @@
     <Compile Include="Map\IOrderedMap.cs" />
     <Compile Include="Map\LinkedHashMap.cs" />
     <Compile Include="Map\LlrbTree.cs" />
+    <Compile Include="Map\ReferenceMap.cs" />
     <Compile Include="Queue\BoundedQueue.cs" />
     <Compile Include="Collection\CompositeCollection.cs" />
     <Compile Include="Bag\IBag.cs" />
