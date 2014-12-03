@@ -22,29 +22,118 @@ namespace Commons.Collections.Queue
 {
     public class Deque<T> : IEnumerable<T>, IEnumerable, ICollection
     {
+		private const int DefaultCapacity = 32;
+		private const int EmptyPointer = -1;
+		private T[] items;
+		private int head;
+		private int tail;
+		private int capacity;
+		private int count;
+
+		public Deque() : this(DefaultCapacity)
+		{
+		}
+
+		public Deque(int initialCapacity)
+		{
+			var actual = 1;
+			while (actual < initialCapacity)
+			{
+				actual <<= 2;
+			}
+			capacity = actual;
+			items = new T[capacity];
+			head = EmptyPointer;
+			tail = EmptyPointer;
+			count = 0;
+		}
+
         public void Append(T item)
         {
+			if (head == EmptyPointer && tail == EmptyPointer)
+			{
+				head = capacity / 2;
+				items[head] = item;
+				tail = head;
+			}
+			else
+			{
+				if ((tail + 1) >= capacity)
+				{
+					Resize();
+				}
+				++tail;
+				items[tail] = item;
+			}
+			++count;
         }
 
         public void Prepend(T item)
         {
+			if (head == EmptyPointer && tail == EmptyPointer)
+			{
+				head = capacity / 2;
+				items[head] = item;
+				tail = head;
+			}
+			else
+			{
+				if (head - 1 < 0)
+				{
+					Resize();
+				}
+				--head;
+				items[head] = item;
+			}
+			++count;
         }
 
         public T Pop()
         {
-            throw new NotImplementedException();
+			if (count <= 0)
+			{
+				throw new InvalidOperationException("The deque is empty");
+			}
+			var item = items[tail];
+			items[tail] = default(T);
+			--tail;
+			--count;
+			if (count <= 0)
+			{
+				head = tail = EmptyPointer;
+			}
+			return item;
         }
 
         public T Shift()
         {
-            throw new NotImplementedException();
+			if (count <= 0)
+			{
+				throw new InvalidOperationException("The deque is empty");
+			}
+
+			var item = items[head];
+			items[head] = default(T);
+			++head;
+			--count;
+			if (count <= 0)
+			{
+				head = tail = EmptyPointer;
+			}
+
+			return item;
         }
 
         public T Last
         {
             get
             {
-                throw new NotImplementedException();
+				if (count <= 0)
+				{
+					throw new InvalidOperationException("The deque is empty");
+				}
+
+				return items[head];
             }
         }
 
@@ -52,7 +141,12 @@ namespace Commons.Collections.Queue
         {
             get
             {
-                throw new NotImplementedException();
+				if (count <= 0)
+				{
+					throw new InvalidOperationException("The deque is empty");
+				}
+
+				return items[tail];
             }
         }
 
@@ -66,29 +160,29 @@ namespace Commons.Collections.Queue
             throw new NotImplementedException();
         }
 
-        public void CopyTo(System.Array array, int index)
+        public void CopyTo(Array array, int index)
         {
             throw new NotImplementedException();
         }
 
         public int Count
         {
-            get { throw new NotImplementedException(); }
+            get { return count; }
         }
 
         public bool IsSynchronized
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         public object SyncRoot
         {
-            get { throw new NotImplementedException(); }
+            get { return this; }
         }
 
-        private struct DequeEntry
-        {
-            public T Entry;
-        }
+		private void Resize()
+		{
+			throw new NotImplementedException();
+		}
     }
 }
