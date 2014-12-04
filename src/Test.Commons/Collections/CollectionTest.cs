@@ -355,5 +355,57 @@ namespace Test.Commons.Collections
                 }
             }
         }
+
+        [Fact]
+        public void TestDequeConstructor()
+        {
+            var deque = new Deque<string>();
+            TestDeque(deque);
+            var deque2 = new Deque<string>();
+            TestDeque(deque2);
+        }
+
+        [Fact]
+        public void TestDequeOperations()
+        {
+            var deque = new Deque<string>();
+            var lastPrepend = string.Empty;
+            var lastAppend = string.Empty;
+            var testNumber = 20;
+            for (var i = 0; i < testNumber; i++)
+            {
+                lastPrepend = Guid.NewGuid().ToString();
+                lastAppend = Guid.NewGuid().ToString();
+                deque.Prepend(lastPrepend);
+                deque.Append(lastAppend);
+            }
+            Assert.Equal(testNumber * 2, deque.Count);
+            Assert.Equal(lastPrepend, deque.First);
+            Assert.Equal(lastAppend, deque.Last);
+            Assert.Equal(lastPrepend, deque.Shift());
+            Assert.Equal(testNumber * 2 - 1, deque.Count);
+            Assert.Equal(lastAppend, deque.Pop());
+            Assert.Equal(testNumber * 2 - 2, deque.Count);
+
+            for (var i = 0; i < (testNumber * 2 - 2); i++)
+            {
+                Console.WriteLine(i);
+                Assert.False(string.IsNullOrEmpty(deque.Pop()));
+            }
+        }
+
+        private void TestDeque(Deque<string> deque)
+        {
+            for (var i = 0; i < 1000; i++)
+            {
+                deque.Prepend(Guid.NewGuid().ToString());
+            }
+            Assert.Equal(1000, deque.Count);
+            for (var i = 0; i < 1000; i++)
+            {
+                deque.Append(Guid.NewGuid().ToString());
+            }
+            Assert.Equal(2000, deque.Count);
+        }
     }
 }

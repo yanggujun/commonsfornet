@@ -135,7 +135,7 @@ namespace Commons.Collections.Queue
 					throw new InvalidOperationException("The deque is empty");
 				}
 
-				return items[head];
+				return items[tail];
             }
         }
 
@@ -148,7 +148,7 @@ namespace Commons.Collections.Queue
 					throw new InvalidOperationException("The deque is empty");
 				}
 
-				return items[tail];
+				return items[head];
             }
         }
 
