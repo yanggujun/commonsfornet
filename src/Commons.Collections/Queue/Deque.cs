@@ -17,9 +17,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Commons.Utils;
 
 namespace Commons.Collections.Queue
 {
+	[CLSCompliant(true)]
     public class Deque<T> : IEnumerable<T>, IEnumerable, ICollection
     {
 		private const int DefaultCapacity = 32;
@@ -39,7 +41,7 @@ namespace Commons.Collections.Queue
 			var actual = 1;
 			while (actual < initialCapacity)
 			{
-				actual <<= 2;
+				actual <<= 1;
 			}
 			capacity = actual;
 			items = new T[capacity];
@@ -52,7 +54,7 @@ namespace Commons.Collections.Queue
         {
 			if (head == EmptyPointer && tail == EmptyPointer)
 			{
-				head = capacity / 2;
+				head = capacity / 2 - 1;
 				items[head] = item;
 				tail = head;
 			}
@@ -72,7 +74,7 @@ namespace Commons.Collections.Queue
         {
 			if (head == EmptyPointer && tail == EmptyPointer)
 			{
-				head = capacity / 2;
+				head = capacity / 2 - 1;
 				items[head] = item;
 				tail = head;
 			}
@@ -152,17 +154,24 @@ namespace Commons.Collections.Queue
 
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+			return CreateEnumerator().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+			return GetEnumerator();
         }
 
         public void CopyTo(Array array, int index)
         {
-            throw new NotImplementedException();
+			Guarder.CheckNull(array);
+			var theArray = (T[])array;
+			Guarder.CheckNull(theArray);
+			var cursor = 0;
+			for (var i = head; i <= tail; i++)
+			{
+				theArray[index + (cursor++)] = items[i];
+			}
         }
 
         public int Count
@@ -177,12 +186,34 @@ namespace Commons.Collections.Queue
 
         public object SyncRoot
         {
-            get { return this; }
+            get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
+
+		private IEnumerable<T> CreateEnumerator()
+		{
+			if (head != EmptyPointer && tail != EmptyPointer)
+			{ 
+				for (var i = head; i <= tail; i++)
+				{
+					yield return items[i];
+				}
+			}
+		}
 
 		private void Resize()
 		{
-			throw new NotImplementedException();
+			capacity <<= 1;
+			var newItems = new T[capacity];
+			var newHead = capacity / 2 - count / 2;
+			var cursor = newHead;
+			for (var i = head; i <= tail; i++)
+			{
+				newItems[cursor] = items[i];
+				cursor++;
+			}
+			head = newHead;
+			tail = cursor;
+			items = newItems;
 		}
     }
 }
