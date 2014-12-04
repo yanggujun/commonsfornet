@@ -245,7 +245,7 @@ namespace Commons.Collections.Set
         /// </summary>
         public object SyncRoot
         {
-            get { return null; }
+            get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
 
         private IEnumerable<T> CreateEnumerator()

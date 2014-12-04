@@ -144,7 +144,7 @@ namespace Commons.Collections.Queue
 
         public object SyncRoot
         {
-            get { return this; }
+            get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
 
         public IEnumerator GetEnumerator()

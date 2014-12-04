@@ -344,7 +344,7 @@ namespace Commons.Collections.Map
 
         public object SyncRoot
         {
-            get { return null; }
+            get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
 
         IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys

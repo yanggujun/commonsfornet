@@ -488,7 +488,7 @@ namespace Commons.Collections.Map
 
         object ICollection.SyncRoot
         {
-            get { return null; }
+            get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
 
         bool IReadOnlyDictionary<K, V>.ContainsKey(K key)
