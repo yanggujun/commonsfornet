@@ -212,7 +212,7 @@ namespace Commons.Collections.Queue
 				cursor++;
 			}
 			head = newHead;
-			tail = cursor;
+			tail = cursor - 1;
 			items = newItems;
 		}
     }

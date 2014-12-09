@@ -371,7 +371,7 @@ namespace Test.Commons.Collections
             var deque = new Deque<string>();
             var lastPrepend = string.Empty;
             var lastAppend = string.Empty;
-            var testNumber = 20;
+            var testNumber = 10000;
             for (var i = 0; i < testNumber; i++)
             {
                 lastPrepend = Guid.NewGuid().ToString();
@@ -392,7 +392,142 @@ namespace Test.Commons.Collections
                 Console.WriteLine(i);
                 Assert.False(string.IsNullOrEmpty(deque.Pop()));
             }
+			Assert.Equal(0, deque.Count);
         }
+
+		[Fact]
+		public void TestDequeAppendAndShift()
+		{
+			var deque = new Deque<int>();
+			for (var i = 0; i < 100000; i++)
+			{
+				deque.Append(i);
+			}
+
+			for (var i = 0; i < 100000; i++)
+			{
+				Assert.Equal(i, deque.First);
+				Assert.Equal(99999, deque.Last);
+				Assert.Equal(i, deque.Shift());
+			}
+			Assert.Equal(0, deque.Count);
+		}
+
+		[Fact]
+		public void TestDequeAppendAndPop()
+		{
+			var deque = new Deque<int>();
+			for (var i = 0; i < 100000; i++)
+			{
+				deque.Append(i);
+			}
+
+			for (var i = 100000; i > 0; i--)
+			{
+				Assert.Equal(0, deque.First);
+				Assert.Equal(i - 1, deque.Last);
+				Assert.Equal(i - 1, deque.Pop());
+			}
+			Assert.Equal(0, deque.Count);
+		}
+
+		[Fact]
+		public void TestDequePrependAndShift()
+		{
+			var deque = new Deque<int>();
+			for (var i = 0; i < 100000; i++)
+			{
+				deque.Prepend(i);
+			}
+
+			for (var i = 0; i < 100000; i++)
+			{
+				Assert.Equal(100000 - i - 1, deque.First);
+				Assert.Equal(0, deque.Last);
+				Assert.Equal(100000 - i - 1, deque.Shift());
+			}
+			Assert.Equal(0, deque.Count);
+		}
+
+		[Fact]
+		public void TestDequePrependAndPop()
+		{
+			var deque = new Deque<int>();
+			for (var i = 0; i < 100000; i++)
+			{
+				deque.Prepend(i);
+			}
+
+			for (var i = 0; i < 100000; i++)
+			{
+				Assert.Equal(99999, deque.First);
+				Assert.Equal(i, deque.Last);
+				Assert.Equal(i, deque.Pop());
+			}
+			Assert.Equal(0, deque.Count);
+		}
+
+		[Fact]
+		public void TestDequeExceptions()
+		{
+			var deque = new Deque<int>();
+
+			Assert.Throws(typeof(InvalidOperationException), () => deque.Pop());
+			Assert.Throws(typeof(InvalidOperationException), () => deque.Shift());
+			Assert.Throws(typeof(InvalidOperationException), () => deque.First);
+			Assert.Throws(typeof(InvalidOperationException), () => deque.Last);
+		}
+		
+		[Fact]
+		public void TestDequeCopyTo()
+		{
+			var deque = new Deque<int>();
+			for (var i = 0; i < 1000; i++)
+			{
+				deque.Append(i);
+			}
+			var items = new int[1003];
+			deque.CopyTo(items, 3);
+
+			for (var i = 3; i < 1003; i++)
+			{
+				Assert.Equal(items[i], i - 3);
+			}
+		}
+
+		[Fact]
+		public void TestDequeEnumerator()
+		{
+			var deque = new Deque<int>();
+			var cursor1 = 0;
+			foreach (var item in deque)
+			{
+				cursor1++;
+			}
+			Assert.Equal(0, cursor1);
+
+			for (var i = 0; i < 100000; i++)
+			{
+				deque.Append(i);
+			}
+			var cursor2 = 0;
+			foreach (var item in deque)
+			{
+				Assert.Equal(cursor2, item);
+				cursor2++;
+
+			}
+			for (var i = 1; i < 100001; i++)
+			{
+				deque.Prepend(-i);
+			}
+			var cursor3 = -100000;
+			foreach (var item in deque)
+			{
+				Assert.Equal(cursor3, item);
+				cursor3++;
+			}
+		}
 
         private void TestDeque(Deque<string> deque)
         {
