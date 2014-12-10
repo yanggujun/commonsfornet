@@ -29,7 +29,7 @@ namespace Commons.Collections.Map
     /// <typeparam name="TKey">The key type</typeparam>
     /// <typeparam name="TValue">The value type</typeparam>
     [CLSCompliant(true)]
-    public sealed class TreeMap<TKey, TValue> : ISortedMap<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>, 
+    public sealed class TreeMap<TKey, TValue> : ISortedMap<TKey, TValue>, INavigableMap<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>, 
         IDictionary, ICollection, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
     {
         private readonly LlrbTree<TKey, TValue> llrbTree;
@@ -450,5 +450,25 @@ namespace Commons.Collections.Map
                 iter.Reset();
             }
         }
-    }
+
+		public KeyValuePair<TKey, TValue> Lower(TKey key)
+		{
+			return llrbTree.Lower(key);
+		}
+
+		public KeyValuePair<TKey, TValue> Higher(TKey key)
+		{
+			return llrbTree.Higher(key);
+		}
+
+		public KeyValuePair<TKey, TValue> Ceiling(TKey key)
+		{
+			return llrbTree.Ceiling(key);
+		}
+
+		public KeyValuePair<TKey, TValue> Floor(TKey key)
+		{
+			return llrbTree.Floor(key);
+		}
+	}
 }

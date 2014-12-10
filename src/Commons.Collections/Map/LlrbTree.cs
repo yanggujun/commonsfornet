@@ -94,6 +94,119 @@ namespace Commons.Collections.Map
             return found;
         }
 
+		public KeyValuePair<K, V> Higher(K key)
+		{
+			key.ValidateNotNull();
+			ValidateNotEmpty();
+			var node = root;
+			var found = false;
+			while (null != node)
+			{
+				var cmp = comparison(key, node.Item.Key);
+				if (cmp < 0)
+				{
+					if(node.Left == null || comparison(key, node.Left.Item.Key) > 0)
+					{ 
+						found = true;
+						break;
+					}
+					node = node.Left;
+				}
+				else
+				{
+					node = node.Right;
+				}
+			}
+
+			if (!found)
+			{
+				throw new ArgumentException("No item is higher than the key");
+			}
+
+			return node.Item;
+		}
+
+		public KeyValuePair<K, V> Lower(K key)
+		{
+			Guarder.CheckNull(key);
+			var node = root;
+			var found = false;
+			while (null != node)
+			{
+				var cmp = comparison(key, node.Item.Key);
+				if (cmp > 0)
+				{
+					found = true;
+					break;
+				}
+				else
+				{
+					node = node.Left;
+				}
+			}
+
+			if (!found)
+			{
+				throw new ArgumentException("No item is lower than the key");
+			}
+
+			return node.Item;
+		}
+
+		public KeyValuePair<K, V> Ceiling(K key)
+		{
+			Guarder.CheckNull(key);
+			var node = root;
+			var found = false;
+			while (null != node)
+			{
+				var cmp = comparison(key, node.Item.Key);
+				if (cmp <= 0)
+				{
+					found = true;
+					break;
+				}
+				else
+				{
+					node = node.Right;
+				}
+			}
+
+			if (!found)
+			{
+				throw new ArgumentException("No item is lower than the key");
+			}
+
+			return node.Item;
+		}
+
+		public KeyValuePair<K, V> Floor(K key)
+		{
+			Guarder.CheckNull(key);
+			var node = root;
+			var found = false;
+			while (null != node)
+			{
+				var cmp = comparison(key, node.Item.Key);
+				if (cmp >= 0)
+				{
+					found = true;
+					break;
+				}
+				else
+				{
+					node = node.Left;
+				}
+			}
+
+			if (!found)
+			{
+				throw new ArgumentException("No item is lower than the key");
+			}
+
+			return node.Item;
+		}
+
         public KeyValuePair<K, V> Max
         {
             get
@@ -257,7 +370,7 @@ namespace Commons.Collections.Map
             int result = comparison(item.Key, node.Item.Key);
             if (result == 0)
             {
-                throw new ArgumentException("The item to add has already existed");
+                throw new ArgumentException("The item to add already exists");
             }
             else if (result < 0)
             {
@@ -299,7 +412,7 @@ namespace Commons.Collections.Map
         {
             if (comparison(key, node.Item.Key) < 0)
             {
-                // since before delete, it already checks the item exists, so here it can guarrantee that node.left exits.
+                // since before delete, it already checks the item exists, so here it can guarantee that node.left exits.
                 if (!IsRed(node.Left) && !IsRed(node.Left.Left))
                 {
                     node = MoveRedLeft(node);
@@ -492,7 +605,7 @@ namespace Commons.Collections.Map
 
         private static bool IsRed(TreeNode node)
         {
-            return node == null ? false : node.Color == RED;
+            return node != null && node.Color == RED;
         }
 
         private TreeNode GetNode(TreeNode node, K key)
@@ -519,6 +632,11 @@ namespace Commons.Collections.Map
 
             return found;
         }
+		
+		private void ValidateNotEmpty()
+		{
+			root.Validate(x => x != null, new InvalidOperationException("The collection is empty"));
+		}
 
 #if DEBUG
         private static void WriteNodeHtml(TreeNode node)

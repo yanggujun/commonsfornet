@@ -694,7 +694,25 @@ namespace Test.Commons.Collections
             Assert.Throws(typeof(ArgumentNullException), () => map.TryGetValue(null, out b));
             Assert.Throws(typeof(ArgumentNullException), () => map.ContainsKey(null));
             Assert.Throws(typeof(ArgumentNullException), () => map.CopyTo(null, 0));
+			Assert.Throws(typeof(ArgumentNullException), () => map.Higher(null));
+			Assert.Throws(typeof(ArgumentNullException), () => map.Lower(null));
+			Assert.Throws(typeof(ArgumentNullException), () => map.Ceiling(null));
+			Assert.Throws(typeof(ArgumentNullException), () => map.Floor(null));
         }
+
+		[Fact]
+		public void TestNavigableMapHigher()
+		{
+			var map = new TreeMap<int, int>();
+			for (var i = 0; i < 10000; i++)
+			{
+				map.Add(i * 5, i * 5);
+			}
+			for (var i = 0; i < 90; i++)
+			{ 
+				Assert.Equal(105 + 100 * i, map.Higher(101 + 100 * i).Key);
+			}
+		}
 
         private void InitializeMap(out TreeMap<Order, Bill> map, out Dictionary<Order, Bill> dict)
         {

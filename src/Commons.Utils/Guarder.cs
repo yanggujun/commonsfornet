@@ -18,6 +18,7 @@ using System;
 
 namespace Commons.Utils
 {
+	[CLSCompliant(true)]
     public static class Guarder
     {
         public static void CheckNull(params object[] objs)
@@ -45,5 +46,18 @@ namespace Commons.Utils
                 }
             }
         }
+		
+		public static void ValidateNotNull<T>(this T obj)
+		{
+			Validate(obj, x => x != null, new ArgumentNullException("The input argument is null"));
+		}
+
+		public static void Validate<T, E>(this T obj, Predicate<T> predicate, E ex) where E : Exception
+		{
+			if (!predicate(obj))
+			{
+				throw ex;
+			}
+		}
     }
 }
