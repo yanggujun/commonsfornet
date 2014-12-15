@@ -31,7 +31,7 @@ namespace Commons.Collections.Set
     /// </summary>
     /// <typeparam name="T">Type of the items in the set.</typeparam>
     [CLSCompliant(true)]
-    public sealed class TreeSet<T> : ISortedSet<T>
+    public sealed class TreeSet<T> : ISortedSet<T>, INavigableSet<T>
     {
         private readonly LlrbTree<T, T> llrbTree;
         /// <summary>
@@ -114,6 +114,26 @@ namespace Commons.Collections.Set
         {
             return llrbTree.Contains(item);
         }
+
+		public T Lower(T item)
+		{
+			return llrbTree.Lower(item).Key;
+		}
+
+		public T Higher(T item)
+		{
+			return llrbTree.Higher(item).Key;
+		}
+
+		public T Ceiling(T item)
+		{
+			return llrbTree.Ceiling(item).Key;
+		}
+
+		public T Floor(T item)
+		{
+			return llrbTree.Floor(item).Key;
+		}
 
         /// <summary>
         /// Retrieves the item with max value in the set.
@@ -255,5 +275,5 @@ namespace Commons.Collections.Set
                 yield return item.Key;
             }
         }
-    }
+	}
 }

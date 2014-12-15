@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using Commons.Utils;
 
@@ -31,7 +32,8 @@ namespace Commons.Collections.Map
     /// The depth of the tree is 2logn
     /// The time complexity of search is O(lgn), of insert is O(lgn), of delete is O(lgn)
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+	/// <typeparam name="K"></typeparam>
+	/// <typeparam name="V"></typeparam>
     internal class LlrbTree<K, V> : IEnumerable<KeyValuePair<K, V>>
     {
         private const bool RED = true;
@@ -47,7 +49,7 @@ namespace Commons.Collections.Map
 
         public LlrbTree(IComparer<K> comparer)
         {
-            this.comparison = (k1, k2) => comparer.Compare(k1, k2);
+            comparison = (k1, k2) => comparer.Compare(k1, k2);
         }
 
         public LlrbTree(Comparison<K> comparison)
@@ -105,8 +107,8 @@ namespace Commons.Collections.Map
 				var cmp = comparison(key, node.Item.Key);
 				if (cmp < 0)
 				{
-					if(node.Left == null || comparison(key, node.Left.Item.Key) > 0)
-					{ 
+					if (node.Left == null || comparison(key, Maximum(node.Left).Item.Key) >= 0)
+					{
 						found = true;
 						break;
 					}
@@ -120,7 +122,7 @@ namespace Commons.Collections.Map
 
 			if (!found)
 			{
-				throw new ArgumentException("No item is higher than the key");
+				throw new ArgumentException(string.Format("No item is higher than the key: {0}.", key));
 			}
 
 			return node.Item;
@@ -129,6 +131,7 @@ namespace Commons.Collections.Map
 		public KeyValuePair<K, V> Lower(K key)
 		{
 			Guarder.CheckNull(key);
+			ValidateNotEmpty();
 			var node = root;
 			var found = false;
 			while (null != node)
@@ -136,8 +139,12 @@ namespace Commons.Collections.Map
 				var cmp = comparison(key, node.Item.Key);
 				if (cmp > 0)
 				{
-					found = true;
-					break;
+					if (node.Right == null || comparison(key, Minimum(node.Right).Item.Key) <= 0)
+					{
+						found = true;
+						break;
+					}
+					node = node.Right;
 				}
 				else
 				{
@@ -147,7 +154,7 @@ namespace Commons.Collections.Map
 
 			if (!found)
 			{
-				throw new ArgumentException("No item is lower than the key");
+				throw new ArgumentException(string.Format("No item is lower than the key: {0}", key));
 			}
 
 			return node.Item;
@@ -155,7 +162,8 @@ namespace Commons.Collections.Map
 
 		public KeyValuePair<K, V> Ceiling(K key)
 		{
-			Guarder.CheckNull(key);
+			key.ValidateNotNull();
+			ValidateNotEmpty();
 			var node = root;
 			var found = false;
 			while (null != node)
@@ -163,8 +171,12 @@ namespace Commons.Collections.Map
 				var cmp = comparison(key, node.Item.Key);
 				if (cmp <= 0)
 				{
-					found = true;
-					break;
+					if (node.Left == null || comparison(key, Maximum(node.Left).Item.Key) > 0)
+					{
+						found = true;
+						break;
+					}
+					node = node.Left;
 				}
 				else
 				{
@@ -174,7 +186,7 @@ namespace Commons.Collections.Map
 
 			if (!found)
 			{
-				throw new ArgumentException("No item is lower than the key");
+				throw new ArgumentException(string.Format("No item is the ceiling of the key : {0}.", key));
 			}
 
 			return node.Item;
@@ -183,6 +195,7 @@ namespace Commons.Collections.Map
 		public KeyValuePair<K, V> Floor(K key)
 		{
 			Guarder.CheckNull(key);
+			ValidateNotEmpty();
 			var node = root;
 			var found = false;
 			while (null != node)
@@ -190,8 +203,12 @@ namespace Commons.Collections.Map
 				var cmp = comparison(key, node.Item.Key);
 				if (cmp >= 0)
 				{
-					found = true;
-					break;
+					if (node.Right == null || comparison(key, Minimum(node.Right).Item.Key) < 0)
+					{
+						found = true;
+						break;
+					}
+					node = node.Right;
 				}
 				else
 				{
@@ -201,7 +218,7 @@ namespace Commons.Collections.Map
 
 			if (!found)
 			{
-				throw new ArgumentException("No item is lower than the key");
+				throw new ArgumentException(string.Format("No item is the floor of the key: {0}", key));
 			}
 
 			return node.Item;
@@ -273,7 +290,7 @@ namespace Commons.Collections.Map
             get
             {
                 Guarder.CheckNull(key);
-                TreeNode found = GetNode(root, key);
+                var found = GetNode(root, key);
                 if (null == found)
                 {
                     throw new KeyNotFoundException(string.Format("The key {0} does not exist in the map.", key));
@@ -283,7 +300,7 @@ namespace Commons.Collections.Map
             set
             {
                 Guarder.CheckNull(key);
-                TreeNode found = GetNode(root, key);
+                var found = GetNode(root, key);
                 if (null == found)
                 {
                     throw new KeyNotFoundException(string.Format("The key {0} does not exist in the map.", key));
@@ -329,18 +346,18 @@ namespace Commons.Collections.Map
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         private static IEnumerable<KeyValuePair<K, V>> CreateEnumerator(TreeNode node)
         {
             if (null != node)
             {
-                Stack<TreeNode> nodes = new Stack<TreeNode>();
+                var nodes = new Stack<TreeNode>();
                 nodes.Push(node);
                 while (nodes.Count != 0)
                 {
-                    TreeNode current = nodes.Pop();
+                    var current = nodes.Pop();
                     if (null != current.Right)
                     {
                         nodes.Push(current.Right);
@@ -450,8 +467,8 @@ namespace Commons.Collections.Map
 
         private static TreeNode Minimum(TreeNode root)
         {
-            TreeNode node = root;
-            TreeNode minimum = node;
+            var node = root;
+            var minimum = node;
 
             while (null != node)
             {
@@ -463,8 +480,8 @@ namespace Commons.Collections.Map
 
         private static TreeNode Maximum(TreeNode root)
         {
-            TreeNode node = root;
-            TreeNode maximum = node;
+            var node = root;
+            var maximum = node;
 
             while (null != node)
             {
@@ -545,7 +562,7 @@ namespace Commons.Collections.Map
 
         private static TreeNode RotateRight(TreeNode node)
         {
-            TreeNode x = node.Left;
+            var x = node.Left;
             node.Left = x.Right;
             x.Right = node;
             x.Color = node.Color;
@@ -555,7 +572,7 @@ namespace Commons.Collections.Map
 
         private static TreeNode RotateLeft(TreeNode node)
         {
-            TreeNode x = node.Right;
+            var x = node.Right;
             node.Right = x.Left;
             x.Left = node;
             x.Color = node.Color;
@@ -610,7 +627,7 @@ namespace Commons.Collections.Map
 
         private TreeNode GetNode(TreeNode node, K key)
         {
-            TreeNode current = node;
+            var current = node;
             TreeNode found = null;
             while (null != current)
             {
@@ -641,9 +658,9 @@ namespace Commons.Collections.Map
 #if DEBUG
         private static void WriteNodeHtml(TreeNode node)
         {
-            using (FileStream fs = new FileStream(@"c:\misc\node.html", FileMode.Create))
+            using (var fs = new FileStream(@"c:\misc\node.html", FileMode.Create))
             {
-                using (StreamWriter sw = new StreamWriter(fs))
+                using (var sw = new StreamWriter(fs))
                 {
                     sw.Write(NodeHtmlDoc(node));
                     sw.Flush();
@@ -654,9 +671,9 @@ namespace Commons.Collections.Map
 
         private void WriteToHtml()
         {
-            using (FileStream fs = new FileStream(@"c:\misc\tree.html", FileMode.Create))
+            using (var fs = new FileStream(@"c:\misc\tree.html", FileMode.Create))
             {
-                using (StreamWriter sw = new StreamWriter(fs))
+                using (var sw = new StreamWriter(fs))
                 {
                     sw.Write(this.HtmlDoc);
                     sw.Flush();

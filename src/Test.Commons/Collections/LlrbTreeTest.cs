@@ -708,10 +708,176 @@ namespace Test.Commons.Collections
 			{
 				map.Add(i * 5, i * 5);
 			}
-			for (var i = 0; i < 90; i++)
-			{ 
-				Assert.Equal(105 + 100 * i, map.Higher(101 + 100 * i).Key);
+			Assert.Equal(0, map.Higher(-100).Key);
+			for (var i = 0; i < 9999; i++)
+			{
+				Assert.Equal((i + 1) * 5, map.Higher(i * 5 + 1).Key);
+				Assert.Equal(i * 5, map.Higher(i * 5 - 1).Key);
+				Assert.Equal((i + 1) * 5, map.Higher(i * 5).Key);
 			}
+
+			Assert.Throws(typeof(ArgumentException), () => map.Higher(9999 * 5));
+			Assert.Throws(typeof(ArgumentException), () => map.Higher(10000 * 5));
+		}
+
+		[Fact]
+		public void TestNavigableMapCeiling()
+		{
+			var map = new TreeMap<int, int>();
+			for (var i = 0; i < 10000; i++)
+			{
+				map.Add(i * 5, i * 5);
+			}
+			Assert.Equal(0, map.Ceiling(-100).Key);
+			for (var i = 0; i < 9999; i++)
+			{
+				Assert.Equal((i + 1) * 5, map.Ceiling(i * 5 + 1).Key);
+				Assert.Equal(i * 5, map.Ceiling(i * 5 - 1).Key);
+				Assert.Equal(i * 5, map.Ceiling(i * 5).Key);
+			}
+
+			Assert.Throws(typeof(ArgumentException), () => map.Ceiling(10000 * 5));
+		}
+
+		[Fact]
+		public void TestNavigableMapLower()
+		{
+			var map = new TreeMap<int, int>();
+			for (var i = 0; i < 10000; i++)
+			{
+				map.Add(i * 5, i * 5);
+			}
+			Assert.Equal(9999 * 5, map.Lower(50000).Key);
+			Assert.Equal(9999 * 5, map.Lower(100000).Key);
+			for (var i = 1; i < 10000; i++)
+			{
+				Assert.Equal(i * 5, map.Lower(i * 5 + 1).Key);
+				Assert.Equal(i * 5, map.Lower((i + 1) * 5 - 1).Key);
+				Assert.Equal(i * 5, map.Lower((i + 1) * 5).Key);
+			}
+
+			Assert.Throws(typeof(ArgumentException), () => map.Lower(0));
+			Assert.Throws(typeof(ArgumentException), () => map.Lower(-100));
+		}
+
+		[Fact]
+		public void TestNavigableMapFloor()
+		{
+			var map = new TreeMap<int, int>();
+			for (var i = 0; i < 10000; i++)
+			{
+				map.Add(i * 5, i * 5);
+			}
+			Assert.Equal(9999 * 5, map.Floor(50000).Key);
+			Assert.Equal(9999 * 5, map.Floor(100000).Key);
+			for (var i = 0; i < 10000; i++)
+			{
+				Assert.Equal(i * 5, map.Floor(i * 5 + 1).Key);
+				Assert.Equal(i * 5, map.Floor((i + 1) * 5 - 1).Key);
+				Assert.Equal(i * 5, map.Floor(i * 5).Key);
+			}
+
+			Assert.Throws(typeof(ArgumentException), () => map.Floor(-100));
+		}
+
+		[Fact]
+		public void TestNavigableSetHigher()
+		{
+			var set = new TreeSet<int>();
+			for (var i = 0; i < 10000; i++)
+			{
+				set.Add(i * 5);
+			}
+			Assert.Equal(0, set.Higher(-100));
+			for (var i = 0; i < 9999; i++)
+			{
+				Assert.Equal((i + 1) * 5, set.Higher(i * 5 + 1));
+				Assert.Equal(i * 5, set.Higher(i * 5 - 1));
+				Assert.Equal((i + 1) * 5, set.Higher(i * 5));
+			}
+
+			Assert.Throws(typeof(ArgumentException), () => set.Higher(9999 * 5));
+			Assert.Throws(typeof(ArgumentException), () => set.Higher(10000 * 5));
+		}
+
+		[Fact]
+		public void TestNavigableSetCeiling()
+		{
+			var set = new TreeSet<int>();
+			for (var i = 0; i < 10000; i++)
+			{
+				set.Add(i * 5);
+			}
+			Assert.Equal(0, set.Ceiling(-100));
+			for (var i = 0; i < 9999; i++)
+			{
+				Assert.Equal((i + 1) * 5, set.Ceiling(i * 5 + 1));
+				Assert.Equal(i * 5, set.Ceiling(i * 5 - 1));
+				Assert.Equal(i * 5, set.Ceiling(i * 5));
+			}
+
+			Assert.Throws(typeof(ArgumentException), () => set.Ceiling(10000 * 5));
+		}
+
+		[Fact]
+		public void TestNavigableSetLower()
+		{
+			var set = new TreeSet<int>();
+			for (var i = 0; i < 10000; i++)
+			{
+				set.Add(i * 5);
+			}
+			Assert.Equal(9999 * 5, set.Lower(50000));
+			Assert.Equal(9999 * 5, set.Lower(100000));
+			for (var i = 1; i < 10000; i++)
+			{
+				Assert.Equal(i * 5, set.Lower(i * 5 + 1));
+				Assert.Equal(i * 5, set.Lower((i + 1) * 5 - 1));
+				Assert.Equal(i * 5, set.Lower((i + 1) * 5));
+			}
+
+			Assert.Throws(typeof(ArgumentException), () => set.Lower(0));
+			Assert.Throws(typeof(ArgumentException), () => set.Lower(-100));
+		}
+
+		[Fact]
+		public void TestNavigableSetFloor()
+		{
+			var set = new TreeSet<int>();
+			for (var i = 0; i < 10000; i++)
+			{
+				set.Add(i * 5);
+			}
+			Assert.Equal(9999 * 5, set.Floor(50000));
+			Assert.Equal(9999 * 5, set.Floor(100000));
+			for (var i = 0; i < 10000; i++)
+			{
+				Assert.Equal(i * 5, set.Floor(i * 5 + 1));
+				Assert.Equal(i * 5, set.Floor((i + 1) * 5 - 1));
+				Assert.Equal(i * 5, set.Floor(i * 5));
+			}
+
+			Assert.Throws(typeof(ArgumentException), () => set.Floor(-100));
+		}
+
+		[Fact]
+		public void TestEmptyNavigableMap()
+		{
+			var map = new TreeMap<int, int>();
+			Assert.Throws(typeof(InvalidOperationException), () => map.Higher(0));
+			Assert.Throws(typeof(InvalidOperationException), () => map.Ceiling(0));
+			Assert.Throws(typeof(InvalidOperationException), () => map.Lower(0));
+			Assert.Throws(typeof(InvalidOperationException), () => map.Floor(0));
+		}
+
+		[Fact]
+		public void TestEmptyNavigableSet()
+		{
+			var set = new TreeSet<int>();
+			Assert.Throws(typeof(InvalidOperationException), () => set.Higher(0));
+			Assert.Throws(typeof(InvalidOperationException), () => set.Ceiling(0));
+			Assert.Throws(typeof(InvalidOperationException), () => set.Lower(0));
+			Assert.Throws(typeof(InvalidOperationException), () => set.Floor(0));
 		}
 
         private void InitializeMap(out TreeMap<Order, Bill> map, out Dictionary<Order, Bill> dict)
