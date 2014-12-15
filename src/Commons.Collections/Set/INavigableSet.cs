@@ -14,11 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Commons.Collections.Set
 {
-    public interface INavigableSet<T> : IEnumerable<T>
+    public interface INavigableSet<T> : IEnumerable<T>, IEnumerable, ICollection
     {
         T Lower(T item);
 

@@ -16,8 +16,6 @@
 
 using System.Collections.Generic;
 
-using Commons.Collections.Set;
-
 namespace Commons.Collections.Map
 {
     public interface INavigableMap<K, V> : IDictionary<K, V>
