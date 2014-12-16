@@ -48,7 +48,7 @@ namespace Commons.Collections.Map
             Entries = new HashEntry[this.Capacity];
         }
 
-        public void Add(K key, V value)
+        public virtual void Add(K key, V value)
         {
             Guarder.CheckNull(key);
             var newEntry = CreateEntry(key, value);
@@ -179,52 +179,11 @@ namespace Commons.Collections.Map
         {
             get
             {
-                Guarder.CheckNull(key);
-                if (!ContainsKey(key))
-                {
-                    throw new ArgumentException("The key does not exist in the map");
-                }
-
-                var index = HashIndex(key);
-                var entry = Entries[index];
-                V v = default(V);
-                while (null != entry)
-                {
-                    if (IsEqual(entry.Key, key))
-                    {
-                        v = entry.Value;
-                        break;
-                    }
-                    else
-                    {
-                        entry = entry.Next;
-                    }
-                }
-                return v;
+				return Get(key);
             }
             set
             {
-                Guarder.CheckNull(key);
-                if (!ContainsKey(key))
-                {
-                    throw new ArgumentException("The key does not exist in the map");
-                }
-
-                var index = HashIndex(key);
-                var entry = Entries[index];
-                while (null != entry)
-                {
-                    if (IsEqual(entry.Key, key))
-                    {
-                        entry.Value = value;
-                        break;
-                    }
-                    else
-                    {
-                        entry = entry.Next;
-                    }
-                }
-
+				Set(key, value);
             }
         }
 
@@ -300,6 +259,50 @@ namespace Commons.Collections.Map
                 }
             }
         }
+
+		protected virtual V Get(K key)
+		{ 
+            Guarder.CheckNull(key);
+            if (!ContainsKey(key))
+            {
+                throw new ArgumentException("The key does not exist in the map");
+            }
+
+			var index = HashIndex(key);
+            var entry = Entries[index];
+            V v = default(V);
+            while (null != entry)
+            { 
+				if (IsEqual(entry.Key, key))
+                { 
+					v = entry.Value;
+					break;
+                }
+				entry = entry.Next;
+            }
+            return v;
+		}
+
+		protected virtual void Set(K key, V v)
+		{
+            Guarder.CheckNull(key);
+            if (!ContainsKey(key))
+            {
+                throw new ArgumentException("The key does not exist in the map");
+            }
+
+            var index = HashIndex(key);
+            var entry = Entries[index];
+            while (null != entry)
+            {
+                if (IsEqual(entry.Key, key))
+                {
+					entry.Value = v;
+					break;
+				}
+				entry = entry.Next;
+            }
+		}
 
         protected int CalculateCapacity(int proposedCapacity)
         {

@@ -357,5 +357,78 @@ namespace Test.Commons.Collections
                 Assert.False(map.ContainsKey(order));
             }
         }
+
+		[Fact]
+		public void TestLruMapConstructor()
+		{
+			var lru = new LruMap<int, int>();
+			for (var i = 0; i < 100; i++)
+			{
+				Assert.False(lru.IsFull);
+				lru.Add(i, i);
+			}
+			Assert.Equal(100, lru.Count);
+			Assert.True(lru.IsFull);
+			for (var i = 100; i < 200; i++)
+			{
+				lru.Add(i, i);
+			}
+			Assert.Equal(100, lru.Count);
+			Assert.True(lru.IsFull);
+			for (var i = 0; i < 100; i++)
+			{
+				Assert.False(lru.ContainsKey(i));
+			}
+			for (var i = 100; i < 200; i++)
+			{
+				Assert.True(lru.ContainsKey(i));
+			}
+
+			var lru2 = new LruMap<int, int>(10000);
+			for (var i = 0; i < 10000; i++)
+			{
+				Assert.False(lru2.IsFull);
+				lru2.Add(i, i);
+			}
+			Assert.Equal(10000, lru2.Count);
+			Assert.True(lru2.IsFull);
+			for (var i = 10000; i < 20000; i++)
+			{
+				lru2.Add(i, i);
+			}
+			Assert.Equal(10000, lru2.Count);
+			Assert.True(lru2.IsFull);
+			for (var i = 0 ; i < 10000; i++)
+			{
+				Assert.False(lru2.ContainsKey(i));
+			}
+			for (var i = 10000; i < 20000; i++)
+			{
+				Assert.True(lru2.ContainsKey(i));
+			}
+
+			var lru3 = new LruMap<Order, Bill>(10000, (x1, x2) => x1.Id == x2.Id);
+			for (var i = 0; i < 10000; i++)
+			{
+				Assert.False(lru3.IsFull);
+				lru3.Add(new Order { Id = i }, new Bill());
+			}
+			Assert.Equal(10000, lru3.Count);
+			Assert.True(lru3.IsFull);
+			for (var i = 10000; i < 20000; i++)
+			{
+				lru3.Add(new Order { Id = i }, new Bill());
+			}
+			Assert.Equal(10000, lru3.Count);
+			Assert.True(lru3.IsFull);
+			for (var i = 0; i < 10000; i++)
+			{
+				Assert.False(lru3.ContainsKey(new Order { Id = i }));
+			}
+			for (var i = 10000; i < 20000; i++)
+			{
+				Assert.True(lru3.ContainsKey(new Order { Id = i }));
+			}
+		}
     }
 }

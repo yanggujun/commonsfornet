@@ -98,7 +98,7 @@ namespace Commons.Collections.Map
 
 		public KeyValuePair<K, V> Higher(K key)
 		{
-			key.ValidateNotNull();
+			Guarder.CheckNull(key);
 			ValidateNotEmpty();
 			var node = root;
 			var found = false;
@@ -162,7 +162,7 @@ namespace Commons.Collections.Map
 
 		public KeyValuePair<K, V> Ceiling(K key)
 		{
-			key.ValidateNotNull();
+			Guarder.CheckNull(key);
 			ValidateNotEmpty();
 			var node = root;
 			var found = false;

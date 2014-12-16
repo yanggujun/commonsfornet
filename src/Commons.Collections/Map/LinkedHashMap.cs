@@ -21,11 +21,9 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class LinkedHashMap<K, V> : AbstractHashMap<K, V>, IOrderedMap<K, V>
+    public class LinkedHashMap<K, V> : AbstractLinkedMap<K, V>, IOrderedMap<K, V>, IDictionary<K, V>
     {
         private const int DefaultCapacity = 16;
-
-        private LinkedHashEntry Header { get; set; }
 
         public LinkedHashMap()
             : this(DefaultCapacity)
@@ -57,30 +55,6 @@ namespace Commons.Collections.Map
                     Add(item);
                 }
             }
-        }
-
-        protected override long HashIndex(K key)
-        {
-            return key.GetHashCode() & (Capacity - 1);
-        }
-
-        public override bool Remove(K key)
-        {
-            Guarder.CheckNull(key);
-            var removed = false;
-			var entry = GetEntry(key) as LinkedHashEntry;
-            if (entry != null)
-            {
-                if (base.Remove(key))
-                {
-                    entry.Before.After = entry.After;
-                    entry.After.Before = entry.Before;
-                    entry.Before = null;
-                    entry.After = null;
-                    removed = true;
-                }
-            }
-            return removed;
         }
 
         public KeyValuePair<K, V> First
@@ -167,11 +141,6 @@ namespace Commons.Collections.Map
             return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
         }
 
-        public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()
-        {
-			return CreateEnumerator().GetEnumerator();
-        }
-
 		protected override void Rehash()
 		{
 			if (Header != null)
@@ -192,53 +161,10 @@ namespace Commons.Collections.Map
 			}
 		}
 
-        protected override AbstractHashMap<K, V>.HashEntry CreateEntry(K key, V value)
-        {
-            var linkedEntry = new LinkedHashEntry(key, value);
-            if (Header == null)
-            {
-                Header = linkedEntry;
-                Header.Before = Header.After = Header;
-            }
-            else
-            {
-                linkedEntry.After = Header;
-                linkedEntry.Before = Header.Before;
-                Header.Before.After = linkedEntry;
-                Header.Before = linkedEntry;
-            }
-
-            return linkedEntry;
-        }
-
-		private IEnumerable<KeyValuePair<K, V>> CreateEnumerator()
-		{
-            var cursor = Header;
-            if (null != cursor)
-            {
-				do
-				{
-					yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
-					cursor = cursor.After;
-				} while (!ReferenceEquals(cursor, Header));
-            }
-		}
-
         private void CheckEmpty(string message)
         {
-            if (null == Header)
-            {
-                throw new InvalidOperationException(string.Format("Invalid to {0}, the map is empty", message));
-            }
-        }
-
-        protected class LinkedHashEntry : HashEntry
-        {
-            public LinkedHashEntry(K key, V value) : base(key, value)
-            {
-            }
-            public LinkedHashEntry Before { get; set; }
-            public LinkedHashEntry After { get; set; }
+			Header.Validate(x => x != null, 
+				new InvalidOperationException(string.Format("Invalid to {0}, the map is empty", message)));
         }
     }
 }

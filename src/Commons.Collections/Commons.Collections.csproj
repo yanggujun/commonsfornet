@@ -64,10 +64,13 @@
     <Compile Include="Map\AbstractHashMap.cs" />
     <Compile Include="Map\Customized32HashMap.cs" />
     <Compile Include="Map\HashMap.cs" />
+    <Compile Include="Map\IBoundedMap.cs" />
     <Compile Include="Map\INavigableMap.cs" />
     <Compile Include="Map\IOrderedMap.cs" />
+    <Compile Include="Map\AbstractLinkedMap.cs" />
     <Compile Include="Map\LinkedHashMap.cs" />
     <Compile Include="Map\LlrbTree.cs" />
+    <Compile Include="Map\LruMap.cs" />
     <Compile Include="Map\ReferenceMap.cs" />
     <Compile Include="Queue\BoundedQueue.cs" />
     <Compile Include="Collection\CompositeCollection.cs" />
