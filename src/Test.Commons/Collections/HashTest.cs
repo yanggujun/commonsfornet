@@ -206,6 +206,8 @@ namespace Test.Commons.Collections
         {
             var map = new HashMap<string, string>(100);
             Assert.False(map.Remove("a"));
+			Assert.Throws(typeof(ArgumentException), () => new HashMap<string, string>(0));
+			Assert.Throws(typeof(ArgumentException), () => new HashMap<string, string>(-10));
         }
 
 		[Fact]
@@ -429,6 +431,29 @@ namespace Test.Commons.Collections
 			{
 				Assert.True(lru3.ContainsKey(new Order { Id = i }));
 			}
+		}
+
+		[Fact]
+		public void TestLruMapEliminate()
+		{
+			var lru = new LruMap<int, int>(10000);
+			for (var i = 0; i < 10000; i++)
+			{
+				lru.Add(i, i);
+			}
+			Assert.Equal(0, lru[0]);
+			lru.Add(10000, 10000);
+			Assert.True(lru.ContainsKey(0));
+			Assert.False(lru.ContainsKey(1));
+			lru[2] = 3;
+			lru.Add(10001, 10001);
+			Assert.False(lru.ContainsKey(3));
+			Assert.Equal(3, lru[2]);
+			Assert.Equal(10000, lru.Count);
+			Assert.True(lru.ContainsKey(0));
+			Assert.True(lru.ContainsKey(4));
+			Assert.Throws(typeof(ArgumentException), () => lru[1]);
+			Assert.Throws(typeof(ArgumentException), () => lru[3]);
 		}
     }
 }

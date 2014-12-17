@@ -41,6 +41,7 @@ namespace Commons.Collections.Map
 
         protected AbstractHashMap(int capacity, Equator<K> isEqual)
         {
+			capacity.Validate(x => x > 0, new ArgumentException("Capacity must be larger than 0."));
             Guarder.CheckNull(isEqual);
             Count = 0;
             this.Capacity = CalculateCapacity(capacity);
@@ -69,20 +70,9 @@ namespace Commons.Collections.Map
         public virtual bool ContainsKey(K key)
         {
             Guarder.CheckNull(key);
-            var index = HashIndex(key);
-            var item = Entries[index];
-            var contains = false;
-            while (null != item)
-            {
-                if (IsEqual(item.Key, key))
-                {
-                    contains = true;
-                    break;
-                }
-                item = item.Next;
-            }
+			var entry = GetEntry(key);
 
-            return contains;
+            return entry != null;
         }
 
         public virtual ICollection<K> Keys
@@ -217,7 +207,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public virtual int Count { get; protected set; }
+        public int Count { get; protected set; }
 
         public virtual bool IsReadOnly
         {
@@ -263,45 +253,17 @@ namespace Commons.Collections.Map
 		protected virtual V Get(K key)
 		{ 
             Guarder.CheckNull(key);
-            if (!ContainsKey(key))
-            {
-                throw new ArgumentException("The key does not exist in the map");
-            }
-
-			var index = HashIndex(key);
-            var entry = Entries[index];
-            V v = default(V);
-            while (null != entry)
-            { 
-				if (IsEqual(entry.Key, key))
-                { 
-					v = entry.Value;
-					break;
-                }
-				entry = entry.Next;
-            }
-            return v;
+			var entry = GetEntry(key);
+			entry.Validate(x => x != null, new ArgumentException(string.Format("The key {0} does not exist in the map. ", key)));
+            return entry.Value;
 		}
 
 		protected virtual void Set(K key, V v)
 		{
             Guarder.CheckNull(key);
-            if (!ContainsKey(key))
-            {
-                throw new ArgumentException("The key does not exist in the map");
-            }
-
-            var index = HashIndex(key);
-            var entry = Entries[index];
-            while (null != entry)
-            {
-                if (IsEqual(entry.Key, key))
-                {
-					entry.Value = v;
-					break;
-				}
-				entry = entry.Next;
-            }
+			var entry = GetEntry(key);
+			entry.Validate(x => x != null, new ArgumentException(string.Format("The key {0} does not exist in the map. ", key)));
+			entry.Value = v;
 		}
 
         protected int CalculateCapacity(int proposedCapacity)
@@ -348,10 +310,7 @@ namespace Commons.Collections.Map
                     target = entry;
                     break;
                 }
-                else
-                {
-                    entry = entry.Next;
-                }
+                entry = entry.Next;
             }
             return target;
         }

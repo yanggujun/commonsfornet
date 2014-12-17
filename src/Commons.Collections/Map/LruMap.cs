@@ -80,20 +80,23 @@ namespace Commons.Collections.Map
 
 		protected override V Get(K key)
 		{
-			var result = base.Get(key);
-			MoveFirst(key);
-			return result;
+			var entry = (LinkedHashEntry) GetEntry(key);
+			entry.Validate(x => x != null, new ArgumentException(string.Format("The key {0} does not exist in the map.", key)));
+			MoveToFirst(entry);
+
+			return entry.Value;
 		}
 
 		protected override void Set(K key, V v)
 		{
-			base.Set(key, v);
-			MoveFirst(key);
+			var entry = (LinkedHashEntry) GetEntry(key);
+			entry.Validate(x => x != null, new ArgumentException(string.Format("The key {0} does not exist in the map.", key)));
+			entry.Value = v;
+			MoveToFirst(entry);
 		}
 
-		private void MoveFirst(K key)
+		private void MoveToFirst(LinkedHashEntry entry)
 		{
-			var entry = (LinkedHashEntry)GetEntry(key);
 			entry.Before.After = entry.After;
 			entry.After.Before = entry.Before;
 			entry.After = Header;
