@@ -58,6 +58,11 @@ namespace Commons.Collections.Map
 			get { return Count >= FullSize; }
 		}
 
+		public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()
+		{
+			return CreateUnorderedEnumerator().GetEnumerator();
+		}
+
 		protected override HashEntry CreateEntry(K key, V value)
 		{
 			var entry = new LinkedHashEntry(key, value);
@@ -97,13 +102,16 @@ namespace Commons.Collections.Map
 
 		private void MoveToFirst(LinkedHashEntry entry)
 		{
-			entry.Before.After = entry.After;
-			entry.After.Before = entry.Before;
-			entry.After = Header;
-			entry.Before = Header.Before;
-			Header.Before.After = entry;
-			Header.Before = entry;
-			Header = entry;
+			if (!ReferenceEquals(entry, Header))
+			{ 
+				entry.Before.After = entry.After;
+				entry.After.Before = entry.Before;
+				entry.After = Header;
+				entry.Before = Header.Before;
+				Header.Before.After = entry;
+				Header.Before = entry;
+				Header = entry;
+			}
 		}
 	}
 }

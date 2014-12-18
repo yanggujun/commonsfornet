@@ -229,7 +229,7 @@ namespace Commons.Collections.Map
 
         public virtual IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
-            return CreateEnumerator().GetEnumerator();
+            return CreateUnorderedEnumerator().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -237,7 +237,7 @@ namespace Commons.Collections.Map
             return this.GetEnumerator();
         }
 
-        private IEnumerable<KeyValuePair<K, V>> CreateEnumerator()
+        protected IEnumerable<KeyValuePair<K, V>> CreateUnorderedEnumerator()
         {
             foreach (var entry in Entries)
             {

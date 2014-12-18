@@ -455,5 +455,64 @@ namespace Test.Commons.Collections
 			Assert.Throws(typeof(ArgumentException), () => lru[1]);
 			Assert.Throws(typeof(ArgumentException), () => lru[3]);
 		}
+
+		[Fact]
+		public void TestLruMapHit()
+		{
+			var lru = new LruMap<int, int>(10000);
+			var map = new HashMap<int, int>(10000);
+			for (var i = 0; i < 10000; i++)
+			{
+				lru.Add(i, i);
+				map.Add(i, i);
+			}
+			foreach (var item in lru)
+			{
+				Assert.True(map.ContainsKey(item.Key));
+			}
+
+			for (var i = 0; i < 10000; i++)
+			{
+				lru[10000 - 1 - i] = 10000 - 1 - i;
+			}
+
+			foreach (var item in lru)
+			{
+				Assert.True(map.ContainsKey(item.Key));
+			}
+
+			for (var i = 0; i < 5000; i++)
+			{
+				lru.Add(i + 10000, i + 10000);
+			}
+
+			for (var i = 0; i < 5000; i++)
+			{
+				Assert.False(lru.ContainsKey(i + 5000));
+			}
+		}
+
+		[Fact]
+		public void TestLruMapAccessHeader()
+		{
+			var lru = new LruMap<int, int>(10000);
+			for (var i = 0; i < 10000; i++)
+			{
+				lru.Add(i, i);
+			}
+			lru[9999] = 9999;
+			for (var i = 0; i < 9999; i++)
+			{
+				lru.Add(i + 10000, i + 10000);
+			}
+			for (var i = 0; i < 9999; i++)
+			{
+				Assert.False(lru.ContainsKey(i));
+			}
+			for (var i = 0; i < 10000; i++)
+			{
+				Assert.True(lru.ContainsKey(i + 9999));
+			}
+		}
     }
 }
