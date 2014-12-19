@@ -186,8 +186,8 @@ namespace Test.Commons.Collections
             }
 
             var notExistingOrder = new Order() { Id = 10, Name = Guid.NewGuid().ToString() };
-            Assert.Throws(typeof(ArgumentException), () => { var v = map[notExistingOrder]; });
-            Assert.Throws(typeof(ArgumentException), () => map[notExistingOrder] = new Bill());
+            Assert.Throws(typeof(KeyNotFoundException), () => { var v = map[notExistingOrder]; });
+            Assert.Throws(typeof(KeyNotFoundException), () => map[notExistingOrder] = new Bill());
             Assert.False(map.Remove(notExistingOrder));
 
             var existingOrder = new Order() { Id = 1, Name = "  " };

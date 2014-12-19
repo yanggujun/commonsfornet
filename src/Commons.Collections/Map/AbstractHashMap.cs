@@ -254,7 +254,7 @@ namespace Commons.Collections.Map
 		{ 
             Guarder.CheckNull(key);
 			var entry = GetEntry(key);
-			entry.Validate(x => x != null, new ArgumentException(string.Format("The key {0} does not exist in the map. ", key)));
+			entry.Validate(x => x != null, new KeyNotFoundException(string.Format("The key {0} does not exist in the map. ", key)));
             return entry.Value;
 		}
 
@@ -262,7 +262,7 @@ namespace Commons.Collections.Map
 		{
             Guarder.CheckNull(key);
 			var entry = GetEntry(key);
-			entry.Validate(x => x != null, new ArgumentException(string.Format("The key {0} does not exist in the map. ", key)));
+			entry.Validate(x => x != null, new KeyNotFoundException(string.Format("The key {0} does not exist in the map. ", key)));
 			entry.Value = v;
 		}
 
