@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Map
 {
-    public interface INavigableMap<K, V> : IDictionary<K, V>
+    public interface INavigableMap<K, V> : ISortedMap<K, V>, IDictionary<K, V>
     {
         KeyValuePair<K, V> Lower(K key);
 
