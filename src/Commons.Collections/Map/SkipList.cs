@@ -24,13 +24,18 @@ namespace Commons.Collections.Map
 {
 	internal class SkipList<K, V> : IEnumerable<KeyValuePair<K, V>>
 	{
+        private const int MaxLevel = 32;
+        private const double P = 0.5;
 		private readonly Comparison<K> comparer;
 		private LinkedNode header;
+        private Random rand;
 
 		public SkipList(Comparison<K> comparer)
 		{
+            comparer.ValidateNotNull("The comparer is null.");
 			this.comparer = comparer;
 			header = new LinkedNode(1);
+            rand = new Random((int)DateTime.Now.Ticks & 0x0000ffff);
 		}
 
 		public bool Contains(K key)
@@ -53,9 +58,45 @@ namespace Commons.Collections.Map
 
 		public void Add(K key, V value)
 		{
+            key.ValidateNotNull("The key is null.");
+            var cursor = header;
+            var update = new LinkedNode[MaxLevel];
+            for (var i = cursor.Level; i > 0; i--)
+            {
+                while (cursor.Forward(i) != null)
+                {
+                    if (comparer(cursor.Forward(i).Key, key) >= 0)
+                    {
+                        break;
+                    }
+                    cursor = cursor.Forward(i);
+                    update[i] = cursor;
+                }
+            }
+            cursor = cursor.Forward(1);
+            if (comparer(cursor.Key, key) == 0)
+            {
+                throw new ArgumentException("The key to add already exists.");
+            }
+
+            var level = RandomLevel();
+            if (level > header.Level)
+            {
+                for (var i = header.Level + 1; i <= level; i++)
+                {
+                    update[i] = header;
+                }
+                header.Level = level;
+            }
+            var newNode = new LinkedNode(level);
+            for (var i = 0; i < level; i++)
+            {
+                newNode.NewForward(i + 1, update[i].Forward(i + 1));
+                update[i].NewForward(i + 1, newNode);
+            }
 		}
 
-		public bool Remove(K key)
+        public bool Remove(K key)
 		{
 			return false;
 		}
@@ -111,35 +152,41 @@ namespace Commons.Collections.Map
 			return node;
 		}
 
+        private int RandomLevel()
+        {
+            var level = 1;
+            while (rand.NextDouble() < P && level < MaxLevel)
+            {
+                level++;
+            }
+            return level;
+        }
+
 		private class LinkedNode
 		{
 			private LinkedNode[] forwards;
 
 			public LinkedNode(int level)
 			{
-				forwards = new LinkedNode[level];
+				forwards = new LinkedNode[MaxLevel];
+                Level = level;
 			}
 
 			public LinkedNode Forward(int onLevel)
 			{
-				forwards.Validate(x => x != null, new ArgumentException("The node is not initialized."));
-				onLevel.Validate(x => x < forwards.Length, 
-					new ArgumentException(
-						string.Format("The level {0} exceeds the max level of the current node.", onLevel)));
 				return forwards[onLevel - 1];
 			}
+
+            public void NewForward(int onLevel, LinkedNode newNode)
+            {
+                forwards[onLevel - 1] = newNode;
+            }
 
 			public K Key { get; set; }
 
 			public V Value { get; set; }
 
-			public int Level
-			{
-				get
-				{
-					return forwards == null ? 0 : forwards.Length;
-				}
-			}
+            public int Level { get; set; }
 		}
 	}
 }
