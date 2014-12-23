@@ -58,22 +58,9 @@ namespace Commons.Collections.Map
 
 		public void Add(K key, V value)
 		{
-            key.ValidateNotNull("The key is null.");
-            var cursor = header;
+            key.ValidateNotNull("The key to add is null.");
             var update = new LinkedNode[MaxLevel];
-            for (var i = header.Level; i > 0; i--)
-            {
-                while (cursor.GetForward(i) != null)
-                {
-                    if (comparer(cursor.GetForward(i).Key, key) >= 0)
-                    {
-                        break;
-                    }
-                    cursor = cursor.GetForward(i);
-                }
-                update[i - 1] = cursor;
-            }
-            cursor = cursor.GetForward(1);
+			var cursor = GetLargestKeyLessThan(key, update);
             if (cursor != null && comparer(cursor.Key, key) == 0)
             {
                 throw new ArgumentException("The key to add already exists.");
@@ -98,11 +85,92 @@ namespace Commons.Collections.Map
 
         public bool Remove(K key)
 		{
-			return false;
+			key.ValidateNotNull("The key is to remove is null.");
+			var update = new LinkedNode[MaxLevel];
+			var cursor = GetLargestKeyLessThan(key, update);
+			var removed = false;
+			if (cursor != null && comparer(cursor.Key, key) == 0)
+			{
+				for (var i = 0; i < header.Level; i++)
+				{
+					if (update[i].GetForward(i + 1) == null || comparer(update[i].GetForward(i + 1).Key, key) != 0)
+					{
+						break;
+					}
+					update[i].SetForward(i + 1, cursor.GetForward(i + 1));
+				}
+				while (header.Level > 1 && header.GetForward(header.Level - 1) == null)
+				{
+					header.Level--;
+				}
+				removed = true;
+			}
+			return removed;
+		}
+
+		public KeyValuePair<K, V> Lower(K key)
+		{
+			key.ValidateNotNull("The key to search is null.");
+			var node = GetLargestKeyLessThan(key);
+			node.Validate(x => x != null, new ArgumentException(string.Format("No item is lower than the key {0}", key)));
+			return new KeyValuePair<K, V>(node.Key, node.Value);
+		}
+
+		public KeyValuePair<K, V> Higher(K key)
+		{
+			key.ValidateNotNull("The key to search is null.");
+			var node = GetLargestKeyLessThan(key);
+			while (node != null && comparer(node.Key, key) <= 0)
+			{
+				node = node.GetForward(1);
+			}
+			node.Validate(x => x != null, new ArgumentException(string.Format("No item is higher than the key {0}", key)));
+			return new KeyValuePair<K, V>(node.Key, node.Value);
+		}
+
+		public KeyValuePair<K, V> Ceiling(K key)
+		{
+			key.ValidateNotNull("The key to search is null.");
+			var node = GetLargestKeyLessThan(key);
+			while (node != null && comparer(node.Key, key) < 0)
+			{
+				node = node.GetForward(1);
+			}
+			node.Validate(x => x != null, new ArgumentException(string.Format("No item is the ceiling of the key {0}", key)));
+			return new KeyValuePair<K, V>(node.Key, node.Value);
+		}
+
+		public KeyValuePair<K, V> Floor(K key)
+		{
+			key.ValidateNotNull("The key to search is null.");
+			var node = GetLargestKeyLessThan(key);
+			if (node != null && node.GetForward(1) != null && comparer(node.GetForward(1).Key, key) == 0)
+			{
+				node = node.GetForward(1);
+			}
+			node.Validate(x => x != null, new ArgumentException(string.Format("No item is the floor of the key {0}", key)));
+			return new KeyValuePair<K, V>(node.Key, node.Value);
+		}
+
+		public int Count
+		{
+			get
+			{
+				var count = 0;
+				var cursor = header.GetForward(1);
+				while (cursor != null)
+				{
+					cursor = cursor.GetForward(1);
+					count++;
+				}
+
+				return count;
+			}
 		}
 
 		public void Clear()
 		{
+			header = new LinkedNode(1);
 		}
 
 		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
@@ -113,6 +181,41 @@ namespace Commons.Collections.Map
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			throw new NotImplementedException();
+		}
+
+		private LinkedNode GetLargestKeyLessThan(K key, LinkedNode[] update)
+		{
+			var cursor = header;
+			for (var i = header.Level; i > 0; i--)
+			{
+				while (cursor.GetForward(i) != null)
+				{
+					if (comparer(cursor.GetForward(i).Key, key) >= 0)
+					{
+						break;
+					}
+					cursor = cursor.GetForward(i);
+				}
+				update[i - 1] = cursor;
+			}
+			return cursor.GetForward(1);
+		}
+
+		private LinkedNode GetLargestKeyLessThan(K key)
+		{
+			var cursor = header;
+			for (var i = header.Level; i > 0; i--)
+			{
+				while (cursor.GetForward(i) != null)
+				{
+					if (comparer(cursor.GetForward(i).Key, key) >= 0)
+					{
+						break;
+					}
+					cursor = cursor.GetForward(i);
+				}
+			}
+			return cursor.GetForward(1);
 		}
 
 		private LinkedNode GetNode(K key)

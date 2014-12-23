@@ -27,16 +27,44 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestSkipListAdd()
 		{
-			var map = new ListMap<int, int>();
+			var map = new SkipListMap<int, int>();
+			Assert.Equal(0, map.Count);
 			for (var i = 0; i < 10000; i++)
 			{
 				map.Add(i, i);
 			}
-
+			Assert.Equal(10000, map.Count);
 			for (var i = 0; i < 10000; i++)
 			{
 				Assert.True(map.ContainsKey(i));
 				Assert.Equal(i, map[i]);
+			}
+			map.Clear();
+			Assert.Equal(0, map.Count);
+		}
+
+		[Fact]
+		public void TestSkipListRemove()
+		{
+			var map = new SkipListMap<int, int>();
+			for(var i = 0; i < 10000; i++)
+			{
+				map.Add(i, i);
+			}
+			for (var i = 2000; i < 8000; i++)
+			{
+				Assert.True(map.Remove(i));
+			}
+			Assert.Equal(4000, map.Count);
+
+			for (var i = 2000; i < 8000; i++)
+			{
+				Assert.False(map.ContainsKey(i));
+			}
+
+			for (var i = 20000; i < 30000; i++)
+			{
+				Assert.False(map.Remove(i));
 			}
 		}
 	}

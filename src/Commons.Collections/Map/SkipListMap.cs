@@ -17,22 +17,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Commons.Collections.Set;
 
 namespace Commons.Collections.Map
 {
-	public class ListMap<K, V> : IOrderedMap<K, V>, INavigableMap<K, V>, IDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>, IEnumerable, ICollection
+	public class SkipListMap<K, V> : ISortedMap<K, V>, INavigableMap<K, V>, IDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>, IEnumerable, ICollection
 	{
 		private readonly SkipList<K, V> skipList;
 
-		public ListMap() : this (Comparer<K>.Default)
+		public SkipListMap() : this (Comparer<K>.Default)
 		{
 		}
 
-		public ListMap(Comparer<K> comparer) : this (comparer.Compare)
+		public SkipListMap(Comparer<K> comparer) : this (comparer.Compare)
 		{
 		}
 
-		public ListMap(Comparison<K> comparer)
+		public SkipListMap(Comparison<K> comparer)
 		{
 			skipList = new SkipList<K, V>(comparer);
 		}
@@ -57,7 +58,7 @@ namespace Commons.Collections.Map
 			throw new System.NotImplementedException();
 		}
 
-		public Set.ISortedSet<K> KeySet
+		public ISortedSet<K> KeySet
 		{
 			get { throw new System.NotImplementedException(); }
 		}
@@ -99,12 +100,22 @@ namespace Commons.Collections.Map
 
 		public bool Remove(K key)
 		{
-			throw new System.NotImplementedException();
+			return skipList.Remove(key);
 		}
 
 		public bool TryGetValue(K key, out V value)
 		{
-			throw new System.NotImplementedException();
+			var exist = false;
+			if (skipList.Contains(key))
+			{
+				value = skipList[key];
+				exist = true;
+			}
+			else
+			{
+				value = default(V);
+			}
+			return exist;
 		}
 
 		public ICollection<V> Values
@@ -126,12 +137,12 @@ namespace Commons.Collections.Map
 
 		public void Add(KeyValuePair<K, V> item)
 		{
-			throw new System.NotImplementedException();
+			skipList.Add(item.Key, item.Value);
 		}
 
 		public void Clear()
 		{
-			throw new System.NotImplementedException();
+			skipList.Clear();
 		}
 
 		public bool Contains(KeyValuePair<K, V> item)
@@ -146,12 +157,12 @@ namespace Commons.Collections.Map
 
 		public int Count
 		{
-			get { throw new System.NotImplementedException(); }
+			get { return skipList.Count; }
 		}
 
 		public bool IsReadOnly
 		{
-			get { throw new System.NotImplementedException(); }
+			get { return false; }
 		}
 
 		public bool Remove(KeyValuePair<K, V> item)
@@ -161,37 +172,12 @@ namespace Commons.Collections.Map
 
 		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
 		{
-			throw new System.NotImplementedException();
+			return skipList.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			throw new System.NotImplementedException();
-		}
-
-		public KeyValuePair<K, V> First
-		{
-			get { throw new System.NotImplementedException(); }
-		}
-
-		public KeyValuePair<K, V> Last
-		{
-			get { throw new System.NotImplementedException(); }
-		}
-
-		public KeyValuePair<K, V> After(K key)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public KeyValuePair<K, V> Before(K key)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public KeyValuePair<K, V> GetIndex(int index)
-		{
-			throw new System.NotImplementedException();
+			return GetEnumerator();
 		}
 
 		public void CopyTo(System.Array array, int index)
