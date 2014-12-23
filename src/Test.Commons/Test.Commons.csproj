@@ -49,6 +49,7 @@
     <Compile Include="Collections\HashTest.cs" />
     <Compile Include="Collections\JsonTest.cs" />
     <Compile Include="Collections\LlrbTreeTest.cs" />
+    <Compile Include="Collections\SkipListTest.cs" />
     <Compile Include="Collections\TestExtenstions.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="TestHelper.cs" />

@@ -61,20 +61,20 @@ namespace Commons.Collections.Map
             key.ValidateNotNull("The key is null.");
             var cursor = header;
             var update = new LinkedNode[MaxLevel];
-            for (var i = cursor.Level; i > 0; i--)
+            for (var i = header.Level; i > 0; i--)
             {
-                while (cursor.Forward(i) != null)
+                while (cursor.GetForward(i) != null)
                 {
-                    if (comparer(cursor.Forward(i).Key, key) >= 0)
+                    if (comparer(cursor.GetForward(i).Key, key) >= 0)
                     {
                         break;
                     }
-                    cursor = cursor.Forward(i);
-                    update[i] = cursor;
+                    cursor = cursor.GetForward(i);
                 }
+                update[i - 1] = cursor;
             }
-            cursor = cursor.Forward(1);
-            if (comparer(cursor.Key, key) == 0)
+            cursor = cursor.GetForward(1);
+            if (cursor != null && comparer(cursor.Key, key) == 0)
             {
                 throw new ArgumentException("The key to add already exists.");
             }
@@ -82,17 +82,17 @@ namespace Commons.Collections.Map
             var level = RandomLevel();
             if (level > header.Level)
             {
-                for (var i = header.Level + 1; i <= level; i++)
+                for (var i = header.Level; i < level; i++)
                 {
                     update[i] = header;
                 }
                 header.Level = level;
             }
-            var newNode = new LinkedNode(level);
+			var newNode = new LinkedNode(level) { Key = key, Value = value };
             for (var i = 0; i < level; i++)
             {
-                newNode.NewForward(i + 1, update[i].Forward(i + 1));
-                update[i].NewForward(i + 1, newNode);
+                newNode.SetForward(i + 1, update[i].GetForward(i + 1));
+                update[i].SetForward(i + 1, newNode);
             }
 		}
 
@@ -130,23 +130,24 @@ namespace Commons.Collections.Map
 			LinkedNode node = null;
 			for (var i = header.Level; i > 0; i--)
 			{
-				while (cursor.Forward(i) != null)
+				while (cursor.GetForward(i) != null)
 				{
-					if (comparer(cursor.Forward(i).Key, key) >= 0)
+					if (comparer(cursor.GetForward(i).Key, key) >= 0)
 					{
 						break;
 					}
-					cursor = cursor.Forward(i);
+					cursor = cursor.GetForward(i);
 				}
-				if (comparer(cursor.Forward(i).Key, key) == 0)
+				var forward = cursor.GetForward(i);
+				if (forward != null && comparer(forward.Key, key) == 0)
 				{
-					node = cursor.Forward(i);
+					node = cursor.GetForward(i);
 					break;
 				}
 			}
-			if (node == null && comparer(cursor.Forward(1).Key, key) == 0)
+			if (node == null && comparer(cursor.GetForward(1).Key, key) == 0)
 			{
-				node = cursor.Forward(1);
+				node = cursor.GetForward(1);
 			}
 
 			return node;
@@ -164,7 +165,7 @@ namespace Commons.Collections.Map
 
 		private class LinkedNode
 		{
-			private LinkedNode[] forwards;
+			private readonly LinkedNode[] forwards;
 
 			public LinkedNode(int level)
 			{
@@ -172,12 +173,12 @@ namespace Commons.Collections.Map
                 Level = level;
 			}
 
-			public LinkedNode Forward(int onLevel)
+			public LinkedNode GetForward(int onLevel)
 			{
 				return forwards[onLevel - 1];
 			}
 
-            public void NewForward(int onLevel, LinkedNode newNode)
+            public void SetForward(int onLevel, LinkedNode newNode)
             {
                 forwards[onLevel - 1] = newNode;
             }
