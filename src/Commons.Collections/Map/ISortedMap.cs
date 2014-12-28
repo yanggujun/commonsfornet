@@ -53,5 +53,7 @@ namespace Commons.Collections.Map
         /// Removes minimum item in the map.
         /// </summary>
         void RemoveMin();
+
+        bool IsEmpty { get; }
     }
 }

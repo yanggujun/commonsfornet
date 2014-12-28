@@ -275,6 +275,14 @@ namespace Commons.Collections.Map
             }
         }
 
+        public bool IsEmpty
+        {
+            get
+            {
+                return root != null;
+            }
+        }
+
         public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
         {
             Guarder.CheckNull(array);

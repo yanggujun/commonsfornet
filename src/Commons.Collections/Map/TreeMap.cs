@@ -396,6 +396,14 @@ namespace Commons.Collections.Map
             llrbTree.RemoveMin();
         }
 
+        public bool IsEmpty
+        {
+            get
+            {
+                return llrbTree.IsEmpty;
+            }
+        }
+
         private class MapEnumerator : IDictionaryEnumerator
         {
             private TreeMap<TKey, TValue> map;

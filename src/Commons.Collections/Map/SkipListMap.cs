@@ -40,22 +40,22 @@ namespace Commons.Collections.Map
 
 		public KeyValuePair<K, V> Lower(K key)
 		{
-			throw new System.NotImplementedException();
+            return skipList.Lower(key);
 		}
 
 		public KeyValuePair<K, V> Higher(K key)
 		{
-			throw new System.NotImplementedException();
+            return skipList.Higher(key);
 		}
 
 		public KeyValuePair<K, V> Ceiling(K key)
 		{
-			throw new System.NotImplementedException();
+            return skipList.Ceiling(key);
 		}
 
 		public KeyValuePair<K, V> Floor(K key)
 		{
-			throw new System.NotImplementedException();
+            return skipList.Floor(key);
 		}
 
 		public ISortedSet<K> KeySet
@@ -65,23 +65,28 @@ namespace Commons.Collections.Map
 
 		public KeyValuePair<K, V> Max
 		{
-			get { throw new System.NotImplementedException(); }
+            get { return skipList.Max; }
 		}
 
 		public KeyValuePair<K, V> Min
 		{
-			get { throw new System.NotImplementedException(); }
+            get { return skipList.Min; }
 		}
 
 		public void RemoveMax()
 		{
-			throw new System.NotImplementedException();
+            skipList.RemoveMax();
 		}
 
 		public void RemoveMin()
 		{
-			throw new System.NotImplementedException();
+            skipList.RemoveMin();
 		}
+
+        public bool IsEmpty
+        {
+            get { return skipList.IsEmpty; }
+        }
 
 		public void Add(K key, V value)
 		{
@@ -147,12 +152,23 @@ namespace Commons.Collections.Map
 
 		public bool Contains(KeyValuePair<K, V> item)
 		{
-			throw new System.NotImplementedException();
+            var contains = false;
+            if (skipList.Contains(item.Key))
+            {
+                var v = skipList[item.Key];
+                contains = v == null ? item.Value == null :v.Equals(item.Value);
+            }
+
+            return contains;
 		}
 
 		public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
 		{
-			throw new System.NotImplementedException();
+            var i = 0;
+            foreach (var item in skipList)
+            {
+                array[arrayIndex + (i++)] = new KeyValuePair<K, V>(item.Key, item.Value);
+            }
 		}
 
 		public int Count
@@ -167,7 +183,12 @@ namespace Commons.Collections.Map
 
 		public bool Remove(KeyValuePair<K, V> item)
 		{
-			throw new System.NotImplementedException();
+            var removed = false;
+            if (Contains(item))
+            {
+                removed = Remove(item.Key);
+            }
+            return removed;
 		}
 
 		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
@@ -180,19 +201,19 @@ namespace Commons.Collections.Map
 			return GetEnumerator();
 		}
 
-		public void CopyTo(System.Array array, int index)
+		public void CopyTo(Array array, int index)
 		{
 			throw new System.NotImplementedException();
 		}
 
 		public bool IsSynchronized
 		{
-			get { throw new System.NotImplementedException(); }
+            get { return false; }
 		}
 
 		public object SyncRoot
 		{
-			get { throw new System.NotImplementedException(); }
+            get { throw new NotSupportedException("The operation is not supported in Commons.Collections."); }
 		}
-	}
+    }
 }
