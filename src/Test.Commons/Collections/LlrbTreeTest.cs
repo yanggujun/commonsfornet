@@ -17,12 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xunit;
 
-using Commons.Collections;
 using Commons.Collections.Map;
 using Commons.Collections.Set;
 
@@ -296,7 +293,7 @@ namespace Test.Commons.Collections
 
 
         [Fact]
-        public void TestMapContructor()
+        public void TestTreeMapContructor()
         {
             Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
             Dictionary<Order, Guid> orderDict = new Dictionary<Order, Guid>();
@@ -330,12 +327,16 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
-        public void TestMapAdd()
+        public void TestTreeMapAdd()
         {
-            Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
-            List<Order> orderList = new List<Order>();
-            TreeMap<Order, Bill> orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+            var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			SortedMapAdd(orderMap);
+        }
 
+		private void SortedMapAdd(ISortedMap<Order, Bill> orderMap)
+		{
+            var randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+            var orderList = new List<Order>();
             for (var i = 0; i < 1000; )
             {
                 var next = randomValue.Next();
@@ -364,15 +365,20 @@ namespace Test.Commons.Collections
             }
             orderMap.Clear();
             Assert.Equal(0, orderMap.Count);
-        }
+		}
+
 
         [Fact]
-        public void TestMapRemove()
+        public void TestTreeMapRemove()
         {
-            Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
-            List<Order> orderList = new List<Order>();
-            TreeMap<Order, Bill> orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+            var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			SortedMapRemove(orderMap);
+        }
 
+		private void SortedMapRemove(ISortedMap<Order, Bill> orderMap)
+		{
+            var randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+            List<Order> orderList = new List<Order>();
             for (var i = 0; i < 1000; ) 
             {
                 var next = randomValue.Next();
@@ -396,22 +402,26 @@ namespace Test.Commons.Collections
             for (var i = 0; i < 500; i++)
             {
                 Assert.True(orderMap.Remove(orderList[i]));
-                Assert.False(orderMap.Contains(orderList[i]));
+                Assert.False(orderMap.ContainsKey(orderList[i]));
             }
             Assert.Equal(500, orderMap.Count);
             var notExist = new Order();
             notExist.Id = 1;
             notExist.Name = "not exist";
             Assert.False(orderMap.Remove(notExist));
-        }
+		}
 
         [Fact]
-        public void TestMapRemoveMax()
+        public void TestTreeMapRemoveMax()
         {
-            Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
-            List<Order> orderlist = new List<Order>();
-            TreeMap<Order, Bill> orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+            var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			SortedMapRemoveMax(orderMap);
+        }
 
+		private void SortedMapRemoveMax(ISortedMap<Order, Bill> orderMap)
+		{
+            var r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+            var orderlist = new List<Order>();
             for (var i = 0; i < 200; )
             {
                 var next = r.Next();
@@ -436,7 +446,7 @@ namespace Test.Commons.Collections
             for (var i = 0; i < 50; i++)
             {
                 var maxOrder = orderedList[i];
-                Assert.True(orderMap.Contains(maxOrder));
+                Assert.True(orderMap.ContainsKey(maxOrder));
                 var comparer = new OrderComparer();
                 Assert.True(comparer.Compare(maxOrder, orderMap.Max.Key) == 0);
                 orderMap.RemoveMax();
@@ -445,15 +455,21 @@ namespace Test.Commons.Collections
             }
 
             Assert.Equal(150, orderMap.Count);
-        }
+
+		}
+
 
         [Fact]
-        public void TestMapRemoveMin()
+        public void TestTreeMapRemoveMin()
         {
-            Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
-            List<Order> orderlist = new List<Order>();
-            TreeMap<Order, Bill> orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+            var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			SortedMapRemoveMin(orderMap);
+        }
 
+		private void SortedMapRemoveMin(ISortedMap<Order, Bill> orderMap)
+		{
+            var r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+            var orderlist = new List<Order>();
             for (var i = 0; i < 200; )
             {
                 var next = r.Next();
@@ -478,7 +494,7 @@ namespace Test.Commons.Collections
             for (var i = 0; i < 50; i++)
             {
                 var minOrder = orderedList[i];
-                Assert.True(orderMap.Contains(minOrder));
+                Assert.True(orderMap.ContainsKey(minOrder));
                 var comparer = new OrderComparer();
                 Assert.True(comparer.Compare(minOrder, orderMap.Min.Key) == 0);
                 orderMap.RemoveMin();
@@ -487,13 +503,19 @@ namespace Test.Commons.Collections
             }
 
             Assert.Equal(150, orderMap.Count);
-        }
+
+		}
 
         [Fact]
-        public void TestMapCopyTo()
+        public void TestTreeMapCopyTo()
         {
-            Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
-            TreeMap<Order, Bill> orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+            var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			SortedMapCopyTo(orderMap);
+        }
+		
+		private void SortedMapCopyTo(ISortedMap<Order, Bill> orderMap)
+		{
+            var r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
             for (var i = 0; i < 1000; )
             {
                 var o = new Order();
@@ -519,14 +541,19 @@ namespace Test.Commons.Collections
                 Assert.Null(kvps[i].Key);
                 Assert.Null(kvps[i].Value);
             }
-        }
+		}
 
         [Fact]
-        public void TestMapEnumerator()
+        public void TestTreeMapEnumerator()
         {
-            Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
-            TreeMap<Order, Bill> orderMap = new TreeMap<Order, Bill>(new OrderComparer());
-            List<KeyValuePair<Order, Bill>> orderList = new List<KeyValuePair<Order, Bill>>();
+            var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			SortedMapEnumerator(orderMap);
+        }
+
+		private void SortedMapEnumerator(ISortedMap<Order, Bill> orderMap)
+		{
+            var r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+            var orderList = new List<KeyValuePair<Order, Bill>>();
             for (var i = 0; i < 1000; )
             {
                 var o = new Order();
@@ -556,71 +583,94 @@ namespace Test.Commons.Collections
                 Assert.True(orderList.Contains(kvp, new OrderBillEqualityComparer()));
             }
             Assert.Equal(1000, total);
-        }
+		}
 
         [Fact]
-        public void TestMapIndexer()
+        public void TestTreeMapIndexer()
         {
-            TreeMap<Order, Bill> orderMap = null;
-            Dictionary<Order, Bill> orderDict = null;
-            InitializeMap(out orderMap, out orderDict);
+			var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+            InitializeMap(orderMap, orderDict);
+			SortedMapIndexer(orderMap, orderDict);
+        }
+
+		private void SortedMapIndexer(ISortedMap<Order, Bill> orderMap, Dictionary<Order, Bill> orderDict)
+		{
             foreach (var key in orderDict.Keys)
             {
                 Assert.True(orderMap.ContainsKey(key));
                 Assert.Equal(orderDict[key].Id, orderMap[key].Id);
                 Assert.Equal(orderDict[key].Count, orderMap[key].Count);
             }
-        }
+		}
 
         [Fact]
-        public void TestMapKeys()
+        public void TestTreeMapKeys()
         {
-            TreeMap<Order, Bill> orderMap = null;
-            Dictionary<Order, Bill> orderDict = null;
-            InitializeMap(out orderMap, out orderDict);
+			var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+            InitializeMap(orderMap, orderDict);
+			SortedMapKeys(orderMap, orderDict);
+        }
 
+		private void SortedMapKeys(ISortedMap<Order, Bill> orderMap, Dictionary<Order, Bill> orderDict)
+		{
             foreach (var key in orderMap.Keys)
             {
                 Assert.True(orderDict.ContainsKey(key));
                 Assert.Equal(orderDict[key].Id, orderMap[key].Id);
                 Assert.Equal(orderDict[key].Count, orderMap[key].Count);
             }
-        }
+		}
 
         [Fact]
-        public void TestMapKeySet()
+        public void TestTreeMapKeySet()
         {
-            TreeMap<Order, Bill> orderMap = null;
-            Dictionary<Order, Bill> orderDict = null;
-            InitializeMap(out orderMap, out orderDict);
+			var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+            InitializeMap(orderMap, orderDict);
+			SortedMapKeySet(orderMap, orderDict);
 
+        }
+
+		private void SortedMapKeySet(ISortedMap<Order, Bill> orderMap, Dictionary<Order, Bill> orderDict)
+		{
             var set = orderMap.KeySet;
             foreach (var item in set)
             {
                 Assert.True(orderDict.ContainsKey(item));
             }
-        }
+		}
 
         [Fact]
-        public void TestMapValues()
+        public void TestTreeMapValues()
         {
-            TreeMap<Order, Bill> orderMap = null;
-            Dictionary<Order, Bill> orderDict = null;
-            InitializeMap(out orderMap, out orderDict);
+			var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+            InitializeMap(orderMap, orderDict);
+			SortedMapValues(orderMap, orderDict);
+        }
 
+		private void SortedMapValues(ISortedMap<Order, Bill> orderMap, Dictionary<Order, Bill> orderDict)
+		{
             var values = orderDict.Values;
             foreach (var v in orderMap.Values)
             {
                 values.Contains(v, new BillEqualityComparer());
             }
-        }
+		}
 
         [Fact]
-        public void TestMapTryGetValue()
+        public void TestTreeMapTryGetValue()
         {
-            TreeMap<Order, Bill> orderMap = null;
-            Dictionary<Order, Bill> orderDict = null;
-            InitializeMap(out orderMap, out orderDict);
+			var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+            InitializeMap(orderMap, orderDict);
+			SortedMapTryGetValue(orderMap, orderDict);
+        }
+
+		private void SortedMapTryGetValue(ISortedMap<Order, Bill> orderMap, Dictionary<Order, Bill> orderDict)
+		{
             foreach (var key in orderDict.Keys)
             {
                 Bill bill = null;
@@ -634,15 +684,19 @@ namespace Test.Commons.Collections
             Bill b = null;
             Assert.False(orderMap.TryGetValue(notExist, out b));
             Assert.Null(b);
-        }
+		}
 
         [Fact]
-        public void TestMapAddRemoveKvp()
+        public void TestTreeMapAddRemoveKvp()
         {
-            TreeMap<Order, Bill> orderMap = null;
-            Dictionary<Order, Bill> orderDict = null;
-            InitializeMap(out orderMap, out orderDict);
-            TreeMap<Order, Bill> newMap = new TreeMap<Order, Bill>(new OrderComparer());
+			var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+            InitializeMap(orderMap, new Dictionary<Order, Bill>(new OrderEqualityComparer()));
+			SortedMapAddRemoveKey(orderMap);
+        }
+
+		private void SortedMapAddRemoveKey(ISortedMap<Order, Bill> orderMap)
+		{
+            var newMap = new TreeMap<Order, Bill>(new OrderComparer());
             foreach (var kvp in orderMap)
             {
                 newMap.Add(kvp);
@@ -664,12 +718,17 @@ namespace Test.Commons.Collections
             var item = new KeyValuePair<Order, Bill>(kvps[250].Key, new Bill());
             Assert.True(newMap.ContainsKey(item.Key));
             Assert.False(newMap.Remove(item));
-        }
+		}
 
         [Fact]
-        public void TestMapNoItem()
+        public void TestTreeMapNoItem()
         {
-            TreeMap<int, string> map = new TreeMap<int, string>();
+            var map = new TreeMap<int, string>();
+			SortedMapNoItem(map);
+        }
+
+		private void SortedMapNoItem(ISortedMap<int, string> map)
+		{
             Assert.Equal(0, map.Count);
             Assert.Empty(map);
             var count = 0;
@@ -680,12 +739,16 @@ namespace Test.Commons.Collections
             Assert.Equal(0, count);
             Assert.False(map.ContainsKey(0));
             Assert.False(map.Remove(0));
-        }
+		}
 
         [Fact]
-        public void TestMapExceptions()
+        public void TestTreeMapExceptions()
         {
             var map = new TreeMap<Order, Bill>();
+        }
+
+		private void SortedMapExceptions(INavigableMap<Order, Bill> map)
+		{
             Bill b;
             Assert.Throws(typeof(ArgumentNullException), () => map.Add(null, null));
             Assert.Throws(typeof(ArgumentNullException), () => map[null] = null);
@@ -698,12 +761,17 @@ namespace Test.Commons.Collections
 			Assert.Throws(typeof(ArgumentNullException), () => map.Lower(null));
 			Assert.Throws(typeof(ArgumentNullException), () => map.Ceiling(null));
 			Assert.Throws(typeof(ArgumentNullException), () => map.Floor(null));
-        }
+		}
 
 		[Fact]
 		public void TestNavigableMapHigher()
 		{
 			var map = new TreeMap<int, int>();
+			NavigableMapHigher(map);
+		}
+
+		private void NavigableMapHigher(INavigableMap<int, int> map)
+		{
 			for (var i = 0; i < 10000; i++)
 			{
 				map.Add(i * 5, i * 5);
@@ -724,6 +792,11 @@ namespace Test.Commons.Collections
 		public void TestNavigableMapCeiling()
 		{
 			var map = new TreeMap<int, int>();
+			NavigableMapCeiling(map);
+		}
+
+		private void NavigableMapCeiling(INavigableMap<int, int> map)
+		{
 			for (var i = 0; i < 10000; i++)
 			{
 				map.Add(i * 5, i * 5);
@@ -743,6 +816,11 @@ namespace Test.Commons.Collections
 		public void TestNavigableMapLower()
 		{
 			var map = new TreeMap<int, int>();
+			NavigableMapLower(map);
+		}
+
+		private void NavigableMapLower(INavigableMap<int, int> map)
+		{
 			for (var i = 0; i < 10000; i++)
 			{
 				map.Add(i * 5, i * 5);
@@ -764,6 +842,11 @@ namespace Test.Commons.Collections
 		public void TestNavigableMapFloor()
 		{
 			var map = new TreeMap<int, int>();
+			NavigableMapFloor(map);
+		}
+		
+		private void NavigableMapFloor(INavigableMap<int, int> map)
+		{
 			for (var i = 0; i < 10000; i++)
 			{
 				map.Add(i * 5, i * 5);
@@ -880,11 +963,9 @@ namespace Test.Commons.Collections
 			Assert.Throws(typeof(InvalidOperationException), () => set.Floor(0));
 		}
 
-        private void InitializeMap(out TreeMap<Order, Bill> map, out Dictionary<Order, Bill> dict)
-        {
-            Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
-            TreeMap<Order, Bill> orderMap = new TreeMap<Order, Bill>(new OrderComparer());
-            Dictionary<Order, Bill> orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+		private void InitializeMap(ISortedMap<Order, Bill> map, Dictionary<Order, Bill> dict)
+		{
+            var r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
             for (var i = 0; i < 1000; )
             {
                 var o = new Order();
@@ -893,7 +974,7 @@ namespace Test.Commons.Collections
                 var bill = new Bill();
                 bill.Id = o.Id;
                 bill.Count = o.Id % 1000;
-                if (!orderMap.ContainsKey(o))
+                if (!map.ContainsKey(o))
                 {
                     var os = new Order();
                     os.Id = o.Id;
@@ -901,14 +982,11 @@ namespace Test.Commons.Collections
                     var bs = new Bill();
                     bs.Id = bill.Id;
                     bs.Count = bill.Count;
-                    orderDict.Add(os, bs);
-                    orderMap.Add(o, bill);
+                    dict.Add(os, bs);
+                    map.Add(o, bill);
                     i++;
                 }
             }
-
-            map = orderMap;
-            dict = orderDict;
         }
         
         private class OrderBillEqualityComparer : IEqualityComparer<KeyValuePair<Order, Bill>>
