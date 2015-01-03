@@ -25,7 +25,7 @@ using Commons.Collections.Set;
 
 namespace Test.Commons.Collections
 {
-    public class LlrbTreeTest
+    public class SortedMapTest
     {
         [Fact]
         public void TestTreeSetContructor()
@@ -291,15 +291,14 @@ namespace Test.Commons.Collections
             Assert.Throws(typeof(ArgumentNullException), () => set.CopyTo(null, 0));
         }
 
-
         [Fact]
         public void TestTreeMapContructor()
         {
-            Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
-            Dictionary<Order, Guid> orderDict = new Dictionary<Order, Guid>();
+            var randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+            var orderDict = new Dictionary<Order, Guid>();
             for (var i = 0; i < 100; i++)
             {
-                Order order = new Order();
+                var order = new Order();
                 order.Id = randomValue.Next();
                 order.Name = order.Id + "(*^&^%";
                 if (!orderDict.ContainsKey(order))
@@ -307,18 +306,18 @@ namespace Test.Commons.Collections
                     orderDict.Add(order, Guid.NewGuid());
                 }
             }
-            TreeMap<Order, Guid> orderMap = new TreeMap<Order, Guid>(orderDict, new OrderComparer());
+            var orderMap = new TreeMap<Order, Guid>(orderDict, new OrderComparer());
             foreach (var item in orderDict.Keys)
             {
                 Assert.True(orderMap.ContainsKey(item));
             }
 
-            Dictionary<int, string> simpleDict = new Dictionary<int, string>();
+            var simpleDict = new Dictionary<int, string>();
             for (int i = 0; i < 100; i++)
             {
                 simpleDict.Add(i, Guid.NewGuid().ToString());
             }
-            TreeMap<int, string> simpleMap = new TreeMap<int, string>(simpleDict);
+            var simpleMap = new TreeMap<int, string>(simpleDict);
             Assert.Equal(simpleDict.Count, simpleMap.Count);
             foreach (var k in simpleDict.Keys)
             {
@@ -327,10 +326,52 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
+        public void TestSkipListMapConstructor()
+        {
+            var map = new SkipListMap<int, int>();
+            for (var i = 0; i < 10000; i++)
+            {
+                map.Add(i, i);
+            }
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.True(map.ContainsKey(i));
+            }
+
+            var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
+            for (var i = 0; i < 10000; i++)
+            {
+                orderMap.Add(new Order { Id = i }, new Bill());
+            }
+
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.True(orderMap.ContainsKey(new Order { Id = i }));
+            }
+
+            var orderMap2 = new SkipListMap<Order, Bill>((x1, x2) => x1.Id - x2.Id);
+
+            for (var i = 0; i < 10000; i++)
+            {
+                orderMap2.Add(new Order { Id = i }, new Bill());
+            }
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.True(orderMap2.ContainsKey(new Order { Id = i }));
+            }
+        }
+
+        [Fact]
         public void TestTreeMapAdd()
         {
             var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
 			SortedMapAdd(orderMap);
+        }
+
+        public void TestSkipListMapAdd()
+        {
+            var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
+            SortedMapAdd(orderMap);
         }
 
 		private void SortedMapAdd(ISortedMap<Order, Bill> orderMap)
@@ -373,6 +414,13 @@ namespace Test.Commons.Collections
         {
             var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
 			SortedMapRemove(orderMap);
+        }
+
+        [Fact]
+        public void TestSkipListMapRemove()
+        {
+            var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+            SortedMapRemove(orderMap);
         }
 
 		private void SortedMapRemove(ISortedMap<Order, Bill> orderMap)
@@ -418,6 +466,13 @@ namespace Test.Commons.Collections
 			SortedMapRemoveMax(orderMap);
         }
 
+        [Fact]
+        public void TestSkipListMapRemoveMax()
+        {
+            var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
+			SortedMapRemoveMax(orderMap);
+        }
+
 		private void SortedMapRemoveMax(ISortedMap<Order, Bill> orderMap)
 		{
             var r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -458,11 +513,17 @@ namespace Test.Commons.Collections
 
 		}
 
-
         [Fact]
         public void TestTreeMapRemoveMin()
         {
             var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			SortedMapRemoveMin(orderMap);
+        }
+
+        [Fact]
+        public void TestSkipListMapRemoveMin()
+        {
+            var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
 			SortedMapRemoveMin(orderMap);
         }
 
@@ -512,6 +573,13 @@ namespace Test.Commons.Collections
             var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
 			SortedMapCopyTo(orderMap);
         }
+
+        [Fact]
+        public void TestSkipListMapCopyTo()
+        {
+            var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
+			SortedMapCopyTo(orderMap);
+        }
 		
 		private void SortedMapCopyTo(ISortedMap<Order, Bill> orderMap)
 		{
@@ -547,6 +615,13 @@ namespace Test.Commons.Collections
         public void TestTreeMapEnumerator()
         {
             var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			SortedMapEnumerator(orderMap);
+        }
+
+        [Fact]
+        public void TestSkipListMapEnumerator()
+        {
+            var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
 			SortedMapEnumerator(orderMap);
         }
 
@@ -594,6 +669,15 @@ namespace Test.Commons.Collections
 			SortedMapIndexer(orderMap, orderDict);
         }
 
+        [Fact]
+        public void TestSkipListMapIndexer()
+        {
+			var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
+			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+            InitializeMap(orderMap, orderDict);
+			SortedMapIndexer(orderMap, orderDict);
+        }
+
 		private void SortedMapIndexer(ISortedMap<Order, Bill> orderMap, Dictionary<Order, Bill> orderDict)
 		{
             foreach (var key in orderDict.Keys)
@@ -608,6 +692,15 @@ namespace Test.Commons.Collections
         public void TestTreeMapKeys()
         {
 			var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+            InitializeMap(orderMap, orderDict);
+			SortedMapKeys(orderMap, orderDict);
+        }
+
+        [Fact]
+        public void TestSkipListMapKeys()
+        {
+			var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
 			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
             InitializeMap(orderMap, orderDict);
 			SortedMapKeys(orderMap, orderDict);
@@ -630,7 +723,15 @@ namespace Test.Commons.Collections
 			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
             InitializeMap(orderMap, orderDict);
 			SortedMapKeySet(orderMap, orderDict);
+        }
 
+        [Fact]
+        public void TestSkipListMapKeySet()
+        {
+			var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
+			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+            InitializeMap(orderMap, orderDict);
+			SortedMapKeySet(orderMap, orderDict);
         }
 
 		private void SortedMapKeySet(ISortedMap<Order, Bill> orderMap, Dictionary<Order, Bill> orderDict)
@@ -651,6 +752,15 @@ namespace Test.Commons.Collections
 			SortedMapValues(orderMap, orderDict);
         }
 
+        [Fact]
+        public void TestSkipListMapValues()
+        {
+			var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
+			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+            InitializeMap(orderMap, orderDict);
+			SortedMapValues(orderMap, orderDict);
+        }
+
 		private void SortedMapValues(ISortedMap<Order, Bill> orderMap, Dictionary<Order, Bill> orderDict)
 		{
             var values = orderDict.Values;
@@ -664,6 +774,15 @@ namespace Test.Commons.Collections
         public void TestTreeMapTryGetValue()
         {
 			var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
+            InitializeMap(orderMap, orderDict);
+			SortedMapTryGetValue(orderMap, orderDict);
+        }
+
+        [Fact]
+        public void TestSkipListMapTryGetValue()
+        {
+			var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
 			var orderDict = new Dictionary<Order, Bill>(new OrderEqualityComparer());
             InitializeMap(orderMap, orderDict);
 			SortedMapTryGetValue(orderMap, orderDict);
@@ -690,6 +809,14 @@ namespace Test.Commons.Collections
         public void TestTreeMapAddRemoveKvp()
         {
 			var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+            InitializeMap(orderMap, new Dictionary<Order, Bill>(new OrderEqualityComparer()));
+			SortedMapAddRemoveKey(orderMap);
+        }
+
+        [Fact]
+        public void TestSkipListMapAddRemoveKvp()
+        {
+			var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
             InitializeMap(orderMap, new Dictionary<Order, Bill>(new OrderEqualityComparer()));
 			SortedMapAddRemoveKey(orderMap);
         }
@@ -727,6 +854,13 @@ namespace Test.Commons.Collections
 			SortedMapNoItem(map);
         }
 
+        [Fact]
+        public void TestSkipListMapNoItem()
+        {
+            var map = new SkipListMap<int, string>();
+			SortedMapNoItem(map);
+        }
+
 		private void SortedMapNoItem(ISortedMap<int, string> map)
 		{
             Assert.Equal(0, map.Count);
@@ -745,6 +879,14 @@ namespace Test.Commons.Collections
         public void TestTreeMapExceptions()
         {
             var map = new TreeMap<Order, Bill>();
+            SortedMapExceptions(map);
+        }
+
+        [Fact]
+        public void TestSkipListMapExceptions()
+        {
+            var map = new SkipListMap<Order, Bill>();
+            SortedMapExceptions(map);
         }
 
 		private void SortedMapExceptions(INavigableMap<Order, Bill> map)
@@ -767,6 +909,13 @@ namespace Test.Commons.Collections
 		public void TestNavigableMapHigher()
 		{
 			var map = new TreeMap<int, int>();
+			NavigableMapHigher(map);
+		}
+
+		[Fact]
+		public void TestSkipListMapHigher()
+		{
+			var map = new SkipListMap<int, int>();
 			NavigableMapHigher(map);
 		}
 
@@ -795,6 +944,13 @@ namespace Test.Commons.Collections
 			NavigableMapCeiling(map);
 		}
 
+		[Fact]
+		public void TestSkipListMapCeiling()
+		{
+			var map = new SkipListMap<int, int>();
+			NavigableMapCeiling(map);
+		}
+
 		private void NavigableMapCeiling(INavigableMap<int, int> map)
 		{
 			for (var i = 0; i < 10000; i++)
@@ -816,6 +972,13 @@ namespace Test.Commons.Collections
 		public void TestNavigableMapLower()
 		{
 			var map = new TreeMap<int, int>();
+			NavigableMapLower(map);
+		}
+
+		[Fact]
+		public void TestSkipListMapLower()
+		{
+			var map = new SkipListMap<int, int>();
 			NavigableMapLower(map);
 		}
 
@@ -842,6 +1005,13 @@ namespace Test.Commons.Collections
 		public void TestNavigableMapFloor()
 		{
 			var map = new TreeMap<int, int>();
+			NavigableMapFloor(map);
+		}
+
+		[Fact]
+		public void TestSkipListMapFloor()
+		{
+			var map = new SkipListMap<int, int>();
 			NavigableMapFloor(map);
 		}
 		
@@ -947,11 +1117,23 @@ namespace Test.Commons.Collections
 		public void TestEmptyNavigableMap()
 		{
 			var map = new TreeMap<int, int>();
+            EmptyNavigableMap(map);
+		}
+
+        [Fact]
+        public void TestEmptySkipListMap()
+        {
+            var map = new SkipListMap<int, int>();
+            EmptyNavigableMap(map);
+        }
+
+        private void EmptyNavigableMap(INavigableMap<int, int> map)
+        {
 			Assert.Throws(typeof(InvalidOperationException), () => map.Higher(0));
 			Assert.Throws(typeof(InvalidOperationException), () => map.Ceiling(0));
 			Assert.Throws(typeof(InvalidOperationException), () => map.Lower(0));
 			Assert.Throws(typeof(InvalidOperationException), () => map.Floor(0));
-		}
+        }
 
 		[Fact]
 		public void TestEmptyNavigableSet()

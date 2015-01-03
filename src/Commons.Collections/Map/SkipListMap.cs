@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Commons.Collections.Set;
+using Commons.Utils;
 
 namespace Commons.Collections.Map
 {
@@ -29,7 +30,7 @@ namespace Commons.Collections.Map
 		{
 		}
 
-		public SkipListMap(Comparer<K> comparer) : this (comparer.Compare)
+		public SkipListMap(IComparer<K> comparer) : this (comparer.Compare)
 		{
 		}
 
@@ -100,7 +101,16 @@ namespace Commons.Collections.Map
 
 		public ICollection<K> Keys
 		{
-			get { throw new System.NotImplementedException(); }
+            get
+            {
+                var keys = new List<K>();
+                foreach (var item in skipList)
+                {
+                    keys.Add(item.Key);
+                }
+
+                return keys;
+            }
 		}
 
 		public bool Remove(K key)
@@ -125,7 +135,15 @@ namespace Commons.Collections.Map
 
 		public ICollection<V> Values
 		{
-			get { throw new System.NotImplementedException(); }
+            get
+            {
+                var values = new List<V>();
+                foreach (var item in skipList)
+                {
+                    values.Add(item.Value);
+                }
+                return values;
+            }
 		}
 
 		public V this[K key]
@@ -164,6 +182,7 @@ namespace Commons.Collections.Map
 
 		public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
 		{
+            array.ValidateNotNull("The array to copy to is null.");
             var i = 0;
             foreach (var item in skipList)
             {
@@ -203,7 +222,10 @@ namespace Commons.Collections.Map
 
 		public void CopyTo(Array array, int index)
 		{
-			throw new System.NotImplementedException();
+            array.ValidateNotNull("The array to copy to is null.");
+            var itemArray = array as KeyValuePair<K, V>[];
+            itemArray.Validate(x => x != null, new ArgumentException("The type of the array is incorrect."));
+            CopyTo(itemArray, index);
 		}
 
 		public bool IsSynchronized
