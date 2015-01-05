@@ -26,18 +26,18 @@ namespace Commons.Collections.Map
     /// <summary>
     /// A tree map with the left leaning red black tree implementation. A tree map is a sorted dictionary.
     /// </summary>
-    /// <typeparam name="TKey">The key type</typeparam>
-    /// <typeparam name="TValue">The value type</typeparam>
+    /// <typeparam name="K">The key type</typeparam>
+    /// <typeparam name="V">The value type</typeparam>
     [CLSCompliant(true)]
-    public sealed class TreeMap<TKey, TValue> : ISortedMap<TKey, TValue>, INavigableMap<TKey, TValue>, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>, 
-        IDictionary, ICollection, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
+    public sealed class TreeMap<K, V> : ISortedMap<K, V>, INavigableMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>, ICollection<KeyValuePair<K, V>>, 
+        IDictionary, ICollection, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
-        private readonly LlrbTree<TKey, TValue> llrbTree;
+        private readonly LlrbTree<K, V> llrbTree;
 
         /// <summary>
         /// Constructs an empty map, with the default comparer of the key.
         /// </summary>
-        public TreeMap() : this(null, Comparer<TKey>.Default)
+        public TreeMap() : this(null, Comparer<K>.Default)
         {
         }
 
@@ -45,7 +45,7 @@ namespace Commons.Collections.Map
         /// Constructs an empty map with the specified comparer of the key.
         /// </summary>
         /// <param name="comparer">The comparer of the key.</param>
-        public TreeMap(IComparer<TKey> comparer) : this(null, comparer)
+        public TreeMap(IComparer<K> comparer) : this(null, comparer)
         {
         }
 
@@ -53,7 +53,7 @@ namespace Commons.Collections.Map
         /// Constructs a map with the items in the specified dictionary and using the default comparer of the key.
         /// </summary>
         /// <param name="source">The source dictionary.</param>
-        public TreeMap(IDictionary<TKey, TValue> source) : this(source, Comparer<TKey>.Default)
+        public TreeMap(IDictionary<K, V> source) : this(source, Comparer<K>.Default)
         {
         }
 
@@ -62,18 +62,18 @@ namespace Commons.Collections.Map
         /// </summary>
         /// <param name="source">The source dictionary.</param>
         /// <param name="comparer">The comparer of the key.</param>
-        public TreeMap(IDictionary<TKey, TValue> source, IComparer<TKey> comparer) : this(source, (k1, k2) => comparer.Compare(k1, k2))
+        public TreeMap(IDictionary<K, V> source, IComparer<K> comparer) : this(source, (k1, k2) => comparer.Compare(k1, k2))
         {
         }
 
-        public TreeMap(Comparison<TKey> comparison) : this(null, comparison)
+        public TreeMap(Comparison<K> comparison) : this(null, comparison)
         {
         }
 
-        public TreeMap(IDictionary<TKey, TValue> source, Comparison<TKey> comparison)
+        public TreeMap(IDictionary<K, V> source, Comparison<K> comparison)
         {
             comparison.ValidateNotNull("The comparison func should not be null.");
-            llrbTree = new LlrbTree<TKey, TValue>(comparison);
+            llrbTree = new LlrbTree<K, V>(comparison);
 
             if (null != source)
             {
@@ -89,7 +89,7 @@ namespace Commons.Collections.Map
         /// </summary>
         /// <param name="key">The key to add.</param>
         /// <param name="value">The value to add.</param>
-        public void Add(TKey key, TValue value)
+        public void Add(K key, V value)
         {
             llrbTree.Add(key, value);
         }
@@ -99,7 +99,7 @@ namespace Commons.Collections.Map
         /// </summary>
         /// <param name="key">The key to search.</param>
         /// <returns>True if the key exists. Otherwise false.</returns>
-        public bool ContainsKey(TKey key)
+        public bool ContainsKey(K key)
         {
             return llrbTree.Contains(key);
         }
@@ -107,11 +107,11 @@ namespace Commons.Collections.Map
         /// <summary>
         /// Returns a collection of keys in the map.
         /// </summary>
-        public ICollection<TKey> Keys
+        public ICollection<K> Keys
         {
             get
             {
-                var keys = new List<TKey>();
+                var keys = new List<K>();
                 foreach (var item in llrbTree)
                 {
                     keys.Add(item.Key);
@@ -126,7 +126,7 @@ namespace Commons.Collections.Map
         /// </summary>
         /// <param name="key">The key used to search the item to remove.</param>
         /// <returns>True if the item identified by the key is removed. Otherwise false.</returns>
-        public bool Remove(TKey key)
+        public bool Remove(K key)
         {
             return llrbTree.Remove(key);
         }
@@ -137,7 +137,7 @@ namespace Commons.Collections.Map
         /// <param name="key">The key of the value.</param>
         /// <param name="value">The value to retrieved.</param>
         /// <returns>True if key exists in the map. Otherwise false.</returns>
-        public bool TryGetValue(TKey key, out TValue value)
+        public bool TryGetValue(K key, out V value)
         {
             Guarder.CheckNull(key);
             var hasValue = false;
@@ -148,7 +148,7 @@ namespace Commons.Collections.Map
             }
             else
             {
-                value = default(TValue);
+                value = default(V);
             }
             return hasValue;
         }
@@ -156,11 +156,11 @@ namespace Commons.Collections.Map
         /// <summary>
         /// Returns a collection of values in the map.
         /// </summary>
-        public ICollection<TValue> Values
+        public ICollection<V> Values
         {
             get
             {
-                var values = new List<TValue>();
+                var values = new List<V>();
                 foreach (var item in llrbTree)
                 {
                     values.Add(item.Value);
@@ -169,7 +169,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public TValue this[TKey key]
+        public V this[K key]
         {
             get
             {
@@ -185,7 +185,7 @@ namespace Commons.Collections.Map
         /// Adds a key value pair to the map.
         /// </summary>
         /// <param name="item">The key value pair.</param>
-        public void Add(KeyValuePair<TKey, TValue> item)
+        public void Add(KeyValuePair<K, V> item)
         {
             llrbTree.Add(item.Key, item.Value);
         }
@@ -203,7 +203,7 @@ namespace Commons.Collections.Map
         /// </summary>
         /// <param name="item">The key value paire to search.</param>
         /// <returns>True if key and value exist. Otherwise false.</returns>
-        public bool Contains(KeyValuePair<TKey, TValue> item)
+        public bool Contains(KeyValuePair<K, V> item)
         {
             var contains = false;
             if (llrbTree.Contains(item.Key))
@@ -217,7 +217,7 @@ namespace Commons.Collections.Map
             return contains;
         }
 
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
         {
             Guarder.CheckNull(array);
             llrbTree.CopyTo(array, arrayIndex);
@@ -233,7 +233,7 @@ namespace Commons.Collections.Map
             get { return false; }
         }
 
-        public bool Remove(KeyValuePair<TKey, TValue> item)
+        public bool Remove(KeyValuePair<K, V> item)
         {
             var removed = false;
             if (llrbTree.Contains(item.Key))
@@ -249,7 +249,7 @@ namespace Commons.Collections.Map
             return removed;
         }
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
             return llrbTree.GetEnumerator();
         }
@@ -261,12 +261,12 @@ namespace Commons.Collections.Map
 
         public void Add(object key, object value)
         {
-            llrbTree.Add((TKey)key, (TValue)value);
+            llrbTree.Add((K)key, (V)value);
         }
 
         public bool Contains(object key)
         {
-            return llrbTree.Contains((TKey)key);
+            return llrbTree.Contains((K)key);
         }
 
         IDictionaryEnumerator IDictionary.GetEnumerator()
@@ -283,7 +283,7 @@ namespace Commons.Collections.Map
         {
             get
             {
-                List<TKey> list = new List<TKey>();
+                List<K> list = new List<K>();
                 foreach (var item in this.Keys)
                 {
                     list.Add(item);
@@ -294,14 +294,14 @@ namespace Commons.Collections.Map
 
         public void Remove(object key)
         {
-            llrbTree.Remove((TKey)key);
+            llrbTree.Remove((K)key);
         }
 
         ICollection IDictionary.Values
         {
             get
             {
-                List<TValue> list = new List<TValue>();
+                List<V> list = new List<V>();
                 foreach (var item in this.Values)
                 {
                     list.Add(item);
@@ -314,17 +314,17 @@ namespace Commons.Collections.Map
         {
             get
             {
-                return llrbTree[(TKey)key];
+                return llrbTree[(K)key];
             }
             set
             {
-                llrbTree[(TKey)key] = (TValue)value;
+                llrbTree[(K)key] = (V)value;
             }
         }
 
         public void CopyTo(Array array, int index)
         {
-            KeyValuePair<TKey, TValue>[] kvps = (KeyValuePair<TKey, TValue>[])array;
+            KeyValuePair<K, V>[] kvps = (KeyValuePair<K, V>[])array;
             this.CopyTo(kvps, index);
         }
 
@@ -338,17 +338,17 @@ namespace Commons.Collections.Map
             get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
 
-        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys
+        IEnumerable<K> IReadOnlyDictionary<K, V>.Keys
         {
             get { return this.Keys; }
         }
 
-        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
+        IEnumerable<V> IReadOnlyDictionary<K, V>.Values
         {
             get { return this.Values; }
         }
 
-        public ISortedSet<TKey> KeySet
+        public ISortedSet<K> KeySet
         {
             get
             {
@@ -356,11 +356,11 @@ namespace Commons.Collections.Map
             }
         }
 
-        public INavigableSet<TKey> NavigableKeySet
+        public INavigableSet<K> NavigableKeySet
         {
             get
             {
-                var keySet = new TreeSet<TKey>(llrbTree.Comparer);
+                var keySet = new TreeSet<K>(llrbTree.Comparer);
                 foreach(var item in llrbTree)
                 {
                     keySet.Add(item.Key);
@@ -369,7 +369,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public KeyValuePair<TKey, TValue> Max
+        public KeyValuePair<K, V> Max
         {
             get
             {
@@ -377,7 +377,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public KeyValuePair<TKey, TValue> Min
+        public KeyValuePair<K, V> Min
         {
             get
             {
@@ -405,9 +405,9 @@ namespace Commons.Collections.Map
 
         private class MapEnumerator : IDictionaryEnumerator
         {
-            private TreeMap<TKey, TValue> map;
-            private IEnumerator<KeyValuePair<TKey, TValue>> iter;
-            public MapEnumerator(TreeMap<TKey, TValue> map)
+            private TreeMap<K, V> map;
+            private IEnumerator<KeyValuePair<K, V>> iter;
+            public MapEnumerator(TreeMap<K, V> map)
             {
                 this.map = map;
                 iter = this.map.GetEnumerator();
@@ -458,22 +458,22 @@ namespace Commons.Collections.Map
             }
         }
 
-		public KeyValuePair<TKey, TValue> Lower(TKey key)
+		public KeyValuePair<K, V> Lower(K key)
 		{
 			return llrbTree.Lower(key);
 		}
 
-		public KeyValuePair<TKey, TValue> Higher(TKey key)
+		public KeyValuePair<K, V> Higher(K key)
 		{
 			return llrbTree.Higher(key);
 		}
 
-		public KeyValuePair<TKey, TValue> Ceiling(TKey key)
+		public KeyValuePair<K, V> Ceiling(K key)
 		{
 			return llrbTree.Ceiling(key);
 		}
 
-		public KeyValuePair<TKey, TValue> Floor(TKey key)
+		public KeyValuePair<K, V> Floor(K key)
 		{
 			return llrbTree.Floor(key);
 		}
