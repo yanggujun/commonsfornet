@@ -86,6 +86,7 @@
     <Compile Include="Set\INavigableSet.cs" />
     <Compile Include="Set\ISortedSet.cs" />
     <Compile Include="Map\TreeMap.cs" />
+    <Compile Include="Set\SkipListSet.cs" />
     <Compile Include="Set\TreeSet.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -34,6 +34,15 @@ namespace Commons.Collections.Map
 		{
 		}
 
+        public SkipListMap(IDictionary<K, V> source, Comparison<K> comparer) :this(comparer)
+        {
+            source.ValidateNotNull("Source should not be null.");
+            foreach (var item in source)
+            {
+                Add(item);
+            }
+        }
+
 		public SkipListMap(Comparison<K> comparer)
 		{
 			skipList = new SkipList<K, V>(comparer);
@@ -61,8 +70,22 @@ namespace Commons.Collections.Map
 
 		public ISortedSet<K> KeySet
 		{
-			get { throw new System.NotImplementedException(); }
+            get { return NavigableKeySet; }
 		}
+
+        public INavigableSet<K> NavigableKeySet
+        {
+            get
+            {
+                var set = new SkipListSet<K>(skipList.Comparer);
+                foreach (var item in skipList)
+                {
+                    set.Add(item.Key);
+                }
+
+                return set;
+            }
+        }
 
 		public KeyValuePair<K, V> Max
 		{
@@ -224,7 +247,6 @@ namespace Commons.Collections.Map
 		{
             array.ValidateNotNull("The array to copy to is null.");
             var itemArray = array as KeyValuePair<K, V>[];
-            itemArray.Validate(x => x != null, new ArgumentException("The type of the array is incorrect."));
             CopyTo(itemArray, index);
 		}
 

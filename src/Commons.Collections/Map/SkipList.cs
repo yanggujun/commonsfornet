@@ -27,17 +27,18 @@ namespace Commons.Collections.Map
         private const string KeyIsNull = "The key to search is null.";
         private const int MaxLevel = 32;
         private const double P = 0.5;
-		private readonly Comparison<K> comparer;
 		private LinkedNode header;
         private Random rand;
 
 		public SkipList(Comparison<K> comparer)
 		{
             comparer.ValidateNotNull("The comparer is null.");
-			this.comparer = comparer;
+			this.Comparer = comparer;
 			header = new LinkedNode(1);
             rand = new Random((int)DateTime.Now.Ticks & 0x0000ffff);
 		}
+
+        public Comparison<K> Comparer { get; private set; }
 
 		public bool Contains(K key)
 		{
@@ -62,7 +63,7 @@ namespace Commons.Collections.Map
             key.ValidateNotNull("The key to add is null.");
             var update = new LinkedNode[MaxLevel];
 			var cursor = GetLeastKeyLargerThanOrEqualTo(key, update);
-            if (cursor != null && comparer(cursor.Key, key) == 0)
+            if (cursor != null && Comparer(cursor.Key, key) == 0)
             {
                 throw new ArgumentException("The key to add already exists.");
             }
@@ -90,11 +91,11 @@ namespace Commons.Collections.Map
 			var update = new LinkedNode[MaxLevel];
 			var cursor = GetLeastKeyLargerThanOrEqualTo(key, update);
 			var removed = false;
-			if (cursor != null && comparer(cursor.Key, key) == 0)
+			if (cursor != null && Comparer(cursor.Key, key) == 0)
 			{
 				for (var i = 0; i < header.Level; i++)
 				{
-					if (update[i].GetForward(i + 1) == null || comparer(update[i].GetForward(i + 1).Key, key) != 0)
+					if (update[i].GetForward(i + 1) == null || Comparer(update[i].GetForward(i + 1).Key, key) != 0)
 					{
 						break;
 					}
@@ -184,7 +185,7 @@ namespace Commons.Collections.Map
             var min = header.GetForward(1);
             for (var i = 0; i < header.Level; i++)
             {
-                if (header.GetForward(i + 1) == null || comparer(min.Key, header.GetForward(i + 1).Key) != 0)
+                if (header.GetForward(i + 1) == null || Comparer(min.Key, header.GetForward(i + 1).Key) != 0)
                 {
                     break;
                 }
@@ -255,7 +256,7 @@ namespace Commons.Collections.Map
 			{
 				while (cursor.GetForward(i) != null)
 				{
-					if (comparer(cursor.GetForward(i).Key, key) >= 0)
+					if (Comparer(cursor.GetForward(i).Key, key) >= 0)
 					{
 						break;
 					}
@@ -273,7 +274,7 @@ namespace Commons.Collections.Map
 			{
 				while (cursor.GetForward(i) != null)
 				{
-					if (comparer(cursor.GetForward(i).Key, key) >= 0)
+					if (Comparer(cursor.GetForward(i).Key, key) >= 0)
 					{
 						break;
 					}
@@ -290,7 +291,7 @@ namespace Commons.Collections.Map
             {
                 while (cursor.GetForward(i) != null)
                 {
-                    if (comparer(cursor.GetForward(i).Key, key) > 0)
+                    if (Comparer(cursor.GetForward(i).Key, key) > 0)
                     {
                         break;
                     }
@@ -308,7 +309,7 @@ namespace Commons.Collections.Map
             {
                 while (cursor.GetForward(i) != null)
                 {
-                    if (comparer(cursor.GetForward(i).Key, key) > 0)
+                    if (Comparer(cursor.GetForward(i).Key, key) > 0)
                     {
                         break;
                     }
@@ -326,7 +327,7 @@ namespace Commons.Collections.Map
             {
                 while (cursor.GetForward(i) != null)
                 {
-                    if (comparer(cursor.GetForward(i).Key, key) >= 0)
+                    if (Comparer(cursor.GetForward(i).Key, key) >= 0)
                     {
                         break;
                     }
@@ -354,20 +355,20 @@ namespace Commons.Collections.Map
 			{
 				while (cursor.GetForward(i) != null)
 				{
-					if (comparer(cursor.GetForward(i).Key, key) >= 0)
+					if (Comparer(cursor.GetForward(i).Key, key) >= 0)
 					{
 						break;
 					}
 					cursor = cursor.GetForward(i);
 				}
 				var forward = cursor.GetForward(i);
-				if (forward != null && comparer(forward.Key, key) == 0)
+				if (forward != null && Comparer(forward.Key, key) == 0)
 				{
 					node = cursor.GetForward(i);
 					break;
 				}
 			}
-			if (node != null && comparer(cursor.GetForward(1).Key, key) == 0)
+			if (node != null && Comparer(cursor.GetForward(1).Key, key) == 0)
 			{
 				node = cursor.GetForward(1);
 			}

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Set
 {
-    public interface INavigableSet<T> : IEnumerable<T>, IEnumerable, ICollection
+    public interface INavigableSet<T> : ISortedSet<T>, IEnumerable<T>, IEnumerable, ICollection
     {
         T Lower(T item);
 
