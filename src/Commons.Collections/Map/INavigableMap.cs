@@ -16,6 +16,8 @@
 
 using System.Collections.Generic;
 
+using Commons.Collections.Set;
+
 namespace Commons.Collections.Map
 {
     public interface INavigableMap<K, V> : ISortedMap<K, V>, IDictionary<K, V>
@@ -27,5 +29,7 @@ namespace Commons.Collections.Map
         KeyValuePair<K, V> Ceiling(K key);
 
         KeyValuePair<K, V> Floor(K key);
+
+        INavigableSet<K> NavigableKeySet { get; }
     }
 }

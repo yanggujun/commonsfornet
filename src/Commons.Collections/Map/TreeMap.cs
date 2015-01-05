@@ -34,8 +34,6 @@ namespace Commons.Collections.Map
     {
         private readonly LlrbTree<TKey, TValue> llrbTree;
 
-        private readonly Comparison<TKey> comparer;
-
         /// <summary>
         /// Constructs an empty map, with the default comparer of the key.
         /// </summary>
@@ -74,15 +72,8 @@ namespace Commons.Collections.Map
 
         public TreeMap(IDictionary<TKey, TValue> source, Comparison<TKey> comparison)
         {
-            if (null == comparison)
-            {
-                this.comparer = (k1, k2) => Comparer<TKey>.Default.Compare(k1, k2);
-            }
-            else
-            {
-                this.comparer = comparison;
-            }
-            llrbTree = new LlrbTree<TKey, TValue>(this.comparer);
+            comparison.ValidateNotNull("The comparison func should not be null.");
+            llrbTree = new LlrbTree<TKey, TValue>(comparison);
 
             if (null != source)
             {
@@ -361,8 +352,16 @@ namespace Commons.Collections.Map
         {
             get
             {
-                TreeSet<TKey> keySet = new TreeSet<TKey>(this.comparer);
-                foreach(var item in this)
+                return NavigableKeySet;
+            }
+        }
+
+        public INavigableSet<TKey> NavigableKeySet
+        {
+            get
+            {
+                var keySet = new TreeSet<TKey>(llrbTree.Comparer);
+                foreach(var item in llrbTree)
                 {
                     keySet.Add(item.Key);
                 }

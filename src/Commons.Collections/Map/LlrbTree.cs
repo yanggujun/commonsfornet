@@ -40,7 +40,7 @@ namespace Commons.Collections.Map
 
         private TreeNode root;
 
-        private readonly Comparison<K> comparison;
+        public Comparison<K> Comparer { get; private set; }
 
         public LlrbTree() : this(Comparer<K>.Default)
         {
@@ -48,12 +48,12 @@ namespace Commons.Collections.Map
 
         public LlrbTree(IComparer<K> comparer)
         {
-            comparison = (k1, k2) => comparer.Compare(k1, k2);
+            Comparer = (k1, k2) => comparer.Compare(k1, k2);
         }
 
         public LlrbTree(Comparison<K> comparison)
         {
-            this.comparison = comparison;
+            this.Comparer = comparison;
         }
 
         public void Add(K key, V value)
@@ -76,7 +76,7 @@ namespace Commons.Collections.Map
             var node = root;
             while (null != node)
             {
-                var cmp = comparison(key, node.Item.Key);
+                var cmp = Comparer(key, node.Item.Key);
                 if (cmp == 0)
                 {
                     found = true;
@@ -103,10 +103,10 @@ namespace Commons.Collections.Map
 			var found = false;
 			while (null != node)
 			{
-				var cmp = comparison(key, node.Item.Key);
+				var cmp = Comparer(key, node.Item.Key);
 				if (cmp < 0)
 				{
-					if (node.Left == null || comparison(key, Maximum(node.Left).Item.Key) >= 0)
+					if (node.Left == null || Comparer(key, Maximum(node.Left).Item.Key) >= 0)
 					{
 						found = true;
 						break;
@@ -135,10 +135,10 @@ namespace Commons.Collections.Map
 			var found = false;
 			while (null != node)
 			{
-				var cmp = comparison(key, node.Item.Key);
+				var cmp = Comparer(key, node.Item.Key);
 				if (cmp > 0)
 				{
-					if (node.Right == null || comparison(key, Minimum(node.Right).Item.Key) <= 0)
+					if (node.Right == null || Comparer(key, Minimum(node.Right).Item.Key) <= 0)
 					{
 						found = true;
 						break;
@@ -167,10 +167,10 @@ namespace Commons.Collections.Map
 			var found = false;
 			while (null != node)
 			{
-				var cmp = comparison(key, node.Item.Key);
+				var cmp = Comparer(key, node.Item.Key);
 				if (cmp <= 0)
 				{
-					if (node.Left == null || comparison(key, Maximum(node.Left).Item.Key) > 0)
+					if (node.Left == null || Comparer(key, Maximum(node.Left).Item.Key) > 0)
 					{
 						found = true;
 						break;
@@ -199,10 +199,10 @@ namespace Commons.Collections.Map
 			var found = false;
 			while (null != node)
 			{
-				var cmp = comparison(key, node.Item.Key);
+				var cmp = Comparer(key, node.Item.Key);
 				if (cmp >= 0)
 				{
-					if (node.Right == null || comparison(key, Minimum(node.Right).Item.Key) < 0)
+					if (node.Right == null || Comparer(key, Minimum(node.Right).Item.Key) < 0)
 					{
 						found = true;
 						break;
@@ -391,7 +391,7 @@ namespace Commons.Collections.Map
                 FlipColor(node);
             }
 
-            int result = comparison(item.Key, node.Item.Key);
+            int result = Comparer(item.Key, node.Item.Key);
             if (result == 0)
             {
                 throw new ArgumentException("The item to add already exists");
@@ -434,7 +434,7 @@ namespace Commons.Collections.Map
 
         private TreeNode Delete(TreeNode node, K key)
         {
-            if (comparison(key, node.Item.Key) < 0)
+            if (Comparer(key, node.Item.Key) < 0)
             {
                 // since before delete, it already checks the item exists, so here it can guarantee that node.left exits.
                 if (!IsRed(node.Left) && !IsRed(node.Left.Left))
@@ -450,7 +450,7 @@ namespace Commons.Collections.Map
                     node = RotateRight(node);
                 }
                 
-                if ((comparison(key, node.Item.Key) == 0) && (node.Right == null))
+                if ((Comparer(key, node.Item.Key) == 0) && (node.Right == null))
                 {
                     return null;
                 }
@@ -459,7 +459,7 @@ namespace Commons.Collections.Map
                 {
                     node = MoveRedRight(node);
                 }
-                if (comparison(key, node.Item.Key) == 0)
+                if (Comparer(key, node.Item.Key) == 0)
                 {
                     node.Item = Minimum(node.Right).Item;
                     node.Right = DeleteMin(node.Right);
@@ -638,7 +638,7 @@ namespace Commons.Collections.Map
             TreeNode found = null;
             while (null != current)
             {
-                var cmp = comparison(key, node.Item.Key);
+                var cmp = Comparer(key, node.Item.Key);
                 if (cmp == 0)
                 {
                     found = node;
