@@ -23,6 +23,7 @@ using Commons.Utils;
 
 namespace Commons.Collections.Set
 {
+    [CLSCompliant(true)]
     public class SkipListSet<T> :INavigableSet<T>, ISortedSet<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         private readonly SkipList<T, T> skipList;

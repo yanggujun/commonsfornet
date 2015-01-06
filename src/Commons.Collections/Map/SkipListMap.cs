@@ -22,6 +22,7 @@ using Commons.Utils;
 
 namespace Commons.Collections.Map
 {
+    [CLSCompliant(true)]
 	public class SkipListMap<K, V> : ISortedMap<K, V>, INavigableMap<K, V>, IDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>, IEnumerable, ICollection
 	{
 		private readonly SkipList<K, V> skipList;

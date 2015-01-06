@@ -14,12 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
-
 using Commons.Collections.Set;
 
 namespace Commons.Collections.Map
 {
+    [CLSCompliant(true)]
     public interface INavigableMap<K, V> : ISortedMap<K, V>, IDictionary<K, V>
     {
         KeyValuePair<K, V> Lower(K key);

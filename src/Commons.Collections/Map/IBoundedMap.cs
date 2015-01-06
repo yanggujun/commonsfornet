@@ -14,11 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Commons.Collections.Map
 {
+    [CLSCompliant(true)]
 	public interface IBoundedMap<K, V> : IDictionary<K, V>
 	{
 		bool IsFull { get; }

@@ -14,13 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-
 using Commons.Utils;
 
 namespace Commons.Collections.Map
 {
+    [CLSCompliant(true)]
 	public class ReferenceMap<K, V> : AbstractHashMap<K, V>, IDictionary<K, V>
 	{
 		private const int DefaultCapacity = 16;

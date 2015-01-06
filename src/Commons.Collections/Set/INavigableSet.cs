@@ -14,11 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Commons.Collections.Set
 {
+    [CLSCompliant(true)]
     public interface INavigableSet<T> : ISortedSet<T>, IEnumerable<T>, IEnumerable, ICollection
     {
         T Lower(T item);
