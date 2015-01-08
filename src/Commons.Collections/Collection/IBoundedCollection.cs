@@ -15,7 +15,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
+using System.Collections;
 
 namespace Commons.Collections.Collection
 {
@@ -26,7 +26,7 @@ namespace Commons.Collections.Collection
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [CLSCompliant(true)]
-    public interface IBoundedCollection<T> : ICollection<T>
+    public interface IBoundedCollection : ICollection
     {
         /// <summary>
         /// Indicates whether the collection is full. If the collection is full, 
