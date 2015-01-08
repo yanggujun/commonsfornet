@@ -15,8 +15,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-
 using Commons.Collections.Set;
 
 namespace Commons.Collections.Map
@@ -24,25 +24,25 @@ namespace Commons.Collections.Map
     /// <summary>
     /// The stub interface of map.
     /// </summary>
-    /// <typeparam name="TKey">Type of the key</typeparam>
-    /// <typeparam name="TValue">Type of the value</typeparam>
+    /// <typeparam name="K">Type of the key</typeparam>
+    /// <typeparam name="V">Type of the value</typeparam>
     [CLSCompliant(true)]
-    public interface ISortedMap<TKey, TValue> : IDictionary<TKey, TValue>
+    public interface ISortedMap<K, V> : IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         /// <summary>
         /// Puts the keys of the map to a tree set.
         /// </summary>
-        ISortedSet<TKey> KeySet { get; }
+        ISortedSet<K> KeySet { get; }
 
         /// <summary>
         /// Return a key value pair whose key is the maximum in the map.
         /// </summary>
-        KeyValuePair<TKey, TValue> Max { get; }
+        KeyValuePair<K, V> Max { get; }
 
         /// <summary>
         /// Return a key value pair whose key is the minimum in the map.
         /// </summary>
-        KeyValuePair<TKey, TValue> Min { get; }
+        KeyValuePair<K, V> Min { get; }
 
         /// <summary>
         /// Removes maximum item in the map.

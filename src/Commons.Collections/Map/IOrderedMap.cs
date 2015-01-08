@@ -15,12 +15,13 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public interface IOrderedMap<K, V> : IDictionary<K, V>
+    public interface IOrderedMap<K, V> : IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         KeyValuePair<K, V> First { get; }
 

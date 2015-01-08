@@ -1,5 +1,4 @@
 ﻿// Copyright CommonsForNET 2014.
-// Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
 // The ASF licenses this file to You under the Apache License, Version 2.0
@@ -17,17 +16,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using Commons.Collections.Collection;
 using Commons.Utils;
 
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-	public class LruMap<K, V> : AbstractLinkedMap<K, V>, IBoundedMap<K, V>, IDictionary<K, V>
+	public class LruMap<K, V> : AbstractLinkedMap<K, V>, IDictionary<K, V>, IBoundedCollection
 	{
 		private const int DefaultFullSize = 100;
 
-		private int FullSize { get; set; }
+		public int MaxSize { get; private set; }
 
 		public LruMap() : this(DefaultFullSize)
 		{
@@ -39,13 +38,13 @@ namespace Commons.Collections.Map
 
 		public LruMap(int fullSize, Equator<K> equator) : base(fullSize, equator)
 		{
-			FullSize = fullSize;
+			MaxSize = fullSize;
 		}
 
 		public override void Add(K key, V value)
 		{
 			base.Add(key, value);
-			if (Count > FullSize)
+			if (Count > MaxSize)
 			{
 				if (!ReferenceEquals(Header, Header.Before))
 				{
@@ -56,7 +55,7 @@ namespace Commons.Collections.Map
 
 		public bool IsFull
 		{
-			get { return Count >= FullSize; }
+			get { return Count >= MaxSize; }
 		}
 
 		public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()

@@ -15,21 +15,20 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public interface IMultiMap<K, V> : IDictionary<K, ICollection<V>>
+    public interface IMultiMap<K, V> : ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
+		void Add(K key, V value);
+
+		void Add(K key, ICollection<V> values);
+
+		bool Remove(K key);
+
         bool RemoveItem(K key, V value);
-
-        int GetCount(K key);
-
-        bool ContainsValue(K key, V value);
-
-        bool ContainsValue(V value);
-
-        ICollection<V> Get(K key);
     }
 }

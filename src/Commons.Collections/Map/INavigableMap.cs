@@ -15,13 +15,14 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Commons.Collections.Set;
 
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public interface INavigableMap<K, V> : ISortedMap<K, V>, IDictionary<K, V>
+    public interface INavigableMap<K, V> : ISortedMap<K, V>, IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         KeyValuePair<K, V> Lower(K key);
 

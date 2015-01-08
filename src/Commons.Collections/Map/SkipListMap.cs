@@ -23,7 +23,7 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-	public class SkipListMap<K, V> : ISortedMap<K, V>, INavigableMap<K, V>, IDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>, IEnumerable, ICollection
+	public class SkipListMap<K, V> : ISortedMap<K, V>, INavigableMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>, ICollection, IEnumerable
 	{
 		private readonly SkipList<K, V> skipList;
 
@@ -260,5 +260,16 @@ namespace Commons.Collections.Map
 		{
             get { throw new NotSupportedException("The operation is not supported in Commons.Collections."); }
 		}
-    }
+
+
+		IEnumerable<K> IReadOnlyDictionary<K, V>.Keys
+		{
+			get { return Keys; }
+		}
+
+		IEnumerable<V> IReadOnlyDictionary<K, V>.Values
+		{
+			get { return Values; }
+		}
+	}
 }
