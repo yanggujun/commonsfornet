@@ -29,11 +29,21 @@ namespace Commons.Collections.Map
         {
         }
 
+        public HashMap(IEqualityComparer<K> comparer)
+            : this(comparer.Equals)
+        {
+        }
+
 		public HashMap(Equator<K> equator) : this(DefaultCapacity, equator)
 		{
 		}
 
         public HashMap(int capacity) : this(capacity, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
+        {
+        }
+
+        public HashMap(int capacity, IEqualityComparer<K> comparer)
+            : this(capacity, comparer.Equals)
         {
         }
 
