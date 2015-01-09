@@ -29,7 +29,9 @@ namespace Commons.Collections.Map
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
     [CLSCompliant(true)]
-    public abstract class AbstractHashMap<K, V> : IDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>, IEnumerable, IDictionary, ICollection, ICollection<KeyValuePair<K, V>>, IReadOnlyDictionary<K, V>
+    public abstract class AbstractHashMap<K, V> : IDictionary<K, V>, IReadOnlyDictionary<K, V>, 
+		ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, 
+		IDictionary, ICollection, IEnumerable
     {
         private const int MaxCapacity = 1 << 30;
         private const double LoadFactor = 0.75f;
@@ -361,22 +363,22 @@ namespace Commons.Collections.Map
 
         void IDictionary.Add(object key, object value)
         {
-            this.Add((K)key, (V)value);
+            Add((K)key, (V)value);
         }
 
         void IDictionary.Clear()
         {
-            this.Clear();
+            Clear();
         }
 
         bool IDictionary.Contains(object key)
         {
-            return this.ContainsKey((K)key);
+            return ContainsKey((K)key);
         }
 
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
-            throw new NotImplementedException();
+			return new MapEnumerator(this);
         }
 
         bool IDictionary.IsFixedSize

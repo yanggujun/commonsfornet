@@ -22,15 +22,18 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
 	[CLSCompliant(true)]
-	public abstract class AbstractMultiMap<K, V> : IMultiMap<K, V>, ICollection<KeyValuePair<K, V>>, IReadOnlyMultiMap<K, V>, IEnumerable<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, ICollection<V>>>, ICollection, IEnumerable
+	public abstract class AbstractMultiMap<K, V> : IMultiMap<K, V>, ICollection<KeyValuePair<K, V>>, 
+		IReadOnlyMultiMap<K, V>, IEnumerable<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, ICollection<V>>>, 
+		ICollection, IEnumerable
 	{
-		private readonly IDictionary<K, ICollection<V>> map;
 		private readonly Equator<V> valueEquator;
+
+		protected IDictionary<K, ICollection<V>> Map { get; private set; }
 
 		protected AbstractMultiMap(IDictionary<K, ICollection<V>> map, IEnumerable<KeyValuePair<K, V>> items, Equator<V> valueEquator)
 		{
 			this.valueEquator = valueEquator;
-			this.map = map;
+			this.Map = map;
 			if (items != null)
 			{ 
 				foreach (var item in items)
@@ -43,13 +46,13 @@ namespace Commons.Collections.Map
 		public void Add(K key, V value)
 		{
 			key.ValidateNotNull("The key is null.");
-			if (map.ContainsKey(key))
+			if (Map.ContainsKey(key))
 			{
-				map[key].Add(value);
+				Map[key].Add(value);
 			}
 			else
 			{
-				map.Add(key, new List<V> { value });
+				Map.Add(key, new List<V> { value });
 			}
 		}
 
@@ -65,24 +68,24 @@ namespace Commons.Collections.Map
 
 		public bool Remove(K key)
 		{
-			return map.Remove(key);
+			return Map.Remove(key);
 		}
 
 		public bool ContainsKey(K key)
 		{
-			return map.ContainsKey(key);
+			return Map.ContainsKey(key);
 		}
 
 		public bool RemoveItem(K key, V value)
 		{
 			var removed = false;
-			if (map.ContainsKey(key))
+			if (Map.ContainsKey(key))
 			{
-				foreach (var v in map[key])
+				foreach (var v in Map[key])
 				{
 					if (valueEquator(v, value))
 					{
-						removed = map[key].Remove(v);
+						removed = Map[key].Remove(v);
 					}
 				}
 			}
@@ -94,11 +97,11 @@ namespace Commons.Collections.Map
 		{
 			var found = false;
 			List<V> collection = null;
-			if (map.ContainsKey(key))
+			if (Map.ContainsKey(key))
 			{
 				found = true;
 				collection = new List<V>();
-				foreach (var v in map[key])
+				foreach (var v in Map[key])
 				{
 					collection.Add(v);
 				}
@@ -111,9 +114,9 @@ namespace Commons.Collections.Map
 		public int GetCount(K key)
 		{
 			var count = 0;
-			if (map.ContainsKey(key))
+			if (Map.ContainsKey(key))
 			{
-				count = map[key].Count;
+				count = Map[key].Count;
 			}
 
 			return count;
@@ -122,9 +125,9 @@ namespace Commons.Collections.Map
 		public bool ContainsValue(K key, V value)
 		{
 			var found = false;
-			if (map.ContainsKey(key))
+			if (Map.ContainsKey(key))
 			{
-				foreach(var v in map[key])
+				foreach(var v in Map[key])
 				{
 					if (valueEquator(v, value))
 					{
@@ -138,12 +141,12 @@ namespace Commons.Collections.Map
 
 		public ICollection<V> this[K key]
 		{
-			get { return map[key]; }
+			get { return Map[key]; }
 		}
 
 		public ICollection<K> Keys
 		{
-			get { return map.Keys; }
+			get { return Map.Keys; }
 		}
 
 		public ICollection<V> Values
@@ -152,7 +155,7 @@ namespace Commons.Collections.Map
 			{
 				var valueList = new List<V>();
 
-				foreach(var kvp in map)
+				foreach(var kvp in Map)
 				{
 					foreach(var v in kvp.Value)
 					{
@@ -171,7 +174,7 @@ namespace Commons.Collections.Map
 
 		public void Clear()
 		{
-			map.Clear();
+			Map.Clear();
 		}
 
 		public bool Contains(KeyValuePair<K, V> item)
@@ -183,7 +186,7 @@ namespace Commons.Collections.Map
 		{
 			array.ValidateNotNull("The array is null.");
 			var index = arrayIndex;
-			foreach(var kvp in map)
+			foreach(var kvp in Map)
 			{
 				foreach(var v in kvp.Value)
 				{
@@ -197,7 +200,7 @@ namespace Commons.Collections.Map
 			get
 			{
 				var count = 0;
-				foreach(var kvp in map)
+				foreach(var kvp in Map)
 				{
 					foreach(var v in kvp.Value)
 					{
@@ -252,7 +255,7 @@ namespace Commons.Collections.Map
 
 		private IEnumerable<KeyValuePair<K, V>> CreateSingleEnumerator()
 		{
-			foreach (var kvp in map)
+			foreach (var kvp in Map)
 			{
 				foreach(var v in kvp.Value)
 				{
@@ -263,7 +266,7 @@ namespace Commons.Collections.Map
 
 		private IEnumerable<KeyValuePair<K, ICollection<V>>> CreateCollectionEnumerator()
 		{
-			foreach (var kvp in map)
+			foreach (var kvp in Map)
 			{
 				yield return kvp;
 			}

@@ -403,61 +403,6 @@ namespace Commons.Collections.Map
             }
         }
 
-        private class MapEnumerator : IDictionaryEnumerator
-        {
-            private TreeMap<K, V> map;
-            private IEnumerator<KeyValuePair<K, V>> iter;
-            public MapEnumerator(TreeMap<K, V> map)
-            {
-                this.map = map;
-                iter = this.map.GetEnumerator();
-            }
-            public DictionaryEntry Entry
-            {
-                get
-                {
-                    DictionaryEntry entry = new DictionaryEntry();
-                    entry.Key = iter.Current.Key;
-                    entry.Value = iter.Current.Value;
-                    return entry;
-                }
-            }
-
-            public object Key
-            {
-                get
-                {
-                    return Entry.Key;
-                }
-            }
-
-            public object Value
-            {
-                get
-                {
-                    return Entry.Value;
-                }
-            }
-
-            public object Current
-            {
-                get
-                {
-                    return Entry;
-                }
-            }
-
-            public bool MoveNext()
-            {
-                return iter.MoveNext();
-            }
-
-            public void Reset()
-            {
-                iter.Reset();
-            }
-        }
-
 		public KeyValuePair<K, V> Lower(K key)
 		{
 			return llrbTree.Lower(key);

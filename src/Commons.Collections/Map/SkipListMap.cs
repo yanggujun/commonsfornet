@@ -23,7 +23,8 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-	public class SkipListMap<K, V> : ISortedMap<K, V>, INavigableMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>, ICollection, IEnumerable
+	public class SkipListMap<K, V> : ISortedMap<K, V>, INavigableMap<K, V>, IDictionary<K, V>, 
+		IReadOnlyDictionary<K, V>, IEnumerable<KeyValuePair<K, V>>, IDictionary, ICollection, IEnumerable
 	{
 		private readonly SkipList<K, V> skipList;
 
@@ -270,6 +271,71 @@ namespace Commons.Collections.Map
 		IEnumerable<V> IReadOnlyDictionary<K, V>.Values
 		{
 			get { return Values; }
+		}
+
+		public void Add(object key, object value)
+		{
+			Add((K)key, (V)value);
+		}
+
+		public bool Contains(object key)
+		{
+			return ContainsKey((K)key);
+		}
+
+		IDictionaryEnumerator IDictionary.GetEnumerator()
+		{
+			return new MapEnumerator(this);
+		}
+
+		public bool IsFixedSize
+		{
+			get { return false; }
+		}
+
+		ICollection IDictionary.Keys
+		{
+			get
+			{
+				var col = new ArrayList();
+				foreach(var k in Keys)
+				{
+					col.Add(k);
+				}
+
+				return col;
+			}
+		}
+
+		public void Remove(object key)
+		{
+			Remove((K)key);
+		}
+
+		ICollection IDictionary.Values
+		{
+			get
+			{
+				var col = new ArrayList();
+				foreach(var v in Values)
+				{
+					col.Add(v);
+				}
+
+				return col;
+			}
+		}
+
+		public object this[object key]
+		{
+			get
+			{
+				return this[(K)key];
+			}
+			set
+			{
+				this[(K)key] = (V)value;
+			}
 		}
 	}
 }

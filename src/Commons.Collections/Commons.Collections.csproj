@@ -72,6 +72,7 @@
     <Compile Include="Map\LlrbTree.cs" />
     <Compile Include="Map\LruMap.cs" />
     <Compile Include="Map\AbstractMultiMap.cs" />
+    <Compile Include="Map\MapEnumerator.cs" />
     <Compile Include="Map\MultiHashMap.cs" />
     <Compile Include="Map\MultiSortedMap.cs" />
     <Compile Include="Map\ReferenceMap.cs" />

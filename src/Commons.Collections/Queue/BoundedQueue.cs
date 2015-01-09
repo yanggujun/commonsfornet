@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Commons.Collections.Collection;
 
 namespace Commons.Collections.Queue
 {
@@ -27,7 +28,7 @@ namespace Commons.Collections.Queue
     /// </summary>
     /// <typeparam name="T">The queued object</typeparam>
     [CLSCompliant(true)]
-    public sealed class BoundedQueue<T> : IEnumerable<T>, IEnumerable, ICollection
+    public sealed class BoundedQueue<T> : IEnumerable<T>, IBoundedCollection, IEnumerable, ICollection
     {
         /// <summary>
         /// The queue actually stores the data.
