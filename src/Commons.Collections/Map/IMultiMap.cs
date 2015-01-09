@@ -30,5 +30,19 @@ namespace Commons.Collections.Map
 		bool Remove(K key);
 
         bool RemoveItem(K key, V value);
+
+		bool ContainsKey(K key);
+
+        bool ContainsValue(K key, V value);
+
+		bool TryGetValue(K key, out ICollection<V> values);
+
+        int CountOf(K key);
+
+		ICollection<V> this[K key] { get; }
+
+		ICollection<K> Keys { get; }
+
+		ICollection<V> Values { get; }
     }
 }

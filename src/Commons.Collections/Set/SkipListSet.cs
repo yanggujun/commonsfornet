@@ -24,7 +24,7 @@ using Commons.Utils;
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public class SkipListSet<T> :INavigableSet<T>, ISortedSet<T>, IEnumerable<T>, ICollection, IEnumerable
+    public sealed class SkipListSet<T> :INavigableSet<T>, ISortedSet<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         private readonly SkipList<T, T> skipList;
 
@@ -43,7 +43,12 @@ namespace Commons.Collections.Set
         }
 
         public SkipListSet(IEnumerable<T> source, IComparer<T> comparer)
-            : this((x1, x2) => comparer.Compare(x1, x2))
+            : this(source, comparer.Compare)
+        {
+        }
+
+        public SkipListSet(IEnumerable<T> source, Comparison<T> comparer)
+            : this(comparer)
         {
             source.ValidateNotNull("Source should not be null.");
             foreach (var item in source)
@@ -142,6 +147,14 @@ namespace Commons.Collections.Set
         public bool Contains(T item)
         {
             return skipList.Contains(item);
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return skipList.IsEmpty;
+            }
         }
 
         public void CopyTo(T[] array, int arrayIndex)

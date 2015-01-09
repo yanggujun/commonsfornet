@@ -29,7 +29,7 @@ namespace Commons.Collections.Map
 
 		bool TryGetValue(K key, out ICollection<V> values);
 
-        int GetCount(K key);
+        int CountOf(K key);
 
 		ICollection<V> this[K key] { get; }
 

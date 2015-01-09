@@ -49,5 +49,7 @@ namespace Commons.Collections.Set
         /// Retrieves the minimum value in the set.
         /// </summary>
         T Min { get; }
+
+        bool IsEmpty { get; }
     }
 }

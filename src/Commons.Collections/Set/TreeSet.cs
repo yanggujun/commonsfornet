@@ -177,6 +177,14 @@ namespace Commons.Collections.Set
             llrbTree.RemoveMax();
         }
 
+        public bool IsEmpty
+        {
+            get
+            {
+                return llrbTree.IsEmpty;
+            }
+        }
+
         /// <summary>
         /// Copies the items in the set to an array, start from the arrayIndex.
         /// </summary>

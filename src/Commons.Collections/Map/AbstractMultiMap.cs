@@ -22,9 +22,9 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
 	[CLSCompliant(true)]
-	public abstract class AbstractMultiMap<K, V> : IMultiMap<K, V>, ICollection<KeyValuePair<K, V>>, 
-		IReadOnlyMultiMap<K, V>, IEnumerable<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, ICollection<V>>>, 
-		ICollection, IEnumerable
+	public abstract class AbstractMultiMap<K, V> : IMultiMap<K, V>, ICollection<KeyValuePair<K, V>>, ICollection,
+		IReadOnlyMultiMap<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, 
+        IEnumerable<KeyValuePair<K, ICollection<V>>>, IEnumerable
 	{
 		private readonly Equator<V> valueEquator;
 
@@ -111,7 +111,7 @@ namespace Commons.Collections.Map
 			return found;
 		}
 
-		public int GetCount(K key)
+		public int CountOf(K key)
 		{
 			var count = 0;
 			if (Map.ContainsKey(key))

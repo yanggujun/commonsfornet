@@ -29,8 +29,9 @@ namespace Commons.Collections.Map
     /// <typeparam name="K">The key type</typeparam>
     /// <typeparam name="V">The value type</typeparam>
     [CLSCompliant(true)]
-    public sealed class TreeMap<K, V> : ISortedMap<K, V>, INavigableMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>, ICollection<KeyValuePair<K, V>>, 
-        IDictionary, ICollection, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+    public sealed class TreeMap<K, V>
+        : ISortedMap<K, V>, INavigableMap<K, V>, IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, ICollection,
+		IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         private readonly LlrbTree<K, V> llrbTree;
 
