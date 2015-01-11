@@ -22,7 +22,7 @@ using Commons.Utils;
 namespace Commons.Collections.Queue
 {
 	[CLSCompliant(true)]
-    public class Deque<T> : IEnumerable<T>, IEnumerable, ICollection
+    public class Deque<T> : ICollection, IEnumerable<T>, IEnumerable
     {
 		private const int DefaultCapacity = 32;
 		private const int EmptyPointer = -1;
