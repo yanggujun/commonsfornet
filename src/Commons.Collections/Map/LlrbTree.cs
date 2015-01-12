@@ -48,7 +48,7 @@ namespace Commons.Collections.Map
 
         public LlrbTree(IComparer<K> comparer)
         {
-            Comparer = (k1, k2) => comparer.Compare(k1, k2);
+			Comparer = comparer.Compare;
         }
 
         public LlrbTree(Comparison<K> comparison)
