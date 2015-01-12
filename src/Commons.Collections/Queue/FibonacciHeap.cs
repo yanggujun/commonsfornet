@@ -1,4 +1,5 @@
-﻿// Copyright CommonsForNET.  // Licensed to the Apache Software Foundation (ASF) under one or more
+﻿// Copyright CommonsForNET.
+// Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
 // The ASF licenses this file to You under the Apache License, Version 2.0
@@ -48,7 +49,7 @@ namespace Commons.Collections.Queue
             }
             else
             {
-                AddToRoot(node);
+                AddNode(node, RootHeader);
                 if (comparer(node.Value, MinNode.Value) < 0)
                 {
                     MinNode = node;
@@ -68,18 +69,19 @@ namespace Commons.Collections.Queue
 
         public T ExtractMin()
         {
-            var minNode = MinNode;
-            if (minNode != null)
+			MinNode.Validate(x => x != null, new ArgumentException("The collection is empty."));
+            if (MinNode != null)
             {
-                if (minNode.Child != null)
+                if (MinNode.Child != null)
                 {
-                    foreach (var childNode in minNode.Child.Siblings)
+                    foreach (var childNode in MinNode.Child.Siblings)
                     {
-                        AddToRoot(childNode);
+                        AddNode(childNode, RootHeader);
+						childNode.Parent = null;
                     }
                 }
-                RemoveFromRoot(minNode);
-                if (ReferenceEquals(minNode, minNode.Right))
+                Remove(MinNode);
+                if (ReferenceEquals(MinNode, MinNode.Right))
                 {
                     MinNode = null;
                 }
@@ -96,39 +98,50 @@ namespace Commons.Collections.Queue
 
         public int Count { get; private set; }
 
+		public bool IsEmpty { get { return MinNode != null; } }
+
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+			return Items.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+			return GetEnumerator();
         }
 
-        private IEnumerable<FiboNode> Siblings(FiboNode start)
+		private IEnumerable<T> Items
+		{
+			get
+			{
+				if (RootHeader != null)
+				{
+					foreach(var node in RootHeader.Relatives)
+					{
+						yield return node.Value;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Adds a node <paramref name="node"/> to <paramref name="header"/>
+		/// </summary>
+		/// <param name="node">The node to add.</param>
+		/// <param name="header">The header.</param>
+        private static void AddNode(FiboNode node, FiboNode header)
         {
-            if (start != null)
-            {
-                var cursor = start;
-                do
-                {
-                    yield return cursor;
-                    cursor = cursor.Right;
-                } while (ReferenceEquals(cursor, start));
-            }
+			node.Right = header;
+            node.Left = header.Left;
+            header.Left.Right = node;
+            header.Left = node;
         }
 
-        private void AddToRoot(FiboNode node)
-        {
-            node.Right = RootHeader;
-            node.Left = RootHeader.Left;
-            RootHeader.Left.Right = node;
-            RootHeader.Left = node;
-            node.Parent = null;
-        }
-
-        private void RemoveFromRoot(FiboNode node)
+		/// <summary>
+		/// Removes the <paramref name="node"/> from its list.
+		/// </summary>
+		/// <param name="node">The node.</param>
+        private static void Remove(FiboNode node)
         {
             node.Left.Right = node.Right;
             node.Right.Left = node.Left;
@@ -136,7 +149,7 @@ namespace Commons.Collections.Queue
 
         private void Consolidate()
         {
-            int upperBound = Convert.ToInt32(Math.Floor(Math.Log(Count, FiboRatio)));
+            var upperBound = Convert.ToInt32(Math.Floor(Math.Log(Count, FiboRatio)));
             var nodeArray = new FiboNode[upperBound];
             foreach (var node in RootHeader.Siblings)
             {
@@ -150,21 +163,51 @@ namespace Commons.Collections.Queue
                         node.Value = another.Value;
                         another.Value = temp;
                     }
+					Remove(another);
+					MakeChild(another, node);
+					another.Mark = false;
+					nodeArray[degree] = null;
+					node.Degree++;
                 }
+				nodeArray[node.Degree] = node;
             }
+			MinNode = null;
+			foreach (var node in nodeArray)
+			{
+				if (node != null)
+				{
+					if (MinNode == null)
+					{
+						node.Left = node.Right = node;
+						RootHeader = node;
+						MinNode = RootHeader;
+					}
+					else
+					{
+						AddNode(node, RootHeader);
+						if (comparer(node.Value, MinNode.Value) < 0)
+						{
+							MinNode = node;
+						}
+					}
+				}
+			}
         }
 
-        private void Link(FiboNode another, FiboNode origin)
+		/// <summary>
+		/// Makes the <paramref name="child"/> to its new <param name="parent"/>
+		/// </summary>
+		/// <param name="child">The child.</param>
+		/// <param name="parent">The parent.</param>
+        private void MakeChild(FiboNode child, FiboNode parent)
         {
-            RemoveFromRoot(another);
-            if (origin.Child == null)
+            if (parent.Child == null)
             {
-                origin.Child = another;
+                parent.Child = child;
             }
-            origin.Child.Left.Right = another;
-            another.Right = origin.Child;
-            another.Left = origin.Child.Left;
-            origin.Child.Left = another;
+			AddNode(child, parent.Child);
+			child.Parent = parent;
+			parent.Degree++;
         }
 
         private class FiboNode
@@ -199,6 +242,26 @@ namespace Commons.Collections.Queue
                     } while (ReferenceEquals(cursor, this));
                 }
             }
+
+			public IEnumerable<FiboNode> Relatives
+			{
+				get
+				{
+					var cursor = this;
+					do
+					{
+						yield return cursor;
+						if (cursor.Child != null)
+						{
+							foreach (var child in cursor.Child.Relatives)
+							{
+								yield return child;
+							}
+						}
+						cursor = cursor.Right;
+					} while (ReferenceEquals(cursor, this));
+				}
+			}
         }
     }
 }
