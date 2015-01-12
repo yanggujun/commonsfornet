@@ -28,77 +28,78 @@ namespace Commons.Collections.Queue
     internal class FibonacciHeap<T> : IEnumerable<T>
     {
         private const double FiboRatio = 1.618;
-        private readonly Comparison<T> comparer;
-        private FiboNode RootHeader { get; set; }
-        private FiboNode MinNode { get; set; }
-        public FibonacciHeap(Comparison<T> comparer)
+        private readonly Func<T, T, bool> comparer;
+        private readonly Func<T, T, bool> reverseComparer;
+        private FiboNode TopNode { get; set; }
+        public FibonacciHeap(Func<T, T, bool> comparer, Func<T, T, bool> reverseComparer)
         {
             comparer.ValidateNotNull("The comparer is null!");
             this.comparer = comparer;
+            this.reverseComparer = reverseComparer;
         }
 
         public void Add(T item)
         {
             item.ValidateNotNull("The item is null!");
             var node = new FiboNode { Value = item };
-            if (RootHeader == null)
+            if (TopNode == null)
             {
                 node.Left = node.Right = node;
-                RootHeader = node;
-                MinNode = RootHeader;
+                TopNode = node;
             }
             else
             {
-                AddNode(node, RootHeader);
-                if (comparer(node.Value, MinNode.Value) < 0)
+                AddNode(node, TopNode);
+                if (comparer(node.Value, TopNode.Value))
                 {
-                    MinNode = node;
+                    TopNode = node;
                 }
             }
             Count++;
         }
 
-        public T Min
+        public T Top
         {
             get
             {
-                RootHeader.Validate(x => x != null, new ArgumentException("The collection is empty!"));
-                return MinNode.Value;
+                TopNode.Validate(x => x != null, new ArgumentException("The collection is empty!"));
+                return TopNode.Value;
             }
         }
 
-        public T ExtractMin()
+        public T ExtractTop()
         {
-			MinNode.Validate(x => x != null, new ArgumentException("The collection is empty."));
-            if (MinNode != null)
+			TopNode.Validate(x => x != null, new ArgumentException("The collection is empty."));
+            var top = TopNode;
+            if (top != null)
             {
-                if (MinNode.Child != null)
+                if (top.Child != null)
                 {
-                    foreach (var childNode in MinNode.Child.Siblings)
+                    foreach (var childNode in top.Child.Siblings)
                     {
-                        AddNode(childNode, RootHeader);
+                        AddNode(childNode, TopNode);
 						childNode.Parent = null;
                     }
                 }
-                Remove(MinNode);
-                if (ReferenceEquals(MinNode, MinNode.Right))
+                RemoveNode(top);
+                if (ReferenceEquals(top, top.Right))
                 {
-                    MinNode = null;
+                    TopNode = null;
                 }
                 else
                 {
-                    MinNode = MinNode.Right;
+                    TopNode = TopNode.Right;
                     Consolidate();
                 }
                 Count--;
             }
 
-            return MinNode.Value;
+            return top.Value;
         }
 
         public int Count { get; private set; }
 
-		public bool IsEmpty { get { return MinNode != null; } }
+		public bool IsEmpty { get { return TopNode != null; } }
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -114,9 +115,9 @@ namespace Commons.Collections.Queue
 		{
 			get
 			{
-				if (RootHeader != null)
+				if (TopNode != null)
 				{
-					foreach(var node in RootHeader.Relatives)
+					foreach(var node in TopNode.Relatives)
 					{
 						yield return node.Value;
 					}
@@ -141,7 +142,7 @@ namespace Commons.Collections.Queue
 		/// Removes the <paramref name="node"/> from its list.
 		/// </summary>
 		/// <param name="node">The node.</param>
-        private static void Remove(FiboNode node)
+        private static void RemoveNode(FiboNode node)
         {
             node.Left.Right = node.Right;
             node.Right.Left = node.Left;
@@ -151,43 +152,47 @@ namespace Commons.Collections.Queue
         {
             var upperBound = Convert.ToInt32(Math.Floor(Math.Log(Count, FiboRatio)));
             var nodeArray = new FiboNode[upperBound];
-            foreach (var node in RootHeader.Siblings)
+            var rootNodes = new List<FiboNode>();
+            foreach (var node in TopNode.Siblings)
+            {
+                rootNodes.Add(node);
+            }
+            foreach (var node in rootNodes)
             {
                 var degree = node.Degree;
                 while (nodeArray[degree] != null)
                 {
                     var another = nodeArray[degree];
-                    if (comparer(node.Value, another.Value) > 0)
+                    if (reverseComparer(node.Value, another.Value))
                     {
                         var temp = node.Value;
                         node.Value = another.Value;
                         another.Value = temp;
                     }
-					Remove(another);
+					RemoveNode(another);
 					MakeChild(another, node);
 					another.Mark = false;
 					nodeArray[degree] = null;
-					node.Degree++;
+                    degree++;
                 }
-				nodeArray[node.Degree] = node;
+				nodeArray[degree] = node;
             }
-			MinNode = null;
+			TopNode = null;
 			foreach (var node in nodeArray)
 			{
 				if (node != null)
 				{
-					if (MinNode == null)
+					if (TopNode == null)
 					{
 						node.Left = node.Right = node;
-						RootHeader = node;
-						MinNode = RootHeader;
+						TopNode = node;
 					}
 					else
 					{
-						AddNode(node, RootHeader);
-						if (comparer(node.Value, MinNode.Value) < 0)
+						AddNode(node, TopNode);
+						if (comparer(node.Value, TopNode.Value))
 						{
-							MinNode = node;
+							TopNode = node;
 						}
 					}
 				}
@@ -204,8 +209,12 @@ namespace Commons.Collections.Queue
             if (parent.Child == null)
             {
                 parent.Child = child;
+                parent.Child.Right = parent.Child.Left = child;
             }
-			AddNode(child, parent.Child);
+            else
+            {
+                AddNode(child, parent.Child);
+            }
 			child.Parent = parent;
 			parent.Degree++;
         }
@@ -239,7 +248,7 @@ namespace Commons.Collections.Queue
                     {
                         yield return cursor;
                         cursor = cursor.Right;
-                    } while (ReferenceEquals(cursor, this));
+                    } while (!ReferenceEquals(cursor, this));
                 }
             }
 
@@ -259,7 +268,7 @@ namespace Commons.Collections.Queue
 							}
 						}
 						cursor = cursor.Right;
-					} while (ReferenceEquals(cursor, this));
+					} while (!ReferenceEquals(cursor, this));
 				}
 			}
         }

@@ -48,6 +48,7 @@
     <Compile Include="Collections\CollectionTest.cs" />
     <Compile Include="Collections\HashTest.cs" />
     <Compile Include="Collections\JsonTest.cs" />
+    <Compile Include="Collections\PriorityQueueTest.cs" />
     <Compile Include="Collections\SortedMapTest.cs" />
     <Compile Include="Collections\TestExtenstions.cs" />
     <Compile Include="Order.cs" />

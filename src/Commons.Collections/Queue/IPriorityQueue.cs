@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace Commons.Collections.Queue
 {
 	[CLSCompliant(true)]
-	public interface IPriorityQueue<T> : ICollection<T>, IEnumerable<T>, IEnumerable
+	public interface IPriorityQueue<T> : IEnumerable<T>, IEnumerable
 	{
 		bool IsEmpty { get; }
 

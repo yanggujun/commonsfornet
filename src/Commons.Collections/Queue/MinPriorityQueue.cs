@@ -17,6 +17,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
+using Commons.Utils;
+
 namespace Commons.Collections.Queue
 {
     /// <summary>
@@ -25,9 +28,24 @@ namespace Commons.Collections.Queue
     public class MinPriorityQueue<T> : IPriorityQueue<T>, ICollection, IEnumerable<T>, IEnumerable
     {
 		private readonly FibonacciHeap<T> heap;
+
+        public MinPriorityQueue()
+            : this(Comparer<T>.Default)
+        {
+        }
+
+        public MinPriorityQueue(IComparer<T> comparer)
+            : this(comparer.Compare)
+        {
+        }
+
+        public MinPriorityQueue(Comparison<T> comparer) : this (null, comparer)
+        {
+        }
+
 		public MinPriorityQueue(IEnumerable<T> items, Comparison<T> comparer)
 		{
-			heap = new FibonacciHeap<T>(comparer);
+            heap = new FibonacciHeap<T>((x1, x2) => comparer(x1, x2) < 0, (y1, y2) => comparer(y1, y2) > 0);
 			if (items != null)
 			{
 				foreach (var item in items)
@@ -36,84 +54,61 @@ namespace Commons.Collections.Queue
 				}
 			}
 		}
-		public bool IsEmpty
-		{
-			get { throw new System.NotImplementedException(); }
-		}
 
-		public T Top
-		{
-			get { throw new System.NotImplementedException(); }
-		}
+        public bool IsEmpty
+        {
+            get { return heap.IsEmpty; }
+        }
 
-		public void Push(T item)
-		{
-			throw new System.NotImplementedException();
-		}
+        public T Top
+        {
+            get { return heap.Top; }
+        }
 
-		public T Pop()
-		{
-			throw new System.NotImplementedException();
-		}
+        public void Push(T item)
+        {
+            heap.Add(item);
+        }
 
-		public void Add(T item)
-		{
-			throw new System.NotImplementedException();
-		}
+        public T Pop()
+        {
+            return heap.ExtractTop();
+        }
 
-		public void Clear()
-		{
-			throw new System.NotImplementedException();
-		}
+        public IEnumerator<T> GetEnumerator()
+        {
+            return heap.GetEnumerator();
+        }
 
-		public bool Contains(T item)
-		{
-			throw new System.NotImplementedException();
-		}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-		public void CopyTo(T[] array, int arrayIndex)
-		{
-			throw new System.NotImplementedException();
-		}
+        public void CopyTo(Array array, int index)
+        {
+            var items = array as T[];
+            items.Validate(x => x != null, new ArgumentException(string.Format("The array is not of type {0}", typeof(T))));
+            var arrayIndex = index;
+            foreach (var item in heap)
+            {
+                items[arrayIndex++] = item;
+            }
+        }
 
-		public int Count
-		{
-			get { throw new System.NotImplementedException(); }
-		}
+        public int Count
+        {
+            get { return heap.Count; }
+        }
 
-		public bool IsReadOnly
-		{
-			get { throw new System.NotImplementedException(); }
-		}
+        public bool IsSynchronized
+        {
+            get { return false; }
+        }
 
-		public bool Remove(T item)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public IEnumerator<T> GetEnumerator()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public void CopyTo(System.Array array, int index)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public bool IsSynchronized
-		{
-			get { throw new System.NotImplementedException(); }
-		}
-
-		public object SyncRoot
-		{
-			get { throw new System.NotImplementedException(); }
-		}
-	}
+        public object SyncRoot
+        {
+            get { throw new NotSupportedException("The SyncRoot is not supported in Commons.Collections."); }
+        }
+    }
 }
