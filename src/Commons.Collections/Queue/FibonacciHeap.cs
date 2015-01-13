@@ -17,7 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Diagnostics;
 using Commons.Utils;
 
 namespace Commons.Collections.Queue
@@ -29,13 +29,11 @@ namespace Commons.Collections.Queue
     {
         private const double FiboRatio = 1.618;
         private readonly Func<T, T, bool> comparer;
-        private readonly Func<T, T, bool> reverseComparer;
         private FiboNode TopNode { get; set; }
-        public FibonacciHeap(Func<T, T, bool> comparer, Func<T, T, bool> reverseComparer)
+        public FibonacciHeap(Func<T, T, bool> comparer)
         {
             comparer.ValidateNotNull("The comparer is null!");
             this.comparer = comparer;
-            this.reverseComparer = reverseComparer;
         }
 
         public void Add(T item)
@@ -75,7 +73,8 @@ namespace Commons.Collections.Queue
             {
                 if (top.Child != null)
                 {
-                    foreach (var childNode in top.Child.Siblings)
+					var children = GetSiblingsOf(top.Child);
+                    foreach (var childNode in children)
                     {
                         AddNode(childNode, TopNode);
 						childNode.Parent = null;
@@ -148,34 +147,42 @@ namespace Commons.Collections.Queue
             node.Right.Left = node.Left;
         }
 
+		private List<FiboNode> GetSiblingsOf(FiboNode node)
+		{
+			var siblings = new List<FiboNode>();
+			foreach(var n in node.Siblings)
+			{
+				siblings.Add(n);
+			}
+
+			return siblings;
+		}
+
         private void Consolidate()
         {
             var upperBound = Convert.ToInt32(Math.Floor(Math.Log(Count, FiboRatio)));
             var nodeArray = new FiboNode[upperBound];
-            var rootNodes = new List<FiboNode>();
-            foreach (var node in TopNode.Siblings)
-            {
-                rootNodes.Add(node);
-            }
+			var rootNodes = GetSiblingsOf(TopNode);
             foreach (var node in rootNodes)
             {
                 var degree = node.Degree;
+				var x = node;
                 while (nodeArray[degree] != null)
                 {
                     var another = nodeArray[degree];
-                    if (reverseComparer(node.Value, another.Value))
+                    if (comparer(x.Value, another.Value))
                     {
-                        var temp = node.Value;
-                        node.Value = another.Value;
-                        another.Value = temp;
+						MakeChild(another, x);
                     }
-					RemoveNode(another);
-					MakeChild(another, node);
-					another.Mark = false;
+					else
+					{
+						MakeChild(x, another);
+						x = another;
+					}
 					nodeArray[degree] = null;
                     degree++;
                 }
-				nodeArray[degree] = node;
+				nodeArray[degree] = x;
             }
 			TopNode = null;
 			foreach (var node in nodeArray)
@@ -206,6 +213,7 @@ namespace Commons.Collections.Queue
 		/// <param name="parent">The parent.</param>
         private void MakeChild(FiboNode child, FiboNode parent)
         {
+			RemoveNode(child);
             if (parent.Child == null)
             {
                 parent.Child = child;
@@ -217,8 +225,12 @@ namespace Commons.Collections.Queue
             }
 			child.Parent = parent;
 			parent.Degree++;
+			child.Mark = false;
         }
 
+#if DEBUG
+		[DebuggerDisplay("Value = {Value}, Right = {Right.Value}")]
+#endif
         private class FiboNode
         {
             public T Value { get; set; }

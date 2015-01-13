@@ -53,15 +53,16 @@ namespace Test.Commons.Collections
         public void SimpleTest()
         {
             var pq = new MinPriorityQueue<int>();
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 20; i++)
             {
-                pq.Push(i);
+                pq.Push(20 - i - 1);
             }
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 20; i++)
             {
                 Assert.Equal(i, pq.Top);
                 Assert.Equal(i, pq.Pop());
+				Assert.Equal(20 - i - 1, pq.Count);
             }
         }
     }

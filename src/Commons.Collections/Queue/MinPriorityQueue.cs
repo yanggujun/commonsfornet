@@ -45,7 +45,7 @@ namespace Commons.Collections.Queue
 
 		public MinPriorityQueue(IEnumerable<T> items, Comparison<T> comparer)
 		{
-            heap = new FibonacciHeap<T>((x1, x2) => comparer(x1, x2) < 0, (y1, y2) => comparer(y1, y2) > 0);
+			heap = new FibonacciHeap<T>((x1, x2) => comparer(x1, x2) < 0);
 			if (items != null)
 			{
 				foreach (var item in items)
