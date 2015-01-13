@@ -98,7 +98,7 @@ namespace Commons.Collections.Queue
 
         public int Count { get; private set; }
 
-		public bool IsEmpty { get { return TopNode != null; } }
+		public bool IsEmpty { get { return TopNode == null; } }
 
         public IEnumerator<T> GetEnumerator()
         {

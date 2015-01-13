@@ -22,6 +22,26 @@ namespace Commons.Collections.Set
     [CLSCompliant(true)]
     public static class SetExtensions
     {
+        public static IStrictSet<T> Intersect<T>(this IStrictSet<T> first, IStrictSet<T> second)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static IStrictSet<T> Union<T>(this IStrictSet<T> first, IStrictSet<T> second)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static IStrictSet<T> Differ<T>(this IStrictSet<T> first, IStrictSet<T> second)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static IStrictSet<T> Compliment<T>(this IStrictSet<T> subset, IStrictSet<T> universe)
+        {
+            throw new NotImplementedException();
+        }
+
         public static bool IsSupersetOf<T>(this IStrictSet<T> origin, IStrictSet<T> other)
         {
             throw new NotImplementedException();
@@ -32,7 +52,7 @@ namespace Commons.Collections.Set
             throw new NotImplementedException();
         }
 
-        public static ICollection<IStrictSet<T>> PowerSetOf<T>(this IStrictSet<T> origin)
+        public static ICollection<IStrictSet<T>> PowerSet<T>(this IStrictSet<T> origin)
         {
             throw new NotImplementedException();
         }

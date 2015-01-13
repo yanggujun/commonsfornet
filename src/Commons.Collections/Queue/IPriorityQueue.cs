@@ -23,6 +23,8 @@ namespace Commons.Collections.Queue
 	[CLSCompliant(true)]
 	public interface IPriorityQueue<T> : IEnumerable<T>, IEnumerable
 	{
+        int Count { get; }
+
 		bool IsEmpty { get; }
 
 		T Top { get; }

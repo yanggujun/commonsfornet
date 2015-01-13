@@ -89,6 +89,8 @@
     <Compile Include="Queue\Deque.cs" />
     <Compile Include="Queue\FibonacciHeap.cs" />
     <Compile Include="Queue\IPriorityQueue.cs" />
+    <Compile Include="Queue\AbstractPriorityQueue.cs" />
+    <Compile Include="Queue\MaxPriorityQueue.cs" />
     <Compile Include="Queue\MinPriorityQueue.cs" />
     <Compile Include="Set\INavigableSet.cs" />
     <Compile Include="Set\IReadOnlyStrictSet.cs" />

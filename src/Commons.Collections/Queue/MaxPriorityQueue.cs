@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET.
+﻿// Copyright CommonsForNET 2014.
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -15,33 +15,27 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-
-using Commons.Utils;
 
 namespace Commons.Collections.Queue
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class MinPriorityQueue<T> : AbstractPriorityQueue<T>, IPriorityQueue<T>
+    public class MaxPriorityQueue<T> : AbstractPriorityQueue<T>, IPriorityQueue<T>
     {
-        public MinPriorityQueue()
+        public MaxPriorityQueue()
             : this(Comparer<T>.Default)
         {
         }
 
-        public MinPriorityQueue(IComparer<T> comparer)
+        public MaxPriorityQueue(IComparer<T> comparer)
             : this(comparer.Compare)
         {
         }
 
-        public MinPriorityQueue(Comparison<T> comparer) : this (null, comparer)
+        public MaxPriorityQueue(Comparison<T> comparer) : this (null, comparer)
         {
         }
 
-		public MinPriorityQueue(IEnumerable<T> items, Comparison<T> comparer) : base(items, (x1, x2) => comparer(x1, x2) < 0)
+		public MaxPriorityQueue(IEnumerable<T> items, Comparison<T> comparer) : base(items, (x1, x2) => comparer(x1, x2) > 0)
 		{
 		}
     }
