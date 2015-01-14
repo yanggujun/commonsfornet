@@ -150,24 +150,27 @@ namespace Commons.Collections.Bag
 
         public virtual IEnumerator<T> GetEnumerator()
         {
-            return CreateEnumerator().GetEnumerator();
+            return Items.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
-        private IEnumerable<T> CreateEnumerator()
+        private IEnumerable<T> Items
         {
-            foreach (var key in Map.Keys)
-            {
-                var copies = Map[key];
-                for (var i = 0; i < copies; i++)
-                {
-                    yield return key;
-                }
-            }
+			get
+			{
+				foreach (var key in Map.Keys)
+				{
+					var copies = Map[key];
+					for (var i = 0; i < copies; i++)
+					{
+						yield return key;
+					}
+				}
+			}
         }
     }
 }

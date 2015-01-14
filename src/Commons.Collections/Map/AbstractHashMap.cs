@@ -231,25 +231,28 @@ namespace Commons.Collections.Map
 
         public virtual IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
-            return CreateUnorderedEnumerator().GetEnumerator();
+            return Items.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
-        protected IEnumerable<KeyValuePair<K, V>> CreateUnorderedEnumerator()
+        protected IEnumerable<KeyValuePair<K, V>> Items
         {
-            foreach (var entry in Entries)
-            {
-                var item = entry;
-                while (null != item)
-                {
-                    yield return new KeyValuePair<K, V>(item.Key, item.Value);
-                    item = item.Next;
-                }
-            }
+			get
+			{
+				foreach (var entry in Entries)
+				{
+					var item = entry;
+					while (null != item)
+					{
+						yield return new KeyValuePair<K, V>(item.Key, item.Value);
+						item = item.Next;
+					}
+				}
+			}
         }
 
 		protected virtual V Get(K key)

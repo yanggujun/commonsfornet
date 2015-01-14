@@ -348,13 +348,31 @@ namespace Commons.Collections.Map
 
         public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
-            return CreateEnumerator(root).GetEnumerator();
+            return AscendEnumerate(root).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
+
+		private IEnumerable<KeyValuePair<K, V>> AscendEnumerate(TreeNode node)
+		{
+			if (null != node)
+			{
+				foreach(var item in AscendEnumerate(node.Left))
+				{
+					yield return item;
+				}
+
+				yield return node.Item;
+
+				foreach(var item in AscendEnumerate(node.Right))
+				{
+					yield return item;
+				}
+			}
+		}
 
         private static IEnumerable<KeyValuePair<K, V>> CreateEnumerator(TreeNode node)
         {

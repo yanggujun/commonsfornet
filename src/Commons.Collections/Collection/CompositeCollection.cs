@@ -258,7 +258,7 @@ namespace Commons.Collections.Collection
 
         public virtual IEnumerator<T> GetEnumerator()
         {
-            return CreateCompositeEnumerable().GetEnumerator();
+            return Items.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -266,16 +266,19 @@ namespace Commons.Collections.Collection
             return GetEnumerator();
         }
 
-        private IEnumerable<T> CreateCompositeEnumerable()
+        private IEnumerable<T> Items
         {
-            foreach (var c in AllCollections)
-            {
-                var iter = c.GetEnumerator();
-                while (iter.MoveNext())
-                {
-                    yield return iter.Current;
-                }
-            }
+			get
+			{
+				foreach (var c in AllCollections)
+				{
+					var iter = c.GetEnumerator();
+					while (iter.MoveNext())
+					{
+						yield return iter.Current;
+					}
+				}
+			}
         }
 
     }

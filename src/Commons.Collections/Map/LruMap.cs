@@ -58,11 +58,6 @@ namespace Commons.Collections.Map
 			get { return Count >= MaxSize; }
 		}
 
-		public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()
-		{
-			return CreateUnorderedEnumerator().GetEnumerator();
-		}
-
 		protected override HashEntry CreateEntry(K key, V value)
 		{
 			var entry = new LinkedHashEntry(key, value);

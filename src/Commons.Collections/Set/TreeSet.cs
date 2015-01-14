@@ -233,7 +233,7 @@ namespace Commons.Collections.Set
         /// <returns>The enumerator of the items in the tree set.</returns>
         public IEnumerator<T> GetEnumerator()
         {
-            return CreateEnumerator().GetEnumerator();
+            return Items.GetEnumerator();
         }
 
         /// <summary>
@@ -273,12 +273,15 @@ namespace Commons.Collections.Set
             get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
 
-        private IEnumerable<T> CreateEnumerator()
+        private IEnumerable<T> Items
         {
-            foreach (var item in llrbTree)
-            {
-                yield return item.Key;
-            }
+			get
+			{
+				foreach (var item in llrbTree)
+				{
+					yield return item.Key;
+				}
+			}
         }
 	}
 }

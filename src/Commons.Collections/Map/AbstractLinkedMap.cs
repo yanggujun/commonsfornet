@@ -56,7 +56,7 @@ namespace Commons.Collections.Map
 
         public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
-			return CreateEnumerator().GetEnumerator();
+			return LinkedItems.GetEnumerator();
         }
 
         protected override HashEntry CreateEntry(K key, V value)
@@ -78,17 +78,20 @@ namespace Commons.Collections.Map
             return linkedEntry;
         }
 
-		private IEnumerable<KeyValuePair<K, V>> CreateEnumerator()
+		private IEnumerable<KeyValuePair<K, V>> LinkedItems
 		{
-            var cursor = Header;
-            if (null != cursor)
-            {
-				do
+			get
+			{
+				var cursor = Header;
+				if (null != cursor)
 				{
-					yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
-					cursor = cursor.After;
-				} while (!ReferenceEquals(cursor, Header));
-            }
+					do
+					{
+						yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
+						cursor = cursor.After;
+					} while (!ReferenceEquals(cursor, Header));
+				}
+			}
 		}
 
         protected class LinkedHashEntry : HashEntry

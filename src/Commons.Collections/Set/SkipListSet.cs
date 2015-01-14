@@ -84,7 +84,7 @@ namespace Commons.Collections.Set
 
         public IEnumerator<T> GetEnumerator()
         {
-            return CreateEnumerator().GetEnumerator();
+            return Items.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -177,12 +177,15 @@ namespace Commons.Collections.Set
             return skipList.Remove(item);
         }
 
-        private IEnumerable<T> CreateEnumerator()
+        private IEnumerable<T> Items
         {
-            foreach (var item in skipList)
-            {
-                yield return item.Key;
-            }
+			get
+			{
+				foreach (var item in skipList)
+				{
+					yield return item.Key;
+				}
+			}
         }
     }
 }

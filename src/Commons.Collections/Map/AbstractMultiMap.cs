@@ -224,7 +224,7 @@ namespace Commons.Collections.Map
 
 		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
 		{
-			return CreateSingleEnumerator().GetEnumerator();
+			return SingleItems.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -250,25 +250,31 @@ namespace Commons.Collections.Map
 
 		IEnumerator<KeyValuePair<K, ICollection<V>>> IEnumerable<KeyValuePair<K, ICollection<V>>>.GetEnumerator()
 		{
-			return CreateCollectionEnumerator().GetEnumerator();
+			return CollectionItems.GetEnumerator();
 		}
 
-		private IEnumerable<KeyValuePair<K, V>> CreateSingleEnumerator()
+		private IEnumerable<KeyValuePair<K, V>> SingleItems
 		{
-			foreach (var kvp in Map)
+			get
 			{
-				foreach(var v in kvp.Value)
+				foreach (var kvp in Map)
 				{
-					yield return new KeyValuePair<K, V>(kvp.Key, v);
+					foreach(var v in kvp.Value)
+					{
+						yield return new KeyValuePair<K, V>(kvp.Key, v);
+					}
 				}
 			}
 		}
 
-		private IEnumerable<KeyValuePair<K, ICollection<V>>> CreateCollectionEnumerator()
+		private IEnumerable<KeyValuePair<K, ICollection<V>>> CollectionItems
 		{
-			foreach (var kvp in Map)
+			get
 			{
-				yield return kvp;
+				foreach (var kvp in Map)
+				{
+					yield return kvp;
+				}
 			}
 		}
 	}

@@ -223,7 +223,7 @@ namespace Commons.Collections.Map
 
 		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
 		{
-            return CreateEnumerator().GetEnumerator();
+            return Items.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -231,14 +231,17 @@ namespace Commons.Collections.Map
             return GetEnumerator();
 		}
 
-        private IEnumerable<KeyValuePair<K, V>> CreateEnumerator()
+        private IEnumerable<KeyValuePair<K, V>> Items
         {
-            var cursor = header;
-            while (cursor.GetForward(1) != null)
-            {
-                cursor = cursor.GetForward(1);
-                yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
-            }
+			get
+			{
+				var cursor = header;
+				while (cursor.GetForward(1) != null)
+				{
+					cursor = cursor.GetForward(1);
+					yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
+				}
+			}
         }
 
         private void TrimHeader()

@@ -154,7 +154,7 @@ namespace Commons.Collections.Queue
 
         public IEnumerator<T> GetEnumerator()
         {
-			return CreateEnumerator().GetEnumerator();
+			return Items.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -189,13 +189,16 @@ namespace Commons.Collections.Queue
             get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
 
-		private IEnumerable<T> CreateEnumerator()
+		private IEnumerable<T> Items
 		{
-			if (head != EmptyPointer && tail != EmptyPointer)
-			{ 
-				for (var i = head; i <= tail; i++)
-				{
-					yield return items[i];
+			get
+			{
+				if (head != EmptyPointer && tail != EmptyPointer)
+				{ 
+					for (var i = head; i <= tail; i++)
+					{
+						yield return items[i];
+					}
 				}
 			}
 		}

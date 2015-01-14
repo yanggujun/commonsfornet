@@ -257,7 +257,7 @@ namespace Commons.Collections.Map
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return llrbTree.GetEnumerator();
+            return GetEnumerator();
         }
 
         public void Add(object key, object value)
