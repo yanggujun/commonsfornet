@@ -92,6 +92,7 @@
     <Compile Include="Queue\AbstractPriorityQueue.cs" />
     <Compile Include="Queue\MaxPriorityQueue.cs" />
     <Compile Include="Queue\MinPriorityQueue.cs" />
+    <Compile Include="Set\AbstractSet.cs" />
     <Compile Include="Set\HashSet.cs" />
     <Compile Include="Set\INavigableSet.cs" />
     <Compile Include="Set\IReadOnlyStrictSet.cs" />

@@ -14,71 +14,177 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Commons.Collections.Map;
+using Commons.Utils;
 
 namespace Commons.Collections.Set
 {
-    public class HashSet<T> : ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
+    [CLSCompliant(true)]
+    public class HashSet<T> : IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
+        private readonly object val = new object();
+        private readonly HashMap<T, object> map;
+
+        public HashSet()
+        {
+            map = new HashMap<T, object>();
+        }
+
+        public HashSet(int capacity) : this(capacity, EqualityComparer<T>.Default.Equals)
+        {
+        }
+
+        public HashSet(IEqualityComparer<T> equalityComparer) : this(equalityComparer.Equals)
+        {
+        }
+
+        public HashSet(Equator<T> equator)
+        {
+            map = new HashMap<T, object>(equator);
+        }
+
+        public HashSet(int capacity, IEqualityComparer<T> equalityComparer)
+            : this(capacity, equalityComparer.Equals)
+        {
+        }
+
+        public HashSet(int capacity, Equator<T> equator)
+            : this(null, capacity, equator)
+        {
+        }
+
+        public HashSet(IEnumerable<T> items, int capacity, Equator<T> equator)
+        {
+            map = new HashMap<T, object>(capacity, equator);
+            if (items != null)
+            {
+                foreach (var item in items)
+                {
+                    map.Add(item, item);
+                }
+            }
+        }
+
+        public void Intersect(IStrictSet<T> other)
+        {
+            other.ValidateNotNull("The other set is null!");
+        }
+
+        public void Union(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Differ(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsSubsetOf(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsProperSubsetOf(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsEqualWith(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsDisjointWith(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Compliment(IStrictSet<T> universe)
+        {
+            throw new NotImplementedException();
+        }
+
 		public void Add(T item)
 		{
-			throw new System.NotImplementedException();
+            map.Add(item, val);
 		}
 
 		public void Clear()
 		{
-			throw new System.NotImplementedException();
+            map.Clear();
 		}
 
 		public bool Contains(T item)
 		{
-			throw new System.NotImplementedException();
+            return map.ContainsKey(item);
 		}
 
 		public void CopyTo(T[] array, int arrayIndex)
 		{
-			throw new System.NotImplementedException();
+            array.ValidateNotNull("The input array is null!.");
+            var index = arrayIndex;
+            foreach (var item in map)
+            {
+                array[index++] = item.Key;
+            }
 		}
 
 		public int Count
 		{
-			get { throw new System.NotImplementedException(); }
+            get { return map.Count; }
 		}
 
 		public bool IsReadOnly
 		{
-			get { throw new System.NotImplementedException(); }
+            get { return false; }
 		}
 
 		public bool Remove(T item)
 		{
-			throw new System.NotImplementedException();
+            return map.Remove(item);
 		}
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			throw new System.NotImplementedException();
+            return Items.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			throw new System.NotImplementedException();
+            return GetEnumerator();
 		}
 
-		public void CopyTo(System.Array array, int index)
+		public void CopyTo(Array array, int index)
 		{
-			throw new System.NotImplementedException();
+            array.ValidateNotNull("The array is null!");
+            var itemArray = array as T[];
+            itemArray.Validate(x => x != null, new ArgumentException("The array type is not correct."));
+            CopyTo(itemArray, index);
 		}
 
 		public bool IsSynchronized
 		{
-			get { throw new System.NotImplementedException(); }
+            get { return false; }
 		}
 
 		public object SyncRoot
 		{
-			get { throw new System.NotImplementedException(); }
+            get { throw new NotSupportedException("The SyncRoot is not supported in Commons.Collections."); }
 		}
-	}
+
+        private IEnumerable<T> Items
+        {
+            get
+            {
+                foreach (var item in map)
+                {
+                    yield return item.Key;
+                }
+            }
+        }
+    }
 }

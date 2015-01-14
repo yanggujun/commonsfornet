@@ -28,9 +28,10 @@ namespace Commons.Collections.Set
     /// </summary>
     /// <typeparam name="T">Type of the items in the set.</typeparam>
     [CLSCompliant(true)]
-    public sealed class TreeSet<T> : INavigableSet<T>, ISortedSet<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
+    public sealed class TreeSet<T> : INavigableSet<T>, ISortedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
-        private readonly LlrbTree<T, T> llrbTree;
+        private readonly object val = new object();
+        private readonly LlrbTree<T, object> llrbTree;
         /// <summary>
         /// Constructs an empty tree set using the default item comparer.
         /// </summary>
@@ -74,7 +75,7 @@ namespace Commons.Collections.Set
             {
                 comp = (k1, k2) => Comparer<T>.Default.Compare(k1, k2);
             }
-            llrbTree = new LlrbTree<T, T>(comp);
+            llrbTree = new LlrbTree<T, object>(comp);
             if (null != items)
             {
                 foreach (var i in items)
@@ -91,7 +92,7 @@ namespace Commons.Collections.Set
         /// <param name="item">The item to add.</param>
         public void Add(T item)
         {
-            llrbTree.Add(item, item);
+            llrbTree.Add(item, val);
         }
 
         /// <summary>
@@ -172,6 +173,46 @@ namespace Commons.Collections.Set
         public void RemoveMax()
         {
             llrbTree.RemoveMax();
+        }
+
+        public void Intersect(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Union(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Differ(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsSubsetOf(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsProperSubsetOf(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsEqualWith(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsDisjointWith(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Compliment(IStrictSet<T> universe)
+        {
+            throw new NotImplementedException();
         }
 
         public bool IsEmpty
@@ -283,5 +324,5 @@ namespace Commons.Collections.Set
 				}
 			}
         }
-	}
+    }
 }

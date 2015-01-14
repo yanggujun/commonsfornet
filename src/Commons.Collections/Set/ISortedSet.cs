@@ -28,7 +28,7 @@ namespace Commons.Collections.Set
     /// </summary>
     /// <typeparam name="T">The type of the set items.</typeparam>
     [CLSCompliant(true)]
-    public interface ISortedSet<T> : ICollection<T>, IEnumerable<T>, IEnumerable
+    public interface ISortedSet<T> : IStrictSet<T>, ICollection<T>, IEnumerable<T>, IEnumerable
     {
         /// <summary>
         /// Removes the minimum value in the set.

@@ -24,9 +24,10 @@ using Commons.Utils;
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public sealed class SkipListSet<T> :INavigableSet<T>, ISortedSet<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
+    public sealed class SkipListSet<T> :INavigableSet<T>, ISortedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
-        private readonly SkipList<T, T> skipList;
+        private readonly object val = new object();
+        private readonly SkipList<T, object> skipList;
 
         public SkipListSet() :this(Comparer<T>.Default)
         {
@@ -59,7 +60,7 @@ namespace Commons.Collections.Set
 
         public SkipListSet(Comparison<T> comparer)
         {
-            skipList = new SkipList<T, T>(comparer);
+            skipList = new SkipList<T, object>(comparer);
         }
 
         public T Lower(T item)
@@ -80,6 +81,46 @@ namespace Commons.Collections.Set
         public T Floor(T item)
         {
             return skipList.Floor(item).Key;
+        }
+
+        public void Intersect(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Union(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Differ(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsSubsetOf(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsProperSubsetOf(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsEqualWith(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsDisjointWith(IStrictSet<T> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Compliment(IStrictSet<T> universe)
+        {
+            throw new NotImplementedException();
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -136,7 +177,7 @@ namespace Commons.Collections.Set
 
         public void Add(T item)
         {
-            skipList.Add(item, item);
+            skipList.Add(item, val);
         }
 
         public void Clear()
