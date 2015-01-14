@@ -19,36 +19,66 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Set
 {
-    public class HashSet<T> : IEnumerable<T>, ICollection, IEnumerable
+    public class HashSet<T> : ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
-        public IEnumerator<T> GetEnumerator()
-        {
-            throw new System.NotImplementedException();
-        }
+		public void Add(T item)
+		{
+			throw new System.NotImplementedException();
+		}
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new System.NotImplementedException();
-        }
+		public void Clear()
+		{
+			throw new System.NotImplementedException();
+		}
 
-        public void CopyTo(System.Array array, int index)
-        {
-            throw new System.NotImplementedException();
-        }
+		public bool Contains(T item)
+		{
+			throw new System.NotImplementedException();
+		}
 
-        public int Count
-        {
-            get { throw new System.NotImplementedException(); }
-        }
+		public void CopyTo(T[] array, int arrayIndex)
+		{
+			throw new System.NotImplementedException();
+		}
 
-        public bool IsSynchronized
-        {
-            get { throw new System.NotImplementedException(); }
-        }
+		public int Count
+		{
+			get { throw new System.NotImplementedException(); }
+		}
 
-        public object SyncRoot
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-    }
+		public bool IsReadOnly
+		{
+			get { throw new System.NotImplementedException(); }
+		}
+
+		public bool Remove(T item)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public IEnumerator<T> GetEnumerator()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public void CopyTo(System.Array array, int index)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public bool IsSynchronized
+		{
+			get { throw new System.NotImplementedException(); }
+		}
+
+		public object SyncRoot
+		{
+			get { throw new System.NotImplementedException(); }
+		}
+	}
 }

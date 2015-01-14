@@ -24,7 +24,7 @@ using Commons.Utils;
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public sealed class SkipListSet<T> :INavigableSet<T>, ISortedSet<T>, IEnumerable<T>, ICollection, IEnumerable
+    public sealed class SkipListSet<T> :INavigableSet<T>, ISortedSet<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         private readonly SkipList<T, T> skipList;
 

@@ -17,9 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Commons.Collections.Map;
 using Commons.Utils;
 
@@ -31,7 +28,7 @@ namespace Commons.Collections.Set
     /// </summary>
     /// <typeparam name="T">Type of the items in the set.</typeparam>
     [CLSCompliant(true)]
-    public sealed class TreeSet<T> : ISortedSet<T>, INavigableSet<T>, IEnumerable<T>, IEnumerable, ICollection
+    public sealed class TreeSet<T> : INavigableSet<T>, ISortedSet<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         private readonly LlrbTree<T, T> llrbTree;
         /// <summary>
