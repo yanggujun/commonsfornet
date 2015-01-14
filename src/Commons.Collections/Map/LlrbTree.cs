@@ -374,28 +374,6 @@ namespace Commons.Collections.Map
 			}
 		}
 
-        private static IEnumerable<KeyValuePair<K, V>> CreateEnumerator(TreeNode node)
-        {
-            if (null != node)
-            {
-                var nodes = new Stack<TreeNode>();
-                nodes.Push(node);
-                while (nodes.Count != 0)
-                {
-                    var current = nodes.Pop();
-                    if (null != current.Right)
-                    {
-                        nodes.Push(current.Right);
-                    }
-                    yield return current.Item;
-                    if (null != current.Left)
-                    {
-                        nodes.Push(current.Left);
-                    }
-                }
-            }
-        }
-
         private TreeNode Insert(TreeNode node, KeyValuePair<K, V> item)
         {
             if (null == node)
