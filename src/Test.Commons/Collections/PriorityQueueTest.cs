@@ -39,6 +39,31 @@ namespace Test.Commons.Collections
             Assert.True(pq3.IsEmpty);
             MinPriorityQueueConstructorWithOrder(pq3);
             Assert.False(pq3.IsEmpty);
+
+			var rand = new Random((int)DateTime.Now.Ticks & 0x0000ffff);
+			var set = new TreeSet<int>();
+			var orderSet = new TreeSet<Order>(new OrderComparer());
+			var count = 0;
+			while (count < 5000)
+			{
+				var next = rand.Next();
+				var order = new Order {Id = next };
+				if (!orderSet.Contains(order)) 
+				{
+					set.Add(next);
+					orderSet.Add(order);
+					count++;
+				}
+			}
+
+			var pq4 = new MinPriorityQueue<Order>(orderSet, new OrderComparer().Compare);
+			Assert.Equal(5000, pq4.Count);
+			Push(pq4, set, rand, 1000);
+			Assert.Equal(6000, pq4.Count);
+			Pop(pq4, set, 2000);
+			Assert.Equal(4000, pq4.Count);
+			Push(pq4, set, rand, 10000);
+			Assert.Equal(14000, pq4.Count);
         }
 
         [Fact]
