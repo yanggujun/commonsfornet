@@ -28,7 +28,7 @@ namespace Commons.Collections.Set
     /// </summary>
     /// <typeparam name="T">Type of the items in the set.</typeparam>
     [CLSCompliant(true)]
-    public sealed class TreeSet<T> : INavigableSet<T>, ISortedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
+    public sealed class TreeSet<T> : AbstractSet<T>, INavigableSet<T>, ISortedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         private readonly object val = new object();
         private readonly LlrbTree<T, object> llrbTree;
@@ -90,7 +90,7 @@ namespace Commons.Collections.Set
         /// If the item already exists, an exception is thrown.
         /// </summary>
         /// <param name="item">The item to add.</param>
-        public void Add(T item)
+        public override void Add(T item)
         {
             llrbTree.Add(item, val);
         }
@@ -98,7 +98,7 @@ namespace Commons.Collections.Set
         /// <summary>
         /// Clears the set.
         /// </summary>
-        public void Clear()
+        public override void Clear()
         {
             llrbTree.Clear();
         }
@@ -108,7 +108,7 @@ namespace Commons.Collections.Set
         /// </summary>
         /// <param name="item">The item to check.</param>
         /// <returns>True if the item exists. Otherwise false.</returns>
-        public bool Contains(T item)
+        public override bool Contains(T item)
         {
             return llrbTree.Contains(item);
         }
@@ -175,46 +175,6 @@ namespace Commons.Collections.Set
             llrbTree.RemoveMax();
         }
 
-        public void Intersect(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Union(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Differ(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsSubsetOf(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsProperSubsetOf(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsEqualWith(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsDisjointWith(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Compliment(IStrictSet<T> universe)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool IsEmpty
         {
             get
@@ -228,7 +188,7 @@ namespace Commons.Collections.Set
         /// </summary>
         /// <param name="array">The array to which items are copied.</param>
         /// <param name="arrayIndex">The index to start to copy the items.</param>
-        public void CopyTo(T[] array, int arrayIndex)
+        public override void CopyTo(T[] array, int arrayIndex)
         {
             Guarder.CheckNull(array);
             var index = arrayIndex;
@@ -241,7 +201,7 @@ namespace Commons.Collections.Set
         /// <summary>
         /// Retrieves the item count of the set.
         /// </summary>
-        public int Count
+        public override int Count
         {
             get
             {
@@ -250,20 +210,12 @@ namespace Commons.Collections.Set
         }
 
         /// <summary>
-        /// The tree set is not read only.
-        /// </summary>
-        public bool IsReadOnly
-        {
-            get { return llrbTree.IsReadOnly; }
-        }
-
-        /// <summary>
         /// Remove the item from the tree set. 
         /// If there is no such item existing in the set, an exception is thrown.
         /// </summary>
         /// <param name="item">The item to remove.</param>
         /// <returns>True if the item is removed. Otherwise false.</returns>
-        public bool Remove(T item)
+        public override bool Remove(T item)
         {
             return llrbTree.Remove(item);
         }
@@ -272,7 +224,7 @@ namespace Commons.Collections.Set
         /// Retrieves the enumerator of the tree set.
         /// </summary>
         /// <returns>The enumerator of the items in the tree set.</returns>
-        public IEnumerator<T> GetEnumerator()
+        public override IEnumerator<T> GetEnumerator()
         {
             return Items.GetEnumerator();
         }
@@ -283,7 +235,7 @@ namespace Commons.Collections.Set
         /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         /// <summary>
@@ -291,7 +243,7 @@ namespace Commons.Collections.Set
         /// </summary>
         /// <param name="array">The array to which the items are copied.</param>
         /// <param name="index">The start index of the array.</param>
-        public void CopyTo(Array array, int index)
+        void ICollection.CopyTo(Array array, int index)
         {
             Guarder.CheckNull(array);
             T[] a = (T[])array;
@@ -299,7 +251,7 @@ namespace Commons.Collections.Set
         }
 
         /// <summary>
-        /// The tree set is not synchornized.
+        /// The tree set is not synchronized.
         /// </summary>
         public bool IsSynchronized
         {
@@ -314,7 +266,7 @@ namespace Commons.Collections.Set
             get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
 
-        private IEnumerable<T> Items
+        protected override IEnumerable<T> Items
         {
 			get
 			{

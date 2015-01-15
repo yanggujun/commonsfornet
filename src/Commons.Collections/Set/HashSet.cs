@@ -23,7 +23,7 @@ using Commons.Utils;
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public class HashSet<T> : IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
+    public class HashSet<T> : AbstractSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         private readonly object val = new object();
         private readonly HashMap<T, object> map;
@@ -67,63 +67,22 @@ namespace Commons.Collections.Set
                 }
             }
         }
-
-        public void Intersect(IStrictSet<T> other)
-        {
-            other.ValidateNotNull("The other set is null!");
-        }
-
-        public void Union(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Differ(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsSubsetOf(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsProperSubsetOf(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsEqualWith(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsDisjointWith(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Compliment(IStrictSet<T> universe)
-        {
-            throw new NotImplementedException();
-        }
-
-		public void Add(T item)
+		public override void Add(T item)
 		{
             map.Add(item, val);
 		}
 
-		public void Clear()
+		public override void Clear()
 		{
             map.Clear();
 		}
 
-		public bool Contains(T item)
+		public override bool Contains(T item)
 		{
             return map.ContainsKey(item);
 		}
 
-		public void CopyTo(T[] array, int arrayIndex)
+		public override void CopyTo(T[] array, int arrayIndex)
 		{
             array.ValidateNotNull("The input array is null!.");
             var index = arrayIndex;
@@ -133,37 +92,27 @@ namespace Commons.Collections.Set
             }
 		}
 
-		public int Count
+		public override int Count
 		{
             get { return map.Count; }
 		}
 
-		public bool IsReadOnly
-		{
-            get { return false; }
-		}
-
-		public bool Remove(T item)
+		public override bool Remove(T item)
 		{
             return map.Remove(item);
 		}
 
-		public IEnumerator<T> GetEnumerator()
+		public override IEnumerator<T> GetEnumerator()
 		{
             return Items.GetEnumerator();
 		}
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-            return GetEnumerator();
-		}
-
-		public void CopyTo(Array array, int index)
+		void ICollection.CopyTo(Array array, int index)
 		{
             array.ValidateNotNull("The array is null!");
             var itemArray = array as T[];
-            itemArray.Validate(x => x != null, new ArgumentException("The array type is not correct."));
-            CopyTo(itemArray, index);
+			itemArray.Validate(x => x != null, new ArgumentException("The type of the array is not correct."));
+			CopyTo(itemArray, index);
 		}
 
 		public bool IsSynchronized
@@ -176,7 +125,7 @@ namespace Commons.Collections.Set
             get { throw new NotSupportedException("The SyncRoot is not supported in Commons.Collections."); }
 		}
 
-        private IEnumerable<T> Items
+        protected override IEnumerable<T> Items
         {
             get
             {
@@ -186,5 +135,5 @@ namespace Commons.Collections.Set
                 }
             }
         }
-    }
+	}
 }

@@ -15,10 +15,9 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Xunit;
 
 namespace Test.Commons.Collections
@@ -65,6 +64,14 @@ namespace Test.Commons.Collections
 				total++;
 			}
 			Assert.Equal(total, orders.Count);
+		}
+
+		public static void AssertCopyTo<T>(ICollection<T> source)
+		{
+		}
+
+		public static void AssertCopyTo<T>(ICollection source)
+		{
 		}
 	}
 }

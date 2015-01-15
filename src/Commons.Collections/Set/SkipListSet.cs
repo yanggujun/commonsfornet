@@ -24,7 +24,7 @@ using Commons.Utils;
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public sealed class SkipListSet<T> :INavigableSet<T>, ISortedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
+    public sealed class SkipListSet<T> : AbstractSet<T>, INavigableSet<T>, ISortedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         private readonly object val = new object();
         private readonly SkipList<T, object> skipList;
@@ -34,12 +34,12 @@ namespace Commons.Collections.Set
         }
 
         public SkipListSet(IComparer<T> comparer)
-            : this((x1, x2) => comparer.Compare(x1, x2))
+            : this(comparer.Compare)
         {
         }
 
         public SkipListSet(IEnumerable<T> source)
-            : this(Comparer<T>.Default)
+            : this(source, Comparer<T>.Default)
         {
         }
 
@@ -51,11 +51,13 @@ namespace Commons.Collections.Set
         public SkipListSet(IEnumerable<T> source, Comparison<T> comparer)
             : this(comparer)
         {
-            source.ValidateNotNull("Source should not be null.");
-            foreach (var item in source)
-            {
-                Add(item);
-            }
+			if (source != null)
+			{ 
+				foreach (var item in source)
+				{
+					Add(item);
+				}
+			}
         }
 
         public SkipListSet(Comparison<T> comparer)
@@ -83,47 +85,7 @@ namespace Commons.Collections.Set
             return skipList.Floor(item).Key;
         }
 
-        public void Intersect(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Union(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Differ(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsSubsetOf(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsProperSubsetOf(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsEqualWith(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsDisjointWith(IStrictSet<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Compliment(IStrictSet<T> universe)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerator<T> GetEnumerator()
+        public override IEnumerator<T> GetEnumerator()
         {
             return Items.GetEnumerator();
         }
@@ -133,14 +95,14 @@ namespace Commons.Collections.Set
             return GetEnumerator();
         }
 
-        public void CopyTo(Array array, int index)
+        void ICollection.CopyTo(Array array, int index)
         {
             array.ValidateNotNull("The array should not be null.");
             var a = (T[])array;
             CopyTo(a, index);
         }
 
-        public int Count
+        public override int Count
         {
             get { return skipList.Count; }
         }
@@ -175,17 +137,17 @@ namespace Commons.Collections.Set
             get { return skipList.Min.Key; }
         }
 
-        public void Add(T item)
+        public override void Add(T item)
         {
             skipList.Add(item, val);
         }
 
-        public void Clear()
+        public override void Clear()
         {
             skipList.Clear();
         }
 
-        public bool Contains(T item)
+        public override bool Contains(T item)
         {
             return skipList.Contains(item);
         }
@@ -198,7 +160,7 @@ namespace Commons.Collections.Set
             }
         }
 
-        public void CopyTo(T[] array, int arrayIndex)
+        public override void CopyTo(T[] array, int arrayIndex)
         {
             array.ValidateNotNull("The array should not be null.");
             var index = arrayIndex;
@@ -208,17 +170,12 @@ namespace Commons.Collections.Set
             }
         }
 
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
-
-        public bool Remove(T item)
+        public override bool Remove(T item)
         {
             return skipList.Remove(item);
         }
 
-        private IEnumerable<T> Items
+        protected override IEnumerable<T> Items
         {
 			get
 			{

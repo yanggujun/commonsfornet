@@ -91,28 +91,42 @@ namespace Commons.Collections.Set
         public bool IsProperSubsetOf(IStrictSet<T> other)
         {
             var isSubset = IsSubsetOf(other);
-            var isProper = false;
-            if (isSubset && other.Count > Count)
-            {
-                isProper = true;
-            }
-
-            return isProper;
+	        return isSubset && other.Count > Count;
         }
 
         public bool IsEqualWith(IStrictSet<T> other)
         {
-            throw new System.NotImplementedException();
+			return other.IsSubsetOf(this) && IsSubsetOf(other);
         }
 
         public bool IsDisjointWith(IStrictSet<T> other)
         {
-            throw new System.NotImplementedException();
+			other.ValidateNotNull("The other set is null!");
+			var disjoint = true;
+			foreach (var item in other)
+			{
+				if (Contains(item))
+				{
+					disjoint = false;
+					break;
+				}
+			}
+
+			return disjoint;
         }
 
         public void Compliment(IStrictSet<T> universe)
         {
-            throw new System.NotImplementedException();
+			if (!IsSubsetOf(universe))
+			{
+				throw new InvalidOperationException("Cannot calculate the compliment, as the current set is not the subset of the universe set.");
+			}
+			Clear();
+			foreach(var item in universe)
+			{
+				Add(item);
+			}
+			
         }
 
         public abstract void Add(T item);
