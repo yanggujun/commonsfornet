@@ -22,15 +22,15 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
 	[CLSCompliant(true)]
-	public abstract class AbstractMultiMap<K, V> : IMultiMap<K, V>, ICollection<KeyValuePair<K, V>>, ICollection,
-		IReadOnlyMultiMap<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, 
+	public abstract class AbstractMultiValueMap<K, V> : IMultiValueMap<K, V>, ICollection<KeyValuePair<K, V>>, ICollection,
+		IReadOnlyMultiValueMap<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, 
         IEnumerable<KeyValuePair<K, ICollection<V>>>, IEnumerable
 	{
 		private readonly Equator<V> valueEquator;
 
 		protected IDictionary<K, ICollection<V>> Map { get; private set; }
 
-		protected AbstractMultiMap(IDictionary<K, ICollection<V>> map, IEnumerable<KeyValuePair<K, V>> items, Equator<V> valueEquator)
+		protected AbstractMultiValueMap(IDictionary<K, ICollection<V>> map, IEnumerable<KeyValuePair<K, V>> items, Equator<V> valueEquator)
 		{
 			this.valueEquator = valueEquator;
 			this.Map = map;
@@ -251,6 +251,16 @@ namespace Commons.Collections.Map
 		IEnumerator<KeyValuePair<K, ICollection<V>>> IEnumerable<KeyValuePair<K, ICollection<V>>>.GetEnumerator()
 		{
 			return CollectionItems.GetEnumerator();
+		}
+
+		IEnumerable<K> IReadOnlyMultiValueMap<K, V>.Keys
+		{
+			get { return Keys; }
+		}
+
+		IEnumerable<V> IReadOnlyMultiValueMap<K, V>.Values
+		{
+			get { return Values; }
 		}
 
 		private IEnumerable<KeyValuePair<K, V>> SingleItems

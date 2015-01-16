@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public interface IMultiMap<K, V> : ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+    public interface IMultiValueMap<K, V> : ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
 		void Add(K key, V value);
 

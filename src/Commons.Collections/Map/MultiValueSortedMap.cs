@@ -15,26 +15,35 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-
+using Commons.Utils;
 namespace Commons.Collections.Map
 {
 	[CLSCompliant(true)]
-	public interface IReadOnlyMultiMap<K, V> : IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+	public class MultiValueSortedMap<K, V> : AbstractMultiValueMap<K, V>, IMultiValueMap<K, V>, IReadOnlyMultiValueMap<K, V>
 	{
-		bool ContainsKey(K key);
+		public MultiValueSortedMap() : this(Comparer<K>.Default)
+		{
+		}
 
-        bool ContainsValue(K key, V value);
+		public MultiValueSortedMap(IComparer<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default.Equals)
+		{
+		}
 
-		bool TryGetValue(K key, out ICollection<V> values);
+		public MultiValueSortedMap(IComparer<K> keyComparer, Equator<V> valueEquator) : this(keyComparer.Compare, valueEquator)
+		{
+		}
 
-        int CountOf(K key);
+		public MultiValueSortedMap(Comparison<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default.Equals)
+		{
+		}
 
-		ICollection<V> this[K key] { get; }
+		public MultiValueSortedMap(Comparison<K> keyComparer, Equator<V> valueEquator) : this(null, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
+		{
+		}
 
-		ICollection<K> Keys { get; }
-
-		ICollection<V> Values { get; }
+		public MultiValueSortedMap(IEnumerable<KeyValuePair<K, V>> items, ISortedMap<K, ICollection<V>> map, Equator<V> valueEquator) : base(map, items, valueEquator)
+		{
+		}
 	}
 }

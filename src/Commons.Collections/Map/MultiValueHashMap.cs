@@ -19,30 +19,30 @@ using Commons.Utils;
 
 namespace Commons.Collections.Map
 {
-	public class MultiHashMap<K, V> : AbstractMultiMap<K, V>, IMultiMap<K, V>
+	public class MultiValueHashMap<K, V> : AbstractMultiValueMap<K, V>, IMultiValueMap<K, V>, IReadOnlyMultiValueMap<K, V>
 	{
-		public MultiHashMap() : base(new HashMap<K, ICollection<V>>(), null, EqualityComparer<V>.Default.Equals)
+		public MultiValueHashMap() : base(new HashMap<K, ICollection<V>>(), null, EqualityComparer<V>.Default.Equals)
 		{
 		}
 
-		public MultiHashMap(int keyCapacity) : this(keyCapacity, EqualityComparer<K>.Default, EqualityComparer<V>.Default)
+		public MultiValueHashMap(int keyCapacity) : this(keyCapacity, EqualityComparer<K>.Default, EqualityComparer<V>.Default)
 		{
 		}
 
-		public MultiHashMap(int keyCapacity, IEqualityComparer<K> keyCompaer) : this(keyCapacity, keyCompaer, EqualityComparer<V>.Default)
+		public MultiValueHashMap(int keyCapacity, IEqualityComparer<K> keyCompaer) : this(keyCapacity, keyCompaer, EqualityComparer<V>.Default)
 		{
 		}
 
-		public MultiHashMap(IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer) 
+		public MultiValueHashMap(IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer) 
 			: base(new HashMap<K, ICollection<V>>(keyComparer.Equals), null, valueComparer.Equals)
 		{
 		}
 
-		public MultiHashMap(int keyCapacity, IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer) 
+		public MultiValueHashMap(int keyCapacity, IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer) 
 			: this(null, keyCapacity, keyComparer.Equals, valueComparer.Equals)
 		{
 		}
-		public MultiHashMap(IEnumerable<KeyValuePair<K, V>> items, int keyCapacity, Equator<K> keyEquator, Equator<V> valueEquator) 
+		public MultiValueHashMap(IEnumerable<KeyValuePair<K, V>> items, int keyCapacity, Equator<K> keyEquator, Equator<V> valueEquator) 
 			: base(new HashMap<K, ICollection<V>>(keyCapacity, keyEquator), items, valueEquator)
 		{
 		}
