@@ -20,8 +20,8 @@ namespace Commons.Collections.Map
 {
 	internal class MapEnumerator : IDictionaryEnumerator
 	{
-		private IDictionary map;
-		private IDictionaryEnumerator iter;
+		private readonly IDictionary map;
+		private readonly IDictionaryEnumerator iter;
 		public MapEnumerator(IDictionary map)
 		{
 			this.map = map;
