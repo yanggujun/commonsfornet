@@ -29,8 +29,7 @@ namespace Commons.Collections.Map
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
     [CLSCompliant(true)]
-    public abstract class AbstractHashMap<K, V> 
-        : IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, ICollection,
+    public abstract class AbstractHashMap<K, V> : IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, ICollection,
         IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         private const int MaxCapacity = 1 << 30;

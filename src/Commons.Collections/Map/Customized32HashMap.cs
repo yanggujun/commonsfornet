@@ -22,7 +22,7 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class Customized32HashMap<K, V> : AbstractHashMap<K, V>, IDictionary<K, V>
+    public class Customized32HashMap<K, V> : AbstractHashMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
     {
         private const int DefaultCapacity = 64;
 

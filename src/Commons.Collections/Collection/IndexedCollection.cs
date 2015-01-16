@@ -34,7 +34,7 @@ namespace Commons.Collections.Collection
     [CLSCompliant(true)]
     public class IndexedCollection<K, V> : AbstractCollectionDecorator<V>
     {
-        private readonly IMultiMap<K, V> map;
+        private readonly IMultiValueMap<K, V> map;
         private readonly Transformer<V, K> transform;
 
         public IndexedCollection(ICollection<V> valueCollection, Transformer<V, K> transform) : base(valueCollection)
@@ -42,7 +42,7 @@ namespace Commons.Collections.Collection
             this.transform = transform;
         }
 
-        public IndexedCollection(ICollection<V> valueCollection, IMultiMap<K, V> map, Transformer<V, K> transform)
+        public IndexedCollection(ICollection<V> valueCollection, IMultiValueMap<K, V> map, Transformer<V, K> transform)
             : base(valueCollection)
         {
             this.transform = transform;

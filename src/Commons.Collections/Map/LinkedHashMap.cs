@@ -21,7 +21,7 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class LinkedHashMap<K, V> : AbstractLinkedMap<K, V>, IOrderedMap<K, V>, IDictionary<K, V>
+    public class LinkedHashMap<K, V> : AbstractLinkedMap<K, V>, IOrderedMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
     {
         private const int DefaultCapacity = 16;
 
