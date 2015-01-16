@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET.
+﻿// Copyright CommonsForNET 2014.
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -14,9 +14,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Commons.Collections.BidiMap
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+using Commons.Collections.Set;
+
+namespace Commons.Collections.Map
 {
-    public interface IBidiMap<K, V>
-    {
-    }
+	[CLSCompliant(true)]
+	public interface IReadOnlyBimap<K, V> : IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+	{
+		bool ContainsKey(K key);
+
+		bool ContainsValue(V value);
+
+		bool TryGetValue(K key, out V value);
+
+		bool TryGetKey(V value, out K key);
+
+		V ValueOf(K key);
+
+		K KeyOf(V value);
+
+		IReadOnlyStrictSet<K> KeySet();
+
+		IReadOnlyStrictSet<V> ValueSet();
+	}
 }
