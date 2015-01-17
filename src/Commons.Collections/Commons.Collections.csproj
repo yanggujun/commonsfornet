@@ -60,8 +60,10 @@
     <Compile Include="Bag\AbstractSortedBagDecorator.cs" />
     <Compile Include="Bag\HashBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
+    <Compile Include="Map\AbstractBimap.cs" />
     <Compile Include="Map\AbstractHashMap.cs" />
     <Compile Include="Map\Customized32HashMap.cs" />
+    <Compile Include="Map\HashBimap.cs" />
     <Compile Include="Map\HashMap.cs" />
     <Compile Include="Map\IBimap.cs" />
     <Compile Include="Map\INavigableMap.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="Map\ReferenceMap.cs" />
     <Compile Include="Map\SkipList.cs" />
     <Compile Include="Map\SkipListMap.cs" />
+    <Compile Include="Map\SortedBimap.cs" />
     <Compile Include="Queue\BoundedQueue.cs" />
     <Compile Include="Collection\CompositeCollection.cs" />
     <Compile Include="Bag\IBag.cs" />

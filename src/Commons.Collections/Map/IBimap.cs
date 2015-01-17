@@ -24,11 +24,24 @@ namespace Commons.Collections.Map
 	[CLSCompliant(true)]
 	public interface IBimap<K, V> : ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
 	{
+        /// <summary>
+        /// Adds a key value mapping to the bimap. The operation is not allowed when the key or value already exits in the bimap.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
 		void Add(K key, V value);
 
-		void RemoveKey(K key);
+        /// <summary>
+        /// No matter whether the key or value exists in the bimap, the key and value is added to the bimap.
+        /// If the key or value already exits in the map, remove the original key or value in the bimap.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        void Enforce(K key, V value);
 
-		void RemoveValue(V value);
+		bool RemoveKey(K key);
+
+		bool RemoveValue(V value);
 
 		bool ContainsKey(K key);
 

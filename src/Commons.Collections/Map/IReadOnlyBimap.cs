@@ -18,8 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-using Commons.Collections.Set;
-
 namespace Commons.Collections.Map
 {
 	[CLSCompliant(true)]
@@ -36,9 +34,5 @@ namespace Commons.Collections.Map
 		V ValueOf(K key);
 
 		K KeyOf(V value);
-
-		IReadOnlyStrictSet<K> KeySet();
-
-		IReadOnlyStrictSet<V> ValueSet();
 	}
 }
