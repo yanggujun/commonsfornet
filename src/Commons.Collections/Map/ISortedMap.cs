@@ -32,7 +32,7 @@ namespace Commons.Collections.Map
         /// <summary>
         /// Puts the keys of the map to a tree set.
         /// </summary>
-        ISortedSet<K> KeySet { get; }
+        ISortedSet<K> SortedKeySet { get; }
 
         /// <summary>
         /// Return a key value pair whose key is the maximum in the map.

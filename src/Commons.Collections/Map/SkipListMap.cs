@@ -70,7 +70,7 @@ namespace Commons.Collections.Map
             return skipList.Floor(key);
 		}
 
-		public ISortedSet<K> KeySet
+		public ISortedSet<K> SortedKeySet
 		{
             get { return NavigableKeySet; }
 		}
@@ -245,7 +245,7 @@ namespace Commons.Collections.Map
 			return GetEnumerator();
 		}
 
-		public void CopyTo(Array array, int index)
+		void ICollection.CopyTo(Array array, int index)
 		{
             array.ValidateNotNull("The array to copy to is null.");
             var itemArray = array as KeyValuePair<K, V>[];

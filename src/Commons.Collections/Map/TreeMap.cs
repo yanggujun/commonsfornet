@@ -292,7 +292,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public void Remove(object key)
+        void IDictionary.Remove(object key)
         {
             llrbTree.Remove((K)key);
         }
@@ -322,7 +322,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public void CopyTo(Array array, int index)
+        void ICollection.CopyTo(Array array, int index)
         {
             KeyValuePair<K, V>[] kvps = (KeyValuePair<K, V>[])array;
             this.CopyTo(kvps, index);
@@ -348,7 +348,7 @@ namespace Commons.Collections.Map
             get { return this.Values; }
         }
 
-        public ISortedSet<K> KeySet
+        public ISortedSet<K> SortedKeySet
         {
             get
             {

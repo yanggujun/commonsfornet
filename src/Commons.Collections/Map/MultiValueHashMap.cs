@@ -42,6 +42,7 @@ namespace Commons.Collections.Map
 			: this(null, keyCapacity, keyComparer.Equals, valueComparer.Equals)
 		{
 		}
+
 		public MultiValueHashMap(IEnumerable<KeyValuePair<K, V>> items, int keyCapacity, Equator<K> keyEquator, Equator<V> valueEquator) 
 			: base(new HashMap<K, ICollection<V>>(keyCapacity, keyEquator), items, valueEquator)
 		{

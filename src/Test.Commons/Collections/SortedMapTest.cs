@@ -736,7 +736,7 @@ namespace Test.Commons.Collections
 
 		private void SortedMapKeySet(ISortedMap<Order, Bill> orderMap, Dictionary<Order, Bill> orderDict)
 		{
-            var set = orderMap.KeySet;
+            var set = orderMap.SortedKeySet;
             foreach (var item in set)
             {
                 Assert.True(orderDict.ContainsKey(item));

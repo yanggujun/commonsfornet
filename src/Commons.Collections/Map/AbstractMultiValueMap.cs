@@ -232,7 +232,7 @@ namespace Commons.Collections.Map
 			return GetEnumerator();
 		}
 
-		public void CopyTo(Array array, int index)
+		void ICollection.CopyTo(Array array, int index)
 		{
 			var theArray = array as KeyValuePair<K, V>[];
 			CopyTo(theArray, index);
