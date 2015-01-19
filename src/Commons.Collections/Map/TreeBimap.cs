@@ -18,40 +18,39 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Map
 {
-    public class SortedBimap<K, V> : AbstractBimap<K, V>, IBimap<K, V>, INavigableMap<K, V>, 
-        ISortedMap<K, V>, IDictionary<K, V>, IReadOnlyBimap<K, V>, IReadOnlyDictionary<K, V>
+    public class TreeBimap<K, V> : AbstractBimap<K, V>, IBimap<K, V>, IDictionary<K, V>, IReadOnlyBimap<K, V>, IReadOnlyDictionary<K, V>
     {
         private readonly Comparison<K> keyComparer;
         private readonly Comparison<V> valueComparer;
 
-        public SortedBimap()
+        public TreeBimap()
             : this(Comparer<K>.Default.Compare, Comparer<V>.Default.Compare)
         {
         }
 
-        public SortedBimap(Comparison<K> keyComparer)
+        public TreeBimap(Comparison<K> keyComparer)
             : this(keyComparer, Comparer<V>.Default.Compare)
         {
         }
 
-        public SortedBimap(IComparer<K> keyComparer)
+        public TreeBimap(IComparer<K> keyComparer)
             : this(keyComparer, Comparer<V>.Default)
         {
         }
 
-        public SortedBimap(IComparer<K> keyComparer, IComparer<V> valueComparer)
+        public TreeBimap(IComparer<K> keyComparer, IComparer<V> valueComparer)
             : this(keyComparer.Compare, valueComparer.Compare)
         {
         }
 
-        public SortedBimap(Comparison<K> keyComparer, Comparison<V> valueComparer)
+        public TreeBimap(Comparison<K> keyComparer, Comparison<V> valueComparer)
             : base(new TreeMap<K, V>(keyComparer), new TreeMap<V, K>(valueComparer))
         {
             this.keyComparer = keyComparer;
             this.valueComparer = valueComparer;
         }
 
-        public SortedBimap(Comparison<K> keyComparer, Comparison<V> valueComparer, IBimap<K, V> bimap) 
+        public TreeBimap(Comparison<K> keyComparer, Comparison<V> valueComparer, IBimap<K, V> bimap) 
             : this(keyComparer, valueComparer)
         {
             if (bimap != null)
@@ -65,7 +64,7 @@ namespace Commons.Collections.Map
 
         public override IBimap<V, K> Inverse()
         {
-            var bimap = new SortedBimap<V, K>(valueComparer, keyComparer);
+            var bimap = new TreeBimap<V, K>(valueComparer, keyComparer);
             foreach (var item in ValueKey)
             {
                 bimap.Add(item);

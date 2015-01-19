@@ -77,11 +77,11 @@
     <Compile Include="Map\AbstractMultiValueMap.cs" />
     <Compile Include="Map\MapEnumerator.cs" />
     <Compile Include="Map\MultiValueHashMap.cs" />
-    <Compile Include="Map\MultiValueSortedMap.cs" />
+    <Compile Include="Map\MultiValueTreeMap.cs" />
     <Compile Include="Map\ReferenceMap.cs" />
     <Compile Include="Map\SkipList.cs" />
     <Compile Include="Map\SkipListMap.cs" />
-    <Compile Include="Map\SortedBimap.cs" />
+    <Compile Include="Map\TreeBimap.cs" />
     <Compile Include="Queue\BoundedQueue.cs" />
     <Compile Include="Collection\CompositeCollection.cs" />
     <Compile Include="Bag\IBag.cs" />

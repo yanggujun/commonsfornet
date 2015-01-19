@@ -20,29 +20,29 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
 	[CLSCompliant(true)]
-	public class MultiValueSortedMap<K, V> : AbstractMultiValueMap<K, V>, IMultiValueMap<K, V>, IReadOnlyMultiValueMap<K, V>
+	public class MultiValueTreeMap<K, V> : AbstractMultiValueMap<K, V>, IMultiValueMap<K, V>, IReadOnlyMultiValueMap<K, V>
 	{
-		public MultiValueSortedMap() : this(Comparer<K>.Default)
+		public MultiValueTreeMap() : this(Comparer<K>.Default)
 		{
 		}
 
-		public MultiValueSortedMap(IComparer<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default.Equals)
+		public MultiValueTreeMap(IComparer<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default.Equals)
 		{
 		}
 
-		public MultiValueSortedMap(IComparer<K> keyComparer, Equator<V> valueEquator) : this(keyComparer.Compare, valueEquator)
+		public MultiValueTreeMap(IComparer<K> keyComparer, Equator<V> valueEquator) : this(keyComparer.Compare, valueEquator)
 		{
 		}
 
-		public MultiValueSortedMap(Comparison<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default.Equals)
+		public MultiValueTreeMap(Comparison<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default.Equals)
 		{
 		}
 
-		public MultiValueSortedMap(Comparison<K> keyComparer, Equator<V> valueEquator) : this(null, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
+		public MultiValueTreeMap(Comparison<K> keyComparer, Equator<V> valueEquator) : this(null, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
 		{
 		}
 
-		public MultiValueSortedMap(IEnumerable<KeyValuePair<K, V>> items, ISortedMap<K, ICollection<V>> map, Equator<V> valueEquator) : base(map, items, valueEquator)
+		private MultiValueTreeMap(IEnumerable<KeyValuePair<K, V>> items, ISortedMap<K, ICollection<V>> map, Equator<V> valueEquator) : base(map, items, valueEquator)
 		{
 		}
 	}
