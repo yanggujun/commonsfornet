@@ -54,15 +54,133 @@ namespace Test.Commons.Collections
                 Assert.True(simpleSet.Contains(i));
             }
             Assert.False(simpleSet.Contains(101));
+
+            var defaultSet = new TreeSet<int>();
+            for (var i = 0; i < 100; i++)
+            {
+                defaultSet.Add(i);
+            }
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.True(defaultSet.Contains(i));
+            }
+            Assert.False(defaultSet.Contains(101));
+
+            var orderSet2 = new TreeSet<Order>(orderList, (x1, x2) => x1.Id - x2.Id);
+            foreach (var item in orderList)
+            {
+                Assert.True(orderSet2.Contains(item));
+            }
+
+            var orderSet3 = new TreeSet<Order>((x1, x2) => x1.Id - x2.Id);
+            foreach (var item in orderList)
+            {
+                orderSet3.Add(item);
+            }
+
+            foreach(var item in orderSet3)
+            {
+                Assert.True(orderSet3.Contains(item));
+            }
+
+            var orderSet4 = new TreeSet<Order>(new OrderComparer());
+            foreach (var item in orderList)
+            {
+                orderSet4.Add(item);
+            }
+
+            foreach(var item in orderSet4)
+            {
+                Assert.True(orderSet4.Contains(item));
+            }
+        }
+
+        [Fact]
+        public void TestSkipListSetContructor()
+        {
+            Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
+            List<Order> orderList = new List<Order>();
+            for (var i = 0; i < 100; i++)
+            {
+                Order order = new Order();
+                order.Id = randomValue.Next();
+                order.Name = order.Id + "(*^&^%";
+                if (!orderList.Contains(order, new OrderEqualityComparer()))
+                {
+                    orderList.Add(order);
+                }
+            }
+            var orderSet = new SkipListSet<Order>(orderList, new OrderComparer());
+            foreach (var item in orderList)
+            {
+                Assert.True(orderSet.Contains(item));
+            }
+
+            var simpleSet = new SkipListSet<int>(Enumerable.Range(0, 100));
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.True(simpleSet.Contains(i));
+            }
+            Assert.False(simpleSet.Contains(101));
+
+            var defaultSet = new SkipListSet<int>();
+            for (var i = 0; i < 100; i++)
+            {
+                defaultSet.Add(i);
+            }
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.True(defaultSet.Contains(i));
+            }
+            Assert.False(defaultSet.Contains(101));
+
+            var orderSet2 = new SkipListSet<Order>(orderList, (x1, x2) => x1.Id - x2.Id);
+            foreach (var item in orderList)
+            {
+                Assert.True(orderSet2.Contains(item));
+            }
+
+            var orderSet3 = new SkipListSet<Order>((x1, x2) => x1.Id - x2.Id);
+            foreach (var item in orderList)
+            {
+                orderSet3.Add(item);
+            }
+
+            foreach(var item in orderSet3)
+            {
+                Assert.True(orderSet3.Contains(item));
+            }
+
+            var orderSet4 = new SkipListSet<Order>(new OrderComparer());
+            foreach (var item in orderList)
+            {
+                orderSet4.Add(item);
+            }
+
+            foreach(var item in orderSet4)
+            {
+                Assert.True(orderSet4.Contains(item));
+            }
         }
 
         [Fact]
         public void TestTreeSetAdd()
         {
+            var orderSet = new TreeSet<Order>(new OrderComparer());
+            SortedSetAdd(orderSet);
+        }
+
+        [Fact]
+        public void TestSkipListSetAdd()
+        {
+            var orderSet = new SkipListSet<Order>(new OrderComparer());
+            SortedSetAdd(orderSet);
+        }
+
+        private void SortedSetAdd(ISortedSet<Order> orderSet)
+        {
             Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
             List<Order> orderList = new List<Order>();
-            TreeSet<Order> orderSet = new TreeSet<Order>(new OrderComparer());
-
             for (var i = 0; i < 1000; )
             {
                 var next = randomValue.Next();
@@ -93,10 +211,21 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestTreeSetRemove()
         {
+            var orderSet = new TreeSet<Order>(new OrderComparer());
+            SortedSetRemove(orderSet);
+        }
+
+        [Fact]
+        public void TestSkipListSetRemove()
+        {
+            var orderSet = new SkipListSet<Order>(new OrderComparer());
+            SortedSetRemove(orderSet);
+        }
+
+        private void SortedSetRemove(ISortedSet<Order> orderSet)
+        {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
             List<Order> orderlist = new List<Order>();
-            TreeSet<Order> orderSet = new TreeSet<Order>(new OrderComparer());
-
             for (var i = 0; i < 1000; )
             {
                 var next = r.Next();
@@ -128,10 +257,21 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestTreeSetRemoveMax()
         {
+            TreeSet<Order> orderSet = new TreeSet<Order>(new OrderComparer());
+            SortedSetRemoveMax(orderSet);
+        }
+
+        [Fact]
+        public void TestSkipListSetRemoveMax()
+        {
+            var orderSet = new SkipListSet<Order>(new OrderComparer());
+            SortedSetRemoveMax(orderSet);
+        }
+
+        private void SortedSetRemoveMax(ISortedSet<Order> orderSet)
+        {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
             List<Order> orderlist = new List<Order>();
-            TreeSet<Order> orderSet = new TreeSet<Order>(new OrderComparer());
-
             for (var i = 0; i < 200; )
             {
                 var next = r.Next();
@@ -167,10 +307,21 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestTreeSetRemoveMin()
         {
+            TreeSet<Order> orderSet = new TreeSet<Order>(new OrderComparer());
+            TreeSetRemoveMin(orderSet);
+        }
+
+        [Fact]
+        public void TestSkipListSetRemoveMin()
+        {
+            var orderSet = new SkipListSet<Order>(new OrderComparer());
+            TreeSetRemoveMin(orderSet);
+        }
+
+        private void TreeSetRemoveMin(ISortedSet<Order> orderSet)
+        {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
             List<Order> orderlist = new List<Order>();
-            TreeSet<Order> orderSet = new TreeSet<Order>(new OrderComparer());
-
             for (var i = 0; i < 200; )
             {
                 var next = r.Next();
@@ -206,8 +357,20 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestTreeSetCopyTo()
         {
+            var orderSet = new TreeSet<Order>(new OrderComparer());
+            SortedSetCopyTo(orderSet);
+        }
+
+        [Fact]
+        public void TestSkipListSetCopyTo()
+        {
+            var orderSet = new SkipListSet<Order>(new OrderComparer());
+            SortedSetCopyTo(orderSet);
+        }
+
+        private void SortedSetCopyTo(ISortedSet<Order> orderSet)
+        {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
-            TreeSet<Order> orderSet = new TreeSet<Order>(new OrderComparer());
             for (var i = 0; i < 1000; )
             {
                 var o = new Order();
@@ -234,10 +397,21 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestTreeSetEnumerator()
         {
+            var orderSet = new TreeSet<Order>(new OrderComparer());
+            SortedSetEnumerator(orderSet);
+        }
+
+        [Fact]
+        public void TestSkipListSetEnumerator()
+        {
+            var orderSet = new SkipListSet<Order>(new OrderComparer());
+            SortedSetEnumerator(orderSet);
+        }
+
+        private void SortedSetEnumerator(ISortedSet<Order> orderSet)
+        {
             Random r = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
             List<Order> orderlist = new List<Order>();
-            TreeSet<Order> orderSet = new TreeSet<Order>(new OrderComparer());
-
             for (var i = 0; i < 200; )
             {
                 var next = r.Next();
@@ -266,7 +440,19 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestTreeSetNoItem()
         {
-            TreeSet<int> set = new TreeSet<int>();
+            var set = new TreeSet<int>();
+            SortedSetNoItem(set);
+        }
+
+        [Fact]
+        public void TestSkipListSetNoItem()
+        {
+            var set = new SkipListSet<int>();
+            SortedSetNoItem(set);
+        }
+
+        private void SortedSetNoItem(ISortedSet<int> set)
+        {
             var index = 0;
             foreach (var item in set)
             {
@@ -284,7 +470,19 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestTreeSetExceptions()
         {
-            var set = new TreeSet<Order>();
+            var set = new TreeSet<Order>(new OrderComparer());
+            SortedSetExceptions(set);
+        }
+
+        [Fact]
+        public void TestSkipListSetExceptions()
+        {
+            var set = new SkipListSet<Order>(new OrderComparer());
+            SortedSetExceptions(set);
+        }
+
+        private void SortedSetExceptions(ISortedSet<Order> set)
+        {
             Assert.Throws(typeof(ArgumentNullException), () => set.Add(null));
             Assert.Throws(typeof(ArgumentNullException), () => set.Remove(null));
             Assert.Throws(typeof(ArgumentNullException), () => set.Contains(null));
