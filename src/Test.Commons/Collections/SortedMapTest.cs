@@ -1232,9 +1232,21 @@ namespace Test.Commons.Collections
 		}
 
 		[Fact]
-		public void TestNavigableSetHigher()
+		public void TestNavigableTreeSetHigher()
 		{
 			var set = new TreeSet<int>();
+            NavigableSetHigher(set);
+		}
+
+		[Fact]
+		public void TestNavigableSkipListSetHigher()
+		{
+			var set = new SkipListSet<int>();
+            NavigableSetHigher(set);
+		}
+
+        private void NavigableSetHigher(INavigableSet<int> set)
+        {
 			for (var i = 0; i < 10000; i++)
 			{
 				set.Add(i * 5);
@@ -1249,12 +1261,24 @@ namespace Test.Commons.Collections
 
 			Assert.Throws(typeof(ArgumentException), () => set.Higher(9999 * 5));
 			Assert.Throws(typeof(ArgumentException), () => set.Higher(10000 * 5));
-		}
+        }
 
 		[Fact]
-		public void TestNavigableSetCeiling()
+		public void TestNavigableTreeSetCeiling()
 		{
 			var set = new TreeSet<int>();
+            NavigableSetCeiling(set);
+        }
+
+		[Fact]
+		public void TestNavigableSkipListSetCeiling()
+		{
+			var set = new SkipListSet<int>();
+            NavigableSetCeiling(set);
+        }
+
+        private void NavigableSetCeiling(INavigableSet<int> set)
+        {
 			for (var i = 0; i < 10000; i++)
 			{
 				set.Add(i * 5);
@@ -1271,9 +1295,21 @@ namespace Test.Commons.Collections
 		}
 
 		[Fact]
-		public void TestNavigableSetLower()
+		public void TestNavigableTreeSetLower()
 		{
 			var set = new TreeSet<int>();
+            NavigableSetLower(set);
+		}
+
+		[Fact]
+		public void TestNavigableSkipListSetLower()
+		{
+			var set = new SkipListSet<int>();
+            NavigableSetLower(set);
+		}
+
+        private void NavigableSetLower(INavigableSet<int> set)
+        {
 			for (var i = 0; i < 10000; i++)
 			{
 				set.Add(i * 5);
@@ -1289,12 +1325,24 @@ namespace Test.Commons.Collections
 
 			Assert.Throws(typeof(ArgumentException), () => set.Lower(0));
 			Assert.Throws(typeof(ArgumentException), () => set.Lower(-100));
+        }
+
+		[Fact]
+		public void TestNavigableTreeSetFloor()
+		{
+			var set = new TreeSet<int>();
+            NavigableSetFloor(set);
 		}
 
 		[Fact]
-		public void TestNavigableSetFloor()
+		public void TestNavigableSkipListSetFloor()
 		{
-			var set = new TreeSet<int>();
+			var set = new SkipListSet<int>();
+            NavigableSetFloor(set);
+		}
+
+        private void NavigableSetFloor(INavigableSet<int> set)
+        {
 			for (var i = 0; i < 10000; i++)
 			{
 				set.Add(i * 5);
@@ -1309,7 +1357,7 @@ namespace Test.Commons.Collections
 			}
 
 			Assert.Throws(typeof(ArgumentException), () => set.Floor(-100));
-		}
+        }
 
 		[Fact]
 		public void TestEmptyNavigableMap()
@@ -1337,11 +1385,23 @@ namespace Test.Commons.Collections
 		public void TestEmptyNavigableSet()
 		{
 			var set = new TreeSet<int>();
+            EmptyNavigableSet(set);
+		}
+
+        [Fact]
+        public void TEstEmptyNavigableSkipListSet()
+        {
+            var set = new SkipListSet<int>();
+            EmptyNavigableSet(set);
+        }
+
+        private void EmptyNavigableSet(INavigableSet<int> set)
+        {
 			Assert.Throws(typeof(InvalidOperationException), () => set.Higher(0));
 			Assert.Throws(typeof(InvalidOperationException), () => set.Ceiling(0));
 			Assert.Throws(typeof(InvalidOperationException), () => set.Lower(0));
 			Assert.Throws(typeof(InvalidOperationException), () => set.Floor(0));
-		}
+        }
 
 		private void InitializeMap(ISortedMap<Order, Bill> map, Dictionary<Order, Bill> dict)
 		{
