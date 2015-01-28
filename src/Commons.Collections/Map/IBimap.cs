@@ -32,7 +32,7 @@ namespace Commons.Collections.Map
 		void Add(K key, V value);
 
         /// <summary>
-        /// No matter whether the key or value exists in the bimap, the key and value is added to the bimap.
+        /// No matter whether the key or value exists in the bimap, the key and value are added to the bimap.
         /// If the key or value already exits in the map, remove the original key or value in the bimap.
         /// </summary>
         /// <param name="key">The key.</param>

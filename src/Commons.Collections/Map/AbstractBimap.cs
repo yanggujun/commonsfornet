@@ -55,14 +55,14 @@ namespace Commons.Collections.Map
         {
             key.ValidateNotNull("The key is null!");
             value.ValidateNotNull("The value is null!");
-            if (KeyValue.ContainsKey(key))
-            {
-                KeyValue.Remove(key);
-            }
+			if (ContainsKey(key))
+			{
+				RemoveKey(key);
+			}
 
-            if (ValueKey.ContainsKey(value))
+            if (ContainsValue(value))
             {
-                ValueKey.Remove(value);
+				RemoveValue(value);
             }
 
             KeyValue.Add(key, value);
@@ -174,10 +174,13 @@ namespace Commons.Collections.Map
             ValueKey.Clear();
         }
 
-        public bool Contains(KeyValuePair<K, V> item)
-        {
-            return KeyValue.Contains(item) && ValueKey.Contains(new KeyValuePair<V, K>(item.Value, item.Key));
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		/// <remarks>The method returns true only when key and value of the <paramref name="item"/> exist as a pair in the bimap.</remarks>
+		public abstract bool Contains(KeyValuePair<K, V> item);
 
         public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
         {
@@ -222,12 +225,12 @@ namespace Commons.Collections.Map
             CopyTo(itemArray, index);
         }
 
-        public bool IsSynchronized
+        bool ICollection.IsSynchronized
         {
             get { return false; }
         }
 
-        public object SyncRoot
+        object ICollection.SyncRoot
         {
             get { throw new NotSupportedException("The SyncRoot is not supported in the Commons.Collections."); }
         }
@@ -253,15 +256,18 @@ namespace Commons.Collections.Map
             get { return ValueOf(key); }
             set
             {
+				key.ValidateNotNull("The key is null!");
+				value.ValidateNotNull("The value is null!");
                 if (!KeyValue.ContainsKey(key))
                 {
                     throw new KeyNotFoundException("The key is not found in the bimap.");
                 }
-                if (!ValueKey.ContainsKey(value))
-                {
-                    RemoveKey(key);
-                    Add(key, value);
-                }
+				if (ValueKey.ContainsKey(value))
+				{
+					throw new InvalidOperationException("The value to update already exists in the bimap.");
+				}
+				RemoveKey(key);
+                Add(key, value);
             }
         }
 
@@ -280,14 +286,14 @@ namespace Commons.Collections.Map
             get { return ValueSet(); }
         }
 
-        public void Add(object key, object value)
+        void IDictionary.Add(object key, object value)
         {
             key.ValidateNotNull("The key is null!");
             value.ValidateNotNull("The value is null!");
             Add((K)key, (V)value);
         }
 
-        public bool Contains(object key)
+        bool IDictionary.Contains(object key)
         {
             key.ValidateNotNull("The key is null!");
             return KeyValue.ContainsKey((K)key);
@@ -298,7 +304,7 @@ namespace Commons.Collections.Map
             return new MapEnumerator(this);
         }
 
-        public bool IsFixedSize
+        bool IDictionary.IsFixedSize
         {
             get { return false; }
         }
@@ -308,7 +314,7 @@ namespace Commons.Collections.Map
             get { return new List<K>(KeySet()); }
         }
 
-        public void Remove(object key)
+        void IDictionary.Remove(object key)
         {
             key.ValidateNotNull("The key is null!");
             Remove((K)key);
@@ -319,7 +325,7 @@ namespace Commons.Collections.Map
             get { return new List<V>(ValueSet()); }
         }
 
-        public object this[object key]
+        object IDictionary.this[object key]
         {
             get
             {

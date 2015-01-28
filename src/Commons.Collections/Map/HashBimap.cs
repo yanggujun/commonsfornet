@@ -32,20 +32,54 @@ namespace Commons.Collections.Map
         {
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="keyComparer"></param>
+		/// <remarks>If the <typeparamref name="K"/> is the same with <typeparamref name="V"/>, need to use named 
+		/// arguments to specify it's a <paramref name="keyComparer"/></remarks>
         public HashBimap(IEqualityComparer<K> keyComparer)
             : this(keyComparer.Equals, EqualityComparer<V>.Default.Equals)
         {
         }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="valueComparer"></param>
+		/// <remarks>If the <typeparamref name="V"/> is the same with <typeparamref name="K"/>, need to use named 
+		/// arguments to specify it's a <paramref name="valueComparer"/></remarks>
+		public HashBimap(IEqualityComparer<V> valueComparer) 
+			: this(EqualityComparer<K>.Default.Equals, valueComparer.Equals)
+		{
+		}
 
         public HashBimap(IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer)
             : this(keyComparer.Equals, valueComparer.Equals)
         {
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="keyEquator"></param>
+		/// <remarks>If the <typeparamref name="K"/> is the same with <typeparamref name="V"/>, need to use named 
+		/// arguments to specify it's a <paramref name="keyEquator"/></remarks>
         public HashBimap(Equator<K> keyEquator)
             : this(keyEquator, EqualityComparer<V>.Default.Equals)
         {
         }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="valueEquator"></param>
+		/// <remarks>If the <typeparamref name="V"/> is the same with <typeparamref name="K"/>, need to use named 
+		/// arguments to specify it's a <paramref name="valueEquator"/></remarks>
+		public HashBimap(Equator<V> valueEquator) 
+			: this(EqualityComparer<K>.Default.Equals, valueEquator)
+		{
+		}
 
         public HashBimap(Equator<K> keyEquator, Equator<V> valueEquator)
             : base(new HashMap<K, V>(keyEquator), new HashMap<V, K>(valueEquator))
@@ -77,6 +111,12 @@ namespace Commons.Collections.Map
                 }
             }
         }
+
+		public override bool Contains(KeyValuePair<K, V> item)
+		{
+			return KeyValue.ContainsKey(item.Key) && valueEquator(item.Value, ValueOf(item.Key)) 
+				&& ContainsValue(item.Value) && keyEquator(item.Key, KeyOf(item.Value));
+		}
 
         public override IBimap<V, K> Inverse()
         {

@@ -264,6 +264,10 @@ namespace Commons.Collections.Queue
                 }
             }
 
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <remarks>The relatives include the current node and its children.</remarks>
 			public IEnumerable<FiboNode> Relatives
 			{
 				get

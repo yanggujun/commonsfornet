@@ -40,6 +40,11 @@ namespace Test.Commons
         public int Id { get; set; }
 
         public int Count { get; set; }
+
+		public override int GetHashCode()
+		{
+			return Id.GetHashCode();
+		}
     }
 
     public class OrderEqualityComparer : IEqualityComparer<Order>
@@ -63,6 +68,14 @@ namespace Test.Commons
             return x.Id - y.Id;
         }
     }
+
+	public class BillComparer : IComparer<Bill>
+	{
+		public int Compare(Bill x, Bill y)
+		{
+			return x.Id - y.Id;
+		}
+	}
 
     public class BillEqualityComparer : IEqualityComparer<Bill>
     {

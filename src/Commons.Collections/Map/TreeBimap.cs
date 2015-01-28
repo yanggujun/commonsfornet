@@ -1,4 +1,5 @@
-﻿// Copyright CommonsForNET.  // Licensed to the Apache Software Foundation (ASF) under one or more
+﻿// Copyright CommonsForNET.
+// Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
 // The ASF licenses this file to You under the Apache License, Version 2.0
@@ -33,11 +34,20 @@ namespace Commons.Collections.Map
         {
         }
 
+		public TreeBimap(Comparison<V> valueComparer) 
+			: this(Comparer<K>.Default.Compare, valueComparer)
+		{
+		}
+
         public TreeBimap(IComparer<K> keyComparer)
             : this(keyComparer, Comparer<V>.Default)
         {
         }
 
+		public TreeBimap(IComparer<V> valueComparer) : this(Comparer<K>.Default, valueComparer)
+		{
+		}
+ 
         public TreeBimap(IComparer<K> keyComparer, IComparer<V> valueComparer)
             : this(keyComparer.Compare, valueComparer.Compare)
         {
@@ -61,6 +71,12 @@ namespace Commons.Collections.Map
                 }
             }
         }
+
+		public override bool Contains(KeyValuePair<K, V> item)
+		{
+			return KeyValue.ContainsKey(item.Key) && (valueComparer(item.Value, ValueOf(item.Key)) == 0) 
+				&& ValueKey.ContainsKey(item.Value) && (keyComparer(item.Key, KeyOf(item.Value)) == 0);
+		}
 
         public override IBimap<V, K> Inverse()
         {
