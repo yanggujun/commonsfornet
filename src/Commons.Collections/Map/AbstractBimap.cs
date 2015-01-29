@@ -64,9 +64,7 @@ namespace Commons.Collections.Map
             {
 				RemoveValue(value);
             }
-
-            KeyValue.Add(key, value);
-            ValueKey.Add(value, key);
+			Add(key, value);
         }
 
         public bool RemoveKey(K key)
@@ -200,7 +198,7 @@ namespace Commons.Collections.Map
         public bool Remove(KeyValuePair<K, V> item)
         {
             var removed = false;
-            if (KeyValue.Contains(item))
+            if (Contains(item))
             {
                 removed = RemoveKey(item.Key);
             }
@@ -257,17 +255,11 @@ namespace Commons.Collections.Map
             set
             {
 				key.ValidateNotNull("The key is null!");
-				value.ValidateNotNull("The value is null!");
                 if (!KeyValue.ContainsKey(key))
                 {
                     throw new KeyNotFoundException("The key is not found in the bimap.");
                 }
-				if (ValueKey.ContainsKey(value))
-				{
-					throw new InvalidOperationException("The value to update already exists in the bimap.");
-				}
-				RemoveKey(key);
-                Add(key, value);
+				Enforce(key, value);
             }
         }
 

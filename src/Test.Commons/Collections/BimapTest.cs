@@ -138,6 +138,252 @@ namespace Test.Commons.Collections
 			BimapEnforce(new TreeBimap<int, int>());
 		}
 
+		[Fact]
+		public void TestHashBimapRemove()
+		{
+			BimapRemove(new HashBimap<int, int>());
+		}
+
+		[Fact]
+		public void TestTreeBimapRemove()
+		{
+			BimapRemove(new TreeBimap<int, int>());
+		}
+
+		[Fact]
+		public void TestHashBimapTryGetValue()
+		{
+			BimapTryGetValue(new HashBimap<int, int>());
+		}
+
+		[Fact]
+		public void TestTreeBimapTryGetValue()
+		{
+			BimapTryGetValue(new TreeBimap<int, int>());
+		}
+
+		[Fact]
+		public void TestHashBimapIndexer()
+		{
+			BimapIndexer(new HashBimap<int, int>());
+		}
+
+		[Fact]
+		public void TestTreeBimapIndexer()
+		{
+			BimapIndexer(new TreeBimap<int, int>());
+		}
+
+		[Fact]
+		public void TestHashBimapDictionaryIndexer()
+		{
+			var bimap = new HashBimap<int, int>();
+			Fill(bimap, x => x, y => y);
+			DictionaryIndexer(bimap);
+			AssertBimapDictionaryIndexer(bimap);
+		}
+
+		[Fact]
+		public void TestTreeBimapDictionaryIndexer()
+		{
+			var bimap = new TreeBimap<int, int>();
+			Fill(bimap, x => x, y => y);
+			DictionaryIndexer(bimap);
+			AssertBimapDictionaryIndexer(bimap);
+		}
+
+		[Fact]
+		public void TestHashBimapCollectionRemove()
+		{
+			var bimap = new HashBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer());
+			Fill(bimap, x => new Order { Id = x }, y => new Bill { Id = y });
+			CollectionRemove(bimap);
+		}
+
+		[Fact]
+		public void TestTreeBiampColletionRemove()
+		{
+			var bimap = new TreeBimap<Order, Bill>(new OrderComparer(), new BillComparer());
+			Fill(bimap, x => new Order { Id = x }, y => new Bill { Id = y });
+			CollectionRemove(bimap);
+		}
+
+		[Fact]
+		public void TestHashBimapInverse()
+		{
+			BimapInverse(new HashBimap<int, int>());
+		}
+
+		[Fact]
+		public void TestTreeBimapInverse()
+		{
+			BimapInverse(new TreeBimap<int, int>());
+		}
+
+		[Fact]
+		public void TestHashBimapKeySetValueSet()
+		{
+			BimapKeySetValueSet(new HashBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer()));
+		}
+
+		[Fact]
+		public void TestTreeBimapKeySetValueSet()
+		{
+			BimapKeySetValueSet(new TreeBimap<Order, Bill>(new OrderComparer(), new BillComparer()));
+		}
+
+		[Fact]
+		public void TestHashBimapException()
+		{
+			BimapException(new HashBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer()));
+		}
+
+		public void TestTreeBimapException()
+		{
+			BimapException(new TreeBimap<Order, Bill>(new OrderComparer(), new BillComparer()));
+		}
+
+		private void BimapException(IBimap<Order, Bill> bimap)
+		{
+			Fill(bimap, x => new Order { Id = x }, y => new Bill { Id = y });
+			Assert.Throws(typeof(ArgumentNullException), () => bimap.Add(null, null));
+			Assert.Throws(typeof(ArgumentException), () => bimap.Add(new Order { Id = 0 }, new Bill { Id = 10000 }));
+			Assert.Throws(typeof(ArgumentException), () => bimap.Add(new Order { Id = 10000 }, new Bill { Id = 0 }));
+			Assert.Throws(typeof(KeyNotFoundException), () => bimap.ValueOf(new Order { Id = 10000 }));
+			Assert.Throws(typeof(KeyNotFoundException), () => bimap.KeyOf(new Bill { Id = 10000 }));
+			Assert.Throws(typeof(KeyNotFoundException), () => bimap.ValueOf(new Order { Id = -1 }));
+			Assert.Throws(typeof(KeyNotFoundException), () => bimap.KeyOf(new Bill { Id = -1 }));
+			Assert.Throws(typeof(ArgumentNullException), () => bimap.Contains(new KeyValuePair<Order, Bill>(null, null)));
+		}
+
+		private void BimapKeySetValueSet(IBimap<Order, Bill> bimap)
+		{
+			Fill(bimap, x => new Order { Id = x }, y => new Bill { Id = y });
+			var keyset = bimap.KeySet();
+			var valueset = bimap.ValueSet();
+			for (var i = 0; i < 10000; i++)
+			{
+				Assert.True(keyset.Contains(new Order { Id = i }));
+				Assert.True(valueset.Contains(new Bill { Id = i }));
+			}
+			Assert.False(keyset.Contains(new Order { Id = -1 }));
+			Assert.False(keyset.Contains(new Order { Id = 10000 }));
+			Assert.Equal(10000, keyset.Count);
+
+			Assert.False(valueset.Contains(new Bill { Id = -1 }));
+			Assert.False(valueset.Contains(new Bill { Id = 10000 }));
+			Assert.Equal(10000, valueset.Count);
+		}
+
+		private void BimapInverse(IBimap<int, int> bimap)
+		{
+			Fill(bimap, x => x, y => 10000 + y);
+			var inversed = bimap.Inverse();
+			foreach (var item in inversed)
+			{
+				Assert.Equal(item.Key, item.Value + 10000);
+			}
+
+			for (var i = 0; i < 10000; i++)
+			{
+				Assert.Equal(inversed.KeyOf(i), 10000 + i);
+				Assert.Equal(inversed.ValueOf(i + 10000), i);
+			}
+		}
+
+		private void CollectionRemove(ICollection<KeyValuePair<Order, Bill>> collection)
+		{
+			for (var i = 0; i < 1000; i++)
+			{
+				Assert.True(collection.Remove(new KeyValuePair<Order, Bill>(new Order { Id = i }, new Bill { Id = i })));
+			}
+
+			Assert.False(collection.Remove(new KeyValuePair<Order, Bill>(new Order { Id = 2000 }, new Bill { Id = 3000 })));
+			Assert.False(collection.Remove(new KeyValuePair<Order, Bill>(new Order { Id = 0 }, new Bill { Id = 1000 })));
+			Assert.False(collection.Remove(new KeyValuePair<Order, Bill>(new Order { Id = 1000 }, new Bill { Id = 0 })));
+		}
+
+		private void AssertBimapDictionaryIndexer(IBimap<int, int> bimap)
+		{
+			Assert.Equal(-1, bimap.ValueOf(0));
+			Assert.Equal(2, bimap.ValueOf(1));
+
+			Assert.False(bimap.ContainsValue(0));
+			Assert.Equal(1, bimap.KeyOf(2));
+
+			Assert.False(bimap.ContainsKey(-1));
+			Assert.Equal(3, bimap.KeyOf(3));
+		}
+
+		private void DictionaryIndexer(IDictionary<int, int> map)
+		{
+			map[0] = -1;
+			Assert.Equal(10000, map.Count);
+
+			map[1] = 2;
+			Assert.Equal(9999, map.Count);
+
+			Assert.Throws(typeof(KeyNotFoundException), () => map[-1] = 3);
+		}
+
+		private void BimapIndexer(IBimap<int, int> bimap)
+		{
+			Fill(bimap, x => x, y => y);
+			for (var i = 0; i < 10000; i++)
+			{
+				Assert.Equal(bimap.ValueOf(i), i);
+				Assert.Equal(bimap.KeyOf(i), i);
+			}
+
+			Assert.Throws(typeof(KeyNotFoundException), () => bimap.ValueOf(10000));
+			Assert.Throws(typeof(KeyNotFoundException), () => bimap.KeyOf(10000));
+			Assert.Throws(typeof(KeyNotFoundException), () => bimap.ValueOf(-1));
+			Assert.Throws(typeof(KeyNotFoundException), () => bimap.KeyOf(-1));
+		}
+
+		private void BimapTryGetValue(IBimap<int, int> bimap)
+		{
+			Fill(bimap, x => x, y => y);
+			for (var i = 0; i < 1000; i++)
+			{
+				int v;
+				Assert.True(bimap.TryGetValue(i, out v));
+				Assert.Equal(i, v);
+
+				int k;
+				Assert.True(bimap.TryGetKey(i, out k));
+				Assert.Equal(i, k);
+			}
+
+			int none;
+			Assert.False(bimap.TryGetValue(-1, out none));
+			Assert.False(bimap.TryGetKey(-1, out none));
+			Assert.False(bimap.TryGetValue(10000, out none));
+			Assert.False(bimap.TryGetKey(10000, out none));
+		}
+
+		private void BimapRemove(IBimap<int, int> bimap)
+		{
+			Fill(bimap, x => x, y => y);
+			Assert.True(bimap.Remove(new KeyValuePair<int, int>(0, 0)));
+			Assert.False(bimap.Contains(new KeyValuePair<int, int>(0, 0)));
+			Assert.False(bimap.ContainsKey(0));
+			Assert.False(bimap.ContainsValue(0));
+			Assert.Equal(9999, bimap.Count);
+
+			Assert.True(bimap.RemoveKey(1));
+			Assert.False(bimap.Contains(new KeyValuePair<int, int>(1, 1)));
+			Assert.False(bimap.ContainsKey(1));
+			Assert.False(bimap.ContainsValue(1));
+			Assert.Equal(9998, bimap.Count);
+
+			Assert.True(bimap.RemoveValue(2));
+			Assert.False(bimap.Contains(new KeyValuePair<int, int>(2, 2)));
+			Assert.False(bimap.ContainsKey(2));
+			Assert.False(bimap.ContainsValue(2));
+			Assert.Equal(9997, bimap.Count);
+		}
+
 		private void BimapEnforce(IBimap<int, int> bimap)
 		{
 			Fill(bimap, x => x, y => y);
@@ -227,6 +473,15 @@ namespace Test.Commons.Collections
 			bimap.Enforce(newKey, newValue);
 			Assert.Equal(bimap.ValueOf(newKey), newValue, valueComparer);
 			Assert.Equal(bimap.KeyOf(newValue), newKey, keyComparer);
+			bimap.Clear();
+			Assert.Equal(0, bimap.Count);
+			Fill(bimap, keyGenerator, valueGenerator);
+			Assert.Equal(10000, bimap.Count);
+			for (var i = 0; i < 1000; i++)
+			{
+				Assert.True(bimap.ContainsKey(keyGenerator(i)));
+				Assert.True(bimap.ContainsValue(valueGenerator(i)));
+			}
 		}
 
 		private void Fill<K, V>(IBimap<K, V> bimap, Func<int, K> keyGenerator, Func<int, V> valueGenerator)
