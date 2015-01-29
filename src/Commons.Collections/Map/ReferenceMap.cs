@@ -22,7 +22,7 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-	public class ReferenceMap<K, V> : AbstractHashMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
+	public class ReferenceMap<K, V> : AbstractHashedMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
 	{
 		private const int DefaultCapacity = 16;
 		private static readonly Equator<K> referenceEquator = (x1, x2) => ReferenceEquals(x1, x2);

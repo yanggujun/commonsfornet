@@ -22,23 +22,23 @@ using Commons.Utils;
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
-    public class HashBag<T> : AbstractMapBag<T>
+    public class HashedBag<T> : AbstractMapBag<T>
     {
-        public HashBag()
-            : base(new HashMap<T, int>())
+        public HashedBag()
+            : base(new HashedMap<T, int>())
         {
         }
 
-		public HashBag(Equator<T> equator) : base(new HashMap<T, int>(equator))
+		public HashedBag(Equator<T> equator) : base(new HashedMap<T, int>(equator))
 		{
 		}
 
-        public HashBag(IEnumerable<T> items)
-            : base(items, new HashMap<T, int>())
+        public HashedBag(IEnumerable<T> items)
+            : base(items, new HashedMap<T, int>())
         {
         }
 
-		public HashBag(Equator<T> equator, IEnumerable<T> items) : base(items, new HashMap<T, int>(equator))
+		public HashedBag(Equator<T> equator, IEnumerable<T> items) : base(items, new HashedMap<T, int>(equator))
 		{
 		}
     }

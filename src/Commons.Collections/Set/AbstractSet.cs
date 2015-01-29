@@ -25,7 +25,7 @@ namespace Commons.Collections.Set
     [CLSCompliant(true)]
     public abstract class AbstractSet<T> : IStrictSet<T>, IReadOnlyStrictSet<T>
     {
-        public void Intersect(IStrictSet<T> other)
+        public IStrictSet<T> Intersect(IStrictSet<T> other)
         {
             other.ValidateNotNull("The other set is null!");
             var itemArray = new T[Count];
@@ -46,9 +46,11 @@ namespace Commons.Collections.Set
                 }
                 Remove(item);
             }
+
+            return this;
         }
 
-        public void Union(IStrictSet<T> other)
+        public IStrictSet<T> Union(IStrictSet<T> other)
         {
             other.ValidateNotNull("The other set is null!");
             foreach (var item in other)
@@ -58,9 +60,11 @@ namespace Commons.Collections.Set
                     Add(item);
                 }
             }
+
+            return this;
         }
 
-        public void Differ(IStrictSet<T> other)
+        public IStrictSet<T> Differ(IStrictSet<T> other)
         {
             other.ValidateNotNull("The other set is null!");
             foreach (var item in other)
@@ -70,6 +74,8 @@ namespace Commons.Collections.Set
                     Remove(item);
                 }
             }
+
+            return this;
         }
 
         public bool IsSubsetOf(IStrictSet<T> other)
@@ -115,7 +121,7 @@ namespace Commons.Collections.Set
 			return disjoint;
         }
 
-        public void Compliment(IStrictSet<T> universe)
+        public IStrictSet<T> Compliment(IStrictSet<T> universe)
         {
 			if (!IsSubsetOf(universe))
 			{
@@ -126,7 +132,8 @@ namespace Commons.Collections.Set
 			{
 				Add(item);
 			}
-			
+
+            return this;
         }
 
         public abstract void Add(T item);

@@ -29,7 +29,7 @@ namespace Commons.Collections.Map
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
     [CLSCompliant(true)]
-    public abstract class AbstractHashMap<K, V> : IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, ICollection,
+    public abstract class AbstractHashedMap<K, V> : IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, ICollection,
         IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         private const int MaxCapacity = 1 << 30;
@@ -40,7 +40,7 @@ namespace Commons.Collections.Map
         protected HashEntry[] Entries { get; set; }
 		protected readonly Equator<K> IsEqual;
 
-        protected AbstractHashMap(int capacity, Equator<K> isEqual)
+        protected AbstractHashedMap(int capacity, Equator<K> isEqual)
         {
 			capacity.Validate(x => x > 0, new ArgumentException("Capacity must be larger than 0."));
             Guarder.CheckNull(isEqual);

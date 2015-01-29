@@ -21,7 +21,7 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class AbstractLinkedMap<K, V> : AbstractHashMap<K, V>
+    public class AbstractLinkedMap<K, V> : AbstractHashedMap<K, V>
     {
         protected LinkedHashEntry Header { get; set; }
 

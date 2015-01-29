@@ -197,17 +197,17 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestPlainHashMapOperations()
         {
-            var map = new HashMap<string, Order>();
+            var map = new HashedMap<string, Order>();
 			map.HashAbility();
         }
 
         [Fact]
         public void TestPlainHashMapBoundaries()
         {
-            var map = new HashMap<string, string>(100);
+            var map = new HashedMap<string, string>(100);
             Assert.False(map.Remove("a"));
-			Assert.Throws(typeof(ArgumentException), () => new HashMap<string, string>(0));
-			Assert.Throws(typeof(ArgumentException), () => new HashMap<string, string>(-10));
+			Assert.Throws(typeof(ArgumentException), () => new HashedMap<string, string>(0));
+			Assert.Throws(typeof(ArgumentException), () => new HashedMap<string, string>(-10));
         }
 
 		[Fact]
@@ -460,7 +460,7 @@ namespace Test.Commons.Collections
 		public void TestLruMapHit()
 		{
 			var lru = new LruMap<int, int>(10000);
-			var map = new HashMap<int, int>(10000);
+			var map = new HashedMap<int, int>(10000);
 			for (var i = 0; i < 10000; i++)
 			{
 				lru.Add(i, i);

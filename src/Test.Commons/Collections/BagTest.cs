@@ -25,7 +25,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBagOperation()
 		{
-			var bag = new HashBag<Order>((x1, x2) => x1.Id == x2.Id);
+			var bag = new HashedBag<Order>((x1, x2) => x1.Id == x2.Id);
 			TestBagOperation(bag);
 		}
 
@@ -51,7 +51,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestBagCollectionOperation()
 		{
-			var bag = new HashBag<Order>((x1, x2) => x1.Id == x2.Id);
+			var bag = new HashedBag<Order>((x1, x2) => x1.Id == x2.Id);
 			for (var i = 0; i < 1000; i++)
 			{
 				for (var j = 0; j < i + 1; j++)
@@ -71,7 +71,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestBagNotExistItem()
 		{
-			TestBagItemNotExist(new HashBag<string>());
+			TestBagItemNotExist(new HashedBag<string>());
 			TestBagItemNotExist(new TreeBag<string>());
 		}
 

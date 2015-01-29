@@ -21,37 +21,37 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class HashMap<K, V> : AbstractHashMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
+    public class HashedMap<K, V> : AbstractHashedMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
     {
         private const int DefaultCapacity = 16;
 
-        public HashMap() : this(DefaultCapacity)
+        public HashedMap() : this(DefaultCapacity)
         {
         }
 
-        public HashMap(IEqualityComparer<K> comparer)
+        public HashedMap(IEqualityComparer<K> comparer)
             : this(comparer.Equals)
         {
         }
 
-		public HashMap(Equator<K> equator) : this(DefaultCapacity, equator)
+		public HashedMap(Equator<K> equator) : this(DefaultCapacity, equator)
 		{
 		}
 
-        public HashMap(int capacity) : this(capacity, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
+        public HashedMap(int capacity) : this(capacity, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
         {
         }
 
-        public HashMap(int capacity, IEqualityComparer<K> comparer)
+        public HashedMap(int capacity, IEqualityComparer<K> comparer)
             : this(capacity, comparer.Equals)
         {
         }
 
-        public HashMap(int capacity, Equator<K> equator) : base(capacity, equator)
+        public HashedMap(int capacity, Equator<K> equator) : base(capacity, equator)
         {
         }
 
-        public HashMap(IEnumerable<KeyValuePair<K, V>> items, int capacity, Equator<K> equator)
+        public HashedMap(IEnumerable<KeyValuePair<K, V>> items, int capacity, Equator<K> equator)
             : base(capacity, equator)
         {
             if (null != items)

@@ -58,13 +58,13 @@
     <Compile Include="Bag\AbstractBagDecorator.cs" />
     <Compile Include="Bag\AbstractMapBag.cs" />
     <Compile Include="Bag\AbstractSortedBagDecorator.cs" />
-    <Compile Include="Bag\HashBag.cs" />
+    <Compile Include="Bag\HashedBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
     <Compile Include="Map\AbstractBimap.cs" />
     <Compile Include="Map\AbstractHashMap.cs" />
     <Compile Include="Map\Customized32HashMap.cs" />
-    <Compile Include="Map\HashBimap.cs" />
-    <Compile Include="Map\HashMap.cs" />
+    <Compile Include="Map\HashedBimap.cs" />
+    <Compile Include="Map\HashedMap.cs" />
     <Compile Include="Map\IBimap.cs" />
     <Compile Include="Map\INavigableMap.cs" />
     <Compile Include="Map\IOrderedMap.cs" />
@@ -76,7 +76,7 @@
     <Compile Include="Map\LruMap.cs" />
     <Compile Include="Map\AbstractMultiValueMap.cs" />
     <Compile Include="Map\MapEnumerator.cs" />
-    <Compile Include="Map\MultiValueHashMap.cs" />
+    <Compile Include="Map\MultiValueHashedMap.cs" />
     <Compile Include="Map\MultiValueTreeMap.cs" />
     <Compile Include="Map\ReferenceMap.cs" />
     <Compile Include="Map\SkipList.cs" />
@@ -97,7 +97,7 @@
     <Compile Include="Queue\MaxPriorityQueue.cs" />
     <Compile Include="Queue\MinPriorityQueue.cs" />
     <Compile Include="Set\AbstractSet.cs" />
-    <Compile Include="Set\HashSet.cs" />
+    <Compile Include="Set\HashedSet.cs" />
     <Compile Include="Set\INavigableSet.cs" />
     <Compile Include="Set\IReadOnlyStrictSet.cs" />
     <Compile Include="Set\ISortedSet.cs" />

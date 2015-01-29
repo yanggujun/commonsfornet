@@ -25,31 +25,31 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBimapContructor()
 		{
-			var hashBimap1 = new HashBimap<Order, Bill>((x1, x2) => x1.Id == x2.Id, (y1, y2) => y1.Id == y2.Id);
+			var hashBimap1 = new HashedBimap<Order, Bill>((x1, x2) => x1.Id == x2.Id, (y1, y2) => y1.Id == y2.Id);
 			BimapOperation(hashBimap1, x => new Order { Id = x }, y => new Bill { Id = y }, new OrderEqualityComparer(), new BillEqualityComparer());
 
-			var hashBimap2 = new HashBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer());
+			var hashBimap2 = new HashedBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer());
 			BimapOperation(hashBimap2, x => new Order { Id = x }, y => new Bill { Id = y }, new OrderEqualityComparer(), new BillEqualityComparer());
 
-			var hashBimap3 = new HashBimap<Order, Bill>(10000, new OrderEqualityComparer(), new BillEqualityComparer());
+			var hashBimap3 = new HashedBimap<Order, Bill>(10000, new OrderEqualityComparer(), new BillEqualityComparer());
 			BimapOperation(hashBimap3, x => new Order { Id = x }, y => new Bill { Id = y }, new OrderEqualityComparer(), new BillEqualityComparer());
 
-			var hashBimap4 = new HashBimap<Order, Bill>(10000, (x1, x2) => x1.Id == x2.Id, (y1, y2) => y1.Id == y2.Id);
+			var hashBimap4 = new HashedBimap<Order, Bill>(10000, (x1, x2) => x1.Id == x2.Id, (y1, y2) => y1.Id == y2.Id);
 			BimapOperation(hashBimap4, x => new Order { Id = x }, y => new Bill { Id = y }, new OrderEqualityComparer(), new BillEqualityComparer());
 
-			var hashBimap5 = new HashBimap<int, int>();
+			var hashBimap5 = new HashedBimap<int, int>();
 			BimapOperation(hashBimap5, x => x, y => y, EqualityComparer<int>.Default, EqualityComparer<int>.Default);
 
-			var hashBimap6 = new HashBimap<Order, int>((x1, x2) => x1.Id == x2.Id);
+			var hashBimap6 = new HashedBimap<Order, int>((x1, x2) => x1.Id == x2.Id);
 			BimapOperation(hashBimap6, x => new Order { Id = x }, y => y, new OrderEqualityComparer(), EqualityComparer<int>.Default);
 
-			var hashBimap7 = new HashBimap<int, Order>((x1, x2) => x1.Id == x2.Id);
+			var hashBimap7 = new HashedBimap<int, Order>((x1, x2) => x1.Id == x2.Id);
 			BimapOperation(hashBimap7, x => x, y => new Order { Id = y }, EqualityComparer<int>.Default, new OrderEqualityComparer());
 
-			var hashBimap8 = new HashBimap<Order, int>(new OrderEqualityComparer());
+			var hashBimap8 = new HashedBimap<Order, int>(new OrderEqualityComparer());
 			BimapOperation(hashBimap8, x => new Order { Id = x }, y => y, new OrderEqualityComparer(), EqualityComparer<int>.Default);
 
-			var hashBimap9 = new HashBimap<int, Order>(new OrderEqualityComparer());
+			var hashBimap9 = new HashedBimap<int, Order>(new OrderEqualityComparer());
 			BimapOperation(hashBimap9, x => x, y => new Order { Id = y }, EqualityComparer<int>.Default, new OrderEqualityComparer());
 		}
 
@@ -81,7 +81,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestTreeBimapComplexConstructor()
 		{
-			var hashBimap = new HashBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer());
+			var hashBimap = new HashedBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer());
 			for (var i = 0; i < 10000; i++)
 			{
 				hashBimap.Add(new Order { Id = i }, new Bill { Id = i });
@@ -105,7 +105,7 @@ namespace Test.Commons.Collections
 				treeBimap.Add(new Order { Id = i }, new Bill { Id = i });
 			}
 
-			var hashBimap = new HashBimap<Order, Bill>(10000, (x1, x2) => x1.Id == x2.Id, (y1, y2) => y1.Id == y2.Id, treeBimap);
+			var hashBimap = new HashedBimap<Order, Bill>(10000, (x1, x2) => x1.Id == x2.Id, (y1, y2) => y1.Id == y2.Id, treeBimap);
 			for (var i = 0; i < 10000; i++)
 			{
 				Assert.True(hashBimap.ContainsKey(new Order { Id = i }));
@@ -117,7 +117,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBimapAdd()
 		{
-			BimapAdd(new HashBimap<int, int>());
+			BimapAdd(new HashedBimap<int, int>());
 		}
 
 		[Fact]
@@ -129,7 +129,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBimapEnforce()
 		{
-			BimapEnforce(new HashBimap<int, int>());
+			BimapEnforce(new HashedBimap<int, int>());
 		}
 
 		[Fact]
@@ -141,7 +141,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBimapRemove()
 		{
-			BimapRemove(new HashBimap<int, int>());
+			BimapRemove(new HashedBimap<int, int>());
 		}
 
 		[Fact]
@@ -153,7 +153,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBimapTryGetValue()
 		{
-			BimapTryGetValue(new HashBimap<int, int>());
+			BimapTryGetValue(new HashedBimap<int, int>());
 		}
 
 		[Fact]
@@ -165,7 +165,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBimapIndexer()
 		{
-			BimapIndexer(new HashBimap<int, int>());
+			BimapIndexer(new HashedBimap<int, int>());
 		}
 
 		[Fact]
@@ -177,7 +177,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBimapDictionaryIndexer()
 		{
-			var bimap = new HashBimap<int, int>();
+			var bimap = new HashedBimap<int, int>();
 			Fill(bimap, x => x, y => y);
 			DictionaryIndexer(bimap);
 			AssertBimapDictionaryIndexer(bimap);
@@ -195,7 +195,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBimapCollectionRemove()
 		{
-			var bimap = new HashBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer());
+			var bimap = new HashedBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer());
 			Fill(bimap, x => new Order { Id = x }, y => new Bill { Id = y });
 			CollectionRemove(bimap);
 		}
@@ -211,7 +211,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBimapInverse()
 		{
-			BimapInverse(new HashBimap<int, int>());
+			BimapInverse(new HashedBimap<int, int>());
 		}
 
 		[Fact]
@@ -223,7 +223,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBimapKeySetValueSet()
 		{
-			BimapKeySetValueSet(new HashBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer()));
+			BimapKeySetValueSet(new HashedBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer()));
 		}
 
 		[Fact]
@@ -235,7 +235,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestHashBimapException()
 		{
-			BimapException(new HashBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer()));
+			BimapException(new HashedBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer()));
 		}
 
 		public void TestTreeBimapException()

@@ -23,42 +23,42 @@ using Commons.Utils;
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public class HashSet<T> : AbstractSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
+    public class HashedSet<T> : AbstractSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         private readonly object val = new object();
-        private readonly HashMap<T, object> map;
+        private readonly HashedMap<T, object> map;
 
-        public HashSet()
+        public HashedSet()
         {
-            map = new HashMap<T, object>();
+            map = new HashedMap<T, object>();
         }
 
-        public HashSet(int capacity) : this(capacity, EqualityComparer<T>.Default.Equals)
-        {
-        }
-
-        public HashSet(IEqualityComparer<T> equalityComparer) : this(equalityComparer.Equals)
+        public HashedSet(int capacity) : this(capacity, EqualityComparer<T>.Default.Equals)
         {
         }
 
-        public HashSet(Equator<T> equator)
+        public HashedSet(IEqualityComparer<T> equalityComparer) : this(equalityComparer.Equals)
         {
-            map = new HashMap<T, object>(equator);
         }
 
-        public HashSet(int capacity, IEqualityComparer<T> equalityComparer)
+        public HashedSet(Equator<T> equator)
+        {
+            map = new HashedMap<T, object>(equator);
+        }
+
+        public HashedSet(int capacity, IEqualityComparer<T> equalityComparer)
             : this(capacity, equalityComparer.Equals)
         {
         }
 
-        public HashSet(int capacity, Equator<T> equator)
+        public HashedSet(int capacity, Equator<T> equator)
             : this(null, capacity, equator)
         {
         }
 
-        public HashSet(IEnumerable<T> items, int capacity, Equator<T> equator)
+        public HashedSet(IEnumerable<T> items, int capacity, Equator<T> equator)
         {
-            map = new HashMap<T, object>(capacity, equator);
+            map = new HashedMap<T, object>(capacity, equator);
             if (items != null)
             {
                 foreach (var item in items)

@@ -29,11 +29,11 @@ namespace Commons.Collections.Set
     [CLSCompliant(true)]
     public interface IStrictSet<T> : ICollection<T>, IEnumerable<T>, IEnumerable
     {
-        void Intersect(IStrictSet<T> other);
+        IStrictSet<T> Intersect(IStrictSet<T> other);
 
-        void Union(IStrictSet<T> other);
+        IStrictSet<T> Union(IStrictSet<T> other);
 
-        void Differ(IStrictSet<T> other);
+        IStrictSet<T> Differ(IStrictSet<T> other);
 
         bool IsSubsetOf(IStrictSet<T> other);
 
@@ -55,6 +55,6 @@ namespace Commons.Collections.Set
         /// </summary>
         /// <param name="universe"></param>
         /// <param name="other"></param>
-        void Compliment(IStrictSet<T> universe);
+        IStrictSet<T> Compliment(IStrictSet<T> universe);
     }
 }
