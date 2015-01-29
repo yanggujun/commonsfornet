@@ -530,38 +530,164 @@ namespace Test.Commons.Collections
 		}
 
 		[Fact]
-		public void TestStrictSetSubset()
+		public void TestStrictSetIntersect()
 		{
-			StrictSetIntersect<Commons.Collections.Set.HashSet<int>, Commons.Collections.Set.HashSet<int>>();
+			StrictSetIntersect<HashedSet<int>, HashedSet<int>>();
+            StrictSetIntersect<HashedSet<int>, TreeSet<int>>();
+            StrictSetIntersect<TreeSet<int>, HashedSet<int>>();
+            StrictSetIntersect<TreeSet<int>, TreeSet<int>>();
 		}
-		
+
+        [Fact]
+        public void TestStrictSetUnion()
+        {
+            StrictSetUnion<HashedSet<int>, HashedSet<int>>();
+            StrictSetUnion<HashedSet<int>, TreeSet<int>>();
+            StrictSetUnion<TreeSet<int>, HashedSet<int>>();
+            StrictSetUnion<TreeSet<int>, TreeSet<int>>();
+        }
+
+        [Fact]
+        public void TestStrictSetDiffer()
+        {
+            StrictSetDiffer<HashedSet<int>, HashedSet<int>>();
+            StrictSetDiffer<HashedSet<int>, TreeSet<int>>();
+            StrictSetDiffer<TreeSet<int>, HashedSet<int>>();
+            StrictSetDiffer<TreeSet<int>, TreeSet<int>>();
+        }
+
+        [Fact]
+        public void TestStrictSetSubset()
+        {
+            StrictSetSubset<HashedSet<int>, HashedSet<int>>();
+            StrictSetSubset<HashedSet<int>, TreeSet<int>>();
+            StrictSetSubset<TreeSet<int>, HashedSet<int>>();
+            StrictSetSubset<TreeSet<int>, TreeSet<int>>();
+        }
+
+        private void StrictSetSubset<S1, S2>()
+            where S1 : IStrictSet<int>, new()
+            where S2 : IStrictSet<int>, new()
+        {
+            var s1 = new S1();
+            var s2 = new S2();
+            Fill(s1, 0, 5000);
+            Fill(s2, 4000, 5000);
+            Assert.False(s1.IsSubsetOf(s2));
+            Assert.False(s2.IsSubsetOf(s1));
+            Assert.False(s1.IsProperSubsetOf(s2));
+            Assert.False(s2.IsProperSubsetOf(s1));
+
+
+            var s3 = new S1();
+            var s4 = new S2();
+            Fill(s3, 0, 5000);
+            Fill(s4, 1000, 2000);
+            Assert.False(s3.IsSubsetOf(s4));
+            Assert.True(s4.IsSubsetOf(s3));
+            Assert.False(s3.IsProperSubsetOf(s4));
+            Assert.True(s4.IsProperSubsetOf(s3));
+
+            var s5 = new S1();
+            var s6 = new S2();
+            Fill(s5, 1000, 2000);
+            Fill(s6, 0, 5000);
+            Assert.True(s5.IsSubsetOf(s6));
+            Assert.False(s6.IsSubsetOf(s5));
+            Assert.True(s5.IsProperSubsetOf(s6));
+            Assert.False(s6.IsProperSubsetOf(s5));
+
+            var s7 = new S1();
+            var s8 = new S2();
+            Fill(s7, 0, 1000);
+            Fill(s8, 2000, 1000);
+            Assert.False(s7.IsSubsetOf(s8));
+            Assert.False(s8.IsSubsetOf(s7));
+            Assert.False(s7.IsProperSubsetOf(s8));
+            Assert.False(s8.IsProperSubsetOf(s7));
+
+            var s9 = new S2();
+            Fill(s9, 0, 1000);
+            Assert.True(s7.IsSubsetOf(s9));
+            Assert.True(s9.IsSubsetOf(s7));
+            Assert.False(s7.IsProperSubsetOf(s9));
+            Assert.False(s9.IsProperSubsetOf(s7));
+            Assert.True(s7.IsSubsetOf(s7));
+            Assert.False(s7.IsProperSubsetOf(s7));
+        }
+
+        private void StrictSetDiffer<S1, S2>()
+            where S1 : IStrictSet<int>, new()
+            where S2 : IStrictSet<int>, new()
+        {
+            var origin = new S1();
+            var other = new S2();
+            Fill(origin, 0, 5000);
+            Fill(other, 4000, 5000);
+            var result = origin.Differ(other);
+            for (var i = 0; i < 4000; i++)
+            {
+                Assert.True(origin.Contains(i));
+                Assert.True(result.Contains(i));
+            }
+            for (var i = 4000; i < 5000; i++)
+            {
+                Assert.False(origin.Contains(i));
+                Assert.False(result.Contains(i));
+            }
+        }
+
+        private void StrictSetUnion<S1, S2>()
+            where S1 : IStrictSet<int>, new()
+            where S2 : IStrictSet<int>, new()
+        {
+            var origin = new S1();
+            var other = new S2();
+            Fill(origin, 0, 5000);
+            Fill(other, 4000, 5000);
+            var result = origin.Union(other);
+            Assert.Equal(9000, origin.Count);
+            Assert.Equal(9000, result.Count);
+            for (var i = 0; i < 9000; i++)
+            {
+                Assert.True(origin.Contains(i));
+                Assert.True(result.Contains(i));
+            }
+        }
+
+        private void Fill(IStrictSet<int> set, int start, int count)
+        {
+            foreach (var i in Enumerable.Range(start, count))
+            {
+                set.Add(i);
+            }
+        }
+
 		private void StrictSetIntersect<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
 		{
 			var origin = new S1();
 			var other = new S2();
-			foreach (var i in Enumerable.Range(0, 5000))
-			{
-				origin.Add(i);
-			}
-			foreach (var i in Enumerable.Range(4000, 5000))
-			{
-				other.Add(i);
-			}
-			origin.Intersect(other);
+            Fill(origin, 0, 5000);
+            Fill(other, 4000, 5000);
+			var result = origin.Intersect(other);
 			Assert.Equal(1000, origin.Count);
+			Assert.Equal(1000, result.Count);
 			for(var i = 0; i < 4000; i++)
 			{
 				Assert.False(origin.Contains(i));
+				Assert.False(result.Contains(i));
 			}
 
 			for (var i = 4000; i < 5000; i++)
 			{
 				Assert.True(origin.Contains(i));
+				Assert.True(result.Contains(i));
 			}
 
 			for (var i = 5000; i < 9000; i++)
 			{
 				Assert.False(origin.Contains(i));
+				Assert.False(result.Contains(i));
 			}
 
 			var third = new S1();
