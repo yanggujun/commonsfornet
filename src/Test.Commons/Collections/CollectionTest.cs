@@ -529,7 +529,53 @@ namespace Test.Commons.Collections
 			}
 		}
 
-        private void TestDeque(Deque<string> deque)
+		[Fact]
+		public void TestStrictSetSubset()
+		{
+			StrictSetIntersect<Commons.Collections.Set.HashSet<int>, Commons.Collections.Set.HashSet<int>>();
+		}
+		
+		private void StrictSetIntersect<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
+		{
+			var origin = new S1();
+			var other = new S2();
+			foreach (var i in Enumerable.Range(0, 5000))
+			{
+				origin.Add(i);
+			}
+			foreach (var i in Enumerable.Range(4000, 5000))
+			{
+				other.Add(i);
+			}
+			origin.Intersect(other);
+			Assert.Equal(1000, origin.Count);
+			for(var i = 0; i < 4000; i++)
+			{
+				Assert.False(origin.Contains(i));
+			}
+
+			for (var i = 4000; i < 5000; i++)
+			{
+				Assert.True(origin.Contains(i));
+			}
+
+			for (var i = 5000; i < 9000; i++)
+			{
+				Assert.False(origin.Contains(i));
+			}
+
+			var third = new S1();
+			foreach (var i in Enumerable.Range(5000, 1000))
+			{
+				third.Add(i);
+			}
+
+			origin.Intersect(third);
+
+			Assert.Equal(0, origin.Count);
+		}
+
+		private void TestDeque(Deque<string> deque)
         {
             for (var i = 0; i < 1000; i++)
             {
