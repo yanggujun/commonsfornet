@@ -565,6 +565,130 @@ namespace Test.Commons.Collections
             StrictSetSubset<TreeSet<int>, TreeSet<int>>();
         }
 
+		[Fact]
+		public void TestStrictSetEqual()
+		{
+			StrictSetEqual<HashedSet<int>, HashedSet<int>>();
+			StrictSetEqual<HashedSet<int>, TreeSet<int>>();
+			StrictSetEqual<TreeSet<int>, HashedSet<int>>();
+			StrictSetEqual<TreeSet<int>, TreeSet<int>>();
+		}
+
+		[Fact]
+		public void TestStrictSetDisjoint()
+		{
+			StrictSetDisjoint<HashedSet<int>, HashedSet<int>>();
+			StrictSetDisjoint<HashedSet<int>, TreeSet<int>>();
+			StrictSetDisjoint<TreeSet<int>, HashedSet<int>>();
+			StrictSetDisjoint<TreeSet<int>, TreeSet<int>>();
+		}
+
+		[Fact]
+		public void TestStrictSetCompliement()
+		{
+			StrictSetCompliment<HashedSet<int>, HashedSet<int>>();
+			StrictSetCompliment<HashedSet<int>, TreeSet<int>>();
+			StrictSetCompliment<TreeSet<int>, HashedSet<int>>();
+			StrictSetCompliment<TreeSet<int>, TreeSet<int>>();
+		}
+
+		private void StrictSetCompliment<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
+		{
+			var s1 = new S1();
+			var s2 = new S2();
+			Fill(s1, 0, 1000);
+			Fill(s2, 0, 2000);
+			var result = s1.Compliment(s2);
+			for (var i = 0; i < 1000; i++)
+			{
+				Assert.False(s1.Contains(i));
+				Assert.False(result.Contains(i));
+			}
+			for (var i = 1000; i < 2000; i++)
+			{
+				Assert.True(s1.Contains(i));
+				Assert.True(result.Contains(i));
+			}
+
+			var s3 = new S1();
+			var s4 = new S2();
+			Fill(s4, 0, 1000);
+			var result2 = s3.Compliment(s4);
+			Assert.True(s3.IsEqualWith(s4));
+			Assert.True(result2.IsEqualWith(s4));
+			for (var i = 0; i < 1000; i++)
+			{
+				Assert.True(s3.Contains(i));
+				Assert.True(result2.Contains(i));
+			}
+
+			var s5 = new S1();
+			var s6 = new S2();
+			Fill(s5, 0, 1000);
+			Fill(s6, 500, 1000);
+			Assert.Throws(typeof(InvalidOperationException), () => s5.Compliment(s6));
+
+			var s7 = new S1();
+			var s8 = new S2();
+			var result3 = s7.Compliment(s8);
+			Assert.True(s7.IsEqualWith(new S1()));
+			Assert.True(s7.IsEqualWith(new S2()));
+			Assert.True(result3.IsEqualWith(new S1()));
+			Assert.True(result3.IsEqualWith(new S2()));
+		}
+
+		private void StrictSetDisjoint<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
+		{
+			var s1 = new S1();
+			var s2 = new S2();
+			Fill(s1, 0, 1000);
+			Fill(s2, 1000, 2000);
+			Assert.True(s1.IsDisjointWith(s2));
+
+			var s3 = new S1();
+			var s4 = new S2();
+			Fill(s3, 0, 2000);
+			Fill(s4, 1000, 2000);
+			Assert.False(s3.IsDisjointWith(s4));
+
+			var s5 = new S1();
+			var s6 = new S2();
+			Assert.False(s5.IsDisjointWith(s6));
+
+		}
+		
+		private void StrictSetEqual<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
+		{
+			var s1 = new S1();
+			var s2 = new S2();
+			Fill(s1, 0, 10000);
+			Fill(s2, 0, 5000);
+			Assert.False(s1.IsEqualWith(s2));
+
+			var s3 = new S1();
+			var s4 = new S2();
+
+			Fill(s3, 0, 1000);
+			Fill(s4, 0, 1000);
+			Assert.True(s3.IsEqualWith(s4));
+
+			var s5 = new S1();
+			var s6 = new S2();
+			Fill(s5, 0, 1000);
+			Fill(s6, 1000, 1000);
+			Assert.False(s5.IsEqualWith(s6));
+
+			var s7 = new S1();
+			var s8 = new S2();
+			Fill(s7, 0, 1000);
+			Fill(s8, 0, 1999);
+			Assert.False(s7.IsEqualWith(s8));
+
+			var s9 = new S1();
+			var s10 = new S2();
+			Assert.True(s9.IsEqualWith(s10));
+		}
+
         private void StrictSetSubset<S1, S2>()
             where S1 : IStrictSet<int>, new()
             where S2 : IStrictSet<int>, new()
@@ -614,6 +738,13 @@ namespace Test.Commons.Collections
             Assert.False(s9.IsProperSubsetOf(s7));
             Assert.True(s7.IsSubsetOf(s7));
             Assert.False(s7.IsProperSubsetOf(s7));
+
+			var s10 = new S1();
+			var s11 = new S2();
+			Assert.True(s10.IsSubsetOf(s11));
+			Assert.True(s11.IsSubsetOf(s10));
+			Assert.False(s10.IsProperSubsetOf(s11));
+			Assert.False(s11.IsProperSubsetOf(s10));
         }
 
         private void StrictSetDiffer<S1, S2>()

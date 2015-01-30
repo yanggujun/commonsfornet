@@ -27,7 +27,7 @@ namespace Commons.Collections.Set
     {
         public IStrictSet<T> Intersect(IStrictSet<T> other)
         {
-            other.ValidateNotNull("The other set is null!");
+            other.ValidateNotNull("The set is null!");
             var itemArray = new T[Count];
             var index = 0;
             foreach (var item in Items)
@@ -52,7 +52,7 @@ namespace Commons.Collections.Set
 
         public IStrictSet<T> Union(IStrictSet<T> other)
         {
-            other.ValidateNotNull("The other set is null!");
+            other.ValidateNotNull("The set is null!");
             foreach (var item in other)
             {
                 if (!Contains(item))
@@ -66,7 +66,7 @@ namespace Commons.Collections.Set
 
         public IStrictSet<T> Differ(IStrictSet<T> other)
         {
-            other.ValidateNotNull("The other set is null!");
+            other.ValidateNotNull("The set is null!");
             foreach (var item in other)
             {
                 if (Contains(item))
@@ -80,7 +80,7 @@ namespace Commons.Collections.Set
 
         public bool IsSubsetOf(IStrictSet<T> other)
         {
-            other.ValidateNotNull("The other set is null!");
+            other.ValidateNotNull("The set is null!");
             var isSubset = true;
             foreach (var item in Items)
             {
@@ -102,12 +102,13 @@ namespace Commons.Collections.Set
 
         public bool IsEqualWith(IStrictSet<T> other)
         {
+			other.ValidateNotNull("the set is null!");
 			return other.IsSubsetOf(this) && IsSubsetOf(other);
         }
 
         public bool IsDisjointWith(IStrictSet<T> other)
         {
-			other.ValidateNotNull("The other set is null!");
+			other.ValidateNotNull("The set is null!");
 			var disjoint = true;
 			foreach (var item in other)
 			{
@@ -127,10 +128,16 @@ namespace Commons.Collections.Set
 			{
 				throw new InvalidOperationException("Cannot calculate the compliment, as the current set is not the subset of the universe set.");
 			}
-			Clear();
 			foreach(var item in universe)
 			{
-				Add(item);
+				if (Contains(item))
+				{ 
+					Remove(item);
+				}
+				else
+				{
+					Add(item);
+				}
 			}
 
             return this;
