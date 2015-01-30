@@ -653,7 +653,13 @@ namespace Test.Commons.Collections
 
 			var s5 = new S1();
 			var s6 = new S2();
-			Assert.False(s5.IsDisjointWith(s6));
+			Assert.True(s5.IsDisjointWith(s6));
+
+            var s7 = new S1();
+            var s8 = new S2();
+            Fill(s7, 0, 1000);
+            Assert.True(s7.IsDisjointWith(s8));
+            Assert.True(s8.IsDisjointWith(s7));
 
 		}
 		
