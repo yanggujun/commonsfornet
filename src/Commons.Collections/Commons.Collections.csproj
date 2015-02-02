@@ -61,7 +61,7 @@
     <Compile Include="Bag\HashedBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
     <Compile Include="Map\AbstractBimap.cs" />
-    <Compile Include="Map\AbstractHashMap.cs" />
+    <Compile Include="Map\AbstractHashedMap.cs" />
     <Compile Include="Map\Customized32HashMap.cs" />
     <Compile Include="Map\HashedBimap.cs" />
     <Compile Include="Map\HashedMap.cs" />

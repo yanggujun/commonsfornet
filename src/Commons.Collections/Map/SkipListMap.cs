@@ -252,12 +252,12 @@ namespace Commons.Collections.Map
             CopyTo(itemArray, index);
 		}
 
-		public bool IsSynchronized
+		bool ICollection.IsSynchronized
 		{
             get { return false; }
 		}
 
-		public object SyncRoot
+		object ICollection.SyncRoot
 		{
             get { throw new NotSupportedException("The operation is not supported in Commons.Collections."); }
 		}
@@ -273,12 +273,12 @@ namespace Commons.Collections.Map
 			get { return Values; }
 		}
 
-		public void Add(object key, object value)
+		void IDictionary.Add(object key, object value)
 		{
 			Add((K)key, (V)value);
 		}
 
-		public bool Contains(object key)
+		bool IDictionary.Contains(object key)
 		{
 			return ContainsKey((K)key);
 		}
@@ -288,7 +288,7 @@ namespace Commons.Collections.Map
 			return new MapEnumerator(this);
 		}
 
-		public bool IsFixedSize
+		bool IDictionary.IsFixedSize
 		{
 			get { return false; }
 		}
@@ -307,7 +307,7 @@ namespace Commons.Collections.Map
 			}
 		}
 
-		public void Remove(object key)
+		void IDictionary.Remove(object key)
 		{
 			Remove((K)key);
 		}
@@ -326,7 +326,7 @@ namespace Commons.Collections.Map
 			}
 		}
 
-		public object this[object key]
+		object IDictionary.this[object key]
 		{
 			get
 			{

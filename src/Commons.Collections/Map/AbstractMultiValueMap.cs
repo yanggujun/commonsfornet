@@ -238,12 +238,12 @@ namespace Commons.Collections.Map
 			CopyTo(theArray, index);
 		}
 
-		public bool IsSynchronized
+		bool ICollection.IsSynchronized
 		{
 			get { return false; }
 		}
 
-		public object SyncRoot
+		object ICollection.SyncRoot
 		{
 			get { throw new NotSupportedException("The SyncRoot is not supported in Commons.Collections."); }
 		}

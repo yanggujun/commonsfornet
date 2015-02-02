@@ -259,12 +259,12 @@ namespace Commons.Collections.Map
             return GetEnumerator();
         }
 
-        public void Add(object key, object value)
+        void IDictionary.Add(object key, object value)
         {
             llrbTree.Add((K)key, (V)value);
         }
 
-        public bool Contains(object key)
+        bool IDictionary.Contains(object key)
         {
             return llrbTree.Contains((K)key);
         }
@@ -274,7 +274,7 @@ namespace Commons.Collections.Map
             return new MapEnumerator(this);
         }
 
-        public bool IsFixedSize
+        bool IDictionary.IsFixedSize
         {
             get { return false; }
         }
@@ -310,7 +310,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public object this[object key]
+        object IDictionary.this[object key]
         {
             get
             {
@@ -328,12 +328,12 @@ namespace Commons.Collections.Map
             this.CopyTo(kvps, index);
         }
 
-        public bool IsSynchronized
+        bool ICollection.IsSynchronized
         {
             get { return false; }
         }
 
-        public object SyncRoot
+        object ICollection.SyncRoot
         {
             get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
@@ -345,7 +345,7 @@ namespace Commons.Collections.Map
 
         IEnumerable<V> IReadOnlyDictionary<K, V>.Values
         {
-            get { return this.Values; }
+            get { return Values; }
         }
 
         public ISortedSet<K> SortedKeySet
