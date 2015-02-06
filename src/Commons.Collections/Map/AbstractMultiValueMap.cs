@@ -118,6 +118,10 @@ namespace Commons.Collections.Map
 			{
 				count = Map[key].Count;
 			}
+			else
+			{
+				throw new KeyNotFoundException("The key does not exist!");
+			}
 
 			return count;
 		}
