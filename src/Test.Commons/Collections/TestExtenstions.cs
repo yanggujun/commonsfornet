@@ -17,7 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using Commons.Collections.Set;
 using Xunit;
 
 namespace Test.Commons.Collections
@@ -56,6 +56,44 @@ namespace Test.Commons.Collections
 			{
 				Assert.True(orders.Remove(keys[3000 + i]));
 				Assert.False(orders.ContainsKey(keys[3000 + i]));
+			}
+			Assert.Equal(keys.Length - 3000, orders.Count);
+			var total = 0;
+			foreach (var o in orders)
+			{
+				total++;
+			}
+			Assert.Equal(total, orders.Count);
+		}
+
+		public static void TestHashedSetOperations(this HashedSet<string> orders)
+		{
+			var keys = new string[10000];
+			for (var i = 0; i < keys.Length; i++)
+			{
+				keys[i] = Guid.NewGuid().ToString();
+			}
+
+			var orderDict = new Dictionary<string, Order>();
+			var idIndex = 0;
+			foreach (var key in keys)
+			{
+				Order order = new Order();
+				order.Id = idIndex++;
+				order.Name = Guid.NewGuid().ToString();
+				orderDict.Add(key, order);
+				orders.Add(key);
+			}
+			Assert.Equal(keys.Length, orders.Count);
+			foreach (var key in keys)
+			{
+				Assert.True(orders.Contains(key));
+			}
+
+			for (var i = 0; i < 3000; i++)
+			{
+				Assert.True(orders.Remove(keys[3000 + i]));
+				Assert.False(orders.Contains(keys[3000 + i]));
 			}
 			Assert.Equal(keys.Length - 3000, orders.Count);
 			var total = 0;

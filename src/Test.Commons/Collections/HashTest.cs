@@ -23,6 +23,7 @@ using Commons.Utils;
 using Xunit;
 
 using Commons.Collections.Map;
+using Commons.Collections.Set;
 
 namespace Test.Commons.Collections
 {
@@ -209,6 +210,93 @@ namespace Test.Commons.Collections
 			Assert.Throws(typeof(ArgumentException), () => new HashedMap<string, string>(0));
 			Assert.Throws(typeof(ArgumentException), () => new HashedMap<string, string>(-10));
         }
+
+		[Fact]
+		public void TestHashedSetConstructors()
+		{
+			var set1 = new HashedSet<string>();
+			set1.TestHashedSetOperations();
+
+			var set2 = new HashedSet<string>(10000);
+			set2.TestHashedSetOperations();
+
+			var set3 = new HashedSet<string>((x1, x2) => x1 == x2);
+			set3.TestHashedSetOperations();
+
+			var set4 = new HashedSet<string>(EqualityComparer<string>.Default);
+			set4.TestHashedSetOperations();
+
+			var set5 = new HashedSet<string>(10000, EqualityComparer<string>.Default.Equals);
+			set5.TestHashedSetOperations();
+
+			var set6 = new HashedSet<string>(10000, EqualityComparer<string>.Default);
+			set6.TestHashedSetOperations();
+
+			var items = new List<string>();
+			for (var i = 0; i < 10000; i++)
+			{
+				items.Add(Guid.NewGuid().ToString());
+			}
+			var set7 = new HashedSet<string>(items, 10000, EqualityComparer<string>.Default.Equals);
+			var count = 0;
+			foreach (var i in set7)
+			{
+				count++;
+			}
+
+			Assert.Equal(count, set7.Count);
+		}
+
+		[Fact]
+		public void TestHashedSetOperations()
+		{
+            var orders = new Order[1000];
+            for (var i = 0; i < orders.Length; i++)
+            {
+                orders[i] = new Order() { Id = i, Name = Guid.NewGuid().ToString() };
+            }
+
+			var orderSet = new HashedSet<Order>(1000, (x1, x2) => x1.Id == x2.Id);
+			Assert.Equal(0, orderSet.Count);
+            for (var i = 0; i < orders.Length; i++)
+            {
+				orderSet.Add(orders[i]);
+            }
+            Assert.Equal(orders.Length, orderSet.Count);
+            foreach (var key in orderSet)
+            {
+                Assert.True(orders.Contains(key, new OrderEqualityComparer()));
+            }
+
+            for (var i = 0; i < 150; i++)
+            {
+				Assert.True(orderSet.Contains(orders[200 + i]));
+            }
+
+            foreach (var item in orderSet)
+            {
+                Assert.Contains(item, orders, new OrderEqualityComparer());
+            }
+
+            orderSet.Clear();
+            Assert.Equal(0, orderSet.Count);
+            Assert.Empty(orderSet);
+            foreach (var item in orderSet)
+            {
+                Assert.Equal(0, 1);
+            }
+        
+		}
+
+		[Fact]
+		public void TestHashedSetBoundaries()
+		{
+			var set = new HashedSet<string>();
+			Assert.False(set.Remove("s"));
+
+			Assert.Throws(typeof(ArgumentException), () => new HashedSet<string>(0));
+			Assert.Throws(typeof(ArgumentException), () => new HashedSet<string>(-1));
+		}
 
 		[Fact]
 		public void TestLinkedHashMapConstructors()
