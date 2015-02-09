@@ -27,7 +27,7 @@ namespace Commons.Collections.Map
 
         bool ContainsValue(K key, V value);
 
-		bool TryGetValue(K key, out ICollection<V> values);
+		bool TryGetValue(K key, out List<V> values);
 
         int CountOf(K key);
 

@@ -45,7 +45,8 @@ namespace Commons.Collections.Map
 
 		public void Add(K key, V value)
 		{
-			key.ValidateNotNull("The key is null.");
+			key.ValidateNotNull("The key is null!");
+			value.ValidateNotNull("The value is null!");
 			if (Map.ContainsKey(key))
 			{
 				Map[key].Add(value);
@@ -76,24 +77,31 @@ namespace Commons.Collections.Map
 			return Map.ContainsKey(key);
 		}
 
-		public bool RemoveItem(K key, V value)
+		public bool RemoveValue(K key, V value)
 		{
 			var removed = false;
+			V toRemove = default(V);
 			if (Map.ContainsKey(key))
 			{
 				foreach (var v in Map[key])
 				{
 					if (valueEquator(v, value))
 					{
-						removed = Map[key].Remove(v);
+						removed = true;
+						toRemove = v;
+						break;
 					}
+				}
+				if (removed)
+				{ 
+					Map[key].Remove(toRemove);
 				}
 			}
 
 			return removed;
 		}
 
-		public bool TryGetValue(K key, out ICollection<V> values)
+		public bool TryGetValue(K key, out List<V> values)
 		{
 			var found = false;
 			List<V> collection = null;
@@ -199,6 +207,9 @@ namespace Commons.Collections.Map
 			}
 		}
 
+		/// <summary>
+		/// The return value represents the count of all the values in this multi value map.
+		/// </summary>
 		public int Count
 		{
 			get
@@ -206,10 +217,7 @@ namespace Commons.Collections.Map
 				var count = 0;
 				foreach(var kvp in Map)
 				{
-					foreach(var v in kvp.Value)
-					{
-						count++;
-					}
+					count += kvp.Value.Count;
 				}
 
 				return count;
@@ -223,7 +231,7 @@ namespace Commons.Collections.Map
 
 		public bool Remove(KeyValuePair<K, V> item)
 		{
-			return RemoveItem(item.Key, item.Value);
+			return RemoveValue(item.Key, item.Value);
 		}
 
 		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
