@@ -37,7 +37,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestMultiValueTreeMapAddSingleValue()
 		{
-			var mvMap = new MultiValueTreeMap<int, Bill>(Comparer<int>.Default, (x1, x2) => x1.Id == x2.Id);
+            var mvMap = new MultiValueTreeMap<int, Bill>(Comparer<int>.Default, new BillEqualityComparer());
 			MultiValueMapAddSingleValue(mvMap);
 		}
 
@@ -51,7 +51,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestMultiValueTreeMapAddSingleValueAndCollectionValue()
 		{
-			var mvMap = new MultiValueTreeMap<int, Bill>(Comparer<int>.Default, (x1, x2) => x1.Id == x2.Id);
+            var mvMap = new MultiValueTreeMap<int, Bill>(Comparer<int>.Default, new BillEqualityComparer());
 			MultiValueMapAddSingleValueAndCollectionValue(mvMap);
 		}
 
@@ -65,9 +65,66 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestMultiValueTreeMapRemove()
 		{
-			var mvMap = new MultiValueTreeMap<int, Bill>(Comparer<int>.Default, (x1, x2) => x1.Id == x2.Id);
+            var mvMap = new MultiValueTreeMap<int, Bill>(Comparer<int>.Default, new BillEqualityComparer());
 			MultiValueMapRemove(mvMap);
 		}
+
+        [Fact]
+        public void TestMultiValueHashedMapConstructors()
+        {
+            var mvMap1 = new MultiValueHashedMap<int, int>();
+            MultiValueMapOperations(mvMap1);
+
+            var mvMap2 = new MultiValueHashedMap<int, int>(10000);
+            MultiValueMapOperations(mvMap2);
+
+            var mvMap3 = new MultiValueHashedMap<int, int>(10000, EqualityComparer<int>.Default);
+            MultiValueMapOperations(mvMap3);
+
+            var mvMap4 = new MultiValueHashedMap<int, int>(EqualityComparer<int>.Default, EqualityComparer<int>.Default);
+            MultiValueMapOperations(mvMap4);
+
+            var mvMap5 = new MultiValueHashedMap<int, int>(10000, EqualityComparer<int>.Default, EqualityComparer<int>.Default);
+            MultiValueMapOperations(mvMap5);
+
+            var mvMap6 = new MultiValueHashedMap<int, int>(mvMap5, 10000, EqualityComparer<int>.Default.Equals, EqualityComparer<int>.Default.Equals);
+            Assert.Equal(8000, mvMap6.Keys.Count);
+            mvMap6.Clear();
+            MultiValueMapOperations(mvMap6);
+        }
+
+        [Fact]
+        public void TestMultiValueTreeMapConstructor()
+        {
+            var mvMap1 = new MultiValueTreeMap<int, int>();
+            MultiValueMapOperations(mvMap1);
+
+            var mvMap2 = new MultiValueTreeMap<int, int>(Comparer<int>.Default.Compare);
+            MultiValueMapOperations(mvMap2);
+
+            var mvMap3 = new MultiValueTreeMap<int, int>(Comparer<int>.Default.Compare, EqualityComparer<int>.Default.Equals);
+            MultiValueMapOperations(mvMap3);
+
+            var mvMap4 = new MultiValueTreeMap<int, int>(Comparer<int>.Default, EqualityComparer<int>.Default);
+            MultiValueMapOperations(mvMap4);
+        }
+
+        private void MultiValueMapOperations(IMultiValueMap<int, int> mvMap)
+        {
+            Fill(mvMap, 10000, 50, x => x, (y, z) => y * z);
+            Assert.Equal(10000, mvMap.Keys.Count);
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.Equal(50, mvMap.CountOf(i));
+            }
+
+            for (var i = 3000; i < 5000; i++)
+            {
+                Assert.True(mvMap.Remove(i));
+            }
+
+            Assert.Equal(8000, mvMap.Keys.Count);
+        }
 
 		private void MultiValueMapRemove(IMultiValueMap<int, Bill> mvMap)
 		{
@@ -121,6 +178,7 @@ namespace Test.Commons.Collections
 					Assert.True(mvMap.RemoveValue(i, valueGen(i, j)));
 				}
 			}
+            Assert.Equal(7000, mvMap.Keys.Count);
 
 			for (var i = 2000; i < 3000; i++)
 			{
@@ -143,6 +201,11 @@ namespace Test.Commons.Collections
 
 			Assert.Equal(50, mvMap.CountOf(1999));
 			Assert.Equal(50, mvMap.CountOf(3000));
+
+            mvMap.Clear();
+            Assert.Equal(0, mvMap.Keys.Count);
+            Assert.Equal(0, mvMap.Count);
+            Assert.Equal(0, mvMap.Values.Count);
 		}
 
 		private void MultiValueMapAddSingleValue(IMultiValueMap<int, Bill> mvMap)

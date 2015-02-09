@@ -26,17 +26,19 @@ namespace Commons.Collections.Map
 		{
 		}
 
-		public MultiValueTreeMap(IComparer<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default.Equals)
+		public MultiValueTreeMap(IComparer<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default)
 		{
 		}
 
-		public MultiValueTreeMap(IComparer<K> keyComparer, Equator<V> valueEquator) : this(keyComparer.Compare, valueEquator)
-		{
-		}
 
 		public MultiValueTreeMap(Comparison<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default.Equals)
 		{
 		}
+
+        public MultiValueTreeMap(IComparer<K> keyComparer, IEqualityComparer<V> valueComparer)
+            : this(keyComparer.Compare, valueComparer.Equals)
+        {
+        }
 
 		public MultiValueTreeMap(Comparison<K> keyComparer, Equator<V> valueEquator) : this(null, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
 		{
