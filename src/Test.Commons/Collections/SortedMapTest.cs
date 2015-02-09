@@ -606,6 +606,42 @@ namespace Test.Commons.Collections
             Assert.Equal(0, orderMap.Count);
 		}
 
+		[Fact]
+		public void TestTreeMapRemoveNotExist()
+		{
+			var map = new TreeMap<int, Order>();
+			SortedMapRemoveNotExist(map);
+		}
+
+		[Fact]
+		public void TestSkipListMapRemoveNotExist()
+		{
+			var map = new SkipListMap<int, Order>();
+			SortedMapRemoveNotExist(map);
+		}
+
+		private void SortedMapRemoveNotExist(ISortedMap<int, Order> map)
+		{
+			for (var i = 0; i < 10000; i++)
+			{
+				map.Add(i, new Order { Id = i });
+			}
+
+			for (var i = 3000; i < 6000; i++)
+			{
+				Assert.True(map.Remove(i));
+			}
+
+			Assert.Equal(7000, map.Count);
+
+			Assert.True(map.ContainsKey(2999));
+			Assert.True(map.ContainsKey(6000));
+			for (var i = 3000; i < 6000; i++)
+			{
+				Assert.False(map.ContainsKey(i));
+				Assert.False(map.Remove(i));
+			}
+		}
 
         [Fact]
         public void TestTreeMapRemove()
@@ -617,7 +653,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestSkipListMapRemove()
         {
-            var orderMap = new TreeMap<Order, Bill>(new OrderComparer());
+            var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
             SortedMapRemove(orderMap);
         }
 

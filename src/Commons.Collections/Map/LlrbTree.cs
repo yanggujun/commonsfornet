@@ -634,19 +634,19 @@ namespace Commons.Collections.Map
             TreeNode found = null;
             while (null != current)
             {
-                var cmp = Comparer(key, node.Item.Key);
+                var cmp = Comparer(key, current.Item.Key);
                 if (cmp == 0)
                 {
-                    found = node;
+                    found = current;
                     break;
                 }
                 else if (cmp < 0)
                 {
-                    node = node.Left;
+                    current = current.Left;
                 }
                 else
                 {
-                    node = node.Right;
+                    current = current.Right;
                 }
             }
 
