@@ -71,7 +71,7 @@
     <Compile Include="Map\AbstractLinkedMap.cs" />
     <Compile Include="Map\IReadOnlyBimap.cs" />
     <Compile Include="Map\IReadOnlyMultiValueMap.cs" />
-    <Compile Include="Map\LinkedHashMap.cs" />
+    <Compile Include="Map\LinkedHashedMap.cs" />
     <Compile Include="Map\LlrbTree.cs" />
     <Compile Include="Map\LruMap.cs" />
     <Compile Include="Map\AbstractMultiValueMap.cs" />

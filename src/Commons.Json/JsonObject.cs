@@ -23,7 +23,7 @@ namespace Commons.Json
 	[CLSCompliant(true)]
     public class JsonObject : DynamicObject
     {
-        private readonly LinkedHashMap<string, JsonValue> valueMap = new LinkedHashMap<string, JsonValue>();
+        private readonly LinkedHashedMap<string, JsonValue> valueMap = new LinkedHashedMap<string, JsonValue>();
 
         public static JsonObject Parse(string json)
         {

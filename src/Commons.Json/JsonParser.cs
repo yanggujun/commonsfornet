@@ -50,7 +50,7 @@ namespace Commons.Json
             return ParseJson(json);
         }
 
-        public static string FormatJsonObject(this LinkedHashMap<string, JsonValue> valueMap)
+        public static string FormatJsonObject(this LinkedHashedMap<string, JsonValue> valueMap)
         {
             var builder = new StringBuilder();
             builder.Append(LeftBrace).AppendLine();

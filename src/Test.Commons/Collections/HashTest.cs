@@ -301,20 +301,20 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestLinkedHashMapConstructors()
 		{
-			var orders = new LinkedHashMap<string, Order>();
+			var orders = new LinkedHashedMap<string, Order>();
 			orders.HashAbility();
 
-			var orders2 = new LinkedHashMap<string, Order>(10000);
+			var orders2 = new LinkedHashedMap<string, Order>(10000);
 			orders2.HashAbility();
 
-			var orders4 = new LinkedHashMap<string, Order>(500, (x1, x2) => x1 == x2);
+			var orders4 = new LinkedHashedMap<string, Order>(500, (x1, x2) => x1 == x2);
 			orders4.HashAbility();
 
-			var orders5 = new LinkedHashMap<string, Order>(1000, orders2);
+			var orders5 = new LinkedHashedMap<string, Order>(1000, orders2);
 			Assert.NotEmpty(orders5);
 			Assert.Equal(orders2.Count, orders5.Count);
 
-			var orders9 = new LinkedHashMap<string, Order>(1000, orders2, (x1, x2) => x1 == x2);
+			var orders9 = new LinkedHashedMap<string, Order>(1000, orders2, (x1, x2) => x1 == x2);
 			Assert.NotEmpty(orders9);
 			Assert.Equal(orders2.Count, orders9.Count);
 		}
@@ -322,7 +322,7 @@ namespace Test.Commons.Collections
 		[Fact]
 		public void TestOrderedMap()
 		{
-			var container = new LinkedHashMap<int, string>(10000);
+			var container = new LinkedHashedMap<int, string>(10000);
 			Assert.Throws(typeof(InvalidOperationException), () => container.First);
 			Assert.Throws(typeof(InvalidOperationException), () => container.Last);
 			Assert.Throws(typeof(InvalidOperationException), () => container.After(1));
@@ -387,7 +387,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestOneItemLinkedHashMap()
         {
-            var orders = new LinkedHashMap<int, string>();
+            var orders = new LinkedHashedMap<int, string>();
             orders.Add(1, "1");
             Assert.Equal(1, orders.First.Key);
             Assert.Equal(1, orders.Last.Key);
@@ -398,7 +398,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestEmptyLinkedHashMap()
         {
-            var orders = new LinkedHashMap<string, Order>();
+            var orders = new LinkedHashedMap<string, Order>();
             Assert.Throws(typeof(InvalidOperationException), () => orders.First);
             Assert.Throws(typeof(InvalidOperationException), () => orders.Last);
             Assert.Throws(typeof(InvalidOperationException), () => orders.After("1"));

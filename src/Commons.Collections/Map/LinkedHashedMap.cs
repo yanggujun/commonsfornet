@@ -21,31 +21,31 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class LinkedHashMap<K, V> : AbstractLinkedMap<K, V>, IOrderedMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
+    public class LinkedHashedMap<K, V> : AbstractLinkedMap<K, V>, IOrderedMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
     {
         private const int DefaultCapacity = 16;
 
-        public LinkedHashMap()
+        public LinkedHashedMap()
             : this(DefaultCapacity)
         {
         }
 
-        public LinkedHashMap(int capacity)
+        public LinkedHashedMap(int capacity)
             : this(capacity, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
         {
         }
 
-        public LinkedHashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items)
+        public LinkedHashedMap(int capacity, IEnumerable<KeyValuePair<K, V>> items)
             : this(capacity, items, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
         {
         }
 
-        public LinkedHashMap(int capacity, Equator<K> equator)
+        public LinkedHashedMap(int capacity, Equator<K> equator)
             : this(capacity, null, equator)
         {
         }
 
-        public LinkedHashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, Equator<K> equator)
+        public LinkedHashedMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, Equator<K> equator)
             : base(capacity, equator)
         {
             if (null != items)
