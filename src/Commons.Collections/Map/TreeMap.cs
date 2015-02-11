@@ -271,7 +271,7 @@ namespace Commons.Collections.Map
 
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
-            return new MapEnumerator(this);
+            return new MapEnumerator<K, V>(this);
         }
 
         bool IDictionary.IsFixedSize

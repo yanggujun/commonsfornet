@@ -18,20 +18,21 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Map
 {
-	internal class MapEnumerator : IDictionaryEnumerator
+	internal class MapEnumerator<K, V> : IDictionaryEnumerator
 	{
-		private readonly IDictionary map;
-		private readonly IDictionaryEnumerator iter;
-		public MapEnumerator(IDictionary map)
+		private readonly IDictionary<K, V> map;
+		private readonly IEnumerator<KeyValuePair<K, V>> iter;
+		public MapEnumerator(IDictionary<K, V> map)
 		{
 			this.map = map;
 			iter = this.map.GetEnumerator();
 		}
+
 		public DictionaryEntry Entry
 		{
 			get
 			{
-				var entry = new DictionaryEntry(iter.Key, iter.Value);
+                var entry = new DictionaryEntry(iter.Current.Key, iter.Current.Value);
 				return entry;
 			}
 		}
