@@ -20,13 +20,16 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
-
+using Commons.Utils;
 using Xunit;
 
 using Commons.Collections;
 using Commons.Collections.Set;
 using Commons.Collections.Queue;
 using Commons.Collections.Collection;
+using Commons.Collections.Bag;
+using Commons.Collections.Map;
+using System.Collections;
 
 namespace Test.Commons.Collections
 {
@@ -584,12 +587,328 @@ namespace Test.Commons.Collections
 		}
 
 		[Fact]
-		public void TestStrictSetCompliement()
+		public void TestStrictSetCompliment()
 		{
 			StrictSetCompliment<HashedSet<int>, HashedSet<int>>();
 			StrictSetCompliment<HashedSet<int>, TreeSet<int>>();
 			StrictSetCompliment<TreeSet<int>, HashedSet<int>>();
 			StrictSetCompliment<TreeSet<int>, TreeSet<int>>();
+		}
+
+		[Fact]
+		public void TestHasedBagCollectionOperations()
+		{
+			var bag = new HashedBag<Order>(new OrderEqualityComparer());
+			bag.Fill(x => new Order { Id = x });
+			bag.CollectionOperations<Order>(bag.Count);
+		}
+
+		[Fact]
+		public void TestTreeBagCollectionOperations()
+		{
+			var bag = new TreeBag<Order>(new OrderComparer());
+			bag.Fill(x => new Order { Id = x });
+			bag.CollectionOperations<Order>(bag.Count);
+		}
+
+		[Fact]
+		public void TestCompositeCollectionOperations()
+		{
+			var collection = new CompositeCollection<Order>();
+			var list1 = new List<Order>();
+			list1.Fill(x => new Order { Id = x });
+			var list2 = new List<Order>();
+			list2.Fill(x => new Order { Id = x }, 100);
+			var list3 = new List<Order>();
+			list3.Fill(x => new Order { Id = x }, 5);
+			collection.AddAll(list1);
+			collection.AddAll(list2);
+			collection.AddAll(list3);
+			collection.CollectionOperations<Order>(1105);
+		}
+
+		[Fact]
+		public void TestHashedBimapCollectionOperations()
+		{
+			var bimap = Instantiate<HashedBimap<int, Order>>();
+			bimap.CollectionOperations<KeyValuePair<int, Order>>(1000);
+		}
+
+		[Fact]
+		public void TestTreeBimapCollectionOperations()
+		{
+			var bimap = new TreeBimap<int, Order>(new OrderComparer());
+			bimap.Fill(x => new KeyValuePair<int, Order>(x, new Order { Id = x }));
+			bimap.CollectionOperations<KeyValuePair<int, Order>>(1000);
+		}
+
+		[Fact]
+		public void TestHashedMapCollectionOperations()
+		{
+			var map = Instantiate<HashedMap<int, Order>>();
+			map.CollectionOperations<KeyValuePair<int, Order>>(1000);
+		}
+
+		[Fact]
+		public void TestTreeMapCollectionOperations()
+		{
+			var map = Instantiate<TreeMap<int, Order>>();
+			map.CollectionOperations<KeyValuePair<int, Order>>(1000);
+		}
+
+		[Fact]
+		public void  TestSkipListMapCollectionOperations()
+		{
+			var map = Instantiate<SkipListMap<int, Order>>();
+			map.CollectionOperations<KeyValuePair<int, Order>>(1000);
+		}
+
+		[Fact]
+		public void TestCustomized32HashedMapCollectionOperations()
+		{
+			var map = Instantiate<Customized32HashedMap<int, Order>>();
+			map.CollectionOperations<KeyValuePair<int, Order>>(1000);
+		}
+
+		[Fact]
+		public void TestLinkedHashedMapCollectionOperations()
+		{
+			var map = Instantiate<LinkedHashedMap<int, Order>>();
+			map.CollectionOperations<KeyValuePair<int, Order>>(1000);
+		}
+
+		[Fact]
+		public void TestLruMapCollectionOperations()
+		{
+			var lru = new LruMap<int, Order>(1000);
+			lru.Fill(x => new KeyValuePair<int, Order>(x, new Order { Id = x }));
+			lru.CollectionOperations<KeyValuePair<int, Order>>(1000);
+		}
+
+		[Fact]
+		public void TestMultiValueHashedMapCollectionOperations()
+		{
+			var mvMap = FillMultiValueMap<MultiValueHashedMap<int, Order>>();
+			mvMap.CollectionOperations<KeyValuePair<int, Order>>(5000);
+		}
+
+		[Fact]
+		public void TestMultiValueTreeMapCollectionOperations()
+		{
+			var mvMap = FillMultiValueMap<MultiValueTreeMap<int, Order>>();
+			mvMap.CollectionOperations<KeyValuePair<int, Order>>(5000);
+		}
+
+		[Fact]
+		public void TestReferenceMapCollectionOperations()
+		{
+			var map = new ReferenceMap<Order, Bill>();
+			map.Fill(x => new KeyValuePair<Order, Bill>(new Order { Id = x }, new Bill { Id = x }));
+			map.CollectionOperations<KeyValuePair<Order, Bill>>(1000);
+		}
+
+		[Fact]
+		public void TestBoundedQueueCollectionOperations()
+		{
+			var queue = new BoundedQueue<int>(2000);
+			for (var i = 0; i < 1000; i++)
+			{
+				queue.Enqueue(i + 1);
+			}
+			queue.CollectionOperations<int>(1000);
+		}
+
+		[Fact]
+		public void TestDequeCollectionOperations()
+		{
+			var deque = new Deque<int>(2000);
+			for (var i= 0; i < 1000; i++)
+			{
+				deque.Append(i + 1);
+			}
+			deque.CollectionOperations<int>(1000);
+		}
+
+		[Fact]
+		public void TestMaxPriorityQueueCollectionOperations()
+		{
+			var pq = new MaxPriorityQueue<int>();
+			for (var i = 0; i < 1500; i++)
+			{
+				pq.Push(i + 1);
+			}
+			for (var i = 0; i < 500; i++)
+			{
+				pq.Pop();
+			}
+			pq.CollectionOperations<int>(1000);
+		}
+
+		[Fact]
+		public void TestMinPriorityQueueCollectionOperations()
+		{
+			var pq = new MinPriorityQueue<int>();
+			for (var i = 0; i < 1500; i++)
+			{
+				pq.Push(i + 1);
+			}
+
+			for (var i = 0; i < 500; i++)
+			{
+				pq.Pop();
+			}
+			pq.CollectionOperations<int>(1000);
+		}
+
+		[Fact]
+		public void TestHashedSetCollectionOperations()
+		{
+			var set = new HashedSet<int>();
+			set.Fill(x => x + 1);
+			set.CollectionOperations<int>(1000);
+		}
+
+		[Fact]
+		public void TestTreeSetCollectionOperations()
+		{
+			var set = new TreeSet<int>();
+			set.Fill(x => x + 1);
+			set.CollectionOperations<int>(1000);
+		}
+
+		[Fact]
+		public void TestSkipListSetCollectionOperations()
+		{
+			var set = new SkipListSet<int>();
+			set.Fill(x => x + 1);
+			set.CollectionOperations<int>(1000);
+		}
+
+		[Fact]
+		public void TestHashedBimapDictionaryOperations()
+		{
+			var bimap = new HashedBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer());
+			bimap.DictionaryOperations(x => new Order {Id = x}, y => new Bill {Id = y }, new BillEqualityComparer().Equals);
+		}
+
+		[Fact]
+		public void TestTreeBimapDictionaryOperations()
+		{
+			var bimap = new TreeBimap<Order, Bill>(new OrderComparer(), new BillComparer());
+			bimap.DictionaryOperations<Order, Bill>(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+		}
+
+		[Fact]
+		public void TestHashedMapDictionaryOperations()
+		{
+			var map = new HashedMap<Order, Bill>(new OrderEqualityComparer());
+			map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+		}
+
+		[Fact]
+		public void TestLinkedHashedMapDictionaryOperations()
+		{
+			var map = new LinkedHashedMap<Order, Bill>(new OrderEqualityComparer());
+			map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+		}
+
+		[Fact]
+		public void TestTreeMapDictionaryOperations()
+		{
+			var map = new TreeMap<Order, Bill>(new OrderComparer());
+			map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+		}
+
+		[Fact]
+		public void TestSkipListMapDictionaryOperations()
+		{
+			var map = new SkipListMap<Order, Bill>(new OrderComparer());
+			map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+		}
+
+		[Fact]
+		public void TestLruMapDictionaryOperations()
+		{
+			var map = new LruMap<Order, Bill>(2000 ,new OrderEqualityComparer());
+			map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+		}
+
+		[Fact]
+		public void TestReferenceMapDictionaryOperations()
+		{
+			var map = new ReferenceMap<Order, Bill>();
+			ReferenceMapDictionaryOperations(map);
+		}
+
+		private void ReferenceMapDictionaryOperations(IDictionary source)
+		{
+			var list = new List<Order>();
+			for (var i = 0; i < 1000; i++)
+			{
+				var order = new Order { Id = i };
+				var bill = new Bill { Id = i };
+				source.Add(order, bill);
+				list.Add(order);
+			}
+
+			Assert.Equal(1000, source.Count);
+
+			Assert.False(source.Contains(new Order {Id = 1}));
+			Assert.False(source.Contains(new Order { Id = 2 }));
+
+			for (var i = 0; i < 200; i++)
+			{
+				Assert.True(source.Contains(list[i]));
+				source.Remove(list[i]);
+			}
+			Assert.Equal(800, source.Count);
+			for (var i = 0; i < 200; i++)
+			{
+				Assert.False(source.Contains(list[i]));
+			}
+
+			for (var i = 500; i < 700; i++)
+			{
+				var v = (Bill)source[list[i]];
+				Assert.Equal(i, v.Id);
+			}
+
+			var keys = source.Keys;
+			Assert.Equal(800, keys.Count);
+			var values = source.Values;
+			Assert.Equal(800, values.Count);
+			var currentCount = 0;
+			foreach (var item in source)
+			{
+				currentCount++;
+			}
+			Assert.Equal(800, currentCount);
+			Assert.Equal(currentCount, source.Count);
+
+			source.Clear();
+			Assert.Equal(0, source.Count);
+		
+		}
+
+		private T FillMultiValueMap<T>() where T : IMultiValueMap<int, Order>, new()
+		{
+			var mvMap = new T();
+			for (var i = 0; i < 1000; i++)
+			{
+				for (var j = 0; j < 5; j++)
+				{ 
+					mvMap.Add(i, new Order { Id = j });
+				}
+			}
+
+			return mvMap;
+		}
+
+		private T Instantiate<T>() where T : IDictionary<int, Order>, new()
+		{
+			var bimap = new T();
+			bimap.Fill(x => new KeyValuePair<int, Order>(x, new Order { Id = x }));
+			return bimap;
 		}
 
 		private void StrictSetCompliment<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()

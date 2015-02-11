@@ -15,12 +15,13 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
-    public interface IBag<T> : ICollection<T>
+    public interface IBag<T> : ICollection<T>, IEnumerable<T>, IEnumerable
     {
 		int this[T item] { get; }
 

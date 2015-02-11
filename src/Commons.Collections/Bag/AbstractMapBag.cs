@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
-    public abstract class AbstractMapBag<T> : IBag<T>
+    public abstract class AbstractMapBag<T> : IBag<T>, ICollection<T>, IReadOnlyCollection<T>, ICollection, IEnumerable<T>, IEnumerable
     {
         protected IDictionary<T, int> Map { get; private set; }
 
@@ -172,5 +172,26 @@ namespace Commons.Collections.Bag
 				}
 			}
         }
-    }
+
+		void ICollection.CopyTo(Array array, int index)
+		{
+			var itemArray = array as T[];
+			CopyTo(itemArray, index);
+		}
+
+		int ICollection.Count
+		{
+			get { return Count; }
+		}
+
+		bool ICollection.IsSynchronized
+		{
+			get { return false; }
+		}
+
+		object ICollection.SyncRoot
+		{
+			get { throw new NotSupportedException("The SyncRoot is not supported in the Commons.Collections."); }
+		}
+	}
 }

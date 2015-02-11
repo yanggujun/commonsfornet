@@ -209,6 +209,7 @@ namespace Commons.Collections.Map
 
 		/// <summary>
 		/// The return value represents the count of all the values in this multi value map.
+		/// It represents how many key value pairs of [<typeparam name="K"/>, <typeparam name="V"/>] in the multi value map.
 		/// </summary>
 		public int Count
 		{

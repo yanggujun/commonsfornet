@@ -48,14 +48,14 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestHashAbility()
         {
-            var orders = new Customized32HashMap<string, Order>(4);
+            var orders = new Customized32HashedMap<string, Order>(4);
 			orders.HashAbility();
         }
 
         [Fact]
         public void TestHashMapContains()
         {
-            var orders = new Customized32HashMap<string, Order>();
+            var orders = new Customized32HashedMap<string, Order>();
             var key = Guid.NewGuid().ToString();
             var order = new Order();
             orders.Add(key, order);
@@ -65,23 +65,23 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestHashMapConstructors()
         {
-            var orders = new Customized32HashMap<string, Order>();
+            var orders = new Customized32HashedMap<string, Order>();
 			orders.HashAbility();
 
-            var orders2 = new Customized32HashMap<string, Order>(1000);
+            var orders2 = new Customized32HashedMap<string, Order>(1000);
 			orders2.HashAbility();
 
-            var orders3 = new Customized32HashMap<string, Order>(100, x => x.ToBytes());
+            var orders3 = new Customized32HashedMap<string, Order>(100, x => x.ToBytes());
 			orders3.HashAbility();
 
-            var orders4 = new Customized32HashMap<string, Order>(500, x => x.ToBytes(), (x1, x2) => x1 == x2);
+            var orders4 = new Customized32HashedMap<string, Order>(500, x => x.ToBytes(), (x1, x2) => x1 == x2);
 			orders4.HashAbility();
 
-            var orders7 = new Customized32HashMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
+            var orders7 = new Customized32HashedMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
 			orders7.HashAbility();
 
 
-            var orders9 = new Customized32HashMap<string, Order>(10000, orders7, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
+            var orders9 = new Customized32HashedMap<string, Order>(10000, orders7, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
             Assert.NotEmpty(orders9);
             Assert.Equal(orders7.Count, orders9.Count);
         }
@@ -101,7 +101,7 @@ namespace Test.Commons.Collections
                 bills[i] = new Bill() { Id = i, Count = i };
             }
 
-            IDictionary<Order, Bill> orderMap = new Customized32HashMap<Order, Bill>(1000, x => x.Name.ToBytes());
+            IDictionary<Order, Bill> orderMap = new Customized32HashedMap<Order, Bill>(1000, x => x.Name.ToBytes());
             Assert.Equal(0, orderMap.Keys.Count);
             Assert.Equal(0, orderMap.Values.Count);
             for (var i = 0; i < orders.Length; i++)
@@ -162,7 +162,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestMapNullExceptions()
         {
-            var map = new Customized32HashMap<Order, Bill>();
+            var map = new Customized32HashedMap<Order, Bill>();
             Bill b;
             Assert.Throws(typeof(ArgumentNullException), () => map.Add(null, null));
             Assert.Throws(typeof(ArgumentNullException), () => map[null] = null);
@@ -172,14 +172,14 @@ namespace Test.Commons.Collections
             Assert.Throws(typeof(ArgumentNullException), () => map.ContainsKey(null));
             Assert.Throws(typeof(ArgumentNullException), () => map.CopyTo(null, 0));
 
-            var simpleMap = new Customized32HashMap<int, string>();
+            var simpleMap = new Customized32HashedMap<int, string>();
             Assert.DoesNotThrow(() => simpleMap.Add(0, null));
         }
 
         [Fact]
         public void TestMapArgumentExceptions()
         {
-            var map = new Customized32HashMap<Order, Bill>(5, new MurmurHash32(), x => x.Id.ToString().ToBytes(), (x1, x2) => x1.Id == x2.Id);
+            var map = new Customized32HashedMap<Order, Bill>(5, new MurmurHash32(), x => x.Id.ToString().ToBytes(), (x1, x2) => x1.Id == x2.Id);
             for (var i = 0; i < 5; i++)
             {
                 var order = new Order() { Id = i, Name = Guid.NewGuid().ToString() };

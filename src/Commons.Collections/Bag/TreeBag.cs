@@ -29,13 +29,17 @@ namespace Commons.Collections.Bag
         {
         }
 
-        public TreeBag(Comparison<T> comp)
-            : base(new TreeMap<T, int>(comp))
+        public TreeBag(Comparison<T> comparer)
+            : base(new TreeMap<T, int>(comparer))
         {
         }
 
-        public TreeBag(IEnumerable<T> items, Comparison<T> comp)
-            : base(items, new TreeMap<T, int>(comp))
+		public TreeBag(IComparer<T> comparer) : this(comparer.Compare)
+		{
+		}
+
+        public TreeBag(IEnumerable<T> items, Comparison<T> comparer)
+            : base(items, new TreeMap<T, int>(comparer))
         {
         }
 

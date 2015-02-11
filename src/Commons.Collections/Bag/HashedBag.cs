@@ -29,6 +29,10 @@ namespace Commons.Collections.Bag
         {
         }
 
+		public HashedBag(IEqualityComparer<T> comparer) : this(comparer.Equals)
+		{
+		}
+
 		public HashedBag(Equator<T> equator) : base(new HashedMap<T, int>(equator))
 		{
 		}
@@ -38,7 +42,7 @@ namespace Commons.Collections.Bag
         {
         }
 
-		public HashedBag(Equator<T> equator, IEnumerable<T> items) : base(items, new HashedMap<T, int>(equator))
+		public HashedBag(IEnumerable<T> items, Equator<T> equator) : base(items, new HashedMap<T, int>(equator))
 		{
 		}
     }

@@ -14,11 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
+
 using Commons.Utils;
 
 namespace Commons.Collections.Map
 {
+	[CLSCompliant(true)]
 	public class MultiValueHashedMap<K, V> : AbstractMultiValueMap<K, V>, IMultiValueMap<K, V>, IReadOnlyMultiValueMap<K, V>
 	{
 		public MultiValueHashedMap() : base(new HashedMap<K, ICollection<V>>(), null, EqualityComparer<V>.Default.Equals)

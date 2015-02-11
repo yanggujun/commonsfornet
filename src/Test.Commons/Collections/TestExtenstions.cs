@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Commons.Collections.Set;
+using Commons.Utils;
 using Xunit;
 
 namespace Test.Commons.Collections
@@ -104,12 +105,86 @@ namespace Test.Commons.Collections
 			Assert.Equal(total, orders.Count);
 		}
 
-		public static void AssertCopyTo<T>(ICollection<T> source)
+		public static void DictionaryOperations<K, V>(this IDictionary source, Func<int, K> keyGen, Func<int, V> valueGen, Equator<V> valueEquator, int count = 1000)
 		{
+			for (var i = 0; i < count; i++)
+			{
+				source.Add(keyGen(i), valueGen(i));
+			}
+			Assert.Equal(count, source.Count);
+
+			Assert.False(source.Contains(keyGen(count)));
+			Assert.False(source.Contains(keyGen(count + 1)));
+
+			for (var i = 0; i < 200; i++)
+			{
+				Assert.True(source.Contains(keyGen(i)));
+				source.Remove(keyGen(i));
+			}
+			Assert.Equal(count - 200, source.Count);
+			for (var i = 0; i < 200; i++)
+			{
+				Assert.False(source.Contains(keyGen(i)));
+			}
+
+			for (var i = 500; i < 700; i++)
+			{
+				var v = (V)source[keyGen(i)];
+				Assert.True(valueEquator(v, valueGen(i)));
+			}
+
+			var keys = source.Keys;
+			Assert.Equal(count - 200, keys.Count);
+			var values = source.Values;
+			Assert.Equal(count - 200, values.Count);
+			var currentCount = 0;
+			foreach (var item in source)
+			{
+				currentCount++;
+			}
+			Assert.Equal(count - 200, currentCount);
+			Assert.Equal(currentCount, source.Count);
+
+			source.Clear();
+			Assert.Equal(0, source.Count);
 		}
 
-		public static void AssertCopyTo<T>(ICollection source)
+		public static void Fill<T>(this ICollection<T> source, Transformer<int, T> generator, int itemCount = 1000)
 		{
+			for (var i = 0; i < itemCount; i++)
+			{
+				source.Add(generator(i));
+			}
+		}
+
+		public static void CollectionOperations<T>(this ICollection source, int count)
+		{
+			Assert.Equal(count, source.Count);
+			source.AssertCopyTo<T>(count);
+
+			var actualCount = 0;
+			foreach (var item in source)
+			{
+				actualCount++;
+				Assert.IsAssignableFrom<T>(item);
+			}
+
+			Assert.Equal(count, actualCount);
+		}
+
+		public static void AssertCopyTo<T>(this ICollection source, int count)
+		{
+			var array = new T[count + 3];
+			source.CopyTo(array, 2);
+			Assert.Equal(default(T), array[0]);
+			Assert.Equal(default(T), array[1]);
+
+			for (var i = 2; i < count + 2; i++)
+			{
+				Assert.NotEqual(default(T), array[i]);
+			}
+
+			Assert.Equal(default(T), array[count + 2]);
 		}
 	}
 }

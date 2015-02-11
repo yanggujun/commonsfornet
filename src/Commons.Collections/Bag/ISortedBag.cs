@@ -15,11 +15,13 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
-    public interface ISortedBag<T> : IBag<T>
+    public interface ISortedBag<T> : IBag<T>, ICollection<T>, IEnumerable<T>, IEnumerable
     {
         T Max { get; }
 

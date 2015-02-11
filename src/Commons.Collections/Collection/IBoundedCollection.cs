@@ -26,7 +26,7 @@ namespace Commons.Collections.Collection
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [CLSCompliant(true)]
-    public interface IBoundedCollection : ICollection
+    public interface IBoundedCollection : ICollection, IEnumerable
     {
         /// <summary>
         /// Indicates whether the collection is full. If the collection is full, 

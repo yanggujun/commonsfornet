@@ -32,7 +32,11 @@ namespace Commons.Collections.Map
 		{
 		}
 
-		public LruMap(int fullSize) : this(fullSize, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
+		public LruMap(int fullSize) : this(fullSize, EqualityComparer<K>.Default)
+		{
+		}
+
+		public LruMap(int fullSize, IEqualityComparer<K> comparer) : this(fullSize, comparer.Equals)
 		{
 		}
 

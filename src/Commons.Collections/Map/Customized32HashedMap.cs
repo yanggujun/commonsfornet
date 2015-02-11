@@ -22,7 +22,7 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class Customized32HashMap<K, V> : AbstractHashedMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
+    public class Customized32HashedMap<K, V> : AbstractHashedMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
     {
         private const int DefaultCapacity = 64;
 
@@ -30,31 +30,31 @@ namespace Commons.Collections.Map
 
         private readonly IHashStrategy hasher;
 
-        public Customized32HashMap() : this(DefaultCapacity)
+        public Customized32HashedMap() : this(DefaultCapacity)
         {
         }
 
-        public Customized32HashMap(int capacity)
+        public Customized32HashedMap(int capacity)
             : this(capacity, x => Encoding.ASCII.GetBytes(x.ToString()))
         {
         }
 
-        public Customized32HashMap(int capacity, Transformer<K, byte[]> transformer)
+        public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer)
             : this(capacity, new MurmurHash32(), transformer, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
         {
         }
 
-        public Customized32HashMap(int capacity, Transformer<K, byte[]> transformer, Equator<K> isEqual)
+        public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer, Equator<K> isEqual)
             : this(capacity, new MurmurHash32(), transformer, isEqual)
         {
         }
 
-        public Customized32HashMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
+        public Customized32HashedMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
             : this(capacity, null, hasher, transformer, isEqual)
         {
         }
 
-        public Customized32HashMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
+        public Customized32HashedMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
             : base(capacity, isEqual)
         {
             Guarder.CheckNull(hasher, transformer, isEqual);

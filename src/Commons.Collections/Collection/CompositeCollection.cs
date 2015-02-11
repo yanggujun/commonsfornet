@@ -31,7 +31,7 @@ namespace Commons.Collections.Collection
     /// System.Linq.Enumerable.Concat.
     /// </summary>
     [CLSCompliant(true)]
-    public class CompositeCollection<T> : ICollection<T>
+    public class CompositeCollection<T> : ICollection<T>, IReadOnlyCollection<T>, ICollection, IEnumerable<T>, IEnumerable
     {
         private readonly List<ICollection<T>> allCollections = new List<ICollection<T>>();
 
@@ -281,5 +281,20 @@ namespace Commons.Collections.Collection
 			}
         }
 
-    }
+		public void CopyTo(Array array, int index)
+		{
+			var itemArray = array as T[];
+			CopyTo(itemArray, index);
+		}
+
+		public bool IsSynchronized
+		{
+			get { return false; }
+		}
+
+		public object SyncRoot
+		{
+			get { throw new NotSupportedException("The SyncRoot is not supported in the Commons.Collections"); }
+		}
+	}
 }
