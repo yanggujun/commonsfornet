@@ -44,10 +44,12 @@ namespace Commons.Collections.Map
             {
                 if (base.Remove(key))
                 {
+                    if (ReferenceEquals(entry, Header))
+                    {
+                        Header = entry.After;
+                    }
                     entry.Before.After = entry.After;
                     entry.After.Before = entry.Before;
-                    entry.Before = null;
-                    entry.After = null;
                     removed = true;
                 }
             }

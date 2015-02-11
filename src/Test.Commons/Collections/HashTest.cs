@@ -319,6 +319,70 @@ namespace Test.Commons.Collections
 			Assert.Equal(orders2.Count, orders9.Count);
 		}
 
+        [Fact]
+        public void TestLinkedHashedMapRemove()
+        {
+            var map = new LinkedHashedMap<int, Order>();
+            map.Fill(x => new KeyValuePair<int, Order>(x, new Order { Id = x }));
+            Assert.Equal(1000, map.Count);
+
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.True(map.ContainsKey(i));
+                Assert.True(map.Remove(i));
+                Assert.False(map.ContainsKey(i));
+            }
+            Assert.Throws(typeof(ArgumentException), () => map.After(0));
+            Assert.Throws(typeof(ArgumentException), () => map.Before(100));
+            Assert.Throws(typeof(ArgumentException), () => map.After(999));
+
+            Assert.Equal(900, map.Count);
+
+            var index = 100;
+            foreach (var item in map)
+            {
+                Assert.Equal(index, item.Key);
+                index++;
+            }
+            Assert.Equal(1000, index);
+
+            for (var i = 900; i < 1000; i++)
+            {
+                Assert.True(map.ContainsKey(i));
+                Assert.True(map.Remove(i));
+                Assert.False(map.ContainsKey(i));
+            }
+            Assert.Equal(800, map.Count);
+            Assert.Throws(typeof(ArgumentException), () => map.After(899));
+
+            index = 100;
+            foreach (var item in map)
+            {
+                Assert.Equal(index, item.Key);
+                index++;
+            }
+            Assert.Equal(900, index);
+
+            for (var i = 300; i < 500; i++)
+            {
+                Assert.True(map.ContainsKey(i));
+                Assert.True(map.Remove(i));
+            }
+            Assert.Equal(299, map.Before(500).Key);
+            Assert.Equal(500, map.After(299).Key);
+
+            Assert.Equal(600, map.Count);
+            index = 100;
+            foreach (var item in map)
+            {
+                index = index == 300 ? 500 : index;
+                Assert.Equal(index, item.Key);
+                index++;
+            }
+
+            Assert.Equal(900, index);
+        }
+
 		[Fact]
 		public void TestOrderedMap()
 		{
