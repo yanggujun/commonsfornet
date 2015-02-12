@@ -86,7 +86,7 @@ namespace Commons.Collections.Map
                     var cursor = entry;
                     while (null != cursor)
                     {
-                        keys.Add(entry.Key);
+                        keys.Add(cursor.Key);
                         cursor = cursor.Next;
                     }
                 }

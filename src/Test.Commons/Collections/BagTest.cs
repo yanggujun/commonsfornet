@@ -99,6 +99,7 @@ namespace Test.Commons.Collections
 			BagConstructorOperations(bag3);
 
 			var bag4 = new HashedBag<Order>(new OrderEqualityComparer());
+            Fill(bag4, x => new Order { Id = x });
 			BagConstructorOperations(bag4);
 
 			var bag5 = new HashedBag<Order>(bag4, new OrderEqualityComparer().Equals);
