@@ -25,8 +25,10 @@ namespace Commons.Collections.Map
     [CLSCompliant(true)]
     public class HashedBimap<K, V> :AbstractBimap<K, V>, IBimap<K, V>, IDictionary<K, V>, IReadOnlyBimap<K, V>, IReadOnlyDictionary<K, V>
     {
+		private const int DefaultCapacity = 16;
         private readonly Equator<K> keyEquator;
         private readonly Equator<V> valueEquator;
+
         public HashedBimap()
             : this(EqualityComparer<K>.Default.Equals, EqualityComparer<V>.Default.Equals)
         {
@@ -100,8 +102,8 @@ namespace Commons.Collections.Map
             this.valueEquator = valueEquator;
         }
 
-        public HashedBimap(int capacity, Equator<K> keyEquator, Equator<V> valueEquator, IBimap<K, V> bimap) 
-            : this(capacity, keyEquator, valueEquator)
+        public HashedBimap(IBimap<K, V> bimap, Equator<K> keyEquator, Equator<V> valueEquator)
+            : this(bimap == null ? DefaultCapacity : bimap.Count, keyEquator, valueEquator)
         {
             if (bimap != null)
             {

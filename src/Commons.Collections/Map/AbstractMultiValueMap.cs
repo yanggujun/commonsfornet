@@ -30,15 +30,16 @@ namespace Commons.Collections.Map
 
 		protected IDictionary<K, ICollection<V>> Map { get; private set; }
 
-		protected AbstractMultiValueMap(IDictionary<K, ICollection<V>> map, IEnumerable<KeyValuePair<K, V>> items, Equator<V> valueEquator)
+		protected AbstractMultiValueMap(IEnumerable<KeyValuePair<K, V>> items, IDictionary<K, ICollection<V>> map, Equator<V> valueEquator)
 		{
 			this.valueEquator = valueEquator;
-			this.Map = map;
+			Map = map;
+
 			if (items != null)
-			{ 
-				foreach (var item in items)
+			{
+				foreach(var item in items)
 				{
-					Add(item.Key, item.Value);
+					Add(item);
 				}
 			}
 		}

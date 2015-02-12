@@ -45,8 +45,13 @@ namespace Commons.Collections.Map
         /// Constructs an empty map with the specified comparer of the key.
         /// </summary>
         /// <param name="comparer">The comparer of the key.</param>
-        public TreeMap(IComparer<K> comparer) : this(null, comparer)
+        public TreeMap(IComparer<K> comparer) : this(comparer.Compare)
         {
+        }
+
+        public TreeMap(Comparison<K> comparison)
+        {
+            llrbTree = new LlrbTree<K, V>(comparison);
         }
 
         /// <summary>
@@ -62,18 +67,13 @@ namespace Commons.Collections.Map
         /// </summary>
         /// <param name="source">The source dictionary.</param>
         /// <param name="comparer">The comparer of the key.</param>
-        public TreeMap(IDictionary<K, V> source, IComparer<K> comparer) : this(source, (k1, k2) => comparer.Compare(k1, k2))
+        public TreeMap(IDictionary<K, V> source, IComparer<K> comparer) : this(source, comparer.Compare)
         {
         }
 
-        public TreeMap(Comparison<K> comparison) : this(null, comparison)
-        {
-        }
-
-        public TreeMap(IDictionary<K, V> source, Comparison<K> comparison)
+        public TreeMap(IDictionary<K, V> source, Comparison<K> comparison) : this(comparison)
         {
             comparison.ValidateNotNull("The comparison func should not be null.");
-            llrbTree = new LlrbTree<K, V>(comparison);
 
             if (null != source)
             {

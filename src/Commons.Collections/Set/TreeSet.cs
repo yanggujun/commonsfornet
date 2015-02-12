@@ -35,7 +35,7 @@ namespace Commons.Collections.Set
         /// <summary>
         /// Constructs an empty tree set using the default item comparer.
         /// </summary>
-        public TreeSet() : this(null, Comparer<T>.Default)
+        public TreeSet() : this(Comparer<T>.Default.Compare)
         {
         }
 
@@ -43,7 +43,7 @@ namespace Commons.Collections.Set
         /// Constructs an empty tree set with the specified comparer.
         /// </summary>
         /// <param name="comparer">The item comparer.</param>
-        public TreeSet(IComparer<T> comparer) : this(null, comparer)
+        public TreeSet(IComparer<T> comparer) : this(comparer.Compare)
         {
         }
 
@@ -55,27 +55,23 @@ namespace Commons.Collections.Set
         {
         }
 
+        public TreeSet(Comparison<T> comparison)
+        {
+			comparison.ValidateNotNull("The comparer is null!");
+			llrbTree = new LlrbTree<T, object>(comparison);
+        }
+
         /// <summary>
         /// Constructs a tree set with the items in the enumerable object, using the specified comparer.
         /// </summary>
         /// <param name="items">The enumerable items.</param>
         /// <param name="comparer">The item comparer.</param>
-        public TreeSet(IEnumerable<T> items, IComparer<T> comparer) : this(items, (k1, k2) => comparer.Compare(k1, k2))
+        public TreeSet(IEnumerable<T> items, IComparer<T> comparer) : this(items, comparer.Compare)
         {
         }
 
-        public TreeSet(Comparison<T> comparison) : this(null, comparison)
+        public TreeSet(IEnumerable<T> items, Comparison<T> comparison) : this(comparison)
         {
-        }
-
-        public TreeSet(IEnumerable<T> items, Comparison<T> comparison)
-        {
-            Comparison<T> comp = comparison;
-            if (null == comp)
-            {
-                comp = (k1, k2) => Comparer<T>.Default.Compare(k1, k2);
-            }
-            llrbTree = new LlrbTree<T, object>(comp);
             if (null != items)
             {
                 foreach (var i in items)

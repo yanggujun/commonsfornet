@@ -17,6 +17,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Commons.Collections.Set;
+using Commons.Utils;
 
 namespace Commons.Collections.Bag
 {
@@ -33,24 +35,27 @@ namespace Commons.Collections.Bag
         protected AbstractMapBag(IEnumerable<T> items, IDictionary<T, int> map)
         {
             Map = map;
-            foreach (var item in items)
-            {
-                if (Map.ContainsKey(item))
-                {
-                    Map[item]++;
-                }
-                else
-                {
-                    Map.Add(item, 1);
-                }
-            }
-
+			if (items != null)
+			{ 
+				foreach (var item in items)
+				{
+					if (Map.ContainsKey(item))
+					{
+						Map[item]++;
+					}
+					else
+					{
+						Map.Add(item, 1);
+					}
+				}
+			}
         }
 
         public virtual int this[T item]
         {
 			get
 			{
+				Guarder.CheckNull(item);
 				if (!Map.ContainsKey(item))
 				{
 					throw new ArgumentException("The item does not exist in the bag");
@@ -61,6 +66,7 @@ namespace Commons.Collections.Bag
 
         public virtual void Add(T item, int copies)
         {
+			copies.Validate(x => x > 0, new ArgumentException("The copies must be larger than 0!"));
             if (Map.ContainsKey(item))
             {
                 Map[item] += copies;
@@ -73,6 +79,8 @@ namespace Commons.Collections.Bag
 
         public virtual bool Remove(T item, int copies)
         {
+			Guarder.CheckNull(item);
+			copies.Validate(x => x > 0, new ArgumentException("The copies must be larger than 0!"));
             var removed = false;
             if (Map.ContainsKey(item))
             {
@@ -92,6 +100,7 @@ namespace Commons.Collections.Bag
 
         public virtual bool Remove(T item)
         {
+			Guarder.CheckNull(item);
             var removed = false;
             if (Map.ContainsKey(item))
             {
@@ -101,10 +110,7 @@ namespace Commons.Collections.Bag
             return removed;
         }
 
-        public virtual ISet<T> ToUnique()
-        {
-            return new HashSet<T>(Map.Keys);
-        }
+		public abstract IStrictSet<T> ToUnique();
 
         public virtual void Add(T item)
         {
@@ -123,6 +129,7 @@ namespace Commons.Collections.Bag
 
         public virtual void CopyTo(T[] array, int arrayIndex)
         {
+			array.ValidateNotNull("The array is null!");
             foreach (var item in this)
             {
                 array[arrayIndex++] = item;

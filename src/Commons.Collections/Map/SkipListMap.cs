@@ -36,6 +36,19 @@ namespace Commons.Collections.Map
 		{
 		}
 
+		public SkipListMap(Comparison<K> comparer)
+		{
+			skipList = new SkipList<K, V>(comparer);
+		}
+
+		public SkipListMap(IDictionary<K, V> source) : this(source, Comparer<K>.Default)
+		{
+		}
+
+		public SkipListMap(IDictionary<K, V> source, IComparer<K> comparer) : this(source, comparer.Compare)
+		{
+		}
+
         public SkipListMap(IDictionary<K, V> source, Comparison<K> comparer) :this(comparer)
         {
             source.ValidateNotNull("Source should not be null.");
@@ -44,11 +57,6 @@ namespace Commons.Collections.Map
                 Add(item);
             }
         }
-
-		public SkipListMap(Comparison<K> comparer)
-		{
-			skipList = new SkipList<K, V>(comparer);
-		}
 
 		public KeyValuePair<K, V> Lower(K key)
 		{

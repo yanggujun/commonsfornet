@@ -52,13 +52,12 @@ namespace Commons.Collections.Set
         }
 
         public HashedSet(int capacity, Equator<T> equator)
-            : this(null, capacity, equator)
         {
+			map = new HashedMap<T, object>(capacity, equator);
         }
 
-        public HashedSet(IEnumerable<T> items, int capacity, Equator<T> equator)
+        public HashedSet(IEnumerable<T> items, int capacity, Equator<T> equator) : this(capacity, equator)
         {
-            map = new HashedMap<T, object>(capacity, equator);
             if (items != null)
             {
                 foreach (var item in items)

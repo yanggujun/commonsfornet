@@ -45,13 +45,8 @@ namespace Commons.Collections.Map
 		{
 		}
 
-        public LinkedHashedMap(int capacity, IEnumerable<KeyValuePair<K, V>> items)
-            : this(capacity, items, EqualityComparer<K>.Default.Equals)
-        {
-        }
-
         public LinkedHashedMap(int capacity, Equator<K> equator)
-            : this(capacity, null, equator)
+            : base(capacity, equator)
         {
         }
 
@@ -60,8 +55,12 @@ namespace Commons.Collections.Map
 		{
 		}
 
-        public LinkedHashedMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, Equator<K> equator)
-            : base(capacity, equator)
+		public LinkedHashedMap(IDictionary<K, V> items, IEqualityComparer<K> comparer) : this(items, comparer.Equals)
+		{
+		}
+
+        public LinkedHashedMap(IDictionary<K, V> items, Equator<K> equator)
+            : this(items == null ? DefaultCapacity : items.Count, equator)
         {
             if (null != items)
             {

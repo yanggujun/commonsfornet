@@ -18,6 +18,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using Commons.Collections.Set;
+
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
@@ -29,6 +31,6 @@ namespace Commons.Collections.Bag
 
         bool Remove(T item, int copies);
 
-        ISet<T> ToUnique();
+        IStrictSet<T> ToUnique();
     }
 }

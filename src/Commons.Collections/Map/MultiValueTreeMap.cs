@@ -30,7 +30,6 @@ namespace Commons.Collections.Map
 		{
 		}
 
-
 		public MultiValueTreeMap(Comparison<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default.Equals)
 		{
 		}
@@ -40,11 +39,18 @@ namespace Commons.Collections.Map
         {
         }
 
-		public MultiValueTreeMap(Comparison<K> keyComparer, Equator<V> valueEquator) : this(null, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
+		public MultiValueTreeMap(Comparison<K> keyComparer, Equator<V> valueEquator) 
+			: this(null, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
 		{
 		}
 
-		private MultiValueTreeMap(IEnumerable<KeyValuePair<K, V>> items, ISortedMap<K, ICollection<V>> map, Equator<V> valueEquator) : base(map, items, valueEquator)
+		public MultiValueTreeMap(IMultiValueMap<K, V> mvMap, Comparison<K> keyComparer, Equator<V> valueEquator) 
+			: this (mvMap, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
+		{
+		}
+
+		private MultiValueTreeMap(IMultiValueMap<K, V> items, ISortedMap<K, ICollection<V>> map, Equator<V> valueEquator) 
+			: base(items, map, valueEquator)
 		{
 		}
 	}

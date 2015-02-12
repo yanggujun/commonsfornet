@@ -81,7 +81,7 @@ namespace Test.Commons.Collections
 			orders7.HashAbility();
 
 
-            var orders9 = new Customized32HashedMap<string, Order>(10000, orders7, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
+            var orders9 = new Customized32HashedMap<string, Order>(orders7, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
             Assert.NotEmpty(orders9);
             Assert.Equal(orders7.Count, orders9.Count);
         }
@@ -310,13 +310,13 @@ namespace Test.Commons.Collections
 			var orders4 = new LinkedHashedMap<string, Order>(500, (x1, x2) => x1 == x2);
 			orders4.HashAbility();
 
-			var orders5 = new LinkedHashedMap<string, Order>(1000, orders2);
-			Assert.NotEmpty(orders5);
-			Assert.Equal(orders2.Count, orders5.Count);
-
-			var orders9 = new LinkedHashedMap<string, Order>(1000, orders2, (x1, x2) => x1 == x2);
+			var orders9 = new LinkedHashedMap<string, Order>(orders2, (x1, x2) => x1 == x2);
 			Assert.NotEmpty(orders9);
 			Assert.Equal(orders2.Count, orders9.Count);
+
+			var orders5 = new LinkedHashedMap<string, Order>(orders2, EqualityComparer<string>.Default);
+			Assert.NotEmpty(orders5);
+			Assert.Equal(orders2.Count, orders5.Count);
 		}
 
         [Fact]

@@ -60,7 +60,7 @@ namespace Commons.Collections.Map
             this.valueComparer = valueComparer;
         }
 
-        public TreeBimap(Comparison<K> keyComparer, Comparison<V> valueComparer, IBimap<K, V> bimap) 
+        public TreeBimap(IBimap<K, V> bimap, Comparison<K> keyComparer, Comparison<V> valueComparer)
             : this(keyComparer, valueComparer)
         {
             if (bimap != null)

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Commons.Collections.Map;
+using Commons.Collections.Set;
 using Commons.Utils;
 
 namespace Commons.Collections.Bag
@@ -24,6 +25,7 @@ namespace Commons.Collections.Bag
     [CLSCompliant(true)]
     public class HashedBag<T> : AbstractMapBag<T>
     {
+		private readonly Equator<T> equator;
         public HashedBag()
             : base(new HashedMap<T, int>())
         {
@@ -33,17 +35,25 @@ namespace Commons.Collections.Bag
 		{
 		}
 
-		public HashedBag(Equator<T> equator) : base(new HashedMap<T, int>(equator))
+		public HashedBag(Equator<T> equator) : this(null, equator)
 		{
 		}
 
         public HashedBag(IEnumerable<T> items)
-            : base(items, new HashedMap<T, int>())
+            : this(items, EqualityComparer<T>.Default.Equals)
         {
         }
 
 		public HashedBag(IEnumerable<T> items, Equator<T> equator) : base(items, new HashedMap<T, int>(equator))
 		{
+			this.equator = equator;
 		}
-    }
+
+		public override IStrictSet<T> ToUnique()
+		{
+			var keys = Map.Keys;
+			var set = new HashedSet<T>(keys, keys.Count, equator);
+			return set;
+		}
+	}
 }

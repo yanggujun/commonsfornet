@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using Commons.Collections.Bag;
 using Xunit;
 
@@ -81,6 +82,67 @@ namespace Test.Commons.Collections
 			var bag = new TreeBag<string>();
 			Assert.Throws(typeof(InvalidOperationException), () => bag.Max);
 			Assert.Throws(typeof(InvalidOperationException), () => bag.Min);
+		}
+
+		[Fact]
+		public void TestHashedBagConstructors()
+		{
+			var bag1 = new HashedBag<string>();
+			Fill(bag1, x => x.ToString(CultureInfo.InvariantCulture));
+			BagConstructorOperations(bag1);
+
+			var bag2 = new HashedBag<Order>((x1, x2) => x1.Id == x2.Id);
+			Fill(bag2, x => new Order { Id = x });
+			BagConstructorOperations(bag2);
+
+			var bag3 = new HashedBag<string>(bag1);
+			BagConstructorOperations(bag3);
+
+			var bag4 = new HashedBag<Order>(new OrderEqualityComparer());
+			BagConstructorOperations(bag4);
+
+			var bag5 = new HashedBag<Order>(bag4, new OrderEqualityComparer().Equals);
+			BagConstructorOperations(bag5);
+		}
+
+		[Fact]
+		public void TestTreeBagConstructors()
+		{
+			var bag1 = new TreeBag<string>();
+			Fill(bag1, x => x.ToString(CultureInfo.InvariantCulture));
+			BagConstructorOperations(bag1);
+
+			var bag2 = new TreeBag<Order>((x1, x2) => x1.Id - x2.Id);
+			Fill(bag2, x => new Order { Id = x });
+			BagConstructorOperations(bag2);
+
+			var bag3 = new TreeBag<string>(bag1);
+			BagConstructorOperations(bag3);
+
+			var bag4 = new TreeBag<Order>(new OrderComparer());
+			Fill(bag4, x => new Order { Id = x });
+			BagConstructorOperations(bag4);
+
+			var bag5 = new TreeBag<Order>(bag4, new OrderComparer().Compare);
+			BagConstructorOperations(bag5);
+		}
+
+		private void BagConstructorOperations<T>(IBag<T> bag)
+		{
+			var total = 0;
+			for (var i = 0; i < 1000; i++)
+			{
+				total += (i + 1);
+			}
+			Assert.Equal(total, bag.Count);
+		}
+
+		private static void Fill<T>(IBag<T> bag, Func<int, T> itemGen, int count = 1000)
+		{
+			for (var i = 0; i < count; i++)
+			{
+				bag.Add(itemGen(i), i + 1);
+			}
 		}
 
 		private static void TestBagItemNotExist(IBag<string> bag)

@@ -87,7 +87,7 @@ namespace Test.Commons.Collections
 				hashBimap.Add(new Order { Id = i }, new Bill { Id = i });
 			}
 
-			var treeBimap = new TreeBimap<Order, Bill>((x1, x2) => x1.Id - x2.Id, (y1, y2) => y1.Id - y2.Id, hashBimap);
+			var treeBimap = new TreeBimap<Order, Bill>(hashBimap, (x1, x2) => x1.Id - x2.Id, (y1, y2) => y1.Id - y2.Id);
 			for (var i = 0; i < 10000; i++)
 			{
 				Assert.True(treeBimap.ContainsKey(new Order { Id = i }));
@@ -105,7 +105,7 @@ namespace Test.Commons.Collections
 				treeBimap.Add(new Order { Id = i }, new Bill { Id = i });
 			}
 
-			var hashBimap = new HashedBimap<Order, Bill>(10000, (x1, x2) => x1.Id == x2.Id, (y1, y2) => y1.Id == y2.Id, treeBimap);
+			var hashBimap = new HashedBimap<Order, Bill>(treeBimap, (x1, x2) => x1.Id == x2.Id, (y1, y2) => y1.Id == y2.Id);
 			for (var i = 0; i < 10000; i++)
 			{
 				Assert.True(hashBimap.ContainsKey(new Order { Id = i }));

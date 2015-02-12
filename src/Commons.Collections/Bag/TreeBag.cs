@@ -18,19 +18,21 @@ using System;
 using System.Collections.Generic;
 
 using Commons.Collections.Map;
+using Commons.Collections.Set;
 
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
     public class TreeBag<T> : AbstractMapBag<T>, ISortedBag<T>
     {
+		private readonly Comparison<T> comparer;
         public TreeBag()
-            : base(new TreeMap<T, int>())
+            : this(Comparer<T>.Default)
         {
         }
 
         public TreeBag(Comparison<T> comparer)
-            : base(new TreeMap<T, int>(comparer))
+            : this(null, comparer)
         {
         }
 
@@ -38,9 +40,14 @@ namespace Commons.Collections.Bag
 		{
 		}
 
+		public TreeBag(IEnumerable<T> items) : this (items, Comparer<T>.Default.Compare)
+		{
+		}
+
         public TreeBag(IEnumerable<T> items, Comparison<T> comparer)
             : base(items, new TreeMap<T, int>(comparer))
         {
+			this.comparer = comparer;
         }
 
         public T Max
@@ -66,5 +73,13 @@ namespace Commons.Collections.Bag
                 return ((ISortedMap<T, int>)Map).Min.Key;
             }
         }
-    }
+
+		public override IStrictSet<T> ToUnique()
+		{
+			var keys = Map.Keys;
+			var set = new TreeSet<T>(keys, comparer);
+
+			return set;
+		}
+	}
 }

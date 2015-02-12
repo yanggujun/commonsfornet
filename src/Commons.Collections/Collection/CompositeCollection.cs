@@ -18,6 +18,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using Commons.Utils;
+
 namespace Commons.Collections.Collection
 {
     /// <summary>
@@ -46,10 +48,7 @@ namespace Commons.Collections.Collection
         /// <param name="collections"></param>
         public CompositeCollection(params ICollection<T>[] collections)
         {
-            foreach (var collection in collections)
-            {
-                AddAll(collection);
-            }
+            AddAll(collections);
         }
 
         /// <summary>
@@ -59,7 +58,7 @@ namespace Commons.Collections.Collection
         /// it creates a list, adds the item to the list and adds the list to the composite.
         /// </summary>
         /// <param name="item"></param>
-        public virtual void Add(T item)
+        public void Add(T item)
         {
             Add(item, (collection, i) =>
             {
@@ -83,7 +82,7 @@ namespace Commons.Collections.Collection
         /// <param name="item">The item to add.</param>
         /// <param name="mutator">The user defined mutator. The first param is always the current composite collection. 
         /// And the second param is the item to add.</param>
-        public virtual void Add(T item, Action<CompositeCollection<T>, T> mutator)
+        private void Add(T item, Action<CompositeCollection<T>, T> mutator)
         {
             mutator(this, item);
         }
@@ -91,29 +90,34 @@ namespace Commons.Collections.Collection
         /// <summary>
         /// Add a collection of items to the composite collection.
         /// </summary>
-        /// <param name="collection"></param>
-        public virtual void AddAll(ICollection<T> collection)
+        /// <param name="collections"></param>
+        public void AddAll(params ICollection<T>[] collections)
         {
-            AllCollections.Add(collection);
+			foreach (var collection in collections)
+			{
+				allCollections.Add(collection);
+			}
         }
 
-        public virtual void Clear()
+        public void Clear()
         {
             AllCollections.Clear();
         }
 
-        public virtual bool Contains(T item)
+        public bool Contains(T item)
         {
             return Contains(item, (i1, i2) => i1.Equals(i2));
         }
 
-        public virtual bool Contains(T item , IEqualityComparer<T> comparer)
+        public bool Contains(T item , IEqualityComparer<T> comparer)
         {
-            return Contains(item, (i1, i2) => comparer.Equals(i1, i2));
+			Guarder.CheckNull(item, comparer);
+			return Contains(item, comparer.Equals);
         }
 
-        public virtual bool Contains(T item, Func<T, T, bool> isEqual)
+        public bool Contains(T item, Func<T, T, bool> isEqual)
         {
+			Guarder.CheckNull(item, isEqual);
             bool hasItem = false;
             foreach (var c in AllCollections)
             {
@@ -130,13 +134,14 @@ namespace Commons.Collections.Collection
         }
 
         /// <inheritdoc/>
-        public virtual void CopyTo(T[] array, int arrayIndex)
+        public void CopyTo(T[] array, int arrayIndex)
         {
+			Guarder.CheckNull(array);
             if (arrayIndex < 0)
             {
                 throw new ArgumentException("The arrayIndex is invalid");
             }
-            int n =0;
+            int n = 0;
             AllCollections.ForEach(c => 
             {
                 foreach (var i in c)
@@ -147,7 +152,7 @@ namespace Commons.Collections.Collection
         }
 
         /// <inheritdoc/>
-        public virtual int Count
+        public int Count
         {
             get
             {
@@ -157,13 +162,13 @@ namespace Commons.Collections.Collection
             }
         }
 
-        public virtual bool IsReadOnly
+        public bool IsReadOnly
         {
             get { return false; }
         }
 
         /// <inheritdoc/>
-        public virtual bool Remove(T item)
+        public bool Remove(T item)
         {
             return Remove(item, (t1, t2) => t1.Equals(t2));
         }
@@ -175,7 +180,7 @@ namespace Commons.Collections.Collection
         /// <param name="item">The item to remove.</param>
         /// <param name="comparer">The equality comparer to compare the item equality.</param>
         /// <returns>True if any item is removed.</returns>
-        public virtual bool Remove(T item, IEqualityComparer<T> comparer)
+        public bool Remove(T item, IEqualityComparer<T> comparer)
         {
             return Remove(item, (i1, i2) => comparer.Equals(i1, i2));
         }
@@ -186,7 +191,7 @@ namespace Commons.Collections.Collection
         /// <param name="item"></param>
         /// <param name="isEqual"></param>
         /// <returns></returns>
-        public virtual bool Remove(T item, Func<T, T, bool> isEqual)
+        public bool Remove(T item, Func<T, T, bool> isEqual)
         {
             bool removed = false;
             List<T> removeItems = new List<T>();
@@ -215,12 +220,12 @@ namespace Commons.Collections.Collection
         /// The duplicated items are removed.
         /// </summary>
         /// <returns>A list of the items.</returns>
-        public virtual IList<T> ToUnique()
+        public IList<T> ToUnique()
         {
             return ToUnique((t1, t2) => t1.Equals(t2));
         }
 
-        public virtual IList<T> ToUnique(IEqualityComparer<T> comparer)
+        public IList<T> ToUnique(IEqualityComparer<T> comparer)
         {
             return ToUnique((t1, t2) => comparer.Equals(t1, t2));
         }
@@ -231,7 +236,7 @@ namespace Commons.Collections.Collection
         /// <param name="isEqual"></param>
         /// <returns></returns>
         /// TODO: may be in low efficiency.
-        public virtual IList<T> ToUnique(Func<T, T, bool> isEqual)
+        public IList<T> ToUnique(Func<T, T, bool> isEqual)
         {
             List<T> list = new List<T>();
             foreach (var c in AllCollections)
@@ -256,7 +261,7 @@ namespace Commons.Collections.Collection
             return list;
         }
 
-        public virtual IEnumerator<T> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return Items.GetEnumerator();
         }

@@ -40,9 +40,14 @@ namespace Commons.Collections.Map
         }
 
         public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer)
-            : this(capacity, new MurmurHash32(), transformer, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
+            : this(capacity, new MurmurHash32(), transformer, EqualityComparer<K>.Default.Equals)
         {
         }
+
+		public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer) 
+			: this(capacity, transformer, comparer.Equals)
+		{
+		}
 
         public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer, Equator<K> isEqual)
             : this(capacity, new MurmurHash32(), transformer, isEqual)
@@ -50,16 +55,16 @@ namespace Commons.Collections.Map
         }
 
         public Customized32HashedMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
-            : this(capacity, null, hasher, transformer, isEqual)
-        {
-        }
-
-        public Customized32HashedMap(int capacity, IEnumerable<KeyValuePair<K, V>> items, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
             : base(capacity, isEqual)
         {
-            Guarder.CheckNull(hasher, transformer, isEqual);
-            this.transform = transformer;
+            transform = transformer;
             this.hasher = hasher;
+        }
+
+        public Customized32HashedMap(IDictionary<K, V> items, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
+            : this(items == null ? DefaultCapacity : items.Count, hasher, transformer, isEqual)
+        {
+            Guarder.CheckNull(hasher, transformer, isEqual);
             if (null != items)
             {
                 foreach (var item in items)

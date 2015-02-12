@@ -51,8 +51,12 @@ namespace Commons.Collections.Map
         {
         }
 
-        public HashedMap(IEnumerable<KeyValuePair<K, V>> items, int capacity, Equator<K> equator)
-            : base(capacity, equator)
+		public HashedMap(IDictionary<K, V> items, IEqualityComparer<K> comparer) : this(items, comparer.Equals)
+		{
+		}
+
+        public HashedMap(IDictionary<K, V> items, Equator<K> equator)
+            : base(items == null ? DefaultCapacity : items.Count, equator)
         {
             if (null != items)
             {

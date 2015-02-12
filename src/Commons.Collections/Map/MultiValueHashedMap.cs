@@ -24,7 +24,7 @@ namespace Commons.Collections.Map
 	[CLSCompliant(true)]
 	public class MultiValueHashedMap<K, V> : AbstractMultiValueMap<K, V>, IMultiValueMap<K, V>, IReadOnlyMultiValueMap<K, V>
 	{
-		public MultiValueHashedMap() : base(new HashedMap<K, ICollection<V>>(), null, EqualityComparer<V>.Default.Equals)
+		public MultiValueHashedMap() : base(null, new HashedMap<K, ICollection<V>>(), EqualityComparer<V>.Default.Equals)
 		{
 		}
 
@@ -37,7 +37,7 @@ namespace Commons.Collections.Map
 		}
 
 		public MultiValueHashedMap(IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer) 
-			: base(new HashedMap<K, ICollection<V>>(keyComparer.Equals), null, valueComparer.Equals)
+			: base(null, new HashedMap<K, ICollection<V>>(keyComparer.Equals), valueComparer.Equals)
 		{
 		}
 
@@ -46,8 +46,8 @@ namespace Commons.Collections.Map
 		{
 		}
 
-		public MultiValueHashedMap(IEnumerable<KeyValuePair<K, V>> items, int keyCapacity, Equator<K> keyEquator, Equator<V> valueEquator) 
-			: base(new HashedMap<K, ICollection<V>>(keyCapacity, keyEquator), items, valueEquator)
+		public MultiValueHashedMap(IMultiValueMap<K, V> items, int keyCapacity, Equator<K> keyEquator, Equator<V> valueEquator) 
+			: base(items, new HashedMap<K, ICollection<V>>(keyCapacity, keyEquator), valueEquator)
 		{
 		}
 	}
