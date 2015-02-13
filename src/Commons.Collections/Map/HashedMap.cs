@@ -38,7 +38,7 @@ namespace Commons.Collections.Map
 		{
 		}
 
-        public HashedMap(int capacity) : this(capacity, (x1, x2) => x1 == null ? x2 == null : x1.Equals(x2))
+        public HashedMap(int capacity) : this(capacity, EqualityComparer<K>.Default)
         {
         }
 

@@ -840,6 +840,20 @@ namespace Test.Commons.Collections
 			ReferenceMapDictionaryOperations(map);
 		}
 
+        [Fact]
+        public void TestDefaultComparer()
+        {
+            var map = new TreeMap<Employee, int>();
+            map.DictionaryOperations(x => new Employee { Id = x, Mark = x * 5 }, y => y, EqualityComparer<int>.Default.Equals);
+        }
+
+        [Fact]
+        public void TestDefaultEqualityComparer()
+        {
+            var map = new HashedMap<Employee, int>();
+            map.DictionaryOperations(x => new Employee { Id = x, Mark = x * 5 }, y => y, EqualityComparer<int>.Default.Equals);
+        }
+
 		private void ReferenceMapDictionaryOperations(IDictionary source)
 		{
 			var list = new List<Order>();

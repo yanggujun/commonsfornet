@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 
 namespace Test.Commons
@@ -88,6 +89,25 @@ namespace Test.Commons
         public int GetHashCode(Bill obj)
         {
             return obj.GetHashCode();
+        }
+    }
+
+    public class Employee : IComparable<Employee>, IEquatable<Employee>
+    {
+        public int Id { get; set; }
+        public int Mark { get; set; }
+        public int CompareTo(Employee other)
+        {
+            return other == null ? 1 : Mark - other.Mark;
+        }
+
+        public bool Equals(Employee other)
+        {
+            return other == null ? false : Mark == other.Mark;
+        }
+        public override int GetHashCode()
+        {
+            return Mark.GetHashCode();
         }
     }
 }
