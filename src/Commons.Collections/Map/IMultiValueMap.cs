@@ -39,6 +39,8 @@ namespace Commons.Collections.Map
 
         int CountOf(K key);
 
+		int KeyCount { get; }
+
 		ICollection<V> this[K key] { get; }
 
 		ICollection<K> Keys { get; }

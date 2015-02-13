@@ -135,6 +135,14 @@ namespace Commons.Collections.Map
 			return count;
 		}
 
+		public int KeyCount
+		{
+			get
+			{
+				return Map.Keys.Count;
+			}
+		}
+
 		public bool ContainsValue(K key, V value)
 		{
 			var found = false;

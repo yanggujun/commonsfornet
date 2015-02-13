@@ -55,11 +55,17 @@ namespace Commons.Collections.Map
 		{
 		}
 
-		public LinkedHashedMap(IDictionary<K, V> items, IEqualityComparer<K> comparer) : this(items, comparer.Equals)
+		/// <summary>
+		/// Currently disable the constructor with a predefined dictionary, as the order is not defined in the dictionary.
+		/// This may cause some confusion.
+		/// </summary>
+		/// <param name="items"></param>
+		/// <param name="comparer"></param>
+		private LinkedHashedMap(IDictionary<K, V> items, IEqualityComparer<K> comparer) : this(items, comparer.Equals)
 		{
 		}
 
-        public LinkedHashedMap(IDictionary<K, V> items, Equator<K> equator)
+        private LinkedHashedMap(IDictionary<K, V> items, Equator<K> equator)
             : this(items == null ? DefaultCapacity : items.Count, equator)
         {
             if (null != items)

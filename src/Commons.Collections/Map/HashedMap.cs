@@ -55,6 +55,10 @@ namespace Commons.Collections.Map
 		{
 		}
 
+		public HashedMap(IDictionary<K, V> items) : this(items, EqualityComparer<K>.Default.Equals)
+		{
+		}
+
         public HashedMap(IDictionary<K, V> items, Equator<K> equator)
             : base(items == null ? DefaultCapacity : items.Count, equator)
         {

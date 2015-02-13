@@ -17,7 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using Commons.Collections.Set;
 using Commons.Utils;
 
 namespace Commons.Collections.Map
@@ -102,6 +102,11 @@ namespace Commons.Collections.Map
             this.valueEquator = valueEquator;
         }
 
+		public HashedBimap(IBimap<K, V> bimap) 
+			: this(bimap, EqualityComparer<K>.Default.Equals, EqualityComparer<V>.Default.Equals)
+		{
+		}
+
         public HashedBimap(IBimap<K, V> bimap, Equator<K> keyEquator, Equator<V> valueEquator)
             : this(bimap == null ? DefaultCapacity : bimap.Count, keyEquator, valueEquator)
         {
@@ -131,9 +136,9 @@ namespace Commons.Collections.Map
             return bimap;
         }
 
-        public override Set.IStrictSet<K> KeySet()
+        public override IStrictSet<K> KeySet()
         {
-            var set = new Set.HashedSet<K>(keyEquator);
+            var set = new HashedSet<K>(keyEquator);
 
             foreach (var item in KeyValue)
             {
@@ -143,9 +148,9 @@ namespace Commons.Collections.Map
             return set;
         }
 
-        public override Set.IStrictSet<V> ValueSet()
+        public override IStrictSet<V> ValueSet()
         {
-            var set = new Set.HashedSet<V>(valueEquator);
+            var set = new HashedSet<V>(valueEquator);
 
             foreach (var item in ValueKey)
             {

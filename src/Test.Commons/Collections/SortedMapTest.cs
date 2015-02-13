@@ -490,74 +490,97 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
-        public void TestTreeMapContructor()
+        public void TestTreeMapConstructor()
         {
-            var randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
-            var orderDict = new Dictionary<Order, Guid>();
-            for (var i = 0; i < 100; i++)
-            {
-                var order = new Order();
-                order.Id = randomValue.Next();
-                order.Name = order.Id + "(*^&^%";
-                if (!orderDict.ContainsKey(order))
-                {
-                    orderDict.Add(order, Guid.NewGuid());
-                }
-            }
-            var orderMap = new TreeMap<Order, Guid>(orderDict, new OrderComparer());
-            foreach (var item in orderDict.Keys)
-            {
-                Assert.True(orderMap.ContainsKey(item));
-            }
+			var orderDict = new Dictionary<Order, Guid>(new OrderEqualityComparer());
+			for (var i = 0; i < 10000; i++)
+			{
+				orderDict.Add(new Order { Id = i }, Guid.NewGuid());
+			}
+            var map1 = new TreeMap<Order, Guid>(orderDict, new OrderComparer());
+			AssertMapEqual(orderDict, map1);
+
+			var map3 = new TreeMap<Order, Guid>(orderDict, (x1, x2) => x1.Id - x2.Id);
+			AssertMapEqual(orderDict, map3);
 
             var simpleDict = new Dictionary<int, string>();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 simpleDict.Add(i, Guid.NewGuid().ToString());
             }
-            var simpleMap = new TreeMap<int, string>(simpleDict);
-            Assert.Equal(simpleDict.Count, simpleMap.Count);
-            foreach (var k in simpleDict.Keys)
-            {
-                Assert.True(simpleMap.ContainsKey(k));
-            }
+            var map2 = new TreeMap<int, string>(simpleDict);
+            Assert.Equal(simpleDict.Count, map2.Count);
+			AssertMapEqual(simpleDict, map2);
+
+			var map4 = new TreeMap<int, Order>();
+			SortedMapConstructor(map4, x => x, y => new Order {Id = y });
+
+			var map5 = new TreeMap<Order, Bill>(new OrderComparer());
+			SortedMapConstructor(map5, x => new Order { Id = x }, y => new Bill { Id = y });
+
+			var map6 = new TreeMap<Order, Bill>((x1, x2) => x1.Id - x2.Id);
+			SortedMapConstructor(map6, x => new Order { Id = x }, y => new Bill { Id = y });
         }
+
+		private void SortedMapConstructor<K, V>(ISortedMap<K, V> map, Func<int, K> keyGen, Func<int, V> valueGen)
+		{
+			for (var i = 0; i < 10000; i++)
+			{
+				map.Add(keyGen(i), valueGen(i));
+			}
+
+			Assert.Equal(10000, map.Count);
+
+			for (var i = 0; i < 1000; i++)
+			{
+				Assert.True(map.ContainsKey(keyGen(i)));
+				Assert.True(map.Remove(keyGen(i)));
+			}
+
+			Assert.Equal(9000, map.Count);
+			for (var i = 0; i < 1000; i++)
+			{
+				Assert.False(map.ContainsKey(keyGen(i)));
+			}
+			for (var i = 1000; i < 10000; i++)
+			{
+				Assert.True(map.ContainsKey(keyGen(i)));
+			}
+		}
 
         [Fact]
         public void TestSkipListMapConstructor()
         {
-            var map = new SkipListMap<int, int>();
-            for (var i = 0; i < 10000; i++)
-            {
-                map.Add(i, i);
-            }
-            for (var i = 0; i < 10000; i++)
-            {
-                Assert.True(map.ContainsKey(i));
-            }
+            var map1 = new SkipListMap<int, int>();
+			SortedMapConstructor(map1, x => x, y => y);
 
-            var orderMap = new SkipListMap<Order, Bill>(new OrderComparer());
-            for (var i = 0; i < 10000; i++)
-            {
-                orderMap.Add(new Order { Id = i }, new Bill());
-            }
+            var map2 = new SkipListMap<Order, Bill>(new OrderComparer());
+			SortedMapConstructor(map2, x => new Order { Id = x }, y => new Bill { Id = y });
 
-            for (var i = 0; i < 10000; i++)
-            {
-                Assert.True(orderMap.ContainsKey(new Order { Id = i }));
-            }
+            var map3 = new SkipListMap<Order, Bill>((x1, x2) => x1.Id - x2.Id);
+			SortedMapConstructor(map3, x => new Order { Id = x }, y => new Bill { Id = y });
 
-            var orderMap2 = new SkipListMap<Order, Bill>((x1, x2) => x1.Id - x2.Id);
+			var map4 = new SkipListMap<int, int>(map1);
+			AssertMapEqual(map1, map4);
 
-            for (var i = 0; i < 10000; i++)
-            {
-                orderMap2.Add(new Order { Id = i }, new Bill());
-            }
-            for (var i = 0; i < 10000; i++)
-            {
-                Assert.True(orderMap2.ContainsKey(new Order { Id = i }));
-            }
+			var map5 = new SkipListMap<Order, Bill>(map3, new OrderComparer());
+			AssertMapEqual(map3, map5);
+
+			var map6 = new SkipListMap<Order, Bill>(map3, new OrderComparer().Compare);
+			AssertMapEqual(map3, map6);
         }
+
+		private void AssertMapEqual<K, V>(IDictionary<K, V> map1, IDictionary<K, V> map2)
+		{
+			foreach (var item in map1)
+			{
+				Assert.True(map2.Contains(item));
+			}
+			foreach (var item in map2)
+			{
+				Assert.True(map1.Contains(item));
+			}
+		}
 
         [Fact]
         public void TestTreeMapAdd()
@@ -1425,7 +1448,7 @@ namespace Test.Commons.Collections
 		}
 
         [Fact]
-        public void TEstEmptyNavigableSkipListSet()
+        public void TestEmptyNavigableSkipListSet()
         {
             var set = new SkipListSet<int>();
             EmptyNavigableSet(set);

@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using Commons.Collections.Set;
 
 namespace Commons.Collections.Map
 {
@@ -60,6 +61,10 @@ namespace Commons.Collections.Map
             this.valueComparer = valueComparer;
         }
 
+		public TreeBimap(IBimap<K, V> bimap) : this(bimap, Comparer<K>.Default.Compare, Comparer<V>.Default.Compare)
+		{
+		}
+
         public TreeBimap(IBimap<K, V> bimap, Comparison<K> keyComparer, Comparison<V> valueComparer)
             : this(keyComparer, valueComparer)
         {
@@ -89,9 +94,9 @@ namespace Commons.Collections.Map
             return bimap;
         }
 
-        public override Set.IStrictSet<K> KeySet()
+        public override IStrictSet<K> KeySet()
         {
-            var set = new Set.TreeSet<K>(keyComparer);
+            var set = new TreeSet<K>(keyComparer);
             foreach (var item in KeyValue)
             {
                 set.Add(item.Key);
@@ -100,9 +105,9 @@ namespace Commons.Collections.Map
             return set;
         }
 
-        public override Set.IStrictSet<V> ValueSet()
+        public override IStrictSet<V> ValueSet()
         {
-            var set = new Set.TreeSet<V>(valueComparer);
+            var set = new TreeSet<V>(valueComparer);
             foreach (var item in ValueKey)
             {
                 set.Add(item.Key);

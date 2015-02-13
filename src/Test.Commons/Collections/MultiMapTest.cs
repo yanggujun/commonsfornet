@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Commons.Collections.Map;
 
@@ -87,10 +88,23 @@ namespace Test.Commons.Collections
             var mvMap5 = new MultiValueHashedMap<int, int>(10000, EqualityComparer<int>.Default, EqualityComparer<int>.Default);
             MultiValueMapOperations(mvMap5);
 
-            var mvMap6 = new MultiValueHashedMap<int, int>(mvMap5, 10000, EqualityComparer<int>.Default.Equals, EqualityComparer<int>.Default.Equals);
+            var mvMap6 = new MultiValueHashedMap<int, int>(mvMap5, EqualityComparer<int>.Default.Equals, EqualityComparer<int>.Default.Equals);
             Assert.Equal(8000, mvMap6.Keys.Count);
+			Assert.Equal(8000, mvMap6.KeyCount);
             mvMap6.Clear();
             MultiValueMapOperations(mvMap6);
+
+			var mvMap7 = new MultiValueHashedMap<int, int>(mvMap5);
+			Assert.Equal(8000, mvMap7.Keys.Count);
+			Assert.Equal(8000, mvMap7.KeyCount);
+			mvMap7.Clear();
+			MultiValueMapOperations(mvMap7);
+
+			var mvMap8 = new MultiValueHashedMap<int, int>(EqualityComparer<int>.Default.Equals, EqualityComparer<int>.Default.Equals);
+			MultiValueMapOperations(mvMap8);
+
+			var mvMap9 = new MultiValueHashedMap<int, int>(500, EqualityComparer<int>.Default.Equals, EqualityComparer<int>.Default.Equals);
+			MultiValueMapOperations(mvMap9);
         }
 
         [Fact]
@@ -107,6 +121,53 @@ namespace Test.Commons.Collections
 
             var mvMap4 = new MultiValueTreeMap<int, int>(Comparer<int>.Default, EqualityComparer<int>.Default);
             MultiValueMapOperations(mvMap4);
+
+			var mvMap5 = new MultiValueTreeMap<int, int>(Comparer<int>.Default);
+			MultiValueMapOperations(mvMap5);
+
+			var mvMap0 = new MultiValueTreeMap<Order, Bill>(new OrderComparer(), new BillEqualityComparer());
+			Fill(mvMap0, 1000, 20, x => new Order { Id = x }, (y, z) => new Bill { Id = z });
+			var mvMap6 = new MultiValueTreeMap<Order, Bill>(mvMap0, new OrderComparer().Compare, new BillEqualityComparer().Equals);
+			Assert.Equal(mvMap0.Count, mvMap6.Count);
+			Assert.Equal(mvMap0.Keys.Count, mvMap6.Keys.Count);
+			for (var i = 0; i < 1000; i++)
+			{
+				Assert.True(mvMap6.ContainsKey(new Order { Id = i }));
+				var bills = mvMap6[new Order { Id = i }];
+				for (var j = 0; j < 20; j++)
+				{
+					Assert.True(bills.Contains(new Bill { Id = j }, new BillEqualityComparer()));
+				}
+			}
+			mvMap6.Clear();
+			Assert.Equal(0, mvMap6.Count);
+			Fill(mvMap6, 200, 5, x => new Order { Id = x }, (y, z) => new Bill { Id = z });
+			for (var i = 0; i < 200; i++)
+			{
+				Assert.True(mvMap6.ContainsKey(new Order { Id = i }));
+				var bills = mvMap6[new Order { Id = i }];
+				for (var j = 0; j < 5; j++)
+				{
+					Assert.True(bills.Contains(new Bill { Id = j }, new BillEqualityComparer()));
+				}
+			}
+
+			var mvMap = new MultiValueTreeMap<int, int>();
+			Fill(mvMap, 1000, 20, x => x, (y, z) => z);
+			var mvMap7 = new MultiValueTreeMap<int, int>(mvMap);
+			Assert.Equal(1000, mvMap7.Keys.Count);
+			Assert.Equal(1000, mvMap7.KeyCount);
+			Assert.Equal(mvMap.KeyCount, mvMap7.KeyCount);
+
+			for (var i = 0; i < 1000; i++)
+			{
+				Assert.True(mvMap7.ContainsKey(i));
+				var values = mvMap7[i];
+				for (var j = 0; j < 20; j++)
+				{
+					Assert.True(values.Contains(j));
+				}
+			}
         }
 
         private void MultiValueMapOperations(IMultiValueMap<int, int> mvMap)
@@ -124,6 +185,7 @@ namespace Test.Commons.Collections
             }
 
             Assert.Equal(8000, mvMap.Keys.Count);
+			Assert.Equal(8000, mvMap.KeyCount);
         }
 
 		private void MultiValueMapRemove(IMultiValueMap<int, Bill> mvMap)

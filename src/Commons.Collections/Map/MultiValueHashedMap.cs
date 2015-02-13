@@ -24,6 +24,8 @@ namespace Commons.Collections.Map
 	[CLSCompliant(true)]
 	public class MultiValueHashedMap<K, V> : AbstractMultiValueMap<K, V>, IMultiValueMap<K, V>, IReadOnlyMultiValueMap<K, V>
 	{
+		private const int DefaultCapacity = 16;
+
 		public MultiValueHashedMap() : base(null, new HashedMap<K, ICollection<V>>(), EqualityComparer<V>.Default.Equals)
 		{
 		}
@@ -42,12 +44,24 @@ namespace Commons.Collections.Map
 		}
 
 		public MultiValueHashedMap(int keyCapacity, IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer) 
-			: this(null, keyCapacity, keyComparer.Equals, valueComparer.Equals)
+			: base (null, new HashedMap<K, ICollection<V>>(keyCapacity, keyComparer.Equals), valueComparer.Equals)
 		{
 		}
 
-		public MultiValueHashedMap(IMultiValueMap<K, V> items, int keyCapacity, Equator<K> keyEquator, Equator<V> valueEquator) 
-			: base(items, new HashedMap<K, ICollection<V>>(keyCapacity, keyEquator), valueEquator)
+		public MultiValueHashedMap(Equator<K> keyEquator, Equator<V> valueEquator) : base(null, new HashedMap<K, ICollection<V>>(keyEquator), valueEquator)
+		{
+		}
+
+		public MultiValueHashedMap(int keyCapacity, Equator<K> keyEquator, Equator<V> valueEquator) : base(null, new HashedMap<K, ICollection<V>>(keyCapacity, keyEquator), valueEquator)
+		{
+		}
+
+		public MultiValueHashedMap(IMultiValueMap<K, V> items) : this(items, EqualityComparer<K>.Default.Equals, EqualityComparer<V>.Default.Equals)
+		{
+		}
+
+		public MultiValueHashedMap(IMultiValueMap<K, V> items, Equator<K> keyEquator, Equator<V> valueEquator) 
+			: base(items, new HashedMap<K, ICollection<V>>(items == null ? DefaultCapacity : items.KeyCount, keyEquator), valueEquator)
 		{
 		}
 	}

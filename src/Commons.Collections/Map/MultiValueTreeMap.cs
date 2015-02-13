@@ -44,6 +44,11 @@ namespace Commons.Collections.Map
 		{
 		}
 
+		public MultiValueTreeMap(IMultiValueMap<K, V> mvMap) 
+			: this(mvMap, Comparer<K>.Default.Compare, EqualityComparer<V>.Default.Equals)
+		{
+		}
+
 		public MultiValueTreeMap(IMultiValueMap<K, V> mvMap, Comparison<K> keyComparer, Equator<V> valueEquator) 
 			: this (mvMap, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
 		{
