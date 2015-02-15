@@ -21,7 +21,7 @@ namespace Commons.Utils
     /// <summary>
     /// A 32bit murmur hash3 implementation.
     /// </summary>
-	[CLSCompliant(true)]
+    [CLSCompliant(true)]
     public class MurmurHash32 : IHashStrategy
     {
         private readonly uint seed;

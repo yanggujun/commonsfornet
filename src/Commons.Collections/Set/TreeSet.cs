@@ -57,8 +57,8 @@ namespace Commons.Collections.Set
 
         public TreeSet(Comparison<T> comparison)
         {
-			comparison.ValidateNotNull("The comparer is null!");
-			llrbTree = new LlrbTree<T, object>(comparison);
+            comparison.ValidateNotNull("The comparer is null!");
+            llrbTree = new LlrbTree<T, object>(comparison);
         }
 
         /// <summary>
@@ -109,25 +109,25 @@ namespace Commons.Collections.Set
             return llrbTree.Contains(item);
         }
 
-		public T Lower(T item)
-		{
-			return llrbTree.Lower(item).Key;
-		}
+        public T Lower(T item)
+        {
+            return llrbTree.Lower(item).Key;
+        }
 
-		public T Higher(T item)
-		{
-			return llrbTree.Higher(item).Key;
-		}
+        public T Higher(T item)
+        {
+            return llrbTree.Higher(item).Key;
+        }
 
-		public T Ceiling(T item)
-		{
-			return llrbTree.Ceiling(item).Key;
-		}
+        public T Ceiling(T item)
+        {
+            return llrbTree.Ceiling(item).Key;
+        }
 
-		public T Floor(T item)
-		{
-			return llrbTree.Floor(item).Key;
-		}
+        public T Floor(T item)
+        {
+            return llrbTree.Floor(item).Key;
+        }
 
         /// <summary>
         /// Retrieves the item with max value in the set.
@@ -264,13 +264,13 @@ namespace Commons.Collections.Set
 
         protected override IEnumerable<T> Items
         {
-			get
-			{
-				foreach (var item in llrbTree)
-				{
-					yield return item.Key;
-				}
-			}
+            get
+            {
+                foreach (var item in llrbTree)
+                {
+                    yield return item.Key;
+                }
+            }
         }
     }
 }

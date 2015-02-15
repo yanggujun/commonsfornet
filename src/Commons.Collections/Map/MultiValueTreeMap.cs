@@ -19,44 +19,44 @@ using System.Collections.Generic;
 using Commons.Utils;
 namespace Commons.Collections.Map
 {
-	[CLSCompliant(true)]
-	public class MultiValueTreeMap<K, V> : AbstractMultiValueMap<K, V>, IMultiValueMap<K, V>, IReadOnlyMultiValueMap<K, V>
-	{
-		public MultiValueTreeMap() : this(Comparer<K>.Default)
-		{
-		}
+    [CLSCompliant(true)]
+    public class MultiValueTreeMap<K, V> : AbstractMultiValueMap<K, V>, IMultiValueMap<K, V>, IReadOnlyMultiValueMap<K, V>
+    {
+        public MultiValueTreeMap() : this(Comparer<K>.Default)
+        {
+        }
 
-		public MultiValueTreeMap(IComparer<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default)
-		{
-		}
+        public MultiValueTreeMap(IComparer<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default)
+        {
+        }
 
-		public MultiValueTreeMap(Comparison<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default.Equals)
-		{
-		}
+        public MultiValueTreeMap(Comparison<K> keyComparer) : this(keyComparer, EqualityComparer<V>.Default.Equals)
+        {
+        }
 
         public MultiValueTreeMap(IComparer<K> keyComparer, IEqualityComparer<V> valueComparer)
             : this(keyComparer.Compare, valueComparer.Equals)
         {
         }
 
-		public MultiValueTreeMap(Comparison<K> keyComparer, Equator<V> valueEquator) 
-			: this(null, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
-		{
-		}
+        public MultiValueTreeMap(Comparison<K> keyComparer, Equator<V> valueEquator) 
+            : this(null, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
+        {
+        }
 
-		public MultiValueTreeMap(IMultiValueMap<K, V> mvMap) 
-			: this(mvMap, Comparer<K>.Default.Compare, EqualityComparer<V>.Default.Equals)
-		{
-		}
+        public MultiValueTreeMap(IMultiValueMap<K, V> mvMap) 
+            : this(mvMap, Comparer<K>.Default.Compare, EqualityComparer<V>.Default.Equals)
+        {
+        }
 
-		public MultiValueTreeMap(IMultiValueMap<K, V> mvMap, Comparison<K> keyComparer, Equator<V> valueEquator) 
-			: this (mvMap, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
-		{
-		}
+        public MultiValueTreeMap(IMultiValueMap<K, V> mvMap, Comparison<K> keyComparer, Equator<V> valueEquator) 
+            : this (mvMap, new TreeMap<K, ICollection<V>>(keyComparer), valueEquator)
+        {
+        }
 
-		private MultiValueTreeMap(IMultiValueMap<K, V> items, ISortedMap<K, ICollection<V>> map, Equator<V> valueEquator) 
-			: base(items, map, valueEquator)
-		{
-		}
-	}
+        private MultiValueTreeMap(IMultiValueMap<K, V> items, ISortedMap<K, ICollection<V>> map, Equator<V> valueEquator) 
+            : base(items, map, valueEquator)
+        {
+        }
+    }
 }

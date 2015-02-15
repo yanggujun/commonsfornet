@@ -25,7 +25,7 @@ namespace Commons.Collections.Bag
     [CLSCompliant(true)]
     public interface IBag<T> : ICollection<T>, IEnumerable<T>, IEnumerable
     {
-		int this[T item] { get; }
+        int this[T item] { get; }
 
         void Add(T item, int copies);
 

@@ -25,7 +25,7 @@ namespace Commons.Collections.Map
     [CLSCompliant(true)]
     public class HashedBimap<K, V> :AbstractBimap<K, V>, IBimap<K, V>, IDictionary<K, V>, IReadOnlyBimap<K, V>, IReadOnlyDictionary<K, V>
     {
-		private const int DefaultCapacity = 16;
+        private const int DefaultCapacity = 16;
         private readonly Equator<K> keyEquator;
         private readonly Equator<V> valueEquator;
 
@@ -34,54 +34,54 @@ namespace Commons.Collections.Map
         {
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="keyComparer"></param>
-		/// <remarks>If the <typeparamref name="K"/> is the same with <typeparamref name="V"/>, need to use named 
-		/// arguments to specify it's a <paramref name="keyComparer"/></remarks>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="keyComparer"></param>
+        /// <remarks>If the <typeparamref name="K"/> is the same with <typeparamref name="V"/>, need to use named 
+        /// arguments to specify it's a <paramref name="keyComparer"/></remarks>
         public HashedBimap(IEqualityComparer<K> keyComparer)
             : this(keyComparer.Equals, EqualityComparer<V>.Default.Equals)
         {
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="valueComparer"></param>
-		/// <remarks>If the <typeparamref name="V"/> is the same with <typeparamref name="K"/>, need to use named 
-		/// arguments to specify it's a <paramref name="valueComparer"/></remarks>
-		public HashedBimap(IEqualityComparer<V> valueComparer) 
-			: this(EqualityComparer<K>.Default.Equals, valueComparer.Equals)
-		{
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="valueComparer"></param>
+        /// <remarks>If the <typeparamref name="V"/> is the same with <typeparamref name="K"/>, need to use named 
+        /// arguments to specify it's a <paramref name="valueComparer"/></remarks>
+        public HashedBimap(IEqualityComparer<V> valueComparer) 
+            : this(EqualityComparer<K>.Default.Equals, valueComparer.Equals)
+        {
+        }
 
         public HashedBimap(IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer)
             : this(keyComparer.Equals, valueComparer.Equals)
         {
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="keyEquator"></param>
-		/// <remarks>If the <typeparamref name="K"/> is the same with <typeparamref name="V"/>, need to use named 
-		/// arguments to specify it's a <paramref name="keyEquator"/></remarks>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="keyEquator"></param>
+        /// <remarks>If the <typeparamref name="K"/> is the same with <typeparamref name="V"/>, need to use named 
+        /// arguments to specify it's a <paramref name="keyEquator"/></remarks>
         public HashedBimap(Equator<K> keyEquator)
             : this(keyEquator, EqualityComparer<V>.Default.Equals)
         {
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="valueEquator"></param>
-		/// <remarks>If the <typeparamref name="V"/> is the same with <typeparamref name="K"/>, need to use named 
-		/// arguments to specify it's a <paramref name="valueEquator"/></remarks>
-		public HashedBimap(Equator<V> valueEquator) 
-			: this(EqualityComparer<K>.Default.Equals, valueEquator)
-		{
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="valueEquator"></param>
+        /// <remarks>If the <typeparamref name="V"/> is the same with <typeparamref name="K"/>, need to use named 
+        /// arguments to specify it's a <paramref name="valueEquator"/></remarks>
+        public HashedBimap(Equator<V> valueEquator) 
+            : this(EqualityComparer<K>.Default.Equals, valueEquator)
+        {
+        }
 
         public HashedBimap(Equator<K> keyEquator, Equator<V> valueEquator)
             : base(new HashedMap<K, V>(keyEquator), new HashedMap<V, K>(valueEquator))
@@ -102,10 +102,10 @@ namespace Commons.Collections.Map
             this.valueEquator = valueEquator;
         }
 
-		public HashedBimap(IBimap<K, V> bimap) 
-			: this(bimap, EqualityComparer<K>.Default.Equals, EqualityComparer<V>.Default.Equals)
-		{
-		}
+        public HashedBimap(IBimap<K, V> bimap) 
+            : this(bimap, EqualityComparer<K>.Default.Equals, EqualityComparer<V>.Default.Equals)
+        {
+        }
 
         public HashedBimap(IBimap<K, V> bimap, Equator<K> keyEquator, Equator<V> valueEquator)
             : this(bimap == null ? DefaultCapacity : bimap.Count, keyEquator, valueEquator)
@@ -119,11 +119,11 @@ namespace Commons.Collections.Map
             }
         }
 
-		public override bool Contains(KeyValuePair<K, V> item)
-		{
-			return KeyValue.ContainsKey(item.Key) && valueEquator(item.Value, ValueOf(item.Key)) 
-				&& ContainsValue(item.Value) && keyEquator(item.Key, KeyOf(item.Value));
-		}
+        public override bool Contains(KeyValuePair<K, V> item)
+        {
+            return KeyValue.ContainsKey(item.Key) && valueEquator(item.Value, ValueOf(item.Key)) 
+                && ContainsValue(item.Value) && keyEquator(item.Key, KeyOf(item.Value));
+        }
 
         public override IBimap<V, K> Inverse()
         {

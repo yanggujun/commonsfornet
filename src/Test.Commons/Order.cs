@@ -25,15 +25,15 @@ namespace Test.Commons
 
         public string Name { get; set; }
 
-		public override string ToString()
-		{
-			return Id.ToString();
-		}
+        public override string ToString()
+        {
+            return Id.ToString();
+        }
 
-		public override int GetHashCode()
-		{
-			return Id.GetHashCode();
-		}
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 
     public class Bill
@@ -42,10 +42,10 @@ namespace Test.Commons
 
         public int Count { get; set; }
 
-		public override int GetHashCode()
-		{
-			return Id.GetHashCode();
-		}
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 
     public class OrderEqualityComparer : IEqualityComparer<Order>
@@ -70,13 +70,13 @@ namespace Test.Commons
         }
     }
 
-	public class BillComparer : IComparer<Bill>
-	{
-		public int Compare(Bill x, Bill y)
-		{
-			return x.Id - y.Id;
-		}
-	}
+    public class BillComparer : IComparer<Bill>
+    {
+        public int Compare(Bill x, Bill y)
+        {
+            return x.Id - y.Id;
+        }
+    }
 
     public class BillEqualityComparer : IEqualityComparer<Bill>
     {

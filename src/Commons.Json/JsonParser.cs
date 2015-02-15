@@ -39,7 +39,7 @@ namespace Commons.Json
         private const char Quoter = '"';
         private const char Dot = '.';
         private const char Space = ' ';
-		private const string Null = "null";
+        private const string Null = "null";
         private const string Tab = "    ";
 
         private static readonly char[] SpecialChars = { LeftBrace, RightBrace, LeftBracket, RightBracket, Comma, Colon };
@@ -69,7 +69,7 @@ namespace Commons.Json
                         {
                             break;
                         }
-						builder.AppendLine().Append(Tab).Append(line);
+                        builder.AppendLine().Append(Tab).Append(line);
                     }
                 }
                 count++;

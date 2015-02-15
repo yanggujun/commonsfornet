@@ -49,7 +49,7 @@ namespace Test.Commons.Collections
         public void TestHashAbility()
         {
             var orders = new Customized32HashedMap<string, Order>(4);
-			orders.HashAbility();
+            orders.HashAbility();
         }
 
         [Fact]
@@ -66,22 +66,22 @@ namespace Test.Commons.Collections
         public void TestCustomizedHashMapConstructors()
         {
             var orders = new Customized32HashedMap<string, Order>();
-			orders.HashAbility();
+            orders.HashAbility();
 
             var orders2 = new Customized32HashedMap<string, Order>(1000);
-			orders2.HashAbility();
+            orders2.HashAbility();
 
             var orders3 = new Customized32HashedMap<string, Order>(100, x => x.ToBytes());
-			orders3.HashAbility();
+            orders3.HashAbility();
 
             var orders4 = new Customized32HashedMap<string, Order>(500, x => x.ToBytes(), (x1, x2) => x1 == x2);
-			orders4.HashAbility();
+            orders4.HashAbility();
 
-			var orders5 = new Customized32HashedMap<string, Order>(500, x => x.ToBytes(), EqualityComparer<string>.Default);
-			orders5.HashAbility();
+            var orders5 = new Customized32HashedMap<string, Order>(500, x => x.ToBytes(), EqualityComparer<string>.Default);
+            orders5.HashAbility();
 
             var orders7 = new Customized32HashedMap<string, Order>(1000, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
-			orders7.HashAbility();
+            orders7.HashAbility();
 
 
             var orders9 = new Customized32HashedMap<string, Order>(orders7, new MurmurHash32(), x => x.ToBytes(), (x1, x2) => x1 == x2);
@@ -118,10 +118,10 @@ namespace Test.Commons.Collections
             {
                 Assert.True(orders.Contains(key, new OrderEqualityComparer()));
             }
-			foreach (var o in orders)
-			{
-				Assert.True(keys.Contains(o, new OrderEqualityComparer()));
-			}
+            foreach (var o in orders)
+            {
+                Assert.True(keys.Contains(o, new OrderEqualityComparer()));
+            }
 
             var values = orderMap.Values;
             Assert.Equal(bills.Length, values.Count);
@@ -130,10 +130,10 @@ namespace Test.Commons.Collections
                 Assert.True(bills.Contains(v, new BillEqualityComparer()));
             }
 
-			foreach (var bill in bills)
-			{
-				Assert.True(values.Contains(bill, new BillEqualityComparer()));
-			}
+            foreach (var bill in bills)
+            {
+                Assert.True(values.Contains(bill, new BillEqualityComparer()));
+            }
 
             var order = new Order() { Id = 564, Name = "000000000000" };
             Bill b;
@@ -212,54 +212,54 @@ namespace Test.Commons.Collections
         public void TestPlainHashMapOperations()
         {
             var map1 = new HashedMap<string, Order>();
-			map1.HashAbility();
+            map1.HashAbility();
 
-			var map2 = new HashedMap<string, Order>(1000);
-			map2.HashAbility();
+            var map2 = new HashedMap<string, Order>(1000);
+            map2.HashAbility();
 
-			var map3 = new HashedMap<string, Order>((x1, x2) => x1 == x2);
-			map3.HashAbility();
+            var map3 = new HashedMap<string, Order>((x1, x2) => x1 == x2);
+            map3.HashAbility();
 
-			var map4 = new HashedMap<string, Order>(EqualityComparer<string>.Default);
-			map4.HashAbility();
+            var map4 = new HashedMap<string, Order>(EqualityComparer<string>.Default);
+            map4.HashAbility();
 
-			var map5 = new HashedMap<string, Order>(1000, EqualityComparer<string>.Default.Equals);
-			map5.HashAbility();
+            var map5 = new HashedMap<string, Order>(1000, EqualityComparer<string>.Default.Equals);
+            map5.HashAbility();
 
-			var map6 = new HashedMap<string, Order>(1000, EqualityComparer<string>.Default);
-			map6.HashAbility();
+            var map6 = new HashedMap<string, Order>(1000, EqualityComparer<string>.Default);
+            map6.HashAbility();
 
-			var map7 = new HashedMap<string, Order>(map6, (x1, x2) => x1 == x2);
-			Assert.Equal(map6.Count, map7.Count);
-			foreach(var item in map6)
-			{
-				Assert.True(map7.Contains(item));
-			}
-			foreach(var item in map7)
-			{
-				Assert.True(map6.Contains(item));
-			}
+            var map7 = new HashedMap<string, Order>(map6, (x1, x2) => x1 == x2);
+            Assert.Equal(map6.Count, map7.Count);
+            foreach(var item in map6)
+            {
+                Assert.True(map7.Contains(item));
+            }
+            foreach(var item in map7)
+            {
+                Assert.True(map6.Contains(item));
+            }
 
-			var map8 = new HashedMap<string, Order>(map7, EqualityComparer<string>.Default);
-			foreach(var item in map7)
-			{
-				Assert.True(map8.Contains(item));
-			}
-			foreach(var item in map8)
-			{
-				Assert.True(map7.Contains(item));
-			}
+            var map8 = new HashedMap<string, Order>(map7, EqualityComparer<string>.Default);
+            foreach(var item in map7)
+            {
+                Assert.True(map8.Contains(item));
+            }
+            foreach(var item in map8)
+            {
+                Assert.True(map7.Contains(item));
+            }
 
-			var map9 = new HashedMap<string, Order>(map8);
-			foreach (var item in map8)
-			{
-				Assert.True(map8.Contains(item));
-			}
+            var map9 = new HashedMap<string, Order>(map8);
+            foreach (var item in map8)
+            {
+                Assert.True(map8.Contains(item));
+            }
 
-			foreach (var item in map9)
-			{
-				Assert.True(map8.Contains(item));
-			}
+            foreach (var item in map9)
+            {
+                Assert.True(map8.Contains(item));
+            }
         }
 
         [Fact]
@@ -267,60 +267,60 @@ namespace Test.Commons.Collections
         {
             var map = new HashedMap<string, string>(100);
             Assert.False(map.Remove("a"));
-			Assert.Throws(typeof(ArgumentException), () => new HashedMap<string, string>(0));
-			Assert.Throws(typeof(ArgumentException), () => new HashedMap<string, string>(-10));
+            Assert.Throws(typeof(ArgumentException), () => new HashedMap<string, string>(0));
+            Assert.Throws(typeof(ArgumentException), () => new HashedMap<string, string>(-10));
         }
 
-		[Fact]
-		public void TestHashedSetConstructors()
-		{
-			var set1 = new HashedSet<string>();
-			set1.TestHashedSetOperations();
+        [Fact]
+        public void TestHashedSetConstructors()
+        {
+            var set1 = new HashedSet<string>();
+            set1.TestHashedSetOperations();
 
-			var set2 = new HashedSet<string>(10000);
-			set2.TestHashedSetOperations();
+            var set2 = new HashedSet<string>(10000);
+            set2.TestHashedSetOperations();
 
-			var set3 = new HashedSet<string>((x1, x2) => x1 == x2);
-			set3.TestHashedSetOperations();
+            var set3 = new HashedSet<string>((x1, x2) => x1 == x2);
+            set3.TestHashedSetOperations();
 
-			var set4 = new HashedSet<string>(EqualityComparer<string>.Default);
-			set4.TestHashedSetOperations();
+            var set4 = new HashedSet<string>(EqualityComparer<string>.Default);
+            set4.TestHashedSetOperations();
 
-			var set5 = new HashedSet<string>(10000, EqualityComparer<string>.Default.Equals);
-			set5.TestHashedSetOperations();
+            var set5 = new HashedSet<string>(10000, EqualityComparer<string>.Default.Equals);
+            set5.TestHashedSetOperations();
 
-			var set6 = new HashedSet<string>(10000, EqualityComparer<string>.Default);
-			set6.TestHashedSetOperations();
+            var set6 = new HashedSet<string>(10000, EqualityComparer<string>.Default);
+            set6.TestHashedSetOperations();
 
-			var items = new List<string>();
-			for (var i = 0; i < 10000; i++)
-			{
-				items.Add(Guid.NewGuid().ToString());
-			}
-			var set7 = new HashedSet<string>(items, 10000, EqualityComparer<string>.Default.Equals);
-			var count = 0;
-			foreach (var i in set7)
-			{
-				count++;
-			}
+            var items = new List<string>();
+            for (var i = 0; i < 10000; i++)
+            {
+                items.Add(Guid.NewGuid().ToString());
+            }
+            var set7 = new HashedSet<string>(items, 10000, EqualityComparer<string>.Default.Equals);
+            var count = 0;
+            foreach (var i in set7)
+            {
+                count++;
+            }
 
-			Assert.Equal(count, set7.Count);
-		}
+            Assert.Equal(count, set7.Count);
+        }
 
-		[Fact]
-		public void TestHashedSetOperations()
-		{
+        [Fact]
+        public void TestHashedSetOperations()
+        {
             var orders = new Order[1000];
             for (var i = 0; i < orders.Length; i++)
             {
                 orders[i] = new Order() { Id = i, Name = Guid.NewGuid().ToString() };
             }
 
-			var orderSet = new HashedSet<Order>(1000, (x1, x2) => x1.Id == x2.Id);
-			Assert.Equal(0, orderSet.Count);
+            var orderSet = new HashedSet<Order>(1000, (x1, x2) => x1.Id == x2.Id);
+            Assert.Equal(0, orderSet.Count);
             for (var i = 0; i < orders.Length; i++)
             {
-				orderSet.Add(orders[i]);
+                orderSet.Add(orders[i]);
             }
             Assert.Equal(orders.Length, orderSet.Count);
             foreach (var key in orderSet)
@@ -330,7 +330,7 @@ namespace Test.Commons.Collections
 
             for (var i = 0; i < 150; i++)
             {
-				Assert.True(orderSet.Contains(orders[200 + i]));
+                Assert.True(orderSet.Contains(orders[200 + i]));
             }
 
             foreach (var item in orderSet)
@@ -346,51 +346,51 @@ namespace Test.Commons.Collections
                 Assert.Equal(0, 1);
             }
         
-		}
+        }
 
-		[Fact]
-		public void TestHashedSetBoundaries()
-		{
-			var set = new HashedSet<string>();
-			Assert.False(set.Remove("s"));
+        [Fact]
+        public void TestHashedSetBoundaries()
+        {
+            var set = new HashedSet<string>();
+            Assert.False(set.Remove("s"));
 
-			Assert.Throws(typeof(ArgumentException), () => new HashedSet<string>(0));
-			Assert.Throws(typeof(ArgumentException), () => new HashedSet<string>(-1));
-		}
+            Assert.Throws(typeof(ArgumentException), () => new HashedSet<string>(0));
+            Assert.Throws(typeof(ArgumentException), () => new HashedSet<string>(-1));
+        }
 
-		[Fact]
-		public void TestLinkedHashMapConstructors()
-		{
-			var orders = new LinkedHashedMap<string, Order>();
-			orders.HashAbility();
+        [Fact]
+        public void TestLinkedHashMapConstructors()
+        {
+            var orders = new LinkedHashedMap<string, Order>();
+            orders.HashAbility();
 
-			var orders2 = new LinkedHashedMap<string, Order>(10000);
-			orders2.HashAbility();
+            var orders2 = new LinkedHashedMap<string, Order>(10000);
+            orders2.HashAbility();
 
-			var orders3 = new LinkedHashedMap<string, Order>(EqualityComparer<string>.Default);
-			orders3.HashAbility();
+            var orders3 = new LinkedHashedMap<string, Order>(EqualityComparer<string>.Default);
+            orders3.HashAbility();
 
-			var orders6 = new LinkedHashedMap<string, Order>((x1, x2) => x1 == x2);
-			orders6.HashAbility();
+            var orders6 = new LinkedHashedMap<string, Order>((x1, x2) => x1 == x2);
+            orders6.HashAbility();
 
-			var orders7 = new LinkedHashedMap<string, Order>(100, EqualityComparer<string>.Default);
-			orders7.HashAbility();
+            var orders7 = new LinkedHashedMap<string, Order>(100, EqualityComparer<string>.Default);
+            orders7.HashAbility();
 
-			var orders4 = new LinkedHashedMap<string, Order>(500, (x1, x2) => x1 == x2);
-			orders4.HashAbility();
+            var orders4 = new LinkedHashedMap<string, Order>(500, (x1, x2) => x1 == x2);
+            orders4.HashAbility();
 
-			//var orders5 = new LinkedHashedMap<string, Order>(orders2, EqualityComparer<string>.Default);
-			//Assert.NotEmpty(orders5);
-			//Assert.Equal(orders2.Count, orders5.Count);
-			//orders5.Clear();
-			//Assert.Equal(0, orders5.Count);
+            //var orders5 = new LinkedHashedMap<string, Order>(orders2, EqualityComparer<string>.Default);
+            //Assert.NotEmpty(orders5);
+            //Assert.Equal(orders2.Count, orders5.Count);
+            //orders5.Clear();
+            //Assert.Equal(0, orders5.Count);
 
-			//var orders9 = new LinkedHashedMap<string, Order>(orders2, (x1, x2) => x1 == x2);
-			//Assert.NotEmpty(orders9);
-			//Assert.Equal(orders2.Count, orders9.Count);
-			//orders9.Clear();
-			//Assert.Equal(0, orders9.Count);
-		}
+            //var orders9 = new LinkedHashedMap<string, Order>(orders2, (x1, x2) => x1 == x2);
+            //Assert.NotEmpty(orders9);
+            //Assert.Equal(orders2.Count, orders9.Count);
+            //orders9.Clear();
+            //Assert.Equal(0, orders9.Count);
+        }
 
         [Fact]
         public void TestLinkedHashedMapRemove()
@@ -456,70 +456,70 @@ namespace Test.Commons.Collections
             Assert.Equal(900, index);
         }
 
-		[Fact]
-		public void TestOrderedMap()
-		{
-			var container = new LinkedHashedMap<int, string>(10000);
-			Assert.Throws(typeof(InvalidOperationException), () => container.First);
-			Assert.Throws(typeof(InvalidOperationException), () => container.Last);
-			Assert.Throws(typeof(InvalidOperationException), () => container.After(1));
-			Assert.Throws(typeof(InvalidOperationException), () => container.Before(1));
-			for (var i = 0; i < 10000; i++)
-			{
-				container.Add(i, i.ToString());
-			}
-			Assert.Equal(0, container.First.Key);
-			Assert.Equal("0", container.First.Value);
-			Assert.Equal(9999, container.Last.Key);
-			Assert.Equal("9999", container.Last.Value);
-			Assert.Equal("0", container.GetIndex(0).Value);
-			Assert.Equal("1000", container.GetIndex(1000).Value);
-			Assert.Equal("1600", container.GetIndex(1600).Value);
-			Assert.Equal("2749", container.GetIndex(2749).Value);
-			Assert.Equal("4999", container.GetIndex(4999).Value);
-			Assert.Equal("11", container.After(10).Value);
-			Assert.Equal("100", container.After(99).Value);
-			Assert.Equal("1001", container.After(1000).Value);
-			Assert.Equal("5000", container.After(4999).Value);
-			Assert.Equal("50", container.Before(51).Value);
-			Assert.Equal("500", container.Before(501).Value);
-			Assert.Equal("1500", container.Before(1501).Value);
-			Assert.Equal("7900", container.Before(7901).Value);
-			Assert.Throws(typeof(ArgumentException), () => container.After(9999));
-			Assert.Throws(typeof(ArgumentException), () => container.Before(0));
-			Assert.Throws(typeof(ArgumentException), () => container.Before(10000));
-			Assert.Throws(typeof(ArgumentException), () => container.After(10000));
+        [Fact]
+        public void TestOrderedMap()
+        {
+            var container = new LinkedHashedMap<int, string>(10000);
+            Assert.Throws(typeof(InvalidOperationException), () => container.First);
+            Assert.Throws(typeof(InvalidOperationException), () => container.Last);
+            Assert.Throws(typeof(InvalidOperationException), () => container.After(1));
+            Assert.Throws(typeof(InvalidOperationException), () => container.Before(1));
+            for (var i = 0; i < 10000; i++)
+            {
+                container.Add(i, i.ToString());
+            }
+            Assert.Equal(0, container.First.Key);
+            Assert.Equal("0", container.First.Value);
+            Assert.Equal(9999, container.Last.Key);
+            Assert.Equal("9999", container.Last.Value);
+            Assert.Equal("0", container.GetIndex(0).Value);
+            Assert.Equal("1000", container.GetIndex(1000).Value);
+            Assert.Equal("1600", container.GetIndex(1600).Value);
+            Assert.Equal("2749", container.GetIndex(2749).Value);
+            Assert.Equal("4999", container.GetIndex(4999).Value);
+            Assert.Equal("11", container.After(10).Value);
+            Assert.Equal("100", container.After(99).Value);
+            Assert.Equal("1001", container.After(1000).Value);
+            Assert.Equal("5000", container.After(4999).Value);
+            Assert.Equal("50", container.Before(51).Value);
+            Assert.Equal("500", container.Before(501).Value);
+            Assert.Equal("1500", container.Before(1501).Value);
+            Assert.Equal("7900", container.Before(7901).Value);
+            Assert.Throws(typeof(ArgumentException), () => container.After(9999));
+            Assert.Throws(typeof(ArgumentException), () => container.Before(0));
+            Assert.Throws(typeof(ArgumentException), () => container.Before(10000));
+            Assert.Throws(typeof(ArgumentException), () => container.After(10000));
             Assert.Throws(typeof(ArgumentException), () => container.GetIndex(-100));
             Assert.Throws(typeof(ArgumentException), () => container.GetIndex(20000));
 
-			for (var i = 2000; i < 5000; i++)
-			{
-				Assert.True(container.Remove(i));
-			}
-			Assert.Equal("0", container.First.Value);
-			Assert.Equal("9999", container.Last.Value);
-			Assert.Equal("1000", container.After(999).Value);
-			Assert.Equal("999", container.Before(1000).Value);
-			Assert.Equal("9000", container.After(8999).Value);
-			Assert.Equal("8999", container.Before(9000).Value);
-			Assert.Equal("8500", container.Before(8501).Value);
-			Assert.Equal("5000", container.After(1999).Value);
-			Assert.Equal("1999", container.Before(5000).Value);
-			
-			for (var i = 7000; i < 8000; i++)
-			{
-				Assert.True(container.Remove(i));
-			}
-			Assert.Equal("0", container.First.Value);
-			Assert.Equal("9999", container.Last.Value);
-			Assert.Equal("1000", container.After(999).Value);
-			Assert.Equal("999", container.Before(1000).Value);
-			Assert.Equal("9000", container.After(8999).Value);
-			Assert.Equal("8999", container.Before(9000).Value);
-			Assert.Equal("8500", container.Before(8501).Value);
-			Assert.Equal("8000", container.After(6999).Value);
-			Assert.Equal("6999", container.Before(8000).Value);
-		}
+            for (var i = 2000; i < 5000; i++)
+            {
+                Assert.True(container.Remove(i));
+            }
+            Assert.Equal("0", container.First.Value);
+            Assert.Equal("9999", container.Last.Value);
+            Assert.Equal("1000", container.After(999).Value);
+            Assert.Equal("999", container.Before(1000).Value);
+            Assert.Equal("9000", container.After(8999).Value);
+            Assert.Equal("8999", container.Before(9000).Value);
+            Assert.Equal("8500", container.Before(8501).Value);
+            Assert.Equal("5000", container.After(1999).Value);
+            Assert.Equal("1999", container.Before(5000).Value);
+            
+            for (var i = 7000; i < 8000; i++)
+            {
+                Assert.True(container.Remove(i));
+            }
+            Assert.Equal("0", container.First.Value);
+            Assert.Equal("9999", container.Last.Value);
+            Assert.Equal("1000", container.After(999).Value);
+            Assert.Equal("999", container.Before(1000).Value);
+            Assert.Equal("9000", container.After(8999).Value);
+            Assert.Equal("8999", container.Before(9000).Value);
+            Assert.Equal("8500", container.Before(8501).Value);
+            Assert.Equal("8000", container.After(6999).Value);
+            Assert.Equal("6999", container.Before(8000).Value);
+        }
 
         [Fact]
         public void TestOneItemLinkedHashMap()
@@ -585,167 +585,167 @@ namespace Test.Commons.Collections
             }
         }
 
-		[Fact]
-		public void TestLruMapConstructor()
-		{
-			var lru = new LruMap<int, int>();
-			for (var i = 0; i < 100; i++)
-			{
-				Assert.False(lru.IsFull);
-				lru.Add(i, i);
-			}
-			Assert.Equal(100, lru.Count);
-			Assert.True(lru.IsFull);
-			for (var i = 100; i < 200; i++)
-			{
-				lru.Add(i, i);
-			}
-			Assert.Equal(100, lru.Count);
-			Assert.True(lru.IsFull);
-			for (var i = 0; i < 100; i++)
-			{
-				Assert.False(lru.ContainsKey(i));
-			}
-			for (var i = 100; i < 200; i++)
-			{
-				Assert.True(lru.ContainsKey(i));
-			}
+        [Fact]
+        public void TestLruMapConstructor()
+        {
+            var lru = new LruMap<int, int>();
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.False(lru.IsFull);
+                lru.Add(i, i);
+            }
+            Assert.Equal(100, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 100; i < 200; i++)
+            {
+                lru.Add(i, i);
+            }
+            Assert.Equal(100, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.False(lru.ContainsKey(i));
+            }
+            for (var i = 100; i < 200; i++)
+            {
+                Assert.True(lru.ContainsKey(i));
+            }
 
-			var lru2 = new LruMap<int, int>(10000);
-			for (var i = 0; i < 10000; i++)
-			{
-				Assert.False(lru2.IsFull);
-				lru2.Add(i, i);
-			}
-			Assert.Equal(10000, lru2.Count);
-			Assert.True(lru2.IsFull);
-			for (var i = 10000; i < 20000; i++)
-			{
-				lru2.Add(i, i);
-			}
-			Assert.Equal(10000, lru2.Count);
-			Assert.True(lru2.IsFull);
-			for (var i = 0 ; i < 10000; i++)
-			{
-				Assert.False(lru2.ContainsKey(i));
-			}
-			for (var i = 10000; i < 20000; i++)
-			{
-				Assert.True(lru2.ContainsKey(i));
-			}
+            var lru2 = new LruMap<int, int>(10000);
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.False(lru2.IsFull);
+                lru2.Add(i, i);
+            }
+            Assert.Equal(10000, lru2.Count);
+            Assert.True(lru2.IsFull);
+            for (var i = 10000; i < 20000; i++)
+            {
+                lru2.Add(i, i);
+            }
+            Assert.Equal(10000, lru2.Count);
+            Assert.True(lru2.IsFull);
+            for (var i = 0 ; i < 10000; i++)
+            {
+                Assert.False(lru2.ContainsKey(i));
+            }
+            for (var i = 10000; i < 20000; i++)
+            {
+                Assert.True(lru2.ContainsKey(i));
+            }
 
-			var lru3 = new LruMap<Order, Bill>(10000, (x1, x2) => x1.Id == x2.Id);
-			LruConstructor(lru3);
+            var lru3 = new LruMap<Order, Bill>(10000, (x1, x2) => x1.Id == x2.Id);
+            LruConstructor(lru3);
 
-			var lru4 = new LruMap<Order, Bill>(10000, new OrderEqualityComparer());
-			LruConstructor(lru4);
-		}
+            var lru4 = new LruMap<Order, Bill>(10000, new OrderEqualityComparer());
+            LruConstructor(lru4);
+        }
 
-		private void LruConstructor(LruMap<Order, Bill> lru)
-		{
-			for (var i = 0; i < 10000; i++)
-			{
-				Assert.False(lru.IsFull);
-				lru.Add(new Order { Id = i }, new Bill());
-			}
-			Assert.Equal(10000, lru.Count);
-			Assert.True(lru.IsFull);
-			for (var i = 10000; i < 20000; i++)
-			{
-				lru.Add(new Order { Id = i }, new Bill());
-			}
-			Assert.Equal(10000, lru.Count);
-			Assert.True(lru.IsFull);
-			for (var i = 0; i < 10000; i++)
-			{
-				Assert.False(lru.ContainsKey(new Order { Id = i }));
-			}
-			for (var i = 10000; i < 20000; i++)
-			{
-				Assert.True(lru.ContainsKey(new Order { Id = i }));
-			}
-		}
+        private void LruConstructor(LruMap<Order, Bill> lru)
+        {
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.False(lru.IsFull);
+                lru.Add(new Order { Id = i }, new Bill());
+            }
+            Assert.Equal(10000, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 10000; i < 20000; i++)
+            {
+                lru.Add(new Order { Id = i }, new Bill());
+            }
+            Assert.Equal(10000, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.False(lru.ContainsKey(new Order { Id = i }));
+            }
+            for (var i = 10000; i < 20000; i++)
+            {
+                Assert.True(lru.ContainsKey(new Order { Id = i }));
+            }
+        }
 
-		[Fact]
-		public void TestLruMapEliminate()
-		{
-			var lru = new LruMap<int, int>(10000);
-			for (var i = 0; i < 10000; i++)
-			{
-				lru.Add(i, i);
-			}
-			Assert.Equal(0, lru[0]);
-			lru.Add(10000, 10000);
-			Assert.True(lru.ContainsKey(0));
-			Assert.False(lru.ContainsKey(1));
-			lru[2] = 3;
-			lru.Add(10001, 10001);
-			Assert.False(lru.ContainsKey(3));
-			Assert.Equal(3, lru[2]);
-			Assert.Equal(10000, lru.Count);
-			Assert.True(lru.ContainsKey(0));
-			Assert.True(lru.ContainsKey(4));
-			Assert.Throws(typeof(ArgumentException), () => lru[1]);
-			Assert.Throws(typeof(ArgumentException), () => lru[3]);
-		}
+        [Fact]
+        public void TestLruMapEliminate()
+        {
+            var lru = new LruMap<int, int>(10000);
+            for (var i = 0; i < 10000; i++)
+            {
+                lru.Add(i, i);
+            }
+            Assert.Equal(0, lru[0]);
+            lru.Add(10000, 10000);
+            Assert.True(lru.ContainsKey(0));
+            Assert.False(lru.ContainsKey(1));
+            lru[2] = 3;
+            lru.Add(10001, 10001);
+            Assert.False(lru.ContainsKey(3));
+            Assert.Equal(3, lru[2]);
+            Assert.Equal(10000, lru.Count);
+            Assert.True(lru.ContainsKey(0));
+            Assert.True(lru.ContainsKey(4));
+            Assert.Throws(typeof(ArgumentException), () => lru[1]);
+            Assert.Throws(typeof(ArgumentException), () => lru[3]);
+        }
 
-		[Fact]
-		public void TestLruMapHit()
-		{
-			var lru = new LruMap<int, int>(10000);
-			var map = new HashedMap<int, int>(10000);
-			for (var i = 0; i < 10000; i++)
-			{
-				lru.Add(i, i);
-				map.Add(i, i);
-			}
-			foreach (var item in lru)
-			{
-				Assert.True(map.ContainsKey(item.Key));
-			}
+        [Fact]
+        public void TestLruMapHit()
+        {
+            var lru = new LruMap<int, int>(10000);
+            var map = new HashedMap<int, int>(10000);
+            for (var i = 0; i < 10000; i++)
+            {
+                lru.Add(i, i);
+                map.Add(i, i);
+            }
+            foreach (var item in lru)
+            {
+                Assert.True(map.ContainsKey(item.Key));
+            }
 
-			for (var i = 0; i < 10000; i++)
-			{
-				lru[10000 - 1 - i] = 10000 - 1 - i;
-			}
+            for (var i = 0; i < 10000; i++)
+            {
+                lru[10000 - 1 - i] = 10000 - 1 - i;
+            }
 
-			foreach (var item in lru)
-			{
-				Assert.True(map.ContainsKey(item.Key));
-			}
+            foreach (var item in lru)
+            {
+                Assert.True(map.ContainsKey(item.Key));
+            }
 
-			for (var i = 0; i < 5000; i++)
-			{
-				lru.Add(i + 10000, i + 10000);
-			}
+            for (var i = 0; i < 5000; i++)
+            {
+                lru.Add(i + 10000, i + 10000);
+            }
 
-			for (var i = 0; i < 5000; i++)
-			{
-				Assert.False(lru.ContainsKey(i + 5000));
-			}
-		}
+            for (var i = 0; i < 5000; i++)
+            {
+                Assert.False(lru.ContainsKey(i + 5000));
+            }
+        }
 
-		[Fact]
-		public void TestLruMapAccessHeader()
-		{
-			var lru = new LruMap<int, int>(10000);
-			for (var i = 0; i < 10000; i++)
-			{
-				lru.Add(i, i);
-			}
-			lru[9999] = 9999;
-			for (var i = 0; i < 9999; i++)
-			{
-				lru.Add(i + 10000, i + 10000);
-			}
-			for (var i = 0; i < 9999; i++)
-			{
-				Assert.False(lru.ContainsKey(i));
-			}
-			for (var i = 0; i < 10000; i++)
-			{
-				Assert.True(lru.ContainsKey(i + 9999));
-			}
-		}
+        [Fact]
+        public void TestLruMapAccessHeader()
+        {
+            var lru = new LruMap<int, int>(10000);
+            for (var i = 0; i < 10000; i++)
+            {
+                lru.Add(i, i);
+            }
+            lru[9999] = 9999;
+            for (var i = 0; i < 9999; i++)
+            {
+                lru.Add(i + 10000, i + 10000);
+            }
+            for (var i = 0; i < 9999; i++)
+            {
+                Assert.False(lru.ContainsKey(i));
+            }
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.True(lru.ContainsKey(i + 9999));
+            }
+        }
     }
 }

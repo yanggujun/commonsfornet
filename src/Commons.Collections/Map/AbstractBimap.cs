@@ -55,16 +55,16 @@ namespace Commons.Collections.Map
         {
             key.ValidateNotNull("The key is null!");
             value.ValidateNotNull("The value is null!");
-			if (ContainsKey(key))
-			{
-				RemoveKey(key);
-			}
+            if (ContainsKey(key))
+            {
+                RemoveKey(key);
+            }
 
             if (ContainsValue(value))
             {
-				RemoveValue(value);
+                RemoveValue(value);
             }
-			Add(key, value);
+            Add(key, value);
         }
 
         public bool RemoveKey(K key)
@@ -172,13 +172,13 @@ namespace Commons.Collections.Map
             ValueKey.Clear();
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		/// <remarks>The method returns true only when key and value of the <paramref name="item"/> exist as a pair in the bimap.</remarks>
-		public abstract bool Contains(KeyValuePair<K, V> item);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        /// <remarks>The method returns true only when key and value of the <paramref name="item"/> exist as a pair in the bimap.</remarks>
+        public abstract bool Contains(KeyValuePair<K, V> item);
 
         public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
         {
@@ -254,12 +254,12 @@ namespace Commons.Collections.Map
             get { return ValueOf(key); }
             set
             {
-				key.ValidateNotNull("The key is null!");
+                key.ValidateNotNull("The key is null!");
                 if (!KeyValue.ContainsKey(key))
                 {
                     throw new KeyNotFoundException("The key is not found in the bimap.");
                 }
-				Enforce(key, value);
+                Enforce(key, value);
             }
         }
 

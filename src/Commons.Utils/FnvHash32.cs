@@ -18,7 +18,7 @@ using System;
 
 namespace Commons.Utils
 {
-	[CLSCompliant(true)]
+    [CLSCompliant(true)]
     public class FnvHash32 : IHashStrategy
     {
         private const uint FNV_PRIME = 16777619;

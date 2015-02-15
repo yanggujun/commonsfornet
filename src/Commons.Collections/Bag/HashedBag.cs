@@ -25,35 +25,35 @@ namespace Commons.Collections.Bag
     [CLSCompliant(true)]
     public class HashedBag<T> : AbstractMapBag<T>
     {
-		private readonly Equator<T> equator;
+        private readonly Equator<T> equator;
         public HashedBag()
             : base(new HashedMap<T, int>())
         {
         }
 
-		public HashedBag(IEqualityComparer<T> comparer) : this(comparer.Equals)
-		{
-		}
+        public HashedBag(IEqualityComparer<T> comparer) : this(comparer.Equals)
+        {
+        }
 
-		public HashedBag(Equator<T> equator) : this(null, equator)
-		{
-		}
+        public HashedBag(Equator<T> equator) : this(null, equator)
+        {
+        }
 
         public HashedBag(IEnumerable<T> items)
             : this(items, EqualityComparer<T>.Default.Equals)
         {
         }
 
-		public HashedBag(IEnumerable<T> items, Equator<T> equator) : base(items, new HashedMap<T, int>(equator))
-		{
-			this.equator = equator;
-		}
+        public HashedBag(IEnumerable<T> items, Equator<T> equator) : base(items, new HashedMap<T, int>(equator))
+        {
+            this.equator = equator;
+        }
 
-		public override IStrictSet<T> ToUnique()
-		{
-			var keys = Map.Keys;
-			var set = new HashedSet<T>(keys, keys.Count, equator);
-			return set;
-		}
-	}
+        public override IStrictSet<T> ToUnique()
+        {
+            var keys = Map.Keys;
+            var set = new HashedSet<T>(keys, keys.Count, equator);
+            return set;
+        }
+    }
 }

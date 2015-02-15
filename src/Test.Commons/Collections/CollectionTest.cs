@@ -395,151 +395,151 @@ namespace Test.Commons.Collections
                 Console.WriteLine(i);
                 Assert.False(string.IsNullOrEmpty(deque.Pop()));
             }
-			Assert.Equal(0, deque.Count);
+            Assert.Equal(0, deque.Count);
         }
 
-		[Fact]
-		public void TestDequeAppendAndShift()
-		{
-			var deque = new Deque<int>();
-			for (var i = 0; i < 100000; i++)
-			{
-				deque.Append(i);
-			}
+        [Fact]
+        public void TestDequeAppendAndShift()
+        {
+            var deque = new Deque<int>();
+            for (var i = 0; i < 100000; i++)
+            {
+                deque.Append(i);
+            }
 
-			for (var i = 0; i < 100000; i++)
-			{
-				Assert.Equal(i, deque.First);
-				Assert.Equal(99999, deque.Last);
-				Assert.Equal(i, deque.Shift());
-			}
-			Assert.Equal(0, deque.Count);
-		}
+            for (var i = 0; i < 100000; i++)
+            {
+                Assert.Equal(i, deque.First);
+                Assert.Equal(99999, deque.Last);
+                Assert.Equal(i, deque.Shift());
+            }
+            Assert.Equal(0, deque.Count);
+        }
 
-		[Fact]
-		public void TestDequeAppendAndPop()
-		{
-			var deque = new Deque<int>();
-			for (var i = 0; i < 100000; i++)
-			{
-				deque.Append(i);
-			}
+        [Fact]
+        public void TestDequeAppendAndPop()
+        {
+            var deque = new Deque<int>();
+            for (var i = 0; i < 100000; i++)
+            {
+                deque.Append(i);
+            }
 
-			for (var i = 100000; i > 0; i--)
-			{
-				Assert.Equal(0, deque.First);
-				Assert.Equal(i - 1, deque.Last);
-				Assert.Equal(i - 1, deque.Pop());
-			}
-			Assert.Equal(0, deque.Count);
-		}
+            for (var i = 100000; i > 0; i--)
+            {
+                Assert.Equal(0, deque.First);
+                Assert.Equal(i - 1, deque.Last);
+                Assert.Equal(i - 1, deque.Pop());
+            }
+            Assert.Equal(0, deque.Count);
+        }
 
-		[Fact]
-		public void TestDequePrependAndShift()
-		{
-			var deque = new Deque<int>();
-			for (var i = 0; i < 100000; i++)
-			{
-				deque.Prepend(i);
-			}
+        [Fact]
+        public void TestDequePrependAndShift()
+        {
+            var deque = new Deque<int>();
+            for (var i = 0; i < 100000; i++)
+            {
+                deque.Prepend(i);
+            }
 
-			for (var i = 0; i < 100000; i++)
-			{
-				Assert.Equal(100000 - i - 1, deque.First);
-				Assert.Equal(0, deque.Last);
-				Assert.Equal(100000 - i - 1, deque.Shift());
-			}
-			Assert.Equal(0, deque.Count);
-		}
+            for (var i = 0; i < 100000; i++)
+            {
+                Assert.Equal(100000 - i - 1, deque.First);
+                Assert.Equal(0, deque.Last);
+                Assert.Equal(100000 - i - 1, deque.Shift());
+            }
+            Assert.Equal(0, deque.Count);
+        }
 
-		[Fact]
-		public void TestDequePrependAndPop()
-		{
-			var deque = new Deque<int>();
-			for (var i = 0; i < 100000; i++)
-			{
-				deque.Prepend(i);
-			}
+        [Fact]
+        public void TestDequePrependAndPop()
+        {
+            var deque = new Deque<int>();
+            for (var i = 0; i < 100000; i++)
+            {
+                deque.Prepend(i);
+            }
 
-			for (var i = 0; i < 100000; i++)
-			{
-				Assert.Equal(99999, deque.First);
-				Assert.Equal(i, deque.Last);
-				Assert.Equal(i, deque.Pop());
-			}
-			Assert.Equal(0, deque.Count);
-		}
+            for (var i = 0; i < 100000; i++)
+            {
+                Assert.Equal(99999, deque.First);
+                Assert.Equal(i, deque.Last);
+                Assert.Equal(i, deque.Pop());
+            }
+            Assert.Equal(0, deque.Count);
+        }
 
-		[Fact]
-		public void TestDequeExceptions()
-		{
-			var deque = new Deque<int>();
+        [Fact]
+        public void TestDequeExceptions()
+        {
+            var deque = new Deque<int>();
 
-			Assert.Throws(typeof(InvalidOperationException), () => deque.Pop());
-			Assert.Throws(typeof(InvalidOperationException), () => deque.Shift());
-			Assert.Throws(typeof(InvalidOperationException), () => deque.First);
-			Assert.Throws(typeof(InvalidOperationException), () => deque.Last);
-		}
-		
-		[Fact]
-		public void TestDequeCopyTo()
-		{
-			var deque = new Deque<int>();
-			for (var i = 0; i < 1000; i++)
-			{
-				deque.Append(i);
-			}
-			var items = new int[1003];
-			deque.CopyTo(items, 3);
+            Assert.Throws(typeof(InvalidOperationException), () => deque.Pop());
+            Assert.Throws(typeof(InvalidOperationException), () => deque.Shift());
+            Assert.Throws(typeof(InvalidOperationException), () => deque.First);
+            Assert.Throws(typeof(InvalidOperationException), () => deque.Last);
+        }
+        
+        [Fact]
+        public void TestDequeCopyTo()
+        {
+            var deque = new Deque<int>();
+            for (var i = 0; i < 1000; i++)
+            {
+                deque.Append(i);
+            }
+            var items = new int[1003];
+            deque.CopyTo(items, 3);
 
-			for (var i = 3; i < 1003; i++)
-			{
-				Assert.Equal(items[i], i - 3);
-			}
-		}
+            for (var i = 3; i < 1003; i++)
+            {
+                Assert.Equal(items[i], i - 3);
+            }
+        }
 
-		[Fact]
-		public void TestDequeEnumerator()
-		{
-			var deque = new Deque<int>();
-			var cursor1 = 0;
-			foreach (var item in deque)
-			{
-				cursor1++;
-			}
-			Assert.Equal(0, cursor1);
+        [Fact]
+        public void TestDequeEnumerator()
+        {
+            var deque = new Deque<int>();
+            var cursor1 = 0;
+            foreach (var item in deque)
+            {
+                cursor1++;
+            }
+            Assert.Equal(0, cursor1);
 
-			for (var i = 0; i < 100000; i++)
-			{
-				deque.Append(i);
-			}
-			var cursor2 = 0;
-			foreach (var item in deque)
-			{
-				Assert.Equal(cursor2, item);
-				cursor2++;
+            for (var i = 0; i < 100000; i++)
+            {
+                deque.Append(i);
+            }
+            var cursor2 = 0;
+            foreach (var item in deque)
+            {
+                Assert.Equal(cursor2, item);
+                cursor2++;
 
-			}
-			for (var i = 1; i < 100001; i++)
-			{
-				deque.Prepend(-i);
-			}
-			var cursor3 = -100000;
-			foreach (var item in deque)
-			{
-				Assert.Equal(cursor3, item);
-				cursor3++;
-			}
-		}
+            }
+            for (var i = 1; i < 100001; i++)
+            {
+                deque.Prepend(-i);
+            }
+            var cursor3 = -100000;
+            foreach (var item in deque)
+            {
+                Assert.Equal(cursor3, item);
+                cursor3++;
+            }
+        }
 
-		[Fact]
-		public void TestStrictSetIntersect()
-		{
-			StrictSetIntersect<HashedSet<int>, HashedSet<int>>();
+        [Fact]
+        public void TestStrictSetIntersect()
+        {
+            StrictSetIntersect<HashedSet<int>, HashedSet<int>>();
             StrictSetIntersect<HashedSet<int>, TreeSet<int>>();
             StrictSetIntersect<TreeSet<int>, HashedSet<int>>();
             StrictSetIntersect<TreeSet<int>, TreeSet<int>>();
-		}
+        }
 
         [Fact]
         public void TestStrictSetUnion()
@@ -568,277 +568,277 @@ namespace Test.Commons.Collections
             StrictSetSubset<TreeSet<int>, TreeSet<int>>();
         }
 
-		[Fact]
-		public void TestStrictSetEqual()
-		{
-			StrictSetEqual<HashedSet<int>, HashedSet<int>>();
-			StrictSetEqual<HashedSet<int>, TreeSet<int>>();
-			StrictSetEqual<TreeSet<int>, HashedSet<int>>();
-			StrictSetEqual<TreeSet<int>, TreeSet<int>>();
-		}
+        [Fact]
+        public void TestStrictSetEqual()
+        {
+            StrictSetEqual<HashedSet<int>, HashedSet<int>>();
+            StrictSetEqual<HashedSet<int>, TreeSet<int>>();
+            StrictSetEqual<TreeSet<int>, HashedSet<int>>();
+            StrictSetEqual<TreeSet<int>, TreeSet<int>>();
+        }
 
-		[Fact]
-		public void TestStrictSetDisjoint()
-		{
-			StrictSetDisjoint<HashedSet<int>, HashedSet<int>>();
-			StrictSetDisjoint<HashedSet<int>, TreeSet<int>>();
-			StrictSetDisjoint<TreeSet<int>, HashedSet<int>>();
-			StrictSetDisjoint<TreeSet<int>, TreeSet<int>>();
-		}
+        [Fact]
+        public void TestStrictSetDisjoint()
+        {
+            StrictSetDisjoint<HashedSet<int>, HashedSet<int>>();
+            StrictSetDisjoint<HashedSet<int>, TreeSet<int>>();
+            StrictSetDisjoint<TreeSet<int>, HashedSet<int>>();
+            StrictSetDisjoint<TreeSet<int>, TreeSet<int>>();
+        }
 
-		[Fact]
-		public void TestStrictSetCompliment()
-		{
-			StrictSetCompliment<HashedSet<int>, HashedSet<int>>();
-			StrictSetCompliment<HashedSet<int>, TreeSet<int>>();
-			StrictSetCompliment<TreeSet<int>, HashedSet<int>>();
-			StrictSetCompliment<TreeSet<int>, TreeSet<int>>();
-		}
+        [Fact]
+        public void TestStrictSetCompliment()
+        {
+            StrictSetCompliment<HashedSet<int>, HashedSet<int>>();
+            StrictSetCompliment<HashedSet<int>, TreeSet<int>>();
+            StrictSetCompliment<TreeSet<int>, HashedSet<int>>();
+            StrictSetCompliment<TreeSet<int>, TreeSet<int>>();
+        }
 
-		[Fact]
-		public void TestHasedBagCollectionOperations()
-		{
-			var bag = new HashedBag<Order>(new OrderEqualityComparer());
-			bag.Fill(x => new Order { Id = x });
-			bag.CollectionOperations<Order>(bag.Count);
-		}
+        [Fact]
+        public void TestHasedBagCollectionOperations()
+        {
+            var bag = new HashedBag<Order>(new OrderEqualityComparer());
+            bag.Fill(x => new Order { Id = x });
+            bag.CollectionOperations<Order>(bag.Count);
+        }
 
-		[Fact]
-		public void TestTreeBagCollectionOperations()
-		{
-			var bag = new TreeBag<Order>(new OrderComparer());
-			bag.Fill(x => new Order { Id = x });
-			bag.CollectionOperations<Order>(bag.Count);
-		}
+        [Fact]
+        public void TestTreeBagCollectionOperations()
+        {
+            var bag = new TreeBag<Order>(new OrderComparer());
+            bag.Fill(x => new Order { Id = x });
+            bag.CollectionOperations<Order>(bag.Count);
+        }
 
-		[Fact]
-		public void TestCompositeCollectionOperations()
-		{
-			var collection = new CompositeCollection<Order>();
-			var list1 = new List<Order>();
-			list1.Fill(x => new Order { Id = x });
-			var list2 = new List<Order>();
-			list2.Fill(x => new Order { Id = x }, 100);
-			var list3 = new List<Order>();
-			list3.Fill(x => new Order { Id = x }, 5);
-			collection.AddAll(list1);
-			collection.AddAll(list2);
-			collection.AddAll(list3);
-			collection.CollectionOperations<Order>(1105);
-		}
+        [Fact]
+        public void TestCompositeCollectionOperations()
+        {
+            var collection = new CompositeCollection<Order>();
+            var list1 = new List<Order>();
+            list1.Fill(x => new Order { Id = x });
+            var list2 = new List<Order>();
+            list2.Fill(x => new Order { Id = x }, 100);
+            var list3 = new List<Order>();
+            list3.Fill(x => new Order { Id = x }, 5);
+            collection.AddAll(list1);
+            collection.AddAll(list2);
+            collection.AddAll(list3);
+            collection.CollectionOperations<Order>(1105);
+        }
 
-		[Fact]
-		public void TestHashedBimapCollectionOperations()
-		{
-			var bimap = Instantiate<HashedBimap<int, Order>>();
-			bimap.CollectionOperations<KeyValuePair<int, Order>>(1000);
-		}
+        [Fact]
+        public void TestHashedBimapCollectionOperations()
+        {
+            var bimap = Instantiate<HashedBimap<int, Order>>();
+            bimap.CollectionOperations<KeyValuePair<int, Order>>(1000);
+        }
 
-		[Fact]
-		public void TestTreeBimapCollectionOperations()
-		{
-			var bimap = new TreeBimap<int, Order>(new OrderComparer());
-			bimap.Fill(x => new KeyValuePair<int, Order>(x, new Order { Id = x }));
-			bimap.CollectionOperations<KeyValuePair<int, Order>>(1000);
-		}
+        [Fact]
+        public void TestTreeBimapCollectionOperations()
+        {
+            var bimap = new TreeBimap<int, Order>(new OrderComparer());
+            bimap.Fill(x => new KeyValuePair<int, Order>(x, new Order { Id = x }));
+            bimap.CollectionOperations<KeyValuePair<int, Order>>(1000);
+        }
 
-		[Fact]
-		public void TestHashedMapCollectionOperations()
-		{
-			var map = Instantiate<HashedMap<int, Order>>();
-			map.CollectionOperations<KeyValuePair<int, Order>>(1000);
-		}
+        [Fact]
+        public void TestHashedMapCollectionOperations()
+        {
+            var map = Instantiate<HashedMap<int, Order>>();
+            map.CollectionOperations<KeyValuePair<int, Order>>(1000);
+        }
 
-		[Fact]
-		public void TestTreeMapCollectionOperations()
-		{
-			var map = Instantiate<TreeMap<int, Order>>();
-			map.CollectionOperations<KeyValuePair<int, Order>>(1000);
-		}
+        [Fact]
+        public void TestTreeMapCollectionOperations()
+        {
+            var map = Instantiate<TreeMap<int, Order>>();
+            map.CollectionOperations<KeyValuePair<int, Order>>(1000);
+        }
 
-		[Fact]
-		public void  TestSkipListMapCollectionOperations()
-		{
-			var map = Instantiate<SkipListMap<int, Order>>();
-			map.CollectionOperations<KeyValuePair<int, Order>>(1000);
-		}
+        [Fact]
+        public void  TestSkipListMapCollectionOperations()
+        {
+            var map = Instantiate<SkipListMap<int, Order>>();
+            map.CollectionOperations<KeyValuePair<int, Order>>(1000);
+        }
 
-		[Fact]
-		public void TestCustomized32HashedMapCollectionOperations()
-		{
-			var map = Instantiate<Customized32HashedMap<int, Order>>();
-			map.CollectionOperations<KeyValuePair<int, Order>>(1000);
-		}
+        [Fact]
+        public void TestCustomized32HashedMapCollectionOperations()
+        {
+            var map = Instantiate<Customized32HashedMap<int, Order>>();
+            map.CollectionOperations<KeyValuePair<int, Order>>(1000);
+        }
 
-		[Fact]
-		public void TestLinkedHashedMapCollectionOperations()
-		{
-			var map = Instantiate<LinkedHashedMap<int, Order>>();
-			map.CollectionOperations<KeyValuePair<int, Order>>(1000);
-		}
+        [Fact]
+        public void TestLinkedHashedMapCollectionOperations()
+        {
+            var map = Instantiate<LinkedHashedMap<int, Order>>();
+            map.CollectionOperations<KeyValuePair<int, Order>>(1000);
+        }
 
-		[Fact]
-		public void TestLruMapCollectionOperations()
-		{
-			var lru = new LruMap<int, Order>(1000);
-			lru.Fill(x => new KeyValuePair<int, Order>(x, new Order { Id = x }));
-			lru.CollectionOperations<KeyValuePair<int, Order>>(1000);
-		}
+        [Fact]
+        public void TestLruMapCollectionOperations()
+        {
+            var lru = new LruMap<int, Order>(1000);
+            lru.Fill(x => new KeyValuePair<int, Order>(x, new Order { Id = x }));
+            lru.CollectionOperations<KeyValuePair<int, Order>>(1000);
+        }
 
-		[Fact]
-		public void TestMultiValueHashedMapCollectionOperations()
-		{
-			var mvMap = FillMultiValueMap<MultiValueHashedMap<int, Order>>();
-			mvMap.CollectionOperations<KeyValuePair<int, Order>>(5000);
-		}
+        [Fact]
+        public void TestMultiValueHashedMapCollectionOperations()
+        {
+            var mvMap = FillMultiValueMap<MultiValueHashedMap<int, Order>>();
+            mvMap.CollectionOperations<KeyValuePair<int, Order>>(5000);
+        }
 
-		[Fact]
-		public void TestMultiValueTreeMapCollectionOperations()
-		{
-			var mvMap = FillMultiValueMap<MultiValueTreeMap<int, Order>>();
-			mvMap.CollectionOperations<KeyValuePair<int, Order>>(5000);
-		}
+        [Fact]
+        public void TestMultiValueTreeMapCollectionOperations()
+        {
+            var mvMap = FillMultiValueMap<MultiValueTreeMap<int, Order>>();
+            mvMap.CollectionOperations<KeyValuePair<int, Order>>(5000);
+        }
 
-		[Fact]
-		public void TestReferenceMapCollectionOperations()
-		{
-			var map = new ReferenceMap<Order, Bill>();
-			map.Fill(x => new KeyValuePair<Order, Bill>(new Order { Id = x }, new Bill { Id = x }));
-			map.CollectionOperations<KeyValuePair<Order, Bill>>(1000);
-		}
+        [Fact]
+        public void TestReferenceMapCollectionOperations()
+        {
+            var map = new ReferenceMap<Order, Bill>();
+            map.Fill(x => new KeyValuePair<Order, Bill>(new Order { Id = x }, new Bill { Id = x }));
+            map.CollectionOperations<KeyValuePair<Order, Bill>>(1000);
+        }
 
-		[Fact]
-		public void TestBoundedQueueCollectionOperations()
-		{
-			var queue = new BoundedQueue<int>(2000);
-			for (var i = 0; i < 1000; i++)
-			{
-				queue.Enqueue(i + 1);
-			}
-			queue.CollectionOperations<int>(1000);
-		}
+        [Fact]
+        public void TestBoundedQueueCollectionOperations()
+        {
+            var queue = new BoundedQueue<int>(2000);
+            for (var i = 0; i < 1000; i++)
+            {
+                queue.Enqueue(i + 1);
+            }
+            queue.CollectionOperations<int>(1000);
+        }
 
-		[Fact]
-		public void TestDequeCollectionOperations()
-		{
-			var deque = new Deque<int>(2000);
-			for (var i= 0; i < 1000; i++)
-			{
-				deque.Append(i + 1);
-			}
-			deque.CollectionOperations<int>(1000);
-		}
+        [Fact]
+        public void TestDequeCollectionOperations()
+        {
+            var deque = new Deque<int>(2000);
+            for (var i= 0; i < 1000; i++)
+            {
+                deque.Append(i + 1);
+            }
+            deque.CollectionOperations<int>(1000);
+        }
 
-		[Fact]
-		public void TestMaxPriorityQueueCollectionOperations()
-		{
-			var pq = new MaxPriorityQueue<int>();
-			for (var i = 0; i < 1500; i++)
-			{
-				pq.Push(i + 1);
-			}
-			for (var i = 0; i < 500; i++)
-			{
-				pq.Pop();
-			}
-			pq.CollectionOperations<int>(1000);
-		}
+        [Fact]
+        public void TestMaxPriorityQueueCollectionOperations()
+        {
+            var pq = new MaxPriorityQueue<int>();
+            for (var i = 0; i < 1500; i++)
+            {
+                pq.Push(i + 1);
+            }
+            for (var i = 0; i < 500; i++)
+            {
+                pq.Pop();
+            }
+            pq.CollectionOperations<int>(1000);
+        }
 
-		[Fact]
-		public void TestMinPriorityQueueCollectionOperations()
-		{
-			var pq = new MinPriorityQueue<int>();
-			for (var i = 0; i < 1500; i++)
-			{
-				pq.Push(i + 1);
-			}
+        [Fact]
+        public void TestMinPriorityQueueCollectionOperations()
+        {
+            var pq = new MinPriorityQueue<int>();
+            for (var i = 0; i < 1500; i++)
+            {
+                pq.Push(i + 1);
+            }
 
-			for (var i = 0; i < 500; i++)
-			{
-				pq.Pop();
-			}
-			pq.CollectionOperations<int>(1000);
-		}
+            for (var i = 0; i < 500; i++)
+            {
+                pq.Pop();
+            }
+            pq.CollectionOperations<int>(1000);
+        }
 
-		[Fact]
-		public void TestHashedSetCollectionOperations()
-		{
-			var set = new HashedSet<int>();
-			set.Fill(x => x + 1);
-			set.CollectionOperations<int>(1000);
-		}
+        [Fact]
+        public void TestHashedSetCollectionOperations()
+        {
+            var set = new HashedSet<int>();
+            set.Fill(x => x + 1);
+            set.CollectionOperations<int>(1000);
+        }
 
-		[Fact]
-		public void TestTreeSetCollectionOperations()
-		{
-			var set = new TreeSet<int>();
-			set.Fill(x => x + 1);
-			set.CollectionOperations<int>(1000);
-		}
+        [Fact]
+        public void TestTreeSetCollectionOperations()
+        {
+            var set = new TreeSet<int>();
+            set.Fill(x => x + 1);
+            set.CollectionOperations<int>(1000);
+        }
 
-		[Fact]
-		public void TestSkipListSetCollectionOperations()
-		{
-			var set = new SkipListSet<int>();
-			set.Fill(x => x + 1);
-			set.CollectionOperations<int>(1000);
-		}
+        [Fact]
+        public void TestSkipListSetCollectionOperations()
+        {
+            var set = new SkipListSet<int>();
+            set.Fill(x => x + 1);
+            set.CollectionOperations<int>(1000);
+        }
 
-		[Fact]
-		public void TestHashedBimapDictionaryOperations()
-		{
-			var bimap = new HashedBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer());
-			bimap.DictionaryOperations(x => new Order {Id = x}, y => new Bill {Id = y }, new BillEqualityComparer().Equals);
-		}
+        [Fact]
+        public void TestHashedBimapDictionaryOperations()
+        {
+            var bimap = new HashedBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer());
+            bimap.DictionaryOperations(x => new Order {Id = x}, y => new Bill {Id = y }, new BillEqualityComparer().Equals);
+        }
 
-		[Fact]
-		public void TestTreeBimapDictionaryOperations()
-		{
-			var bimap = new TreeBimap<Order, Bill>(new OrderComparer(), new BillComparer());
-			bimap.DictionaryOperations<Order, Bill>(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
-		}
+        [Fact]
+        public void TestTreeBimapDictionaryOperations()
+        {
+            var bimap = new TreeBimap<Order, Bill>(new OrderComparer(), new BillComparer());
+            bimap.DictionaryOperations<Order, Bill>(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+        }
 
-		[Fact]
-		public void TestHashedMapDictionaryOperations()
-		{
-			var map = new HashedMap<Order, Bill>(new OrderEqualityComparer());
-			map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
-		}
+        [Fact]
+        public void TestHashedMapDictionaryOperations()
+        {
+            var map = new HashedMap<Order, Bill>(new OrderEqualityComparer());
+            map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+        }
 
-		[Fact]
-		public void TestLinkedHashedMapDictionaryOperations()
-		{
-			var map = new LinkedHashedMap<Order, Bill>(new OrderEqualityComparer());
-			map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
-		}
+        [Fact]
+        public void TestLinkedHashedMapDictionaryOperations()
+        {
+            var map = new LinkedHashedMap<Order, Bill>(new OrderEqualityComparer());
+            map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+        }
 
-		[Fact]
-		public void TestTreeMapDictionaryOperations()
-		{
-			var map = new TreeMap<Order, Bill>(new OrderComparer());
-			map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
-		}
+        [Fact]
+        public void TestTreeMapDictionaryOperations()
+        {
+            var map = new TreeMap<Order, Bill>(new OrderComparer());
+            map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+        }
 
-		[Fact]
-		public void TestSkipListMapDictionaryOperations()
-		{
-			var map = new SkipListMap<Order, Bill>(new OrderComparer());
-			map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
-		}
+        [Fact]
+        public void TestSkipListMapDictionaryOperations()
+        {
+            var map = new SkipListMap<Order, Bill>(new OrderComparer());
+            map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+        }
 
-		[Fact]
-		public void TestLruMapDictionaryOperations()
-		{
-			var map = new LruMap<Order, Bill>(2000 ,new OrderEqualityComparer());
-			map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
-		}
+        [Fact]
+        public void TestLruMapDictionaryOperations()
+        {
+            var map = new LruMap<Order, Bill>(2000 ,new OrderEqualityComparer());
+            map.DictionaryOperations(x => new Order { Id = x }, y => new Bill { Id = y }, new BillEqualityComparer().Equals);
+        }
 
-		[Fact]
-		public void TestReferenceMapDictionaryOperations()
-		{
-			var map = new ReferenceMap<Order, Bill>();
-			ReferenceMapDictionaryOperations(map);
-		}
+        [Fact]
+        public void TestReferenceMapDictionaryOperations()
+        {
+            var map = new ReferenceMap<Order, Bill>();
+            ReferenceMapDictionaryOperations(map);
+        }
 
         [Fact]
         public void TestDefaultComparer()
@@ -854,139 +854,139 @@ namespace Test.Commons.Collections
             map.DictionaryOperations(x => new Employee { Id = x, Mark = x * 5 }, y => y, EqualityComparer<int>.Default.Equals);
         }
 
-		private void ReferenceMapDictionaryOperations(IDictionary source)
-		{
-			var list = new List<Order>();
-			for (var i = 0; i < 1000; i++)
-			{
-				var order = new Order { Id = i };
-				var bill = new Bill { Id = i };
-				source.Add(order, bill);
-				list.Add(order);
-			}
+        private void ReferenceMapDictionaryOperations(IDictionary source)
+        {
+            var list = new List<Order>();
+            for (var i = 0; i < 1000; i++)
+            {
+                var order = new Order { Id = i };
+                var bill = new Bill { Id = i };
+                source.Add(order, bill);
+                list.Add(order);
+            }
 
-			Assert.Equal(1000, source.Count);
+            Assert.Equal(1000, source.Count);
 
-			Assert.False(source.Contains(new Order {Id = 1}));
-			Assert.False(source.Contains(new Order { Id = 2 }));
+            Assert.False(source.Contains(new Order {Id = 1}));
+            Assert.False(source.Contains(new Order { Id = 2 }));
 
-			for (var i = 0; i < 200; i++)
-			{
-				Assert.True(source.Contains(list[i]));
-				source.Remove(list[i]);
-			}
-			Assert.Equal(800, source.Count);
-			for (var i = 0; i < 200; i++)
-			{
-				Assert.False(source.Contains(list[i]));
-			}
+            for (var i = 0; i < 200; i++)
+            {
+                Assert.True(source.Contains(list[i]));
+                source.Remove(list[i]);
+            }
+            Assert.Equal(800, source.Count);
+            for (var i = 0; i < 200; i++)
+            {
+                Assert.False(source.Contains(list[i]));
+            }
 
-			for (var i = 500; i < 700; i++)
-			{
-				var v = (Bill)source[list[i]];
-				Assert.Equal(i, v.Id);
-			}
+            for (var i = 500; i < 700; i++)
+            {
+                var v = (Bill)source[list[i]];
+                Assert.Equal(i, v.Id);
+            }
 
-			var keys = source.Keys;
-			Assert.Equal(800, keys.Count);
-			var values = source.Values;
-			Assert.Equal(800, values.Count);
-			var currentCount = 0;
-			foreach (var item in source)
-			{
-				currentCount++;
-			}
-			Assert.Equal(800, currentCount);
-			Assert.Equal(currentCount, source.Count);
+            var keys = source.Keys;
+            Assert.Equal(800, keys.Count);
+            var values = source.Values;
+            Assert.Equal(800, values.Count);
+            var currentCount = 0;
+            foreach (var item in source)
+            {
+                currentCount++;
+            }
+            Assert.Equal(800, currentCount);
+            Assert.Equal(currentCount, source.Count);
 
-			source.Clear();
-			Assert.Equal(0, source.Count);
-		
-		}
+            source.Clear();
+            Assert.Equal(0, source.Count);
+        
+        }
 
-		private T FillMultiValueMap<T>() where T : IMultiValueMap<int, Order>, new()
-		{
-			var mvMap = new T();
-			for (var i = 0; i < 1000; i++)
-			{
-				for (var j = 0; j < 5; j++)
-				{ 
-					mvMap.Add(i, new Order { Id = j });
-				}
-			}
+        private T FillMultiValueMap<T>() where T : IMultiValueMap<int, Order>, new()
+        {
+            var mvMap = new T();
+            for (var i = 0; i < 1000; i++)
+            {
+                for (var j = 0; j < 5; j++)
+                { 
+                    mvMap.Add(i, new Order { Id = j });
+                }
+            }
 
-			return mvMap;
-		}
+            return mvMap;
+        }
 
-		private T Instantiate<T>() where T : IDictionary<int, Order>, new()
-		{
-			var bimap = new T();
-			bimap.Fill(x => new KeyValuePair<int, Order>(x, new Order { Id = x }));
-			return bimap;
-		}
+        private T Instantiate<T>() where T : IDictionary<int, Order>, new()
+        {
+            var bimap = new T();
+            bimap.Fill(x => new KeyValuePair<int, Order>(x, new Order { Id = x }));
+            return bimap;
+        }
 
-		private void StrictSetCompliment<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
-		{
-			var s1 = new S1();
-			var s2 = new S2();
-			Fill(s1, 0, 1000);
-			Fill(s2, 0, 2000);
-			var result = s1.Compliment(s2);
-			for (var i = 0; i < 1000; i++)
-			{
-				Assert.False(s1.Contains(i));
-				Assert.False(result.Contains(i));
-			}
-			for (var i = 1000; i < 2000; i++)
-			{
-				Assert.True(s1.Contains(i));
-				Assert.True(result.Contains(i));
-			}
+        private void StrictSetCompliment<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
+        {
+            var s1 = new S1();
+            var s2 = new S2();
+            Fill(s1, 0, 1000);
+            Fill(s2, 0, 2000);
+            var result = s1.Compliment(s2);
+            for (var i = 0; i < 1000; i++)
+            {
+                Assert.False(s1.Contains(i));
+                Assert.False(result.Contains(i));
+            }
+            for (var i = 1000; i < 2000; i++)
+            {
+                Assert.True(s1.Contains(i));
+                Assert.True(result.Contains(i));
+            }
 
-			var s3 = new S1();
-			var s4 = new S2();
-			Fill(s4, 0, 1000);
-			var result2 = s3.Compliment(s4);
-			Assert.True(s3.IsEqualWith(s4));
-			Assert.True(result2.IsEqualWith(s4));
-			for (var i = 0; i < 1000; i++)
-			{
-				Assert.True(s3.Contains(i));
-				Assert.True(result2.Contains(i));
-			}
+            var s3 = new S1();
+            var s4 = new S2();
+            Fill(s4, 0, 1000);
+            var result2 = s3.Compliment(s4);
+            Assert.True(s3.IsEqualWith(s4));
+            Assert.True(result2.IsEqualWith(s4));
+            for (var i = 0; i < 1000; i++)
+            {
+                Assert.True(s3.Contains(i));
+                Assert.True(result2.Contains(i));
+            }
 
-			var s5 = new S1();
-			var s6 = new S2();
-			Fill(s5, 0, 1000);
-			Fill(s6, 500, 1000);
-			Assert.Throws(typeof(InvalidOperationException), () => s5.Compliment(s6));
+            var s5 = new S1();
+            var s6 = new S2();
+            Fill(s5, 0, 1000);
+            Fill(s6, 500, 1000);
+            Assert.Throws(typeof(InvalidOperationException), () => s5.Compliment(s6));
 
-			var s7 = new S1();
-			var s8 = new S2();
-			var result3 = s7.Compliment(s8);
-			Assert.True(s7.IsEqualWith(new S1()));
-			Assert.True(s7.IsEqualWith(new S2()));
-			Assert.True(result3.IsEqualWith(new S1()));
-			Assert.True(result3.IsEqualWith(new S2()));
-		}
+            var s7 = new S1();
+            var s8 = new S2();
+            var result3 = s7.Compliment(s8);
+            Assert.True(s7.IsEqualWith(new S1()));
+            Assert.True(s7.IsEqualWith(new S2()));
+            Assert.True(result3.IsEqualWith(new S1()));
+            Assert.True(result3.IsEqualWith(new S2()));
+        }
 
-		private void StrictSetDisjoint<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
-		{
-			var s1 = new S1();
-			var s2 = new S2();
-			Fill(s1, 0, 1000);
-			Fill(s2, 1000, 2000);
-			Assert.True(s1.IsDisjointWith(s2));
+        private void StrictSetDisjoint<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
+        {
+            var s1 = new S1();
+            var s2 = new S2();
+            Fill(s1, 0, 1000);
+            Fill(s2, 1000, 2000);
+            Assert.True(s1.IsDisjointWith(s2));
 
-			var s3 = new S1();
-			var s4 = new S2();
-			Fill(s3, 0, 2000);
-			Fill(s4, 1000, 2000);
-			Assert.False(s3.IsDisjointWith(s4));
+            var s3 = new S1();
+            var s4 = new S2();
+            Fill(s3, 0, 2000);
+            Fill(s4, 1000, 2000);
+            Assert.False(s3.IsDisjointWith(s4));
 
-			var s5 = new S1();
-			var s6 = new S2();
-			Assert.True(s5.IsDisjointWith(s6));
+            var s5 = new S1();
+            var s6 = new S2();
+            Assert.True(s5.IsDisjointWith(s6));
 
             var s7 = new S1();
             var s8 = new S2();
@@ -994,39 +994,39 @@ namespace Test.Commons.Collections
             Assert.True(s7.IsDisjointWith(s8));
             Assert.True(s8.IsDisjointWith(s7));
 
-		}
-		
-		private void StrictSetEqual<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
-		{
-			var s1 = new S1();
-			var s2 = new S2();
-			Fill(s1, 0, 10000);
-			Fill(s2, 0, 5000);
-			Assert.False(s1.IsEqualWith(s2));
+        }
+        
+        private void StrictSetEqual<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
+        {
+            var s1 = new S1();
+            var s2 = new S2();
+            Fill(s1, 0, 10000);
+            Fill(s2, 0, 5000);
+            Assert.False(s1.IsEqualWith(s2));
 
-			var s3 = new S1();
-			var s4 = new S2();
+            var s3 = new S1();
+            var s4 = new S2();
 
-			Fill(s3, 0, 1000);
-			Fill(s4, 0, 1000);
-			Assert.True(s3.IsEqualWith(s4));
+            Fill(s3, 0, 1000);
+            Fill(s4, 0, 1000);
+            Assert.True(s3.IsEqualWith(s4));
 
-			var s5 = new S1();
-			var s6 = new S2();
-			Fill(s5, 0, 1000);
-			Fill(s6, 1000, 1000);
-			Assert.False(s5.IsEqualWith(s6));
+            var s5 = new S1();
+            var s6 = new S2();
+            Fill(s5, 0, 1000);
+            Fill(s6, 1000, 1000);
+            Assert.False(s5.IsEqualWith(s6));
 
-			var s7 = new S1();
-			var s8 = new S2();
-			Fill(s7, 0, 1000);
-			Fill(s8, 0, 1999);
-			Assert.False(s7.IsEqualWith(s8));
+            var s7 = new S1();
+            var s8 = new S2();
+            Fill(s7, 0, 1000);
+            Fill(s8, 0, 1999);
+            Assert.False(s7.IsEqualWith(s8));
 
-			var s9 = new S1();
-			var s10 = new S2();
-			Assert.True(s9.IsEqualWith(s10));
-		}
+            var s9 = new S1();
+            var s10 = new S2();
+            Assert.True(s9.IsEqualWith(s10));
+        }
 
         private void StrictSetSubset<S1, S2>()
             where S1 : IStrictSet<int>, new()
@@ -1078,12 +1078,12 @@ namespace Test.Commons.Collections
             Assert.True(s7.IsSubsetOf(s7));
             Assert.False(s7.IsProperSubsetOf(s7));
 
-			var s10 = new S1();
-			var s11 = new S2();
-			Assert.True(s10.IsSubsetOf(s11));
-			Assert.True(s11.IsSubsetOf(s10));
-			Assert.False(s10.IsProperSubsetOf(s11));
-			Assert.False(s11.IsProperSubsetOf(s10));
+            var s10 = new S1();
+            var s11 = new S2();
+            Assert.True(s10.IsSubsetOf(s11));
+            Assert.True(s11.IsSubsetOf(s10));
+            Assert.False(s10.IsProperSubsetOf(s11));
+            Assert.False(s11.IsProperSubsetOf(s10));
         }
 
         private void StrictSetDiffer<S1, S2>()
@@ -1133,45 +1133,45 @@ namespace Test.Commons.Collections
             }
         }
 
-		private void StrictSetIntersect<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
-		{
-			var origin = new S1();
-			var other = new S2();
+        private void StrictSetIntersect<S1, S2>() where S1 : IStrictSet<int>, new() where S2 : IStrictSet<int>, new()
+        {
+            var origin = new S1();
+            var other = new S2();
             Fill(origin, 0, 5000);
             Fill(other, 4000, 5000);
-			var result = origin.Intersect(other);
-			Assert.Equal(1000, origin.Count);
-			Assert.Equal(1000, result.Count);
-			for(var i = 0; i < 4000; i++)
-			{
-				Assert.False(origin.Contains(i));
-				Assert.False(result.Contains(i));
-			}
+            var result = origin.Intersect(other);
+            Assert.Equal(1000, origin.Count);
+            Assert.Equal(1000, result.Count);
+            for(var i = 0; i < 4000; i++)
+            {
+                Assert.False(origin.Contains(i));
+                Assert.False(result.Contains(i));
+            }
 
-			for (var i = 4000; i < 5000; i++)
-			{
-				Assert.True(origin.Contains(i));
-				Assert.True(result.Contains(i));
-			}
+            for (var i = 4000; i < 5000; i++)
+            {
+                Assert.True(origin.Contains(i));
+                Assert.True(result.Contains(i));
+            }
 
-			for (var i = 5000; i < 9000; i++)
-			{
-				Assert.False(origin.Contains(i));
-				Assert.False(result.Contains(i));
-			}
+            for (var i = 5000; i < 9000; i++)
+            {
+                Assert.False(origin.Contains(i));
+                Assert.False(result.Contains(i));
+            }
 
-			var third = new S1();
-			foreach (var i in Enumerable.Range(5000, 1000))
-			{
-				third.Add(i);
-			}
+            var third = new S1();
+            foreach (var i in Enumerable.Range(5000, 1000))
+            {
+                third.Add(i);
+            }
 
-			origin.Intersect(third);
+            origin.Intersect(third);
 
-			Assert.Equal(0, origin.Count);
-		}
+            Assert.Equal(0, origin.Count);
+        }
 
-		private void TestDeque(Deque<string> deque)
+        private void TestDeque(Deque<string> deque)
         {
             for (var i = 0; i < 1000; i++)
             {

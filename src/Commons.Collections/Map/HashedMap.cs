@@ -34,9 +34,9 @@ namespace Commons.Collections.Map
         {
         }
 
-		public HashedMap(Equator<K> equator) : this(DefaultCapacity, equator)
-		{
-		}
+        public HashedMap(Equator<K> equator) : this(DefaultCapacity, equator)
+        {
+        }
 
         public HashedMap(int capacity) : this(capacity, EqualityComparer<K>.Default)
         {
@@ -51,13 +51,13 @@ namespace Commons.Collections.Map
         {
         }
 
-		public HashedMap(IDictionary<K, V> items, IEqualityComparer<K> comparer) : this(items, comparer.Equals)
-		{
-		}
+        public HashedMap(IDictionary<K, V> items, IEqualityComparer<K> comparer) : this(items, comparer.Equals)
+        {
+        }
 
-		public HashedMap(IDictionary<K, V> items) : this(items, EqualityComparer<K>.Default.Equals)
-		{
-		}
+        public HashedMap(IDictionary<K, V> items) : this(items, EqualityComparer<K>.Default.Equals)
+        {
+        }
 
         public HashedMap(IDictionary<K, V> items, Equator<K> equator)
             : base(items == null ? DefaultCapacity : items.Count, equator)

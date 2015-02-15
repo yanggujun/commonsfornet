@@ -35,35 +35,35 @@ namespace Commons.Collections.Map
         {
         }
 
-		public LinkedHashedMap(IEqualityComparer<K> comparer) 
-			: this(DefaultCapacity, comparer)
-		{
-		}
+        public LinkedHashedMap(IEqualityComparer<K> comparer) 
+            : this(DefaultCapacity, comparer)
+        {
+        }
 
-		public LinkedHashedMap(Equator<K> equator) 
-			: this(DefaultCapacity, equator)
-		{
-		}
+        public LinkedHashedMap(Equator<K> equator) 
+            : this(DefaultCapacity, equator)
+        {
+        }
 
         public LinkedHashedMap(int capacity, Equator<K> equator)
             : base(capacity, equator)
         {
         }
 
-		public LinkedHashedMap(int capacity, IEqualityComparer<K> comparer) 
-			: this(capacity, comparer.Equals)
-		{
-		}
+        public LinkedHashedMap(int capacity, IEqualityComparer<K> comparer) 
+            : this(capacity, comparer.Equals)
+        {
+        }
 
-		/// <summary>
-		/// Currently disable the constructor with a predefined dictionary, as the order is not defined in the dictionary.
-		/// This may cause some confusion.
-		/// </summary>
-		/// <param name="items"></param>
-		/// <param name="comparer"></param>
-		private LinkedHashedMap(IDictionary<K, V> items, IEqualityComparer<K> comparer) : this(items, comparer.Equals)
-		{
-		}
+        /// <summary>
+        /// Currently disable the constructor with a predefined dictionary, as the order is not defined in the dictionary.
+        /// This may cause some confusion.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="comparer"></param>
+        private LinkedHashedMap(IDictionary<K, V> items, IEqualityComparer<K> comparer) : this(items, comparer.Equals)
+        {
+        }
 
         private LinkedHashedMap(IDictionary<K, V> items, Equator<K> equator)
             : this(items == null ? DefaultCapacity : items.Count, equator)
@@ -100,15 +100,15 @@ namespace Commons.Collections.Map
             Guarder.CheckNull(key);
             CheckEmpty("get After item");
 
-			var entry = GetEntry(key) as LinkedHashEntry;
-			if (entry == null)
-			{
-				throw new ArgumentException("The key does not exist.");
-			}
-			if (IsEqual(entry.Key, Header.Before.Key))
-			{
-				throw new ArgumentException("There is no more items after the searched key.");
-			}
+            var entry = GetEntry(key) as LinkedHashEntry;
+            if (entry == null)
+            {
+                throw new ArgumentException("The key does not exist.");
+            }
+            if (IsEqual(entry.Key, Header.Before.Key))
+            {
+                throw new ArgumentException("There is no more items after the searched key.");
+            }
 
             return new KeyValuePair<K, V>(entry.After.Key, entry.After.Value);
         }
@@ -117,15 +117,15 @@ namespace Commons.Collections.Map
         {
             Guarder.CheckNull(key);
             CheckEmpty("get Before item");
-			var entry = GetEntry(key) as LinkedHashEntry;
-			if (entry == null)
-			{
-				throw new ArgumentException("The key does not exist.");
-			}
-			if (IsEqual(entry.Key, Header.Key))
-			{
-				throw new ArgumentException("There is no item before the searched key.");
-			}
+            var entry = GetEntry(key) as LinkedHashEntry;
+            if (entry == null)
+            {
+                throw new ArgumentException("The key does not exist.");
+            }
+            if (IsEqual(entry.Key, Header.Key))
+            {
+                throw new ArgumentException("There is no item before the searched key.");
+            }
 
             return new KeyValuePair<K, V>(entry.Before.Key, entry.Before.Value);
         }
@@ -161,30 +161,30 @@ namespace Commons.Collections.Map
             return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
         }
 
-		protected override void Rehash()
-		{
-			if (Header != null)
-			{
-				var newEntries = new HashEntry[Capacity];
-				Count = 0;
-				var cursor = Header;
-				var oldHeader = Header;
-				Header = null;
-				Put(newEntries, CreateEntry(cursor.Key, cursor.Value));
-				cursor = cursor.After;
-				while (!ReferenceEquals(cursor, oldHeader))
-				{
-					Put(newEntries, CreateEntry(cursor.Key, cursor.Value));
-					cursor = cursor.After;
-				}
-				Entries = newEntries;
-			}
-		}
+        protected override void Rehash()
+        {
+            if (Header != null)
+            {
+                var newEntries = new HashEntry[Capacity];
+                Count = 0;
+                var cursor = Header;
+                var oldHeader = Header;
+                Header = null;
+                Put(newEntries, CreateEntry(cursor.Key, cursor.Value));
+                cursor = cursor.After;
+                while (!ReferenceEquals(cursor, oldHeader))
+                {
+                    Put(newEntries, CreateEntry(cursor.Key, cursor.Value));
+                    cursor = cursor.After;
+                }
+                Entries = newEntries;
+            }
+        }
 
         private void CheckEmpty(string message)
         {
-			Header.Validate(x => x != null, 
-				new InvalidOperationException(string.Format("Invalid to {0}, the map is empty", message)));
+            Header.Validate(x => x != null, 
+                new InvalidOperationException(string.Format("Invalid to {0}, the map is empty", message)));
         }
     }
 }

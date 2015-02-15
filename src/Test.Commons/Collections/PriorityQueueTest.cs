@@ -40,30 +40,30 @@ namespace Test.Commons.Collections
             MinPriorityQueueConstructorWithOrder(pq3);
             Assert.False(pq3.IsEmpty);
 
-			var rand = new Random((int)DateTime.Now.Ticks & 0x0000ffff);
-			var set = new TreeSet<int>();
-			var orderSet = new TreeSet<Order>(new OrderComparer());
-			var count = 0;
-			while (count < 5000)
-			{
-				var next = rand.Next();
-				var order = new Order {Id = next };
-				if (!orderSet.Contains(order)) 
-				{
-					set.Add(next);
-					orderSet.Add(order);
-					count++;
-				}
-			}
+            var rand = new Random((int)DateTime.Now.Ticks & 0x0000ffff);
+            var set = new TreeSet<int>();
+            var orderSet = new TreeSet<Order>(new OrderComparer());
+            var count = 0;
+            while (count < 5000)
+            {
+                var next = rand.Next();
+                var order = new Order {Id = next };
+                if (!orderSet.Contains(order)) 
+                {
+                    set.Add(next);
+                    orderSet.Add(order);
+                    count++;
+                }
+            }
 
-			var pq4 = new MinPriorityQueue<Order>(orderSet, new OrderComparer().Compare);
-			Assert.Equal(5000, pq4.Count);
-			Push(pq4, set, rand, 1000);
-			Assert.Equal(6000, pq4.Count);
-			Pop(pq4, set, 2000);
-			Assert.Equal(4000, pq4.Count);
-			Push(pq4, set, rand, 10000);
-			Assert.Equal(14000, pq4.Count);
+            var pq4 = new MinPriorityQueue<Order>(orderSet, new OrderComparer().Compare);
+            Assert.Equal(5000, pq4.Count);
+            Push(pq4, set, rand, 1000);
+            Assert.Equal(6000, pq4.Count);
+            Pop(pq4, set, 2000);
+            Assert.Equal(4000, pq4.Count);
+            Push(pq4, set, rand, 10000);
+            Assert.Equal(14000, pq4.Count);
         }
 
         [Fact]
@@ -82,93 +82,93 @@ namespace Test.Commons.Collections
             MaxPriorityQueueConstructorWithOrder(pq3);
             Assert.False(pq3.IsEmpty);
 
-			var rand = new Random((int)DateTime.Now.Ticks & 0x0000ffff);
-			var set = new TreeSet<int>();
-			var orderSet = new TreeSet<Order>(new OrderComparer());
-			var count = 0;
-			while (count < 5000)
-			{
-				var next = rand.Next();
-				var order = new Order {Id = next };
-				if (!orderSet.Contains(order)) 
-				{
-					set.Add(next);
-					orderSet.Add(order);
-					count++;
-				}
-			}
+            var rand = new Random((int)DateTime.Now.Ticks & 0x0000ffff);
+            var set = new TreeSet<int>();
+            var orderSet = new TreeSet<Order>(new OrderComparer());
+            var count = 0;
+            while (count < 5000)
+            {
+                var next = rand.Next();
+                var order = new Order {Id = next };
+                if (!orderSet.Contains(order)) 
+                {
+                    set.Add(next);
+                    orderSet.Add(order);
+                    count++;
+                }
+            }
 
-			var pq4 = new MaxPriorityQueue<Order>(orderSet, new OrderComparer().Compare);
-			Assert.Equal(5000, pq4.Count);
-			Push(pq4, set, rand, 1000);
-			Assert.Equal(6000, pq4.Count);
-			Pop(pq4, set, 2000);
-			Assert.Equal(4000, pq4.Count);
-			Push(pq4, set, rand, 10000);
-			Assert.Equal(14000, pq4.Count);
+            var pq4 = new MaxPriorityQueue<Order>(orderSet, new OrderComparer().Compare);
+            Assert.Equal(5000, pq4.Count);
+            Push(pq4, set, rand, 1000);
+            Assert.Equal(6000, pq4.Count);
+            Pop(pq4, set, 2000);
+            Assert.Equal(4000, pq4.Count);
+            Push(pq4, set, rand, 10000);
+            Assert.Equal(14000, pq4.Count);
         }
 
-		[Fact]
-		public void TestPriorityQueueEnumerator()
-		{
-			var pq = new MinPriorityQueue<int>();
-			Enumerate(pq);
+        [Fact]
+        public void TestPriorityQueueEnumerator()
+        {
+            var pq = new MinPriorityQueue<int>();
+            Enumerate(pq);
 
-			var pq2 = new MaxPriorityQueue<int>();
-			Enumerate(pq2);
-		}
+            var pq2 = new MaxPriorityQueue<int>();
+            Enumerate(pq2);
+        }
 
-		private void Enumerate(IPriorityQueue<int> pq)
-		{
-			var set = new TreeSet<int>();
-			Fill(pq, set, 5000);
-			var count = 0;
-			foreach (var item in pq)
-			{
-				count++;
-				Assert.True(set.Contains(item));
-			}
-			Assert.Equal(5000, count);
+        private void Enumerate(IPriorityQueue<int> pq)
+        {
+            var set = new TreeSet<int>();
+            Fill(pq, set, 5000);
+            var count = 0;
+            foreach (var item in pq)
+            {
+                count++;
+                Assert.True(set.Contains(item));
+            }
+            Assert.Equal(5000, count);
 
-			for (var i = 0; i < 2500; i++)
-			{
-				Assert.True(set.Contains(pq.Pop()));
-			}
-			Assert.Equal(2500, pq.Count);
+            for (var i = 0; i < 2500; i++)
+            {
+                Assert.True(set.Contains(pq.Pop()));
+            }
+            Assert.Equal(2500, pq.Count);
 
-			count = 0;
-			foreach (var item in pq)
-			{
-				count++;
-				Assert.True(set.Contains(item));
-			}
-			Assert.Equal(2500, count);
+            count = 0;
+            foreach (var item in pq)
+            {
+                count++;
+                Assert.True(set.Contains(item));
+            }
+            Assert.Equal(2500, count);
 
-			Fill(pq, set, 1000);
-			count = 0;
-			foreach(var item in pq)
-			{
-				count++;
-				Assert.True(set.Contains(item));
-			}
-			Assert.Equal(3500, count);
-		}
+            Fill(pq, set, 1000);
+            count = 0;
+            foreach(var item in pq)
+            {
+                count++;
+                Assert.True(set.Contains(item));
+            }
+            Assert.Equal(3500, count);
+        }
 
-		private void Fill(IPriorityQueue<int> pq, TreeSet<int> set, int count)
-		{
-			var rand = new Random((int)DateTime.Now.Ticks & 0x0000ffff);
-			var index = 0;
-			while (index < count)
-			{
-				var next = rand.Next();
-				if (!set.Contains(next))
-				{
-					set.Add(next);
-					pq.Push(next);
-					index++;
-				}
-			}
-		}
+        private void Fill(IPriorityQueue<int> pq, TreeSet<int> set, int count)
+        {
+            var rand = new Random((int)DateTime.Now.Ticks & 0x0000ffff);
+            var index = 0;
+            while (index < count)
+            {
+                var next = rand.Next();
+                if (!set.Contains(next))
+                {
+                    set.Add(next);
+                    pq.Push(next);
+                    index++;
+                }
+            }
+        }
 
         [Fact]
         public void TestPriorityQueueBoundary()

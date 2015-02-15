@@ -35,19 +35,19 @@ namespace Commons.Collections.Map
         {
         }
 
-		public TreeBimap(Comparison<V> valueComparer) 
-			: this(Comparer<K>.Default.Compare, valueComparer)
-		{
-		}
+        public TreeBimap(Comparison<V> valueComparer) 
+            : this(Comparer<K>.Default.Compare, valueComparer)
+        {
+        }
 
         public TreeBimap(IComparer<K> keyComparer)
             : this(keyComparer, Comparer<V>.Default)
         {
         }
 
-		public TreeBimap(IComparer<V> valueComparer) : this(Comparer<K>.Default, valueComparer)
-		{
-		}
+        public TreeBimap(IComparer<V> valueComparer) : this(Comparer<K>.Default, valueComparer)
+        {
+        }
  
         public TreeBimap(IComparer<K> keyComparer, IComparer<V> valueComparer)
             : this(keyComparer.Compare, valueComparer.Compare)
@@ -61,9 +61,9 @@ namespace Commons.Collections.Map
             this.valueComparer = valueComparer;
         }
 
-		public TreeBimap(IBimap<K, V> bimap) : this(bimap, Comparer<K>.Default.Compare, Comparer<V>.Default.Compare)
-		{
-		}
+        public TreeBimap(IBimap<K, V> bimap) : this(bimap, Comparer<K>.Default.Compare, Comparer<V>.Default.Compare)
+        {
+        }
 
         public TreeBimap(IBimap<K, V> bimap, Comparison<K> keyComparer, Comparison<V> valueComparer)
             : this(keyComparer, valueComparer)
@@ -77,11 +77,11 @@ namespace Commons.Collections.Map
             }
         }
 
-		public override bool Contains(KeyValuePair<K, V> item)
-		{
-			return KeyValue.ContainsKey(item.Key) && (valueComparer(item.Value, ValueOf(item.Key)) == 0) 
-				&& ValueKey.ContainsKey(item.Value) && (keyComparer(item.Key, KeyOf(item.Value)) == 0);
-		}
+        public override bool Contains(KeyValuePair<K, V> item)
+        {
+            return KeyValue.ContainsKey(item.Key) && (valueComparer(item.Value, ValueOf(item.Key)) == 0) 
+                && ValueKey.ContainsKey(item.Value) && (keyComparer(item.Key, KeyOf(item.Value)) == 0);
+        }
 
         public override IBimap<V, K> Inverse()
         {

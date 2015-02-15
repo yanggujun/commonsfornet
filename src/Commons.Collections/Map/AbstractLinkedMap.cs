@@ -39,7 +39,7 @@ namespace Commons.Collections.Map
         {
             Guarder.CheckNull(key);
             var removed = false;
-			var entry = GetEntry(key) as LinkedHashEntry;
+            var entry = GetEntry(key) as LinkedHashEntry;
             if (entry != null)
             {
                 if (base.Remove(key))
@@ -58,7 +58,7 @@ namespace Commons.Collections.Map
 
         public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()
         {
-			return LinkedItems.GetEnumerator();
+            return LinkedItems.GetEnumerator();
         }
 
         protected override HashEntry CreateEntry(K key, V value)
@@ -80,21 +80,21 @@ namespace Commons.Collections.Map
             return linkedEntry;
         }
 
-		private IEnumerable<KeyValuePair<K, V>> LinkedItems
-		{
-			get
-			{
-				var cursor = Header;
-				if (null != cursor)
-				{
-					do
-					{
-						yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
-						cursor = cursor.After;
-					} while (!ReferenceEquals(cursor, Header));
-				}
-			}
-		}
+        private IEnumerable<KeyValuePair<K, V>> LinkedItems
+        {
+            get
+            {
+                var cursor = Header;
+                if (null != cursor)
+                {
+                    do
+                    {
+                        yield return new KeyValuePair<K, V>(cursor.Key, cursor.Value);
+                        cursor = cursor.After;
+                    } while (!ReferenceEquals(cursor, Header));
+                }
+            }
+        }
 
         protected class LinkedHashEntry : HashEntry
         {

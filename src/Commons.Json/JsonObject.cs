@@ -20,7 +20,7 @@ using Commons.Collections.Map;
 
 namespace Commons.Json
 {
-	[CLSCompliant(true)]
+    [CLSCompliant(true)]
     public class JsonObject : DynamicObject
     {
         private readonly LinkedHashedMap<string, JsonValue> valueMap = new LinkedHashedMap<string, JsonValue>();

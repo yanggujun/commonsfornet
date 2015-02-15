@@ -97,48 +97,48 @@ namespace Commons.Collections.Set
         public bool IsProperSubsetOf(IStrictSet<T> other)
         {
             var isSubset = IsSubsetOf(other);
-	        return isSubset && other.Count > Count;
+            return isSubset && other.Count > Count;
         }
 
         public bool IsEqualWith(IStrictSet<T> other)
         {
-			other.ValidateNotNull("the set is null!");
-			return other.IsSubsetOf(this) && IsSubsetOf(other);
+            other.ValidateNotNull("the set is null!");
+            return other.IsSubsetOf(this) && IsSubsetOf(other);
         }
 
         public bool IsDisjointWith(IStrictSet<T> other)
         {
-			other.ValidateNotNull("The set is null!");
-			var disjoint = true;
-			foreach (var item in other)
-			{
-				if (Contains(item))
-				{
-					disjoint = false;
-					break;
-				}
-			}
+            other.ValidateNotNull("The set is null!");
+            var disjoint = true;
+            foreach (var item in other)
+            {
+                if (Contains(item))
+                {
+                    disjoint = false;
+                    break;
+                }
+            }
 
-			return disjoint;
+            return disjoint;
         }
 
         public IStrictSet<T> Compliment(IStrictSet<T> universe)
         {
-			if (!IsSubsetOf(universe))
-			{
-				throw new InvalidOperationException("Cannot calculate the compliment, as the current set is not the subset of the universe set.");
-			}
-			foreach(var item in universe)
-			{
-				if (Contains(item))
-				{ 
-					Remove(item);
-				}
-				else
-				{
-					Add(item);
-				}
-			}
+            if (!IsSubsetOf(universe))
+            {
+                throw new InvalidOperationException("Cannot calculate the compliment, as the current set is not the subset of the universe set.");
+            }
+            foreach(var item in universe)
+            {
+                if (Contains(item))
+                { 
+                    Remove(item);
+                }
+                else
+                {
+                    Add(item);
+                }
+            }
 
             return this;
         }

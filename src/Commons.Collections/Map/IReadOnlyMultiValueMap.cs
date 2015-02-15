@@ -20,23 +20,23 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Map
 {
-	[CLSCompliant(true)]
-	public interface IReadOnlyMultiValueMap<K, V> : IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
-	{
-		bool ContainsKey(K key);
+    [CLSCompliant(true)]
+    public interface IReadOnlyMultiValueMap<K, V> : IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+    {
+        bool ContainsKey(K key);
 
         bool ContainsValue(K key, V value);
 
-		bool TryGetValue(K key, out List<V> values);
+        bool TryGetValue(K key, out List<V> values);
 
         int CountOf(K key);
 
-		int KeyCount { get; }
+        int KeyCount { get; }
 
-		ICollection<V> this[K key] { get; }
+        ICollection<V> this[K key] { get; }
 
-		IEnumerable<K> Keys { get; }
+        IEnumerable<K> Keys { get; }
 
-		IEnumerable<V> Values { get; }
-	}
+        IEnumerable<V> Values { get; }
+    }
 }

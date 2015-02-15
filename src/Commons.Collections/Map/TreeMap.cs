@@ -30,7 +30,7 @@ namespace Commons.Collections.Map
     /// <typeparam name="V">The value type</typeparam>
     [CLSCompliant(true)]
     public sealed class TreeMap<K, V> : INavigableMap<K, V>, ISortedMap<K, V>, IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, ICollection,
-		IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+        IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         private readonly LlrbTree<K, V> llrbTree;
 
@@ -403,24 +403,24 @@ namespace Commons.Collections.Map
             }
         }
 
-		public KeyValuePair<K, V> Lower(K key)
-		{
-			return llrbTree.Lower(key);
-		}
+        public KeyValuePair<K, V> Lower(K key)
+        {
+            return llrbTree.Lower(key);
+        }
 
-		public KeyValuePair<K, V> Higher(K key)
-		{
-			return llrbTree.Higher(key);
-		}
+        public KeyValuePair<K, V> Higher(K key)
+        {
+            return llrbTree.Higher(key);
+        }
 
-		public KeyValuePair<K, V> Ceiling(K key)
-		{
-			return llrbTree.Ceiling(key);
-		}
+        public KeyValuePair<K, V> Ceiling(K key)
+        {
+            return llrbTree.Ceiling(key);
+        }
 
-		public KeyValuePair<K, V> Floor(K key)
-		{
-			return llrbTree.Floor(key);
-		}
-	}
+        public KeyValuePair<K, V> Floor(K key)
+        {
+            return llrbTree.Floor(key);
+        }
+    }
 }

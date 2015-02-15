@@ -18,57 +18,57 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Map
 {
-	internal class MapEnumerator<K, V> : IDictionaryEnumerator
-	{
-		private readonly IDictionary<K, V> map;
-		private readonly IEnumerator<KeyValuePair<K, V>> iter;
-		public MapEnumerator(IDictionary<K, V> map)
-		{
-			this.map = map;
-			iter = this.map.GetEnumerator();
-		}
+    internal class MapEnumerator<K, V> : IDictionaryEnumerator
+    {
+        private readonly IDictionary<K, V> map;
+        private readonly IEnumerator<KeyValuePair<K, V>> iter;
+        public MapEnumerator(IDictionary<K, V> map)
+        {
+            this.map = map;
+            iter = this.map.GetEnumerator();
+        }
 
-		public DictionaryEntry Entry
-		{
-			get
-			{
+        public DictionaryEntry Entry
+        {
+            get
+            {
                 var entry = new DictionaryEntry(iter.Current.Key, iter.Current.Value);
-				return entry;
-			}
-		}
+                return entry;
+            }
+        }
 
-		public object Key
-		{
-			get
-			{
-				return Entry.Key;
-			}
-		}
+        public object Key
+        {
+            get
+            {
+                return Entry.Key;
+            }
+        }
 
-		public object Value
-		{
-			get
-			{
-				return Entry.Value;
-			}
-		}
+        public object Value
+        {
+            get
+            {
+                return Entry.Value;
+            }
+        }
 
-		public object Current
-		{
-			get
-			{
-				return Entry;
-			}
-		}
+        public object Current
+        {
+            get
+            {
+                return Entry;
+            }
+        }
 
-		public bool MoveNext()
-		{
-			return iter.MoveNext();
-		}
+        public bool MoveNext()
+        {
+            return iter.MoveNext();
+        }
 
-		public void Reset()
-		{
-			iter.Reset();
-		}
-	}
+        public void Reset()
+        {
+            iter.Reset();
+        }
+    }
 }

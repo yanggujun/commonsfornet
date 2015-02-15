@@ -53,7 +53,7 @@ namespace Commons.Collections.Set
 
         public HashedSet(int capacity, Equator<T> equator)
         {
-			map = new HashedMap<T, object>(capacity, equator);
+            map = new HashedMap<T, object>(capacity, equator);
         }
 
         public HashedSet(IEnumerable<T> items, int capacity, Equator<T> equator) : this(capacity, equator)
@@ -66,63 +66,63 @@ namespace Commons.Collections.Set
                 }
             }
         }
-		public override void Add(T item)
-		{
+        public override void Add(T item)
+        {
             map.Add(item, val);
-		}
+        }
 
-		public override void Clear()
-		{
+        public override void Clear()
+        {
             map.Clear();
-		}
+        }
 
-		public override bool Contains(T item)
-		{
+        public override bool Contains(T item)
+        {
             return map.ContainsKey(item);
-		}
+        }
 
-		public override void CopyTo(T[] array, int arrayIndex)
-		{
+        public override void CopyTo(T[] array, int arrayIndex)
+        {
             array.ValidateNotNull("The input array is null!.");
             var index = arrayIndex;
             foreach (var item in map)
             {
                 array[index++] = item.Key;
             }
-		}
+        }
 
-		public override int Count
-		{
+        public override int Count
+        {
             get { return map.Count; }
-		}
+        }
 
-		public override bool Remove(T item)
-		{
+        public override bool Remove(T item)
+        {
             return map.Remove(item);
-		}
+        }
 
-		public override IEnumerator<T> GetEnumerator()
-		{
+        public override IEnumerator<T> GetEnumerator()
+        {
             return Items.GetEnumerator();
-		}
+        }
 
-		void ICollection.CopyTo(Array array, int index)
-		{
+        void ICollection.CopyTo(Array array, int index)
+        {
             array.ValidateNotNull("The array is null!");
             var itemArray = array as T[];
-			itemArray.Validate(x => x != null, new ArgumentException("The type of the array is not correct."));
-			CopyTo(itemArray, index);
-		}
+            itemArray.Validate(x => x != null, new ArgumentException("The type of the array is not correct."));
+            CopyTo(itemArray, index);
+        }
 
-		public bool IsSynchronized
-		{
+        public bool IsSynchronized
+        {
             get { return false; }
-		}
+        }
 
-		public object SyncRoot
-		{
+        public object SyncRoot
+        {
             get { throw new NotSupportedException("The SyncRoot is not supported in Commons.Collections."); }
-		}
+        }
 
         protected override IEnumerable<T> Items
         {
@@ -134,5 +134,5 @@ namespace Commons.Collections.Set
                 }
             }
         }
-	}
+    }
 }

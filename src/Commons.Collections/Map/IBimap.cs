@@ -21,15 +21,15 @@ using Commons.Collections.Set;
 
 namespace Commons.Collections.Map
 {
-	[CLSCompliant(true)]
-	public interface IBimap<K, V> : ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
-	{
+    [CLSCompliant(true)]
+    public interface IBimap<K, V> : ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+    {
         /// <summary>
         /// Adds a key value mapping to the bimap. The operation is not allowed when the key or value already exits in the bimap.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
-		void Add(K key, V value);
+        void Add(K key, V value);
 
         /// <summary>
         /// No matter whether the key or value exists in the bimap, the key and value are added to the bimap.
@@ -39,26 +39,26 @@ namespace Commons.Collections.Map
         /// <param name="value">The value.</param>
         void Enforce(K key, V value);
 
-		bool RemoveKey(K key);
+        bool RemoveKey(K key);
 
-		bool RemoveValue(V value);
+        bool RemoveValue(V value);
 
-		bool ContainsKey(K key);
+        bool ContainsKey(K key);
 
-		bool ContainsValue(V value);
+        bool ContainsValue(V value);
 
-		bool TryGetValue(K key, out V value);
+        bool TryGetValue(K key, out V value);
 
-		bool TryGetKey(V value, out K key);
+        bool TryGetKey(V value, out K key);
 
-		V ValueOf(K key);
+        V ValueOf(K key);
 
-		K KeyOf(V value);
+        K KeyOf(V value);
 
-		IBimap<V, K> Inverse();
+        IBimap<V, K> Inverse();
 
-		IStrictSet<K> KeySet();
+        IStrictSet<K> KeySet();
 
-		IStrictSet<V> ValueSet();
-	}
+        IStrictSet<V> ValueSet();
+    }
 }

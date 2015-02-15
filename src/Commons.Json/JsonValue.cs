@@ -50,7 +50,7 @@ namespace Commons.Json
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 var items = value as IEnumerable;
-				var list = new List<JsonValue>();
+                var list = new List<JsonValue>();
                 foreach (var item in items)
                 {
                     list.Add(new JsonValue(item));
@@ -117,18 +117,18 @@ namespace Commons.Json
 
         public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
         {
-			var success = false;
-			int index;
-			if (jsonValue != null && jsonValue.GetType().IsArray && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
-			{
-				((JsonValue[])jsonValue)[index] = new JsonValue(value);
-				success = true;
-			}
-			else
-			{
-				success = base.TrySetIndex(binder, indexes, value);
-			}
-			return success;
+            var success = false;
+            int index;
+            if (jsonValue != null && jsonValue.GetType().IsArray && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
+            {
+                ((JsonValue[])jsonValue)[index] = new JsonValue(value);
+                success = true;
+            }
+            else
+            {
+                success = base.TrySetIndex(binder, indexes, value);
+            }
+            return success;
         }
 
         public override bool TryConvert(ConvertBinder binder, out object result)

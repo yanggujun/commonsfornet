@@ -44,10 +44,10 @@ namespace Commons.Collections.Map
         {
         }
 
-		public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer) 
-			: this(capacity, transformer, comparer.Equals)
-		{
-		}
+        public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer) 
+            : this(capacity, transformer, comparer.Equals)
+        {
+        }
 
         public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer, Equator<K> isEqual)
             : this(capacity, new MurmurHash32(), transformer, isEqual)

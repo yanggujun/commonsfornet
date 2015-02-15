@@ -35,8 +35,8 @@ namespace Commons.Collections.Queue
         {
         }
 
-		public MaxPriorityQueue(IEnumerable<T> items, Comparison<T> comparer) : base(items, (x1, x2) => comparer(x1, x2) > 0)
-		{
-		}
+        public MaxPriorityQueue(IEnumerable<T> items, Comparison<T> comparer) : base(items, (x1, x2) => comparer(x1, x2) > 0)
+        {
+        }
     }
 }

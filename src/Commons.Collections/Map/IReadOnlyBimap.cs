@@ -20,19 +20,19 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Map
 {
-	[CLSCompliant(true)]
-	public interface IReadOnlyBimap<K, V> : IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
-	{
-		bool ContainsKey(K key);
+    [CLSCompliant(true)]
+    public interface IReadOnlyBimap<K, V> : IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+    {
+        bool ContainsKey(K key);
 
-		bool ContainsValue(V value);
+        bool ContainsValue(V value);
 
-		bool TryGetValue(K key, out V value);
+        bool TryGetValue(K key, out V value);
 
-		bool TryGetKey(V value, out K key);
+        bool TryGetKey(V value, out K key);
 
-		V ValueOf(K key);
+        V ValueOf(K key);
 
-		K KeyOf(V value);
-	}
+        K KeyOf(V value);
+    }
 }

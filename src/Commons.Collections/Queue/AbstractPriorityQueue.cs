@@ -24,19 +24,19 @@ namespace Commons.Collections.Queue
 {
     public class AbstractPriorityQueue<T> : IPriorityQueue<T>, IEnumerable<T>, ICollection, IEnumerable
     {
-		private readonly FibonacciHeap<T> heap;
+        private readonly FibonacciHeap<T> heap;
 
-		protected AbstractPriorityQueue(IEnumerable<T> items, Func<T, T, bool> comparer)
-		{
+        protected AbstractPriorityQueue(IEnumerable<T> items, Func<T, T, bool> comparer)
+        {
             heap = new FibonacciHeap<T>(comparer);
-			if (items != null)
-			{
-				foreach (var item in items)
-				{
-					Push(item);
-				}
-			}
-		}
+            if (items != null)
+            {
+                foreach (var item in items)
+                {
+                    Push(item);
+                }
+            }
+        }
         public int Count
         {
             get { return heap.Count; }

@@ -31,8 +31,8 @@ namespace Commons.Collections.Map
     /// The depth of the tree is 2logn
     /// The time complexity of search is O(lgn), of insert is O(lgn), of delete is O(lgn)
     /// </summary>
-	/// <typeparam name="K"></typeparam>
-	/// <typeparam name="V"></typeparam>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
     internal class LlrbTree<K, V> : IEnumerable<KeyValuePair<K, V>>
     {
         private const bool RED = true;
@@ -48,7 +48,7 @@ namespace Commons.Collections.Map
 
         public LlrbTree(IComparer<K> comparer)
         {
-			Comparer = comparer.Compare;
+            Comparer = comparer.Compare;
         }
 
         public LlrbTree(Comparison<K> comparison)
@@ -95,133 +95,133 @@ namespace Commons.Collections.Map
             return found;
         }
 
-		public KeyValuePair<K, V> Higher(K key)
-		{
-			Guarder.CheckNull(key);
-			ValidateNotEmpty();
-			var node = root;
-			var found = false;
-			while (null != node)
-			{
-				var cmp = Comparer(key, node.Item.Key);
-				if (cmp < 0)
-				{
-					if (node.Left == null || Comparer(key, Maximum(node.Left).Item.Key) >= 0)
-					{
-						found = true;
-						break;
-					}
-					node = node.Left;
-				}
-				else
-				{
-					node = node.Right;
-				}
-			}
+        public KeyValuePair<K, V> Higher(K key)
+        {
+            Guarder.CheckNull(key);
+            ValidateNotEmpty();
+            var node = root;
+            var found = false;
+            while (null != node)
+            {
+                var cmp = Comparer(key, node.Item.Key);
+                if (cmp < 0)
+                {
+                    if (node.Left == null || Comparer(key, Maximum(node.Left).Item.Key) >= 0)
+                    {
+                        found = true;
+                        break;
+                    }
+                    node = node.Left;
+                }
+                else
+                {
+                    node = node.Right;
+                }
+            }
 
-			if (!found)
-			{
-				throw new ArgumentException(string.Format("No item is higher than the key: {0}.", key));
-			}
+            if (!found)
+            {
+                throw new ArgumentException(string.Format("No item is higher than the key: {0}.", key));
+            }
 
-			return node.Item;
-		}
+            return node.Item;
+        }
 
-		public KeyValuePair<K, V> Lower(K key)
-		{
-			Guarder.CheckNull(key);
-			ValidateNotEmpty();
-			var node = root;
-			var found = false;
-			while (null != node)
-			{
-				var cmp = Comparer(key, node.Item.Key);
-				if (cmp > 0)
-				{
-					if (node.Right == null || Comparer(key, Minimum(node.Right).Item.Key) <= 0)
-					{
-						found = true;
-						break;
-					}
-					node = node.Right;
-				}
-				else
-				{
-					node = node.Left;
-				}
-			}
+        public KeyValuePair<K, V> Lower(K key)
+        {
+            Guarder.CheckNull(key);
+            ValidateNotEmpty();
+            var node = root;
+            var found = false;
+            while (null != node)
+            {
+                var cmp = Comparer(key, node.Item.Key);
+                if (cmp > 0)
+                {
+                    if (node.Right == null || Comparer(key, Minimum(node.Right).Item.Key) <= 0)
+                    {
+                        found = true;
+                        break;
+                    }
+                    node = node.Right;
+                }
+                else
+                {
+                    node = node.Left;
+                }
+            }
 
-			if (!found)
-			{
-				throw new ArgumentException(string.Format("No item is lower than the key: {0}", key));
-			}
+            if (!found)
+            {
+                throw new ArgumentException(string.Format("No item is lower than the key: {0}", key));
+            }
 
-			return node.Item;
-		}
+            return node.Item;
+        }
 
-		public KeyValuePair<K, V> Ceiling(K key)
-		{
-			Guarder.CheckNull(key);
-			ValidateNotEmpty();
-			var node = root;
-			var found = false;
-			while (null != node)
-			{
-				var cmp = Comparer(key, node.Item.Key);
-				if (cmp <= 0)
-				{
-					if (node.Left == null || Comparer(key, Maximum(node.Left).Item.Key) > 0)
-					{
-						found = true;
-						break;
-					}
-					node = node.Left;
-				}
-				else
-				{
-					node = node.Right;
-				}
-			}
+        public KeyValuePair<K, V> Ceiling(K key)
+        {
+            Guarder.CheckNull(key);
+            ValidateNotEmpty();
+            var node = root;
+            var found = false;
+            while (null != node)
+            {
+                var cmp = Comparer(key, node.Item.Key);
+                if (cmp <= 0)
+                {
+                    if (node.Left == null || Comparer(key, Maximum(node.Left).Item.Key) > 0)
+                    {
+                        found = true;
+                        break;
+                    }
+                    node = node.Left;
+                }
+                else
+                {
+                    node = node.Right;
+                }
+            }
 
-			if (!found)
-			{
-				throw new ArgumentException(string.Format("No item is the ceiling of the key : {0}.", key));
-			}
+            if (!found)
+            {
+                throw new ArgumentException(string.Format("No item is the ceiling of the key : {0}.", key));
+            }
 
-			return node.Item;
-		}
+            return node.Item;
+        }
 
-		public KeyValuePair<K, V> Floor(K key)
-		{
-			Guarder.CheckNull(key);
-			ValidateNotEmpty();
-			var node = root;
-			var found = false;
-			while (null != node)
-			{
-				var cmp = Comparer(key, node.Item.Key);
-				if (cmp >= 0)
-				{
-					if (node.Right == null || Comparer(key, Minimum(node.Right).Item.Key) < 0)
-					{
-						found = true;
-						break;
-					}
-					node = node.Right;
-				}
-				else
-				{
-					node = node.Left;
-				}
-			}
+        public KeyValuePair<K, V> Floor(K key)
+        {
+            Guarder.CheckNull(key);
+            ValidateNotEmpty();
+            var node = root;
+            var found = false;
+            while (null != node)
+            {
+                var cmp = Comparer(key, node.Item.Key);
+                if (cmp >= 0)
+                {
+                    if (node.Right == null || Comparer(key, Minimum(node.Right).Item.Key) < 0)
+                    {
+                        found = true;
+                        break;
+                    }
+                    node = node.Right;
+                }
+                else
+                {
+                    node = node.Left;
+                }
+            }
 
-			if (!found)
-			{
-				throw new ArgumentException(string.Format("No item is the floor of the key: {0}", key));
-			}
+            if (!found)
+            {
+                throw new ArgumentException(string.Format("No item is the floor of the key: {0}", key));
+            }
 
-			return node.Item;
-		}
+            return node.Item;
+        }
 
         public KeyValuePair<K, V> Max
         {
@@ -356,23 +356,23 @@ namespace Commons.Collections.Map
             return GetEnumerator();
         }
 
-		private IEnumerable<KeyValuePair<K, V>> AscendEnumerate(TreeNode node)
-		{
-			if (null != node)
-			{
-				foreach(var item in AscendEnumerate(node.Left))
-				{
-					yield return item;
-				}
+        private IEnumerable<KeyValuePair<K, V>> AscendEnumerate(TreeNode node)
+        {
+            if (null != node)
+            {
+                foreach(var item in AscendEnumerate(node.Left))
+                {
+                    yield return item;
+                }
 
-				yield return node.Item;
+                yield return node.Item;
 
-				foreach(var item in AscendEnumerate(node.Right))
-				{
-					yield return item;
-				}
-			}
-		}
+                foreach(var item in AscendEnumerate(node.Right))
+                {
+                    yield return item;
+                }
+            }
+        }
 
         private TreeNode Insert(TreeNode node, KeyValuePair<K, V> item)
         {
@@ -652,11 +652,11 @@ namespace Commons.Collections.Map
 
             return found;
         }
-		
-		private void ValidateNotEmpty()
-		{
-			root.Validate(x => x != null, new InvalidOperationException("The collection is empty"));
-		}
+        
+        private void ValidateNotEmpty()
+        {
+            root.Validate(x => x != null, new InvalidOperationException("The collection is empty"));
+        }
 
 #if DEBUG
         private static void WriteNodeHtml(TreeNode node)

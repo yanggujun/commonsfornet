@@ -21,121 +21,121 @@ using Commons.Utils;
 
 namespace Commons.Collections.Queue
 {
-	[CLSCompliant(true)]
+    [CLSCompliant(true)]
     public class Deque<T> : ICollection, IEnumerable<T>, IEnumerable
     {
-		private const int DefaultCapacity = 32;
-		private const int EmptyPointer = -1;
-		private T[] items;
-		private int head;
-		private int tail;
-		private int capacity;
-		private int count;
+        private const int DefaultCapacity = 32;
+        private const int EmptyPointer = -1;
+        private T[] items;
+        private int head;
+        private int tail;
+        private int capacity;
+        private int count;
 
-		public Deque() : this(DefaultCapacity)
-		{
-		}
+        public Deque() : this(DefaultCapacity)
+        {
+        }
 
-		public Deque(int initialCapacity)
-		{
-			var actual = 1;
-			while (actual < initialCapacity)
-			{
-				actual <<= 1;
-			}
-			capacity = actual;
-			items = new T[capacity];
-			head = EmptyPointer;
-			tail = EmptyPointer;
-			count = 0;
-		}
+        public Deque(int initialCapacity)
+        {
+            var actual = 1;
+            while (actual < initialCapacity)
+            {
+                actual <<= 1;
+            }
+            capacity = actual;
+            items = new T[capacity];
+            head = EmptyPointer;
+            tail = EmptyPointer;
+            count = 0;
+        }
 
         public void Append(T item)
         {
-			if (head == EmptyPointer && tail == EmptyPointer)
-			{
-				head = capacity / 2 - 1;
-				items[head] = item;
-				tail = head;
-			}
-			else
-			{
-				if ((tail + 1) >= capacity)
-				{
-					Resize();
-				}
-				++tail;
-				items[tail] = item;
-			}
-			++count;
+            if (head == EmptyPointer && tail == EmptyPointer)
+            {
+                head = capacity / 2 - 1;
+                items[head] = item;
+                tail = head;
+            }
+            else
+            {
+                if ((tail + 1) >= capacity)
+                {
+                    Resize();
+                }
+                ++tail;
+                items[tail] = item;
+            }
+            ++count;
         }
 
         public void Prepend(T item)
         {
-			if (head == EmptyPointer && tail == EmptyPointer)
-			{
-				head = capacity / 2 - 1;
-				items[head] = item;
-				tail = head;
-			}
-			else
-			{
-				if (head - 1 < 0)
-				{
-					Resize();
-				}
-				--head;
-				items[head] = item;
-			}
-			++count;
+            if (head == EmptyPointer && tail == EmptyPointer)
+            {
+                head = capacity / 2 - 1;
+                items[head] = item;
+                tail = head;
+            }
+            else
+            {
+                if (head - 1 < 0)
+                {
+                    Resize();
+                }
+                --head;
+                items[head] = item;
+            }
+            ++count;
         }
 
         public T Pop()
         {
-			if (count <= 0)
-			{
-				throw new InvalidOperationException("The deque is empty");
-			}
-			var item = items[tail];
-			items[tail] = default(T);
-			--tail;
-			--count;
-			if (count <= 0)
-			{
-				head = tail = EmptyPointer;
-			}
-			return item;
+            if (count <= 0)
+            {
+                throw new InvalidOperationException("The deque is empty");
+            }
+            var item = items[tail];
+            items[tail] = default(T);
+            --tail;
+            --count;
+            if (count <= 0)
+            {
+                head = tail = EmptyPointer;
+            }
+            return item;
         }
 
         public T Shift()
         {
-			if (count <= 0)
-			{
-				throw new InvalidOperationException("The deque is empty");
-			}
+            if (count <= 0)
+            {
+                throw new InvalidOperationException("The deque is empty");
+            }
 
-			var item = items[head];
-			items[head] = default(T);
-			++head;
-			--count;
-			if (count <= 0)
-			{
-				head = tail = EmptyPointer;
-			}
+            var item = items[head];
+            items[head] = default(T);
+            ++head;
+            --count;
+            if (count <= 0)
+            {
+                head = tail = EmptyPointer;
+            }
 
-			return item;
+            return item;
         }
 
         public T Last
         {
             get
             {
-				if (count <= 0)
-				{
-					throw new InvalidOperationException("The deque is empty");
-				}
+                if (count <= 0)
+                {
+                    throw new InvalidOperationException("The deque is empty");
+                }
 
-				return items[tail];
+                return items[tail];
             }
         }
 
@@ -143,35 +143,35 @@ namespace Commons.Collections.Queue
         {
             get
             {
-				if (count <= 0)
-				{
-					throw new InvalidOperationException("The deque is empty");
-				}
+                if (count <= 0)
+                {
+                    throw new InvalidOperationException("The deque is empty");
+                }
 
-				return items[head];
+                return items[head];
             }
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-			return Items.GetEnumerator();
+            return Items.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-			return GetEnumerator();
+            return GetEnumerator();
         }
 
         public void CopyTo(Array array, int index)
         {
-			Guarder.CheckNull(array);
-			var theArray = (T[])array;
-			Guarder.CheckNull(theArray);
-			var cursor = 0;
-			for (var i = head; i <= tail; i++)
-			{
-				theArray[index + (cursor++)] = items[i];
-			}
+            Guarder.CheckNull(array);
+            var theArray = (T[])array;
+            Guarder.CheckNull(theArray);
+            var cursor = 0;
+            for (var i = head; i <= tail; i++)
+            {
+                theArray[index + (cursor++)] = items[i];
+            }
         }
 
         public int Count
@@ -189,34 +189,34 @@ namespace Commons.Collections.Queue
             get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
 
-		private IEnumerable<T> Items
-		{
-			get
-			{
-				if (head != EmptyPointer && tail != EmptyPointer)
-				{ 
-					for (var i = head; i <= tail; i++)
-					{
-						yield return items[i];
-					}
-				}
-			}
-		}
+        private IEnumerable<T> Items
+        {
+            get
+            {
+                if (head != EmptyPointer && tail != EmptyPointer)
+                { 
+                    for (var i = head; i <= tail; i++)
+                    {
+                        yield return items[i];
+                    }
+                }
+            }
+        }
 
-		private void Resize()
-		{
-			capacity <<= 1;
-			var newItems = new T[capacity];
-			var newHead = capacity / 2 - count / 2;
-			var cursor = newHead;
-			for (var i = head; i <= tail; i++)
-			{
-				newItems[cursor] = items[i];
-				cursor++;
-			}
-			head = newHead;
-			tail = cursor - 1;
-			items = newItems;
-		}
+        private void Resize()
+        {
+            capacity <<= 1;
+            var newItems = new T[capacity];
+            var newHead = capacity / 2 - count / 2;
+            var cursor = newHead;
+            for (var i = head; i <= tail; i++)
+            {
+                newItems[cursor] = items[i];
+                cursor++;
+            }
+            head = newHead;
+            tail = cursor - 1;
+            items = newItems;
+        }
     }
 }

@@ -35,38 +35,38 @@ namespace Commons.Collections.Bag
         protected AbstractMapBag(IEnumerable<T> items, IDictionary<T, int> map)
         {
             Map = map;
-			if (items != null)
-			{ 
-				foreach (var item in items)
-				{
-					if (Map.ContainsKey(item))
-					{
-						Map[item]++;
-					}
-					else
-					{
-						Map.Add(item, 1);
-					}
-				}
-			}
+            if (items != null)
+            { 
+                foreach (var item in items)
+                {
+                    if (Map.ContainsKey(item))
+                    {
+                        Map[item]++;
+                    }
+                    else
+                    {
+                        Map.Add(item, 1);
+                    }
+                }
+            }
         }
 
         public virtual int this[T item]
         {
-			get
-			{
-				Guarder.CheckNull(item);
-				if (!Map.ContainsKey(item))
-				{
-					throw new ArgumentException("The item does not exist in the bag");
-				}
-				return Map[item];
-			}
+            get
+            {
+                Guarder.CheckNull(item);
+                if (!Map.ContainsKey(item))
+                {
+                    throw new ArgumentException("The item does not exist in the bag");
+                }
+                return Map[item];
+            }
         }
 
         public virtual void Add(T item, int copies)
         {
-			copies.Validate(x => x > 0, new ArgumentException("The copies must be larger than 0!"));
+            copies.Validate(x => x > 0, new ArgumentException("The copies must be larger than 0!"));
             if (Map.ContainsKey(item))
             {
                 Map[item] += copies;
@@ -79,8 +79,8 @@ namespace Commons.Collections.Bag
 
         public virtual bool Remove(T item, int copies)
         {
-			Guarder.CheckNull(item);
-			copies.Validate(x => x > 0, new ArgumentException("The copies must be larger than 0!"));
+            Guarder.CheckNull(item);
+            copies.Validate(x => x > 0, new ArgumentException("The copies must be larger than 0!"));
             var removed = false;
             if (Map.ContainsKey(item))
             {
@@ -100,7 +100,7 @@ namespace Commons.Collections.Bag
 
         public virtual bool Remove(T item)
         {
-			Guarder.CheckNull(item);
+            Guarder.CheckNull(item);
             var removed = false;
             if (Map.ContainsKey(item))
             {
@@ -110,7 +110,7 @@ namespace Commons.Collections.Bag
             return removed;
         }
 
-		public abstract IStrictSet<T> ToUnique();
+        public abstract IStrictSet<T> ToUnique();
 
         public virtual void Add(T item)
         {
@@ -129,7 +129,7 @@ namespace Commons.Collections.Bag
 
         public virtual void CopyTo(T[] array, int arrayIndex)
         {
-			array.ValidateNotNull("The array is null!");
+            array.ValidateNotNull("The array is null!");
             foreach (var item in this)
             {
                 array[arrayIndex++] = item;
@@ -167,38 +167,38 @@ namespace Commons.Collections.Bag
 
         private IEnumerable<T> Items
         {
-			get
-			{
-				foreach (var key in Map.Keys)
-				{
-					var copies = Map[key];
-					for (var i = 0; i < copies; i++)
-					{
-						yield return key;
-					}
-				}
-			}
+            get
+            {
+                foreach (var key in Map.Keys)
+                {
+                    var copies = Map[key];
+                    for (var i = 0; i < copies; i++)
+                    {
+                        yield return key;
+                    }
+                }
+            }
         }
 
-		void ICollection.CopyTo(Array array, int index)
-		{
-			var itemArray = array as T[];
-			CopyTo(itemArray, index);
-		}
+        void ICollection.CopyTo(Array array, int index)
+        {
+            var itemArray = array as T[];
+            CopyTo(itemArray, index);
+        }
 
-		int ICollection.Count
-		{
-			get { return Count; }
-		}
+        int ICollection.Count
+        {
+            get { return Count; }
+        }
 
-		bool ICollection.IsSynchronized
-		{
-			get { return false; }
-		}
+        bool ICollection.IsSynchronized
+        {
+            get { return false; }
+        }
 
-		object ICollection.SyncRoot
-		{
-			get { throw new NotSupportedException("The SyncRoot is not supported in the Commons.Collections."); }
-		}
-	}
+        object ICollection.SyncRoot
+        {
+            get { throw new NotSupportedException("The SyncRoot is not supported in the Commons.Collections."); }
+        }
+    }
 }

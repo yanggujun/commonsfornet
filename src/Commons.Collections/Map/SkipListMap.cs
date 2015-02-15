@@ -23,31 +23,31 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-	public class SkipListMap<K, V> : INavigableMap<K, V>, ISortedMap<K, V>, IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, ICollection,
-		IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
-	{
-		private readonly SkipList<K, V> skipList;
+    public class SkipListMap<K, V> : INavigableMap<K, V>, ISortedMap<K, V>, IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, ICollection,
+        IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+    {
+        private readonly SkipList<K, V> skipList;
 
-		public SkipListMap() : this (Comparer<K>.Default)
-		{
-		}
+        public SkipListMap() : this (Comparer<K>.Default)
+        {
+        }
 
-		public SkipListMap(IComparer<K> comparer) : this (comparer.Compare)
-		{
-		}
+        public SkipListMap(IComparer<K> comparer) : this (comparer.Compare)
+        {
+        }
 
-		public SkipListMap(Comparison<K> comparer)
-		{
-			skipList = new SkipList<K, V>(comparer);
-		}
+        public SkipListMap(Comparison<K> comparer)
+        {
+            skipList = new SkipList<K, V>(comparer);
+        }
 
-		public SkipListMap(IDictionary<K, V> source) : this(source, Comparer<K>.Default)
-		{
-		}
+        public SkipListMap(IDictionary<K, V> source) : this(source, Comparer<K>.Default)
+        {
+        }
 
-		public SkipListMap(IDictionary<K, V> source, IComparer<K> comparer) : this(source, comparer.Compare)
-		{
-		}
+        public SkipListMap(IDictionary<K, V> source, IComparer<K> comparer) : this(source, comparer.Compare)
+        {
+        }
 
         public SkipListMap(IDictionary<K, V> source, Comparison<K> comparer) :this(comparer)
         {
@@ -58,30 +58,30 @@ namespace Commons.Collections.Map
             }
         }
 
-		public KeyValuePair<K, V> Lower(K key)
-		{
+        public KeyValuePair<K, V> Lower(K key)
+        {
             return skipList.Lower(key);
-		}
+        }
 
-		public KeyValuePair<K, V> Higher(K key)
-		{
+        public KeyValuePair<K, V> Higher(K key)
+        {
             return skipList.Higher(key);
-		}
+        }
 
-		public KeyValuePair<K, V> Ceiling(K key)
-		{
+        public KeyValuePair<K, V> Ceiling(K key)
+        {
             return skipList.Ceiling(key);
-		}
+        }
 
-		public KeyValuePair<K, V> Floor(K key)
-		{
+        public KeyValuePair<K, V> Floor(K key)
+        {
             return skipList.Floor(key);
-		}
+        }
 
-		public ISortedSet<K> SortedKeySet
-		{
+        public ISortedSet<K> SortedKeySet
+        {
             get { return NavigableKeySet; }
-		}
+        }
 
         public INavigableSet<K> NavigableKeySet
         {
@@ -97,43 +97,43 @@ namespace Commons.Collections.Map
             }
         }
 
-		public KeyValuePair<K, V> Max
-		{
+        public KeyValuePair<K, V> Max
+        {
             get { return skipList.Max; }
-		}
+        }
 
-		public KeyValuePair<K, V> Min
-		{
+        public KeyValuePair<K, V> Min
+        {
             get { return skipList.Min; }
-		}
+        }
 
-		public void RemoveMax()
-		{
+        public void RemoveMax()
+        {
             skipList.RemoveMax();
-		}
+        }
 
-		public void RemoveMin()
-		{
+        public void RemoveMin()
+        {
             skipList.RemoveMin();
-		}
+        }
 
         public bool IsEmpty
         {
             get { return skipList.IsEmpty; }
         }
 
-		public void Add(K key, V value)
-		{
-			skipList.Add(key, value);
-		}
+        public void Add(K key, V value)
+        {
+            skipList.Add(key, value);
+        }
 
-		public bool ContainsKey(K key)
-		{
-			return skipList.Contains(key);
-		}
+        public bool ContainsKey(K key)
+        {
+            return skipList.Contains(key);
+        }
 
-		public ICollection<K> Keys
-		{
+        public ICollection<K> Keys
+        {
             get
             {
                 var keys = new List<K>();
@@ -144,30 +144,30 @@ namespace Commons.Collections.Map
 
                 return keys;
             }
-		}
+        }
 
-		public bool Remove(K key)
-		{
-			return skipList.Remove(key);
-		}
+        public bool Remove(K key)
+        {
+            return skipList.Remove(key);
+        }
 
-		public bool TryGetValue(K key, out V value)
-		{
-			var exist = false;
-			if (skipList.Contains(key))
-			{
-				value = skipList[key];
-				exist = true;
-			}
-			else
-			{
-				value = default(V);
-			}
-			return exist;
-		}
+        public bool TryGetValue(K key, out V value)
+        {
+            var exist = false;
+            if (skipList.Contains(key))
+            {
+                value = skipList[key];
+                exist = true;
+            }
+            else
+            {
+                value = default(V);
+            }
+            return exist;
+        }
 
-		public ICollection<V> Values
-		{
+        public ICollection<V> Values
+        {
             get
             {
                 var values = new List<V>();
@@ -177,32 +177,32 @@ namespace Commons.Collections.Map
                 }
                 return values;
             }
-		}
+        }
 
-		public V this[K key]
-		{
-			get
-			{
-				return skipList[key];
-			}
-			set
-			{
-				skipList[key] = value;
-			}
-		}
+        public V this[K key]
+        {
+            get
+            {
+                return skipList[key];
+            }
+            set
+            {
+                skipList[key] = value;
+            }
+        }
 
-		public void Add(KeyValuePair<K, V> item)
-		{
-			skipList.Add(item.Key, item.Value);
-		}
+        public void Add(KeyValuePair<K, V> item)
+        {
+            skipList.Add(item.Key, item.Value);
+        }
 
-		public void Clear()
-		{
-			skipList.Clear();
-		}
+        public void Clear()
+        {
+            skipList.Clear();
+        }
 
-		public bool Contains(KeyValuePair<K, V> item)
-		{
+        public bool Contains(KeyValuePair<K, V> item)
+        {
             var contains = false;
             if (skipList.Contains(item.Key))
             {
@@ -211,139 +211,139 @@ namespace Commons.Collections.Map
             }
 
             return contains;
-		}
+        }
 
-		public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
-		{
+        public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
+        {
             array.ValidateNotNull("The array to copy to is null.");
             var i = 0;
             foreach (var item in skipList)
             {
                 array[arrayIndex + (i++)] = new KeyValuePair<K, V>(item.Key, item.Value);
             }
-		}
+        }
 
-		public int Count
-		{
-			get { return skipList.Count; }
-		}
+        public int Count
+        {
+            get { return skipList.Count; }
+        }
 
-		public bool IsReadOnly
-		{
-			get { return false; }
-		}
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
 
-		public bool Remove(KeyValuePair<K, V> item)
-		{
+        public bool Remove(KeyValuePair<K, V> item)
+        {
             var removed = false;
             if (Contains(item))
             {
                 removed = Remove(item.Key);
             }
             return removed;
-		}
+        }
 
-		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
-		{
-			return skipList.GetEnumerator();
-		}
+        public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
+        {
+            return skipList.GetEnumerator();
+        }
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-		void ICollection.CopyTo(Array array, int index)
-		{
+        void ICollection.CopyTo(Array array, int index)
+        {
             array.ValidateNotNull("The array to copy to is null.");
             var itemArray = array as KeyValuePair<K, V>[];
             CopyTo(itemArray, index);
-		}
+        }
 
-		bool ICollection.IsSynchronized
-		{
+        bool ICollection.IsSynchronized
+        {
             get { return false; }
-		}
+        }
 
-		object ICollection.SyncRoot
-		{
+        object ICollection.SyncRoot
+        {
             get { throw new NotSupportedException("The operation is not supported in Commons.Collections."); }
-		}
+        }
 
 
-		IEnumerable<K> IReadOnlyDictionary<K, V>.Keys
-		{
-			get { return Keys; }
-		}
+        IEnumerable<K> IReadOnlyDictionary<K, V>.Keys
+        {
+            get { return Keys; }
+        }
 
-		IEnumerable<V> IReadOnlyDictionary<K, V>.Values
-		{
-			get { return Values; }
-		}
+        IEnumerable<V> IReadOnlyDictionary<K, V>.Values
+        {
+            get { return Values; }
+        }
 
-		void IDictionary.Add(object key, object value)
-		{
-			Add((K)key, (V)value);
-		}
+        void IDictionary.Add(object key, object value)
+        {
+            Add((K)key, (V)value);
+        }
 
-		bool IDictionary.Contains(object key)
-		{
-			return ContainsKey((K)key);
-		}
+        bool IDictionary.Contains(object key)
+        {
+            return ContainsKey((K)key);
+        }
 
-		IDictionaryEnumerator IDictionary.GetEnumerator()
-		{
-			return new MapEnumerator<K, V>(this);
-		}
+        IDictionaryEnumerator IDictionary.GetEnumerator()
+        {
+            return new MapEnumerator<K, V>(this);
+        }
 
-		bool IDictionary.IsFixedSize
-		{
-			get { return false; }
-		}
+        bool IDictionary.IsFixedSize
+        {
+            get { return false; }
+        }
 
-		ICollection IDictionary.Keys
-		{
-			get
-			{
-				var col = new ArrayList();
-				foreach(var k in Keys)
-				{
-					col.Add(k);
-				}
+        ICollection IDictionary.Keys
+        {
+            get
+            {
+                var col = new ArrayList();
+                foreach(var k in Keys)
+                {
+                    col.Add(k);
+                }
 
-				return col;
-			}
-		}
+                return col;
+            }
+        }
 
-		void IDictionary.Remove(object key)
-		{
-			Remove((K)key);
-		}
+        void IDictionary.Remove(object key)
+        {
+            Remove((K)key);
+        }
 
-		ICollection IDictionary.Values
-		{
-			get
-			{
-				var col = new ArrayList();
-				foreach(var v in Values)
-				{
-					col.Add(v);
-				}
+        ICollection IDictionary.Values
+        {
+            get
+            {
+                var col = new ArrayList();
+                foreach(var v in Values)
+                {
+                    col.Add(v);
+                }
 
-				return col;
-			}
-		}
+                return col;
+            }
+        }
 
-		object IDictionary.this[object key]
-		{
-			get
-			{
-				return this[(K)key];
-			}
-			set
-			{
-				this[(K)key] = (V)value;
-			}
-		}
-	}
+        object IDictionary.this[object key]
+        {
+            get
+            {
+                return this[(K)key];
+            }
+            set
+            {
+                this[(K)key] = (V)value;
+            }
+        }
+    }
 }

@@ -23,28 +23,28 @@ namespace Commons.Collections.Map
     [CLSCompliant(true)]
     public interface IMultiValueMap<K, V> : ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
-		void Add(K key, V value);
+        void Add(K key, V value);
 
-		void Add(K key, ICollection<V> values);
+        void Add(K key, ICollection<V> values);
 
-		bool Remove(K key);
+        bool Remove(K key);
 
         bool RemoveValue(K key, V value);
 
-		bool ContainsKey(K key);
+        bool ContainsKey(K key);
 
         bool ContainsValue(K key, V value);
 
-		bool TryGetValue(K key, out List<V> values);
+        bool TryGetValue(K key, out List<V> values);
 
         int CountOf(K key);
 
-		int KeyCount { get; }
+        int KeyCount { get; }
 
-		ICollection<V> this[K key] { get; }
+        ICollection<V> this[K key] { get; }
 
-		ICollection<K> Keys { get; }
+        ICollection<K> Keys { get; }
 
-		ICollection<V> Values { get; }
+        ICollection<V> Values { get; }
     }
 }

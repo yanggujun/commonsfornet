@@ -51,13 +51,13 @@ namespace Commons.Collections.Set
         public SkipListSet(IEnumerable<T> source, Comparison<T> comparer)
             : this(comparer)
         {
-			if (source != null)
-			{ 
-				foreach (var item in source)
-				{
-					Add(item);
-				}
-			}
+            if (source != null)
+            { 
+                foreach (var item in source)
+                {
+                    Add(item);
+                }
+            }
         }
 
         public SkipListSet(Comparison<T> comparer)
@@ -177,13 +177,13 @@ namespace Commons.Collections.Set
 
         protected override IEnumerable<T> Items
         {
-			get
-			{
-				foreach (var item in skipList)
-				{
-					yield return item.Key;
-				}
-			}
+            get
+            {
+                foreach (var item in skipList)
+                {
+                    yield return item.Key;
+                }
+            }
         }
     }
 }

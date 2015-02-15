@@ -67,17 +67,17 @@ namespace Commons.Collections.Queue
 
         public T ExtractTop()
         {
-			TopNode.Validate(x => x != null, new ArgumentException("The collection is empty."));
+            TopNode.Validate(x => x != null, new ArgumentException("The collection is empty."));
             var top = TopNode;
             if (top != null)
             {
                 if (top.Child != null)
                 {
-					var children = GetSiblingsOf(top.Child);
+                    var children = GetSiblingsOf(top.Child);
                     foreach (var childNode in children)
                     {
                         AddNode(childNode, TopNode);
-						childNode.Parent = null;
+                        childNode.Parent = null;
                     }
                 }
                 RemoveNode(top);
@@ -98,122 +98,122 @@ namespace Commons.Collections.Queue
 
         public int Count { get; private set; }
 
-		public bool IsEmpty { get { return TopNode == null; } }
+        public bool IsEmpty { get { return TopNode == null; } }
 
         public IEnumerator<T> GetEnumerator()
         {
-			return Items.GetEnumerator();
+            return Items.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-			return GetEnumerator();
+            return GetEnumerator();
         }
 
-		private IEnumerable<T> Items
-		{
-			get
-			{
-				if (TopNode != null)
-				{
-					foreach(var node in TopNode.Relatives)
-					{
-						yield return node.Value;
-					}
-				}
-			}
-		}
+        private IEnumerable<T> Items
+        {
+            get
+            {
+                if (TopNode != null)
+                {
+                    foreach(var node in TopNode.Relatives)
+                    {
+                        yield return node.Value;
+                    }
+                }
+            }
+        }
 
-		/// <summary>
-		/// Adds a node <paramref name="node"/> to <paramref name="header"/>
-		/// </summary>
-		/// <param name="node">The node to add.</param>
-		/// <param name="header">The header.</param>
+        /// <summary>
+        /// Adds a node <paramref name="node"/> to <paramref name="header"/>
+        /// </summary>
+        /// <param name="node">The node to add.</param>
+        /// <param name="header">The header.</param>
         private static void AddNode(FiboNode node, FiboNode header)
         {
-			node.Right = header;
+            node.Right = header;
             node.Left = header.Left;
             header.Left.Right = node;
             header.Left = node;
         }
 
-		/// <summary>
-		/// Removes the <paramref name="node"/> from its list.
-		/// </summary>
-		/// <param name="node">The node.</param>
+        /// <summary>
+        /// Removes the <paramref name="node"/> from its list.
+        /// </summary>
+        /// <param name="node">The node.</param>
         private static void RemoveNode(FiboNode node)
         {
             node.Left.Right = node.Right;
             node.Right.Left = node.Left;
         }
 
-		private List<FiboNode> GetSiblingsOf(FiboNode node)
-		{
-			var siblings = new List<FiboNode>();
-			foreach(var n in node.Siblings)
-			{
-				siblings.Add(n);
-			}
+        private List<FiboNode> GetSiblingsOf(FiboNode node)
+        {
+            var siblings = new List<FiboNode>();
+            foreach(var n in node.Siblings)
+            {
+                siblings.Add(n);
+            }
 
-			return siblings;
-		}
+            return siblings;
+        }
 
         private void Consolidate()
         {
             var upperBound = Convert.ToInt32(Math.Floor(Math.Log(Count, FiboRatio)));
             var nodeArray = new FiboNode[upperBound];
-			var rootNodes = GetSiblingsOf(TopNode);
+            var rootNodes = GetSiblingsOf(TopNode);
             foreach (var node in rootNodes)
             {
                 var degree = node.Degree;
-				var x = node;
+                var x = node;
                 while (nodeArray[degree] != null)
                 {
                     var another = nodeArray[degree];
                     if (comparer(x.Value, another.Value))
                     {
-						MakeChild(another, x);
+                        MakeChild(another, x);
                     }
-					else
-					{
-						MakeChild(x, another);
-						x = another;
-					}
-					nodeArray[degree] = null;
+                    else
+                    {
+                        MakeChild(x, another);
+                        x = another;
+                    }
+                    nodeArray[degree] = null;
                     degree++;
                 }
-				nodeArray[degree] = x;
+                nodeArray[degree] = x;
             }
-			TopNode = null;
-			foreach (var node in nodeArray)
-			{
-				if (node != null)
-				{
-					if (TopNode == null)
-					{
-						node.Left = node.Right = node;
-						TopNode = node;
-					}
-					else
-					{
-						AddNode(node, TopNode);
-						if (comparer(node.Value, TopNode.Value))
-						{
-							TopNode = node;
-						}
-					}
-				}
-			}
+            TopNode = null;
+            foreach (var node in nodeArray)
+            {
+                if (node != null)
+                {
+                    if (TopNode == null)
+                    {
+                        node.Left = node.Right = node;
+                        TopNode = node;
+                    }
+                    else
+                    {
+                        AddNode(node, TopNode);
+                        if (comparer(node.Value, TopNode.Value))
+                        {
+                            TopNode = node;
+                        }
+                    }
+                }
+            }
         }
 
-		/// <summary>
-		/// Makes the <paramref name="child"/> to its new <param name="parent"/>
-		/// </summary>
-		/// <param name="child">The child.</param>
-		/// <param name="parent">The parent.</param>
+        /// <summary>
+        /// Makes the <paramref name="child"/> to its new <param name="parent"/>
+        /// </summary>
+        /// <param name="child">The child.</param>
+        /// <param name="parent">The parent.</param>
         private void MakeChild(FiboNode child, FiboNode parent)
         {
-			RemoveNode(child);
+            RemoveNode(child);
             if (parent.Child == null)
             {
                 parent.Child = child;
@@ -223,13 +223,13 @@ namespace Commons.Collections.Queue
             {
                 AddNode(child, parent.Child);
             }
-			child.Parent = parent;
-			parent.Degree++;
-			child.Mark = false;
+            child.Parent = parent;
+            parent.Degree++;
+            child.Mark = false;
         }
 
 #if DEBUG
-		[DebuggerDisplay("Value = {Value}, Right = {Right.Value}")]
+        [DebuggerDisplay("Value = {Value}, Right = {Right.Value}")]
 #endif
         private class FiboNode
         {
@@ -264,29 +264,29 @@ namespace Commons.Collections.Queue
                 }
             }
 
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <remarks>The relatives include the current node and its children.</remarks>
-			public IEnumerable<FiboNode> Relatives
-			{
-				get
-				{
-					var cursor = this;
-					do
-					{
-						yield return cursor;
-						if (cursor.Child != null)
-						{
-							foreach (var child in cursor.Child.Relatives)
-							{
-								yield return child;
-							}
-						}
-						cursor = cursor.Right;
-					} while (!ReferenceEquals(cursor, this));
-				}
-			}
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>The relatives include the current node and its children.</remarks>
+            public IEnumerable<FiboNode> Relatives
+            {
+                get
+                {
+                    var cursor = this;
+                    do
+                    {
+                        yield return cursor;
+                        if (cursor.Child != null)
+                        {
+                            foreach (var child in cursor.Child.Relatives)
+                            {
+                                yield return child;
+                            }
+                        }
+                        cursor = cursor.Right;
+                    } while (!ReferenceEquals(cursor, this));
+                }
+            }
         }
     }
 }

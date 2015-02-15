@@ -38,11 +38,11 @@ namespace Commons.Collections.Map
         protected int Capacity { get; set; }
         protected int Threshold { get; set; }
         protected HashEntry[] Entries { get; set; }
-		protected readonly Equator<K> IsEqual;
+        protected readonly Equator<K> IsEqual;
 
         protected AbstractHashedMap(int capacity, Equator<K> isEqual)
         {
-			capacity.Validate(x => x > 0, new ArgumentException("Capacity must be larger than 0."));
+            capacity.Validate(x => x > 0, new ArgumentException("Capacity must be larger than 0."));
             Guarder.CheckNull(isEqual);
             Count = 0;
             this.Capacity = CalculateCapacity(capacity);
@@ -71,7 +71,7 @@ namespace Commons.Collections.Map
         public virtual bool ContainsKey(K key)
         {
             Guarder.CheckNull(key);
-			var entry = GetEntry(key);
+            var entry = GetEntry(key);
 
             return entry != null;
         }
@@ -170,11 +170,11 @@ namespace Commons.Collections.Map
         {
             get
             {
-				return Get(key);
+                return Get(key);
             }
             set
             {
-				Set(key, value);
+                Set(key, value);
             }
         }
 
@@ -240,35 +240,35 @@ namespace Commons.Collections.Map
 
         protected IEnumerable<KeyValuePair<K, V>> Items
         {
-			get
-			{
-				foreach (var entry in Entries)
-				{
-					var item = entry;
-					while (null != item)
-					{
-						yield return new KeyValuePair<K, V>(item.Key, item.Value);
-						item = item.Next;
-					}
-				}
-			}
+            get
+            {
+                foreach (var entry in Entries)
+                {
+                    var item = entry;
+                    while (null != item)
+                    {
+                        yield return new KeyValuePair<K, V>(item.Key, item.Value);
+                        item = item.Next;
+                    }
+                }
+            }
         }
 
-		protected virtual V Get(K key)
-		{ 
+        protected virtual V Get(K key)
+        { 
             Guarder.CheckNull(key);
-			var entry = GetEntry(key);
-			entry.Validate(x => x != null, new KeyNotFoundException(string.Format("The key {0} does not exist in the map. ", key)));
+            var entry = GetEntry(key);
+            entry.Validate(x => x != null, new KeyNotFoundException(string.Format("The key {0} does not exist in the map. ", key)));
             return entry.Value;
-		}
+        }
 
-		protected virtual void Set(K key, V v)
-		{
+        protected virtual void Set(K key, V v)
+        {
             Guarder.CheckNull(key);
-			var entry = GetEntry(key);
-			entry.Validate(x => x != null, new KeyNotFoundException(string.Format("The key {0} does not exist in the map. ", key)));
-			entry.Value = v;
-		}
+            var entry = GetEntry(key);
+            entry.Validate(x => x != null, new KeyNotFoundException(string.Format("The key {0} does not exist in the map. ", key)));
+            entry.Value = v;
+        }
 
         protected int CalculateCapacity(int proposedCapacity)
         {
@@ -352,12 +352,12 @@ namespace Commons.Collections.Map
             Count = 0;
             foreach (var entry in Entries)
             {
-				var item = entry;
-				while (item != null)
-				{ 
-					Put(newEntries, CreateEntry(item.Key, item.Value));
-					item = item.Next;
-				}
+                var item = entry;
+                while (item != null)
+                { 
+                    Put(newEntries, CreateEntry(item.Key, item.Value));
+                    item = item.Next;
+                }
             }
             Entries = newEntries;
         }
@@ -380,7 +380,7 @@ namespace Commons.Collections.Map
 
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
-			return new MapEnumerator<K, V>(this);
+            return new MapEnumerator<K, V>(this);
         }
 
         bool IDictionary.IsFixedSize

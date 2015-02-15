@@ -25,7 +25,7 @@ namespace Commons.Collections.Bag
     [CLSCompliant(true)]
     public class TreeBag<T> : AbstractMapBag<T>, ISortedBag<T>
     {
-		private readonly Comparison<T> comparer;
+        private readonly Comparison<T> comparer;
         public TreeBag()
             : this(Comparer<T>.Default)
         {
@@ -36,28 +36,28 @@ namespace Commons.Collections.Bag
         {
         }
 
-		public TreeBag(IComparer<T> comparer) : this(comparer.Compare)
-		{
-		}
+        public TreeBag(IComparer<T> comparer) : this(comparer.Compare)
+        {
+        }
 
-		public TreeBag(IEnumerable<T> items) : this (items, Comparer<T>.Default.Compare)
-		{
-		}
+        public TreeBag(IEnumerable<T> items) : this (items, Comparer<T>.Default.Compare)
+        {
+        }
 
         public TreeBag(IEnumerable<T> items, Comparison<T> comparer)
             : base(items, new TreeMap<T, int>(comparer))
         {
-			this.comparer = comparer;
+            this.comparer = comparer;
         }
 
         public T Max
         {
             get
             {
-				if (Map.Count <= 0)
-				{
-					throw new InvalidOperationException("The bag is empty");
-				}
+                if (Map.Count <= 0)
+                {
+                    throw new InvalidOperationException("The bag is empty");
+                }
                 return ((ISortedMap<T, int>)Map).Max.Key;
             }
         }
@@ -66,20 +66,20 @@ namespace Commons.Collections.Bag
         {
             get
             {
-				if (Map.Count <= 0)
-				{
-					throw new InvalidOperationException("The bag is empty");
-				}
+                if (Map.Count <= 0)
+                {
+                    throw new InvalidOperationException("The bag is empty");
+                }
                 return ((ISortedMap<T, int>)Map).Min.Key;
             }
         }
 
-		public override IStrictSet<T> ToUnique()
-		{
-			var keys = Map.Keys;
-			var set = new TreeSet<T>(keys, comparer);
+        public override IStrictSet<T> ToUnique()
+        {
+            var keys = Map.Keys;
+            var set = new TreeSet<T>(keys, comparer);
 
-			return set;
-		}
-	}
+            return set;
+        }
+    }
 }

@@ -93,10 +93,10 @@ namespace Commons.Collections.Collection
         /// <param name="collections"></param>
         public void AddAll(params ICollection<T>[] collections)
         {
-			foreach (var collection in collections)
-			{
-				allCollections.Add(collection);
-			}
+            foreach (var collection in collections)
+            {
+                allCollections.Add(collection);
+            }
         }
 
         public void Clear()
@@ -111,13 +111,13 @@ namespace Commons.Collections.Collection
 
         public bool Contains(T item , IEqualityComparer<T> comparer)
         {
-			Guarder.CheckNull(item, comparer);
-			return Contains(item, comparer.Equals);
+            Guarder.CheckNull(item, comparer);
+            return Contains(item, comparer.Equals);
         }
 
         public bool Contains(T item, Func<T, T, bool> isEqual)
         {
-			Guarder.CheckNull(item, isEqual);
+            Guarder.CheckNull(item, isEqual);
             bool hasItem = false;
             foreach (var c in AllCollections)
             {
@@ -136,7 +136,7 @@ namespace Commons.Collections.Collection
         /// <inheritdoc/>
         public void CopyTo(T[] array, int arrayIndex)
         {
-			Guarder.CheckNull(array);
+            Guarder.CheckNull(array);
             if (arrayIndex < 0)
             {
                 throw new ArgumentException("The arrayIndex is invalid");
@@ -273,33 +273,33 @@ namespace Commons.Collections.Collection
 
         private IEnumerable<T> Items
         {
-			get
-			{
-				foreach (var c in AllCollections)
-				{
-					var iter = c.GetEnumerator();
-					while (iter.MoveNext())
-					{
-						yield return iter.Current;
-					}
-				}
-			}
+            get
+            {
+                foreach (var c in AllCollections)
+                {
+                    var iter = c.GetEnumerator();
+                    while (iter.MoveNext())
+                    {
+                        yield return iter.Current;
+                    }
+                }
+            }
         }
 
-		public void CopyTo(Array array, int index)
-		{
-			var itemArray = array as T[];
-			CopyTo(itemArray, index);
-		}
+        public void CopyTo(Array array, int index)
+        {
+            var itemArray = array as T[];
+            CopyTo(itemArray, index);
+        }
 
-		public bool IsSynchronized
-		{
-			get { return false; }
-		}
+        public bool IsSynchronized
+        {
+            get { return false; }
+        }
 
-		public object SyncRoot
-		{
-			get { throw new NotSupportedException("The SyncRoot is not supported in the Commons.Collections"); }
-		}
-	}
+        public object SyncRoot
+        {
+            get { throw new NotSupportedException("The SyncRoot is not supported in the Commons.Collections"); }
+        }
+    }
 }

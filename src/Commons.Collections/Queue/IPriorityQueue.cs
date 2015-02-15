@@ -20,17 +20,17 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Queue
 {
-	[CLSCompliant(true)]
-	public interface IPriorityQueue<T> : IEnumerable<T>, IEnumerable
-	{
+    [CLSCompliant(true)]
+    public interface IPriorityQueue<T> : IEnumerable<T>, IEnumerable
+    {
         int Count { get; }
 
-		bool IsEmpty { get; }
+        bool IsEmpty { get; }
 
-		T Top { get; }
+        T Top { get; }
 
-		void Push(T item);
+        void Push(T item);
 
-		T Pop();
-	}
+        T Pop();
+    }
 }

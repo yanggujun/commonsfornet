@@ -22,22 +22,22 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-	public class ReferenceMap<K, V> : AbstractHashedMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
-	{
-		private const int DefaultCapacity = 16;
-		private static readonly Equator<K> referenceEquator = (x1, x2) => ReferenceEquals(x1, x2);
-		public ReferenceMap() : base(DefaultCapacity, referenceEquator)
-		{
-		}
+    public class ReferenceMap<K, V> : AbstractHashedMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
+    {
+        private const int DefaultCapacity = 16;
+        private static readonly Equator<K> referenceEquator = (x1, x2) => ReferenceEquals(x1, x2);
+        public ReferenceMap() : base(DefaultCapacity, referenceEquator)
+        {
+        }
 
-		public ReferenceMap(int capacity) : base(capacity, referenceEquator)
-		{
-		}
+        public ReferenceMap(int capacity) : base(capacity, referenceEquator)
+        {
+        }
 
-		protected override long HashIndex(K key)
-		{
-			var hash = RuntimeHelpers.GetHashCode(key);
-			return hash & (Capacity - 1);
-		}
-	}
+        protected override long HashIndex(K key)
+        {
+            var hash = RuntimeHelpers.GetHashCode(key);
+            return hash & (Capacity - 1);
+        }
+    }
 }
