@@ -8,7 +8,11 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>.NET Commons Library</description>
+    <description>.NET Commons Library. </description>
+    <summary>
+        1. C# language utilties in Commons.Utils 
+        2. Commons.Collections provides the extended collection implementation based on System.Collections.Generics. It includes sorted map, hashed map, navigable map, bidirectional map, multi value map, priority queue, hashed set, sorted set, navigable set and bags. 
+        3. Commons.Json provides a JSON parser to dynamically manipulate json object with the power of "dynamic" keyword in .net.</summary>
     <releaseNotes>Initial release</releaseNotes>
     <copyright>Copyright 2015</copyright>
   </metadata>
