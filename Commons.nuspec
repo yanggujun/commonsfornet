@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Commons</id>
+    <version>0.1.0.000</version>
+    <authors>yanggujun</authors>
+    <owners>yanggujun</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>.NET Commons Library</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+  </metadata>
+  <files>
+      <file src="src\bin\Commons.Utils.dll" target="lib\net451\" />
+      <file src="src\bin\Commons.Collections.dll" target="lib\net451\" />
+      <file src="src\bin\Commons.Json.dll" target="lib\net451\" />
+  </files>
+</package>
