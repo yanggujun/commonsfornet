@@ -10,104 +10,104 @@ Initial release for .NET Commons Library.
 
 #####Commons.Utils
 
-  -Supported hash functions: 
+  * __Supported hash functions__
 
     Murmur hash 32bit
     
     Fnv hash
     
-  -Functors
+  * __Functors__
   
-    --Equator
+    * Equator
     
-    --Closure
+    * Closure
     
-    --Transformer
+    * Transformer
     
-    --Factory
+    * Factory
     
-  -Guarder, A common utility to check parameters
+  * __Guarder__, A common utility to check parameters
   
 #####Commons.Collections
 
-  -HashedMap, a hash map (dictionary)
+  * __HashedMap__, a hash map (dictionary)
   
-  -Customized32HashedMap, a hash map (dictionary) whose hash function can be defined other than using Object.GetHashCode()
+  * __Customized32HashedMap__, a hash map (dictionary) whose hash function can be defined other than using Object.GetHashCode()
   
-  -TreeMap, a sorted map (dictionary). The map is navigable.
+  * __TreeMap__, a sorted map (dictionary). The map is navigable.
   
-  -SkipListMap, a sorted map (dictionary). The map is navigable.
+  * __SkipListMap__, a sorted map (dictionary). The map is navigable.
   
-  -LruMap, a hash map (dictionary) implemented with least recently used algorithm. The map size is bounded and the oldest item is removed when the map size is full.
+  * __LruMap__, a hash map (dictionary) implemented with least recently used algorithm. The map size is bounded and the oldest item is removed when the map size is full.
   
-  -ReferenceMap, a map (dictionary) only takes the object reference value for hash.
+  * __ReferenceMap__, a map (dictionary) only takes the object reference value for hash.
   
-  -LinkedHashedMap, an ordered map (dictionary) which remembers the adding sequence of the items.
+  * __LinkedHashedMap__, an ordered map (dictionary) which remembers the adding sequence of the items.
   
-  -HashedBimap, an unsorted bidirectional map. A bidirectional map is a map which can be used to find a value from a key and a key from a value.
+  * __HashedBimap__, an unsorted bidirectional map. A bidirectional map is a map which can be used to find a value from a key and a key from a value.
   
-  -TreeBimap, a sorted bidirectional map. 
+  * __TreeBimap__, a sorted bidirectional map. 
   
-  -MultiValueHashedMap, a unsorted map which multiple values are available for a given key.
+  * __MultiValueHashedMap__, an unsorted map which multiple values are available for a given key.
   
-  -MultiValueTreeMap, a sorted multi value map.
+  * __MultiValueTreeMap__, a sorted multi value map.
   
-  -HashedBag, a bag containing the unsorted items. A bag is a collection that allows duplicate values.
+  * __HashedBag__, a bag containing the unsorted items. A bag is a collection that allows duplicate values.
   
-  -TreeBag, a bag containing the sorted items.
+  * __TreeBag__, a bag containing the sorted items.
   
-  -Deque, a double ended queue.
+  * __Deque__, a double ended queue.
   
-  -MaxPriorityQueue, a priority queue where the maximum item is at the top.
+  * __MaxPriorityQueue__, a priority queue where the maximum item is at the top.
   
-  -MinPriorityQueue, a priority queue where the minimum item is at the top.
+  * __MinPriorityQueue__, a priority queue where the minimum item is at the top.
   
-  -BoundedQueue, a FIFO queue with a maximum size.
+  * __BoundedQueue__, a FIFO queue with a maximum size.
   
-  -HashedSet, a set with unsorted items. It's a set strictly follows the definition in math.
+  * __HashedSet__, a set with unsorted items. It's a set strictly follows the definition in math.
   
-  -TreeSet, a set with sorted items. It's a set strictly follows the definition in math.
+  * __TreeSet__, a set with sorted items. It's a set strictly follows the definition in math.
   
-  -SkipListSet, a set with sorted items. It's a set strictly follows the definition in math.
+  * __SkipListSet__, a set with sorted items. It's a set strictly follows the definition in math.
   
 #####Commons.Json
 
-  -A JSON parser and composer with the power of "dynamic" keyword.
+  * A JSON parser and composer with the power of "dynamic" keyword.
   
-  -usage:
+  * usage:
   
-    given the following json text:
+      given the following json text:
     
-    var text = @'
-    {
+      var text = @'
+      {
     
-      "EPL": 
+        "EPL": 
       
-        {
+          {
         
-          "ClubNumber": 20,
+            "ClubNumber": 20,
           
-          "LastChampion": "ManCity"
+            "LastChampion": "ManCity"
           
-        },
+          },
         
-      "WorldCup":
+        "WorldCup":
       
-        {
+          {
         
-          "Host": "Brazil",
+            "Host": "Brazil",
           
-          "TeamNumber": 32,
+            "TeamNumber": 32,
           
-          "Champion": "Germany"
+            "Champion": "Germany"
           
-        }
-    }';
+          }
+      }';
     
-    dynamic json = JsonObject.Parse(text);
+      dynamic json = JsonObject.Parse(text);
     
-    Console.WriteLine(json.EPL.ClubNumber); // output : 20
+      Console.WriteLine(json.EPL.ClubNumber); // output : 20
     
-    Console.WriteLine(json.WorldCup.Host); // output: Brazil
+      Console.WriteLine(json.WorldCup.Host); // output: Brazil
     
 
