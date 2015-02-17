@@ -2,8 +2,8 @@
 <package >
   <metadata>
     <id>Commons</id>
-    <version>0.1.0.001</version>
-    <authors>yanggujun</authors>
+    <version>0.1.0.002</version>
+    <authors>yanggujun, alanier@sina.cn</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
@@ -13,7 +13,7 @@
     <summary>1. Commons.Utils provides the C# language utilites.
         2. Commons.Collections provides the extended collection implementation based on System.Collections.Generics. It includes sorted map, hashed map, navigable map, bidirectional map, multi value map, priority queue, hashed set, sorted set, navigable set and bags. 
         3. Commons.Json provides a JSON parser and composer to dynamically manipulate json object with the power of "dynamic" keyword in .net.</summary>
-    <releaseNotes>Initial release</releaseNotes>
+    <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
     <copyright>Copyright 2015 apache license V2</copyright>
     <tags>Commons.Utils Commons.Collections Commons.Json SortedMap NavigableMap OrderedMap LRUMap BidirectionalMap MultiValueMap SortedSet NavigableSet PriorityQueue TreeBag HashedBag MurmurHash FnvHash</tags>
   </metadata>

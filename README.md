@@ -10,7 +10,15 @@ The nuget package could be retrieved from
 https://www.nuget.org/packages/Commons/
 
 Or on nuget package manager console type:
+
 PM> Install-Package Commons
+
+###Issues
+Please report issues to 
+
+https://github.com/yanggujun/commonsfornet/issues
+
+or send an email to: alanier@sina.cn
 
 ###Release Notes V0.1.0
 
