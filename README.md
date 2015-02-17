@@ -1,14 +1,22 @@
 ##.NET Commons Library
 
-####About
+###About
 
-.NET Commons Library is intented to build common components for .NET applications. It is originally inspired by the apache commons implementation for java applications. The .NET Commons Library will be implemented according to the components in apache commons but will not be limited to it.
+.NET Commons Library is intended to build common components for .NET applications. It is originally inspired by the apache commons implementation for java applications. The .NET Commons Library will be implemented according to the components in apache commons but will not be limited to it.
 
-####Release Notes V0.1.0
+###Installation
+The nuget package could be retrieved from
 
-Initial release for .NET Commons Library.
+https://www.nuget.org/packages/Commons/
 
-#####Commons.Utils
+Or on nuget package manager console type:
+PM> Install-Package Commons
+
+###Release Notes V0.1.0
+
+Initial release for .NET Commons Library. Support .NET framework 4.5 and later.
+
+####Commons.Utils
 
   * __Supported hash functions__
 
@@ -28,7 +36,7 @@ Initial release for .NET Commons Library.
     
   * __Guarder__, A common utility to check parameters
   
-#####Commons.Collections
+####Commons.Collections
 
   * __HashedMap__, a hash map (dictionary)
   
@@ -70,11 +78,11 @@ Initial release for .NET Commons Library.
   
   * __SkipListSet__, a set with sorted items. It's a set strictly follows the definition in math.
   
-#####Commons.Json
+####Commons.Json
 
   * A JSON parser and composer with the power of "dynamic" keyword.
   
-  * usage:
+  * Parse a JSON string:
   
       given the following json text:
     
@@ -109,5 +117,14 @@ Initial release for .NET Commons Library.
       Console.WriteLine(json.EPL.ClubNumber); // output : 20
     
       Console.WriteLine(json.WorldCup.Host); // output: Brazil
-    
+
+  * Compose a JSON string:
+
+      dynamic json = new JsonObject();
+
+      json.EPL.ClubNumber = 20;
+
+      json.EPL.LastChampion = ManCity;
+
+      Console.WriteLine(json) // output : { "EPL": { "ClubNumber": 20, "LastChampion": "ManCity"} } 
 
