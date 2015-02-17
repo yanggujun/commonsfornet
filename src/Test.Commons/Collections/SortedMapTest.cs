@@ -1063,6 +1063,20 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
+        public void TestTreeMapSetNotExistingValue()
+        {
+            var map = new TreeMap<Order, Bill>(new OrderComparer());
+            map.MapSetNotExistingValue();
+        }
+
+        [Fact]
+        public void TestSkipListMapSetNotExistingValue()
+        {
+            var map = new SkipListMap<Order, Bill>(new OrderComparer());
+            map.MapSetNotExistingValue();
+        }
+
+        [Fact]
         public void TestTreeMapAddRemoveKvp()
         {
             var orderMap = new TreeMap<Order, Bill>(new OrderComparer());

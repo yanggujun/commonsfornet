@@ -65,7 +65,6 @@ namespace Commons.Collections.Map
                     Rehash();
                 }
             }
-
         }
 
         public virtual bool ContainsKey(K key)
@@ -266,8 +265,14 @@ namespace Commons.Collections.Map
         {
             Guarder.CheckNull(key);
             var entry = GetEntry(key);
-            entry.Validate(x => x != null, new KeyNotFoundException(string.Format("The key {0} does not exist in the map. ", key)));
-            entry.Value = v;
+            if (entry == null)
+            {
+                Add(key, v);
+            }
+            else
+            {
+                entry.Value = v;
+            }
         }
 
         protected int CalculateCapacity(int proposedCapacity)

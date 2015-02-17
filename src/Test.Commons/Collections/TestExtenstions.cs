@@ -186,5 +186,22 @@ namespace Test.Commons.Collections
 
             Assert.Equal(default(T), array[count + 2]);
         }
+
+        public static void MapSetNotExistingValue(this IDictionary<Order, Bill> map)
+        {
+            for (var i = 0; i < 1000; i++)
+            {
+                var order = new Order() { Id = i, Name = Guid.NewGuid().ToString() };
+                map.Add(order, new Bill() { Id = i, Count = i });
+            }
+
+            for (var i = 1000; i < 1100; i++)
+            {
+                var newOrder = new Order { Id = i };
+                map[newOrder] = new Bill { Id = i };
+                Assert.Equal(i + 1, map.Count);
+                Assert.Equal(new Bill { Id = i }, map[newOrder], new BillEqualityComparer());
+            }
+        }
     }
 }
