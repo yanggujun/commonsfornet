@@ -4,6 +4,9 @@
 
 .NET Commons Library is intended to build common components for .NET applications. It is originally inspired by the apache commons implementation for java applications. The .NET Commons Library will be implemented according to the components in apache commons but will not be limited to it.
 
+###License
+Apache License v2.0
+
 ###Installation
 The nuget package could be retrieved from
 
@@ -91,6 +94,7 @@ Initial release for .NET Commons Library. Support .NET framework 4.5 and later.
   * A JSON parser and composer with the power of "dynamic" keyword.
   
   * Parse a JSON string:
+  ```csharp
   
       given the following json text:
     
