@@ -49,7 +49,10 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Pool\ExceedLimitException.cs" />
     <Compile Include="Pool\IObjectPool.cs" />
+    <Compile Include="Pool\PoolConfig.cs" />
+    <Compile Include="Pool\ResourceUnavailableException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
