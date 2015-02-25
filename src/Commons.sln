@@ -32,6 +32,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03_Commons.Json", "03_Commo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.Json", "Commons.Json\Commons.Json.csproj", "{1EEB9B63-C564-4C51-A88B-5D253BC68C99}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04_Commons.Patterns", "04_Commons.Patterns", "{99B0AA79-415A-4C2D-AC5E-F092EBB630EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.Patterns", "Commons.Patterns\Commons.Patterns.csproj", "{1C0B57BF-8039-49BD-A641-6FF9E6860530}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +58,10 @@ Global
 		{1EEB9B63-C564-4C51-A88B-5D253BC68C99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EEB9B63-C564-4C51-A88B-5D253BC68C99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EEB9B63-C564-4C51-A88B-5D253BC68C99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C0B57BF-8039-49BD-A641-6FF9E6860530}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C0B57BF-8039-49BD-A641-6FF9E6860530}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C0B57BF-8039-49BD-A641-6FF9E6860530}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C0B57BF-8039-49BD-A641-6FF9E6860530}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,5 +71,6 @@ Global
 		{0564B84F-2300-42CC-97BD-50411F37FADC} = {C86E7139-E80B-4865-B621-91D32B374C84}
 		{EA220245-82AC-455E-B108-70D48F43AC2B} = {984AF548-3612-40F4-A5D9-F3AF16D2DA6A}
 		{1EEB9B63-C564-4C51-A88B-5D253BC68C99} = {657A8C3E-73F2-445E-918B-4ED95882D18F}
+		{1C0B57BF-8039-49BD-A641-6FF9E6860530} = {99B0AA79-415A-4C2D-AC5E-F092EBB630EF}
 	EndGlobalSection
 EndGlobal
