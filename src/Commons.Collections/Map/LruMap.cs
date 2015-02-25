@@ -94,9 +94,15 @@ namespace Commons.Collections.Map
         protected override void Set(K key, V v)
         {
             var entry = (LinkedHashEntry) GetEntry(key);
-            entry.Validate(x => x != null, new ArgumentException(string.Format("The key {0} does not exist in the map.", key)));
-            entry.Value = v;
-            MoveToFirst(entry);
+            if (entry == null)
+            {
+                Add(key, v);
+            }
+            else
+            {
+                entry.Value = v;
+                MoveToFirst(entry);
+            }
         }
 
         private void MoveToFirst(LinkedHashEntry entry)

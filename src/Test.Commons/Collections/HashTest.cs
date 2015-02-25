@@ -201,11 +201,24 @@ namespace Test.Commons.Collections
 
             var notExistingOrder = new Order() { Id = 10, Name = Guid.NewGuid().ToString() };
             Assert.Throws(typeof(KeyNotFoundException), () => { var v = map[notExistingOrder]; });
-            Assert.Throws(typeof(KeyNotFoundException), () => map[notExistingOrder] = new Bill());
             Assert.False(map.Remove(notExistingOrder));
 
             var existingOrder = new Order() { Id = 1, Name = "  " };
             Assert.Throws(typeof(ArgumentException), () => map.Add(existingOrder, new Bill()));
+        }
+
+        [Fact]
+        public void TestCustomizedHashedMapSetNotExistingValue()
+        {
+            var map = new Customized32HashedMap<Order, Bill>(1000, new MurmurHash32(), x => x.Id.ToString().ToBytes(), (x1, x2) => x1.Id == x2.Id);
+            map.MapSetNotExistingValue();
+        }
+
+        [Fact]
+        public void TestHashedMapSetNotExistingValue()
+        {
+            var map = new HashedMap<Order, Bill>(new OrderEqualityComparer());
+            map.MapSetNotExistingValue();
         }
 
         [Fact]

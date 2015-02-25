@@ -54,7 +54,15 @@ namespace Commons.Collections.Map
             }
             set
             {
-                GetNode(key).Value = value;
+                var node = FindNode(key);
+                if (node == null)
+                {
+                    Add(key, value);
+                }
+                else
+                {
+                    node.Value = value;
+                }
             }
         }
 

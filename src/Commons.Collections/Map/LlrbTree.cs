@@ -310,9 +310,12 @@ namespace Commons.Collections.Map
                 var found = GetNode(root, key);
                 if (null == found)
                 {
-                    throw new KeyNotFoundException(string.Format("The key {0} does not exist in the map.", key));
+                    Add(key, value);
                 }
-                found.Item = new KeyValuePair<K, V>(key, value);
+                else
+                {
+                    found.Item = new KeyValuePair<K, V>(key, value);
+                }
             }
         }
 

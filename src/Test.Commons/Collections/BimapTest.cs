@@ -220,6 +220,32 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
+        public void TestHashedBimapDictionaryIndexerSetNotExistingValue()
+        {
+            var bimap = new HashedBimap<int, int>();
+            Fill(bimap, x => x, y => y);
+            BimapDictionaryIndexerSetNotExistingValue(bimap);
+        }
+
+        [Fact]
+        public void TestTreeBimapDictionaryIndexerSetNotExistingValue()
+        {
+            var bimap = new TreeBimap<int, int>();
+            Fill(bimap, x => x, y => y);
+            BimapDictionaryIndexerSetNotExistingValue(bimap);
+        }
+
+        private void BimapDictionaryIndexerSetNotExistingValue(IDictionary<int, int> bimap)
+        {
+            for (var i = 10000; i < 15000; i++)
+            {
+                bimap[i] = i;
+                Assert.Equal(i, bimap[i]);
+                Assert.Equal(i + 1, bimap.Count);
+            }
+        }
+
+        [Fact]
         public void TestHashBimapCollectionRemove()
         {
             var bimap = new HashedBimap<Order, Bill>(new OrderEqualityComparer(), new BillEqualityComparer());
@@ -349,8 +375,6 @@ namespace Test.Commons.Collections
 
             map[1] = 2;
             Assert.Equal(9999, map.Count);
-
-            Assert.Throws(typeof(KeyNotFoundException), () => map[-1] = 3);
         }
 
         private void BimapIndexer(IBimap<int, int> bimap)

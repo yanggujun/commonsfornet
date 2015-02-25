@@ -249,16 +249,18 @@ namespace Commons.Collections.Map
             }
         }
 
+        /// <summary>
+        /// When setting the value to a key, if the key or value already exists, the operation is equivalent to 
+        /// <see cref="IBimap.Enforce"/>. If neither key or value exists, a new key value pair is added to the bimap.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>The value of the key.</returns>
         public V this[K key]
         {
             get { return ValueOf(key); }
             set
             {
                 key.ValidateNotNull("The key is null!");
-                if (!KeyValue.ContainsKey(key))
-                {
-                    throw new KeyNotFoundException("The key is not found in the bimap.");
-                }
                 Enforce(key, value);
             }
         }
