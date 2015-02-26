@@ -8,12 +8,12 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>.NET Commons Library is originally inspired by the apache commons implementation for java applications. It provides the basic components for .NET applications.
+    <description>.NET Commons Library is originally inspired by the "apache commons project" for java applications. It is intended to provide the common components and enterprise application facility for .NET applications.
     </description>
-    <summary>1. Commons.Utils provides the basica utilites for .NET applications. 2. Commons.Collections provides the extended collection implementation based on System.Collections.Generics. It includes sorted map, hashed map, navigable map, bidirectional map, multi value map, priority queue, hashed set, sorted set, navigable set and bags. 3. Commons.Json provides a JSON parser and composer to dynamically manipulate json object with the power of "dynamic" keyword in .net.</summary>
+    <summary>1. Commons.Utils provides the basica utilites for .NET applications and tow hash functions: MurmurHash3 32bit, FNV hash 32bit. 2. Commons.Collections provides the extended collection implementation based on System.Collections.Generics. It includes TreeBag, HashedBag, CompositeCollection, Cutomized32HashedMap, HashedBimap, LinkedHashedMap, LruMap, MultiValueHashedMap, MultiValueTreeMap, ReferenceMap, SkipListMap, TreeBimap, TreeMap, BoundedQueue, MaxPriorityQueue, MinPriorityQueue, HashedSet, SkipListSet, TreeSet. 3. Commons.Json provides a JSON parser and composer to dynamically manipulate json object with the power of "dynamic" keyword in .net. 4. Please report issues to https://github.com/yanggujun/commonsfornet/issues</summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
-    <copyright>Copyright 2015 Apache License V2</copyright>
-    <tags>Commons.Utils Commons.Collections Commons.Json tree map navigable sorted ordered lru least recently used bidirectional multi set priority queue bag hash murmur fnv deque</tags>
+    <copyright>Copyright 2015 Apache License v2</copyright>
+    <tags>Commons.Utils Commons.Collections Commons.Json map dictionary tree navigable sorted ordered reference lru least recently used bidirectional multi set priority queue bag hash murmur fnv deque</tags>
   </metadata>
   <files>
       <file src="src\bin\Commons.Utils.dll" target="lib\net45\" />

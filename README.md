@@ -2,12 +2,14 @@
 
 ###About
 
-.NET Commons Library is intended to build common components for .NET applications. It is originally inspired by the apache commons implementation for java applications. The .NET Commons Library will be implemented according to the components in apache commons but will not be limited to it.
+.NET Commons Library is originally inspired by the "apache commons project" for java applications. It is intended to provide the common components and basica application facility for .NET applications.
 
 ###License
+
 Apache License v2.0
 
 ###Installation
+
 The nuget package could be retrieved from
 
 https://www.nuget.org/packages/Commons/
@@ -17,6 +19,7 @@ Or on nuget package manager console type:
 PM> Install-Package Commons
 
 ###Issues
+
 Please report issues to 
 
 https://github.com/yanggujun/commonsfornet/issues
@@ -93,50 +96,18 @@ Initial release for .NET Commons Library. Support .NET framework 4.5 and later.
 
   * A JSON parser and composer with the power of "dynamic" keyword.
   
-  * Parse a JSON string:
-  ```csharp
+  * Parse and Compose a JSON string with Commons.Json:
   
-      given the following json text:
-    
-      var text = @'
-      {
-    
-        "EPL": 
-      
-          {
-        
-            "ClubNumber": 20,
-          
-            "LastChampion": "ManCity"
-          
-          },
-        
-        "WorldCup":
-      
-          {
-        
-            "Host": "Brazil",
-          
-            "TeamNumber": 32,
-          
-            "Champion": "Germany"
-          
-          }
-      }';
-    
+  ```csharp
+      //given the following json text:
+      var text = @' { "EPL": { "ClubNumber": 20, "LastChampion": "ManCity" }, "WorldCup": { "Host": "Brazil", "TeamNumber": 32, "Champion": "Germany" } }';
       dynamic json = JsonObject.Parse(text);
-    
       Console.WriteLine(json.EPL.ClubNumber); // output : 20
-    
       Console.WriteLine(json.WorldCup.Host); // output: Brazil
 
-  * Compose a JSON string:
-
-      dynamic json = new JsonObject();
-
-      json.EPL.ClubNumber = 20;
-
-      json.EPL.LastChampion = ManCity;
-
-      Console.WriteLine(json) // output : { "EPL": { "ClubNumber": 20, "LastChampion": "ManCity"} } 
+      //Compose a JSON string:
+      dynamic jsonObj = new JsonObject();
+      jsonObj.EPL.ClubNumber = 20;
+      jsonObj.EPL.LastChampion = "ManCity";
+      Console.WriteLine(jsonObj) // output : { "EPL": { "ClubNumber": 20, "LastChampion": "ManCity"} } 
 
