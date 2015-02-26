@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -24,6 +25,7 @@ namespace Commons.Collections.Queue
 	/// can be added to and removed from both the head and tail of the queue.
 	/// </summary>
 	/// <typeparam name="T">The item type of the deque.</typeparam>
+    [CLSCompliant(true)]
 	public interface IDeque<T> : IEnumerable<T>, ICollection, IEnumerable
 	{
 		/// <summary>

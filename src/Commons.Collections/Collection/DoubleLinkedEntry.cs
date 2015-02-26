@@ -22,7 +22,7 @@ namespace Commons.Collections.Collection
 	/// <typeparam name="T">The type of the entry.</typeparam>
 	internal class DoubleLinkedEntry<T>
 	{
-		T Entry { get; set; }
+		public T Entry { get; set; }
 
 		public DoubleLinkedEntry<T> Next { get; set; }
 

@@ -18,22 +18,39 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using Commons.Collections.Collection;
+
 namespace Commons.Collections.Queue
 {
 	/// <summary>
 	/// A LinkedDeque is a deque with its entries doubly linked with their next and previous siblings.
 	/// </summary>
 	/// <typeparam name="T">The type of the item in the deque.</typeparam>
+    [CLSCompliant(true)]
 	public class LinkedDeque<T> : IDeque<T>, IEnumerable<T>, ICollection, IEnumerable
 	{
+        protected DoubleLinkedEntry<T> Header { get; private set; }
+
 		public void Append(T item)
 		{
-			throw new System.NotImplementedException();
+            if (Header == null)
+            {
+                MakeHeader(item);
+            }
+            else
+            {
+                var newEntry = new DoubleLinkedEntry<T>();
+                newEntry.Entry = item;
+                newEntry.Previous = Header.Previous;
+                Header.Previous.Next = newEntry;
+                newEntry.Next = Header;
+            }
 		}
 
 		public void Prepend(T item)
 		{
-			throw new System.NotImplementedException();
+            Append(item);
+            Header = Header.Previous;
 		}
 
 		public T Pop()
@@ -85,5 +102,13 @@ namespace Commons.Collections.Queue
 		{
 			get { throw new NotImplementedException(); }
 		}
+
+        private void MakeHeader(T item)
+        {
+            Header = new DoubleLinkedEntry<T>();
+            Header.Entry = item;
+            Header.Next = Header;
+            Header.Previous = Header;
+        }
 	}
 }
