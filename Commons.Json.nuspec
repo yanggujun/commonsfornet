@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Commons.Json</id>
+    <version>0.1.1.000</version>
+    <authors>yanggujun, alanier@sina.cn</authors>
+    <owners>yanggujun</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>.NET Commons Library is originally inspired by the Apache Commons project stack for java applications. It is intended to be .NET equivalent of Apache Commons and it is built to provide the common software components and basic application stack for developing .NET applications. The Commons.Json provides a JSON parser and composer to dynamically manipulate json object with the power of "dynamic" keyword in .net. 
+        Please report issues to https://github.com/yanggujun/commonsfornet/issues
+    </description>
+    <summary>The .NET Commons Library provides extended generic collections, utilities and the dynamic JSON parser and composer.</summary>
+    <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
+    <copyright>Copyright 2015 Apache License v2</copyright>
+    <tags>DotNet JSON</tags>
+    <dependencies>
+      <dependency id="Commons.Utils" version="0.1.1.000" />
+      <dependency id="Commons.Collections" version="0.1.1.000" />
+    </dependencies>
+  </metadata>
+  <files>
+      <file src="src\bin\Commons.Json.dll" target="lib\net45\" />
+  </files>
+</package>

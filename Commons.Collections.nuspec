@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Commons.Collections</id>
+    <version>0.1.1.000</version>
+    <authors>yanggujun, alanier@sina.cn</authors>
+    <owners>yanggujun</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>.NET Commons Library is originally inspired by the Apache Commons project stack for java applications. It is intended to be .NET equivalent of Apache Commons and it is built to provide the common software components and basic application stack for developing .NET applications. The Commons.Collections provides the extended collection implementation based on System.Collections.Generics. It includes TreeBag, HashedBag, CompositeCollection, Cutomized32HashedMap, HashedBimap, LinkedHashedMap, LruMap, MultiValueHashedMap, MultiValueTreeMap, ReferenceMap, SkipListMap, TreeBimap, TreeMap, BoundedQueue, MaxPriorityQueue, MinPriorityQueue, HashedSet, SkipListSet, TreeSet. 
+        Please report issues to https://github.com/yanggujun/commonsfornet/issues
+    </description>
+    <summary>The .NET Commons Library provides extended generic collections, utilities and a dynamic JSON parser and composer. TreeMap SortedMap NavigableMap BidirectionalMap LruMap HashedMap ReadOnlyMap HashMap LinkedHashedMap MultiValueMap MultiMap MultiValueHashedMap MultiValueTreeMap ReferenceMap LinkedMap LinkedHashMap OrderedMap SkipList SkipListMap SkipListSet TreeBimap PriorityQueue CompositeCollection TreeBag HashedBag HashBag BoundedQueue Deque MaxPriorityQueue MinPriorityQueue HashedSet TreeSet ReadOnlyBimap hash least recently used map dictionary cache tree sorted ordered navigable multivalue multi value bidirectional bimap priority queue deque linked hashed reference skip list composite collection collections bag max min</summary>
+    <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
+    <copyright>Copyright 2015 Apache License v2</copyright>
+    <tags>DotNet Generic Collections</tags>
+    <dependencies>
+      <dependency id="Commons.Utils" version="0.1.1.000" />
+    </dependencies>
+  </metadata>
+  <files>
+      <file src="src\bin\Commons.Collections.dll" target="lib\net45\" />
+  </files>
+</package>
