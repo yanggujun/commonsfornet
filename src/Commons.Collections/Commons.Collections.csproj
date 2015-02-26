@@ -58,6 +58,7 @@
     <Compile Include="Bag\AbstractMapBag.cs" />
     <Compile Include="Bag\HashedBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
+    <Compile Include="Collection\DoubleLinkedEntry.cs" />
     <Compile Include="Map\AbstractBimap.cs" />
     <Compile Include="Map\AbstractHashedMap.cs" />
     <Compile Include="Map\Customized32HashedMap.cs" />
@@ -89,8 +90,10 @@
     <Compile Include="Map\ISortedMap.cs" />
     <Compile Include="Queue\Deque.cs" />
     <Compile Include="Queue\FibonacciHeap.cs" />
+    <Compile Include="Queue\IDeque.cs" />
     <Compile Include="Queue\IPriorityQueue.cs" />
     <Compile Include="Queue\AbstractPriorityQueue.cs" />
+    <Compile Include="Queue\LinkedDeque.cs" />
     <Compile Include="Queue\MaxPriorityQueue.cs" />
     <Compile Include="Queue\MinPriorityQueue.cs" />
     <Compile Include="Set\AbstractSet.cs" />
