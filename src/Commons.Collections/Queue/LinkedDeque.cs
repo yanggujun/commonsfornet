@@ -90,7 +90,7 @@ namespace Commons.Collections.Queue
 			throw new NotImplementedException();
 		}
 
-		int ICollection.Count
+		public int Count
 		{
 			get { throw new NotImplementedException(); }
 		}
