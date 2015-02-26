@@ -490,7 +490,7 @@ namespace Test.Commons.Collections
                 deque.Append(i);
             }
             var items = new int[1003];
-            deque.CopyTo(items, 3);
+            ((ICollection)deque).CopyTo(items, 3);
 
             for (var i = 3; i < 1003; i++)
             {

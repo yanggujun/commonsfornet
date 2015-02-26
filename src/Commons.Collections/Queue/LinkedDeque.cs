@@ -29,7 +29,7 @@ namespace Commons.Collections.Queue
     [CLSCompliant(true)]
 	public class LinkedDeque<T> : IDeque<T>, IEnumerable<T>, ICollection, IEnumerable
 	{
-        protected DoubleLinkedEntry<T> Header { get; private set; }
+        private DoubleLinkedEntry<T> Header { get; set; }
 
 		public void Append(T item)
 		{
@@ -72,6 +72,8 @@ namespace Commons.Collections.Queue
 		{
 			get { throw new System.NotImplementedException(); }
 		}
+
+        public bool IsEmpty { get { return Header == null; } }
 
 		public IEnumerator<T> GetEnumerator()
 		{

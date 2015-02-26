@@ -61,5 +61,10 @@ namespace Commons.Collections.Queue
 		/// Retrieves the item in the tail of the deque. If the deque is empty, <see cref="System.InvalidOperationException"/> is thrown.
 		/// </summary>
 		T Last { get; }
+
+        /// <summary>
+        /// Tests emptyness of the deque.
+        /// </summary>
+        bool IsEmpty { get; }
 	}
 }
