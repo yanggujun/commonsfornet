@@ -26,7 +26,7 @@ https://github.com/yanggujun/commonsfornet/issues
 
 or send an email to: alanier@sina.cn
 
-###Release Notes V0.1.0
+###Release Notes V0.1.1
 
 Initial release for .NET Commons Library. Support .NET framework 4.5 and later.
 
@@ -52,17 +52,17 @@ Initial release for .NET Commons Library. Support .NET framework 4.5 and later.
   
 ####Commons.Collections
 
-  * __HashedMap__, a hash map (dictionary)
+  * __HashedMap__, a hash map (dictionary).
   
-  * __Customized32HashedMap__, a hash map (dictionary) whose hash function can be defined other than using Object.GetHashCode()
+  * __Customized32HashedMap__, a hash map (dictionary) whose hash function can be defined other than using Object.GetHashCode().
   
   * __TreeMap__, a sorted map (dictionary). The map is navigable.
   
   * __SkipListMap__, a sorted map (dictionary). The map is navigable.
   
-  * __LruMap__, a hash map (dictionary) implemented with least recently used algorithm. The map size is bounded and the oldest item is removed when the map size is full.
+  * __LruMap__, a hash map (dictionary) implemented with least recently used algorithm. The map size is bounded and the oldest item is eliminated when the map size is full. 
   
-  * __ReferenceMap__, a map (dictionary) only takes the object reference value for hash.
+  * __ReferenceMap__, a hash map (dictionary) which calculates the hash value only from its key object reference value.
   
   * __LinkedHashedMap__, an ordered map (dictionary) which remembers the adding sequence of the items.
   
@@ -79,6 +79,8 @@ Initial release for .NET Commons Library. Support .NET framework 4.5 and later.
   * __TreeBag__, a bag containing the sorted items.
   
   * __Deque__, a double ended queue.
+
+  * __LinkedDeque__, a double ended queue with linked list as inside data structure.
   
   * __MaxPriorityQueue__, a priority queue where the maximum item is at the top.
   
@@ -91,6 +93,12 @@ Initial release for .NET Commons Library. Support .NET framework 4.5 and later.
   * __TreeSet__, a set with sorted items. It's a set strictly follows the definition in math.
   
   * __SkipListSet__, a set with sorted items. It's a set strictly follows the definition in math.
+
+  * __ReferenceSet__, a hash set which calculates the hash value only from its object reference value.
+  
+  * __LinkedSet__, an ordered set where the elements are sequenced by the adding order.
+
+  * __LruSet__, an ordered set where the elements are sequenced by the least recently used algorithm. The set is bounded and the oldest item is eliminated when the size is full.
   
 ####Commons.Json
 
