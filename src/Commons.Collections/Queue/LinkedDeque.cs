@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using Commons.Utils;
 using Commons.Collections.Collection;
 
 namespace Commons.Collections.Queue
@@ -43,6 +44,7 @@ namespace Commons.Collections.Queue
                 newEntry.Entry = item;
                 newEntry.Previous = Header.Previous;
                 Header.Previous.Next = newEntry;
+                Header.Previous = newEntry;
                 newEntry.Next = Header;
             }
 		}
@@ -55,54 +57,115 @@ namespace Commons.Collections.Queue
 
 		public T Pop()
 		{
-			throw new System.NotImplementedException();
+            Header.Validate(x => x != null, new InvalidOperationException(Messages.DequeEmptyError));
+            var item = default(T);
+            if (Header == Header.Previous && Header == Header.Next)
+            {
+                item = Header.Entry;
+                Header = null;
+            }
+            else
+            {
+                var last = Header.Previous;
+                item = last.Entry;
+                Header.Previous = last.Previous;
+                last.Previous.Next = Header;
+                last.Previous = null;
+                last.Next = null;
+            }
+
+            return item;
 		}
 
 		public T Shift()
 		{
-			throw new System.NotImplementedException();
+            Header.Validate(x => x != null, new InvalidOperationException(Messages.DequeEmptyError));
+            var item = default(T);
+
+            if (Header == Header.Previous && Header == Header.Next)
+            {
+                item = Header.Entry;
+                Header = null;
+            }
+            else
+            {
+                var second = Header.Next;
+                var last = Header.Previous;
+                var first = Header;
+                item = Header.Entry;
+                last.Next = second;
+                second.Previous = last;
+                Header = second;
+                first.Previous = null;
+                first.Next = null;
+            }
+
+            return item;
 		}
 
 		public T First
 		{
-			get { throw new System.NotImplementedException(); }
+            get
+            {
+                Header.Validate(x => x != null, new InvalidOperationException(Messages.DequeEmptyError));
+                return Header.Entry;
+            }
 		}
 
 		public T Last
 		{
-			get { throw new System.NotImplementedException(); }
+            get
+            {
+                Header.Validate(x => x != null, new InvalidOperationException(Messages.DequeEmptyError));
+                return Header.Previous.Entry;
+            }
 		}
 
         public bool IsEmpty { get { return Header == null; } }
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			throw new NotImplementedException();
+            return Items.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			throw new NotImplementedException();
+            return GetEnumerator();
 		}
 
 		void ICollection.CopyTo(Array array, int index)
 		{
-			throw new NotImplementedException();
+            array.ValidateNotNull(Messages.ArgumentArray);
+            var items = (T[])array;
+            var cursor = 0;
+            foreach (var item in Items)
+            {
+                items[index + (cursor++)] = item;
+            }
 		}
 
 		public int Count
 		{
-			get { throw new NotImplementedException(); }
+            get
+            {
+                var count = 0;
+                foreach(var item in Items)
+                {
+                    count++;
+                }
+
+                return count;
+            }
 		}
 
 		bool ICollection.IsSynchronized
 		{
-			get { throw new NotImplementedException(); }
+            get { return false; }
 		}
 
 		object ICollection.SyncRoot
 		{
-			get { throw new NotImplementedException(); }
+            get { throw new NotSupportedException(Messages.SyncRootNotSupportError); }
 		}
 
         private void MakeHeader(T item)
@@ -111,6 +174,22 @@ namespace Commons.Collections.Queue
             Header.Entry = item;
             Header.Next = Header;
             Header.Previous = Header;
+        }
+
+        private IEnumerable<T> Items
+        {
+            get
+            {
+                if (Header != null)
+                {
+                    var cursor = Header;
+                    do
+                    {
+                        yield return cursor.Entry;
+                        cursor = cursor.Next;
+                    } while (cursor != Header);
+                }
+            }
         }
 	}
 }
