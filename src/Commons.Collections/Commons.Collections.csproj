@@ -98,12 +98,16 @@
     <Compile Include="Queue\MaxPriorityQueue.cs" />
     <Compile Include="Queue\MinPriorityQueue.cs" />
     <Compile Include="Set\AbstractSet.cs" />
+    <Compile Include="Set\AbstractHashedSet.cs" />
     <Compile Include="Set\HashedSet.cs" />
     <Compile Include="Set\INavigableSet.cs" />
     <Compile Include="Set\IReadOnlyStrictSet.cs" />
     <Compile Include="Set\ISortedSet.cs" />
     <Compile Include="Map\TreeMap.cs" />
     <Compile Include="Set\IStrictSet.cs" />
+    <Compile Include="Set\LinkedSet.cs" />
+    <Compile Include="Set\LruSet.cs" />
+    <Compile Include="Set\ReferenceSet.cs" />
     <Compile Include="Set\SkipListSet.cs" />
     <Compile Include="Set\TreeSet.cs" />
   </ItemGroup>

@@ -112,6 +112,7 @@ namespace Commons.Collections.Set
             var disjoint = true;
             foreach (var item in other)
             {
+
                 if (Contains(item))
                 {
                     disjoint = false;
