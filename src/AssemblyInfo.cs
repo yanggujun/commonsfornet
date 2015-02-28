@@ -18,11 +18,24 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyCopyright("Copyright ©  2015, Apache License v2")]
+[assembly: AssemblyCopyright("Copyright (c) 2015 yanggujun")]
 [assembly: ComVisible(false)]
 
 [assembly: Guid("84e7ec63-7b50-4dc1-ae96-c3b56626efd7")]
 
+// * For versioning, the fourth digit represents the days from the build date to the 
+//   day of the first release (2/15/2015).
+// * The third digit is increased when a small feature is added.
+// * The second digit is increased when a component is added to the whole package.
+// * The first digit is increase when a set of components planned yearly are completed.
+// * The nuget package version shall be the same with the assembly version.
+// * Each new release brought up by the nuget package forces re-compile for 
+//   the applications and components which depends on the .NET Commons library.
+// * The build number only changes when a new nuget package is uploaded. If there are more than 
+//   one upload in one day, the build number is increased by one. If next few days, another upload happens,
+//   build number is increased by one if the number of days to the first day is less than or 
+//   equal to the build number.
+// * TODO: Automated version strategy will be developed in future.
 [assembly: AssemblyVersion("0.1.0.002")]
 [assembly: AssemblyFileVersion("0.1.0.002")]
 [assembly: CLSCompliant(true)]
