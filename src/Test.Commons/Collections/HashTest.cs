@@ -599,6 +599,122 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
+        public void TestLruSetConstructor()
+        {
+            var lru = new LruSet<int>();
+            Assert.Equal(100, lru.MaxSize);
+            lru.Fill(x => x, 100);
+            Assert.Equal(100, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 100; i < 200; i++)
+            {
+                lru.Add(i);
+            }
+            Assert.Equal(100, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.False(lru.Contains(i));
+            }
+            for (var i = 100; i < 200; i++)
+            {
+                Assert.True(lru.Contains(i));
+            }
+            Assert.Throws(typeof(ArgumentException), () => lru.Add(100));
+            Assert.Throws(typeof(ArgumentException), () => lru.Add(101));
+
+            var lru2 = new LruSet<int>(1000);
+            Assert.Equal(1000, lru2.MaxSize);
+            lru2.Fill(x => x);
+            Assert.Equal(1000, lru2.Count);
+            lru2.Fill(x => x + 1000, 100);
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.False(lru2.Contains(i));
+            }
+            for (var i = 100; i < 1100; i++)
+            {
+                Assert.True(lru2.Contains(i));
+            }
+
+            var lru3 = new LruSet<Order>(10000, new OrderEqualityComparer());
+            LruSetConstructor(lru3);
+
+            var lru4 = new LruSet<Order>(10000, (x1, x2) => x1.Id == x2.Id);
+            LruSetConstructor(lru4);
+        }
+
+        [Fact]
+        public void TestLruSetEliminate()
+        {
+            var lru = new LruSet<int>(10000);
+            lru.Fill(x => x, 10000);
+            lru.Add(10000);
+            Assert.False(lru.Contains(0));
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.True(lru.Contains(i + 1));
+            }
+            Assert.True(lru.IsFull);
+        }
+
+        [Fact]
+        public void TestLruSetRemove()
+        {
+            var lru = new LruSet<int>(10000);
+            lru.Fill(x => x, 10000);
+            lru.Fill(x => x + 10000, 5000);
+            Assert.True(lru.IsFull);
+            Assert.Equal(lru.MaxSize, lru.Count);
+
+            for (var i = 0; i < 5000; i++)
+            {
+                Assert.True(lru.Remove(i + 5000));
+            }
+
+            for (var i = 0; i < 5000; i++)
+            {
+                Assert.False(lru.Contains(i));
+            }
+
+            Assert.Equal(5000, lru.Count);
+
+            for (var i = 0; i < 5000; i++)
+            {
+                Assert.False(lru.Remove(i));
+            }
+        }
+
+        [Fact]
+        public void TestLruSetBoundary()
+        {
+            var lru = new LruSet<int>();
+            Assert.False(lru.IsFull);
+
+            lru.Add(0);
+            Assert.False(lru.IsFull);
+            Assert.Equal(1, lru.Count);
+
+            Assert.True(lru.Remove(0));
+            Assert.Equal(0, lru.Count);
+            Assert.False(lru.IsFull);
+
+            lru.Fill(x => x, 100);
+            Assert.Equal(100, lru.Count);
+            Assert.True(lru.IsFull);
+
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.True(lru.Remove(i));
+                Assert.False(lru.IsFull);
+            }
+
+            Assert.Equal(0, lru.Count);
+            lru.Add(0);
+            Assert.Equal(1, lru.Count);
+        }
+
+        [Fact]
         public void TestLruMapConstructor()
         {
             var lru = new LruMap<int, int>();
@@ -652,31 +768,6 @@ namespace Test.Commons.Collections
 
             var lru4 = new LruMap<Order, Bill>(10000, new OrderEqualityComparer());
             LruConstructor(lru4);
-        }
-
-        private void LruConstructor(LruMap<Order, Bill> lru)
-        {
-            for (var i = 0; i < 10000; i++)
-            {
-                Assert.False(lru.IsFull);
-                lru.Add(new Order { Id = i }, new Bill());
-            }
-            Assert.Equal(10000, lru.Count);
-            Assert.True(lru.IsFull);
-            for (var i = 10000; i < 20000; i++)
-            {
-                lru.Add(new Order { Id = i }, new Bill());
-            }
-            Assert.Equal(10000, lru.Count);
-            Assert.True(lru.IsFull);
-            for (var i = 0; i < 10000; i++)
-            {
-                Assert.False(lru.ContainsKey(new Order { Id = i }));
-            }
-            for (var i = 10000; i < 20000; i++)
-            {
-                Assert.True(lru.ContainsKey(new Order { Id = i }));
-            }
         }
 
         [Fact]
@@ -758,6 +849,50 @@ namespace Test.Commons.Collections
             for (var i = 0; i < 10000; i++)
             {
                 Assert.True(lru.ContainsKey(i + 9999));
+            }
+        }
+
+        private void LruSetConstructor(LruSet<Order> lru)
+        {
+            Assert.False(lru.IsFull);
+            lru.Fill(x => new Order { Id = x }, 10000);
+            Assert.Equal(10000, lru.Count);
+            Assert.True(lru.IsFull);
+            lru.Fill(x => new Order { Id = x + 10000 }, 10000);
+            Assert.Equal(10000, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.False(lru.Contains(new Order { Id = i }));
+            }
+            for (var i = 10000; i < 20000; i++)
+            {
+                Assert.True(lru.Contains(new Order { Id = i }));
+            }
+        }
+
+        private void LruConstructor(LruMap<Order, Bill> lru)
+        {
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.False(lru.IsFull);
+                lru.Add(new Order { Id = i }, new Bill());
+            }
+            Assert.Equal(10000, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 10000; i < 20000; i++)
+            {
+                lru.Add(new Order { Id = i }, new Bill());
+            }
+            Assert.Equal(10000, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.False(lru.ContainsKey(new Order { Id = i }));
+            }
+            for (var i = 10000; i < 20000; i++)
+            {
+                Assert.True(lru.ContainsKey(new Order { Id = i }));
             }
         }
     }
