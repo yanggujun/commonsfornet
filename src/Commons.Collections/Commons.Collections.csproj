@@ -101,6 +101,7 @@
     <Compile Include="Set\AbstractHashedSet.cs" />
     <Compile Include="Set\HashedSet.cs" />
     <Compile Include="Set\INavigableSet.cs" />
+    <Compile Include="Set\IOrderedSet.cs" />
     <Compile Include="Set\IReadOnlyStrictSet.cs" />
     <Compile Include="Set\ISortedSet.cs" />
     <Compile Include="Map\TreeMap.cs" />

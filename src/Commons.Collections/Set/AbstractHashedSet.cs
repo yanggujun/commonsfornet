@@ -25,34 +25,30 @@ namespace Commons.Collections.Set
     [CLSCompliant(true)]
     public abstract class AbstractHashedSet<T> : AbstractSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
-        private readonly object val = new object();
-        private readonly IDictionary<T, object> map;
+        protected readonly object val = new object();
 
-        protected AbstractHashedSet(IDictionary<T, object> map)
-        {
-            this.map = map;
-        }
+        protected abstract IDictionary<T, object> Map { get; }
 
         public override void Add(T item)
         {
-            map.Add(item, val);
+            Map.Add(item, val);
         }
 
         public override void Clear()
         {
-            map.Clear();
+            Map.Clear();
         }
 
         public override bool Contains(T item)
         {
-            return map.ContainsKey(item);
+            return Map.ContainsKey(item);
         }
 
         public override void CopyTo(T[] array, int arrayIndex)
         {
             array.ValidateNotNull("The input array is null!.");
             var index = arrayIndex;
-            foreach (var item in map)
+            foreach (var item in Map)
             {
                 array[index++] = item.Key;
             }
@@ -60,12 +56,12 @@ namespace Commons.Collections.Set
 
         public override int Count
         {
-            get { return map.Count; }
+            get { return Map.Count; }
         }
 
         public override bool Remove(T item)
         {
-            return map.Remove(item);
+            return Map.Remove(item);
         }
 
         public override IEnumerator<T> GetEnumerator()
@@ -95,7 +91,7 @@ namespace Commons.Collections.Set
         {
             get
             {
-                foreach (var item in map)
+                foreach (var item in Map)
                 {
                     yield return item.Key;
                 }

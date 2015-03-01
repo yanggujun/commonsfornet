@@ -25,29 +25,36 @@ namespace Commons.Collections.Set
     [CLSCompliant(true)]
     public class HashedSet<T> : AbstractHashedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>
     {
-        public HashedSet() : base(new HashedMap<T, object>())
+        private readonly HashedMap<T, object> map;
+
+        public HashedSet()
         {
+            map = new HashedMap<T, object>();
         }
 
-        public HashedSet(int capacity) : this(capacity, EqualityComparer<T>.Default.Equals)
+        public HashedSet(int capacity)
         {
+            map = new HashedMap<T, object>(capacity);
         }
 
-        public HashedSet(IEqualityComparer<T> equalityComparer) : this(equalityComparer.Equals)
+        public HashedSet(IEqualityComparer<T> equalityComparer)
         {
+            map = new HashedMap<T, object>(equalityComparer);
         }
 
-        public HashedSet(Equator<T> equator) : base(new HashedMap<T, object>(equator))
+        public HashedSet(Equator<T> equator)
         {
+            map = new HashedMap<T, object>(equator);
         }
 
         public HashedSet(int capacity, IEqualityComparer<T> equalityComparer)
-            : this(capacity, equalityComparer.Equals)
         {
+            map = new HashedMap<T, object>(capacity, equalityComparer);
         }
 
-        public HashedSet(int capacity, Equator<T> equator) : base(new HashedMap<T, object>(capacity, equator))
+        public HashedSet(int capacity, Equator<T> equator)
         {
+            map = new HashedMap<T, object>(capacity, equator);
         }
 
         public HashedSet(IEnumerable<T> items, int capacity, Equator<T> equator) : this(capacity, equator)
@@ -58,6 +65,14 @@ namespace Commons.Collections.Set
                 {
                     Add(item);
                 }
+            }
+        }
+
+        protected override IDictionary<T, object> Map
+        {
+            get
+            {
+                return map;
             }
         }
     }

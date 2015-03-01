@@ -743,11 +743,14 @@ namespace Test.Commons.Collections
         public void TestDequeCollectionOperations()
         {
             var deque = new Deque<int>(2000);
-            for (var i= 0; i < 1000; i++)
-            {
-                deque.Append(i + 1);
-            }
-            deque.CollectionOperations<int>(1000);
+            DequeCollectionOperations(deque);
+        }
+
+        [Fact]
+        public void TestLinkedDequeCollectionOpertions()
+        {
+            var deque = new LinkedDeque<int>();
+            DequeCollectionOperations(deque);
         }
 
         [Fact]
@@ -1350,6 +1353,15 @@ namespace Test.Commons.Collections
                 Assert.Equal(cursor3, item);
                 cursor3++;
             }
+        }
+
+        private void DequeCollectionOperations(IDeque<int> deque)
+        {
+            for (var i= 0; i < 1000; i++)
+            {
+                deque.Append(i + 1);
+            }
+            deque.CollectionOperations<int>(1000);
         }
     }
 }

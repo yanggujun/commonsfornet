@@ -19,30 +19,51 @@ using System.Collections.Generic;
 
 using Commons.Utils;
 using Commons.Collections.Map;
+using Commons.Collections.Collection;
 
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public class LruSet<T> : AbstractHashedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>
+    public class LruSet<T> : AbstractHashedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, IBoundedCollection
     {
+        private readonly LruMap<T, object> map;
+
         public LruSet()
-            : base(new LruMap<T, object>())
         {
+            map = new LruMap<T, object>();
         }
 
         public LruSet(int fullSize)
-            : base(new LruMap<T, object>(fullSize))
         {
+            map = new LruMap<T, object>(fullSize);
         }
 
         public LruSet(int fullSize, IEqualityComparer<T> comparer)
-            : base(new LruMap<T, object>(fullSize, comparer))
         {
+            map = new LruMap<T, object>(fullSize, comparer);
         }
 
         public LruSet(int fullSize, Equator<T> equator)
-            : base(new LruMap<T, object>(fullSize, equator))
         {
+            map = new LruMap<T, object>(fullSize, equator);
+        }
+
+        public bool IsFull
+        {
+            get { return map.IsFull; }
+        }
+
+        public int MaxSize
+        {
+            get { return map.MaxSize; }
+        }
+
+        protected override IDictionary<T, object> Map
+        {
+            get
+            {
+                return map;
+            }
         }
     }
 }

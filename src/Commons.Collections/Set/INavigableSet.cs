@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public interface INavigableSet<T> : IStrictSet<T>, ISortedSet<T>, IEnumerable<T>, IEnumerable, ICollection
+    public interface INavigableSet<T> : IStrictSet<T>, ISortedSet<T>, IReadOnlyStrictSet<T>, IEnumerable<T>, IEnumerable, ICollection
     {
         T Lower(T item);
 

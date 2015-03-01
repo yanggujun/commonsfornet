@@ -1,5 +1,4 @@
-﻿// Copyright CommonsForNET
-// Licensed to the Apache Software Foundation (ASF) under one or more
+﻿// Copyright CommonsForNET // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
 // The ASF licenses this file to You under the Apache License, Version 2.0
@@ -23,36 +22,71 @@ using Commons.Collections.Map;
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public class LinkedSet<T> : AbstractHashedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>
+    public class LinkedSet<T> : AbstractHashedSet<T>, IOrderedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>
     {
+        private readonly LinkedHashedMap<T, object> map;
+
         public LinkedSet()
-            : base(new LinkedHashedMap<T, object>())
         {
+            map = new LinkedHashedMap<T, object>();
         }
 
         public LinkedSet(int capacity)
-            : base(new LinkedHashedMap<T, object>(capacity))
         {
+            map = new LinkedHashedMap<T, object>(capacity);
         }
 
         public LinkedSet(IEqualityComparer<T> comparer)
-            : base(new LinkedHashedMap<T, object>(comparer))
         {
+            map = new LinkedHashedMap<T, object>(comparer);
         }
 
         public LinkedSet(Equator<T> equator)
-            : base(new LinkedHashedMap<T, object>(equator))
         {
+            map = new LinkedHashedMap<T, object>(equator);
         }
 
         public LinkedSet(int capacity, IEqualityComparer<T> comparer)
-            : base(new LinkedHashedMap<T, object>(capacity, comparer))
         { 
+            map = new LinkedHashedMap<T,object>(capacity, comparer);
         }
 
         public LinkedSet(int capacity, Equator<T> equator)
-            : base(new LinkedHashedMap<T, object>(capacity, equator))
         {
+            map = new LinkedHashedMap<T, object>(capacity, equator);
+        }
+
+        protected override IDictionary<T, object> Map
+        {
+            get
+            {
+                return map;
+            }
+        }
+
+        public T First
+        {
+            get { return map.First.Key; }
+        }
+
+        public T Last
+        {
+            get { return map.Last.Key; }
+        }
+
+        public T After(T item)
+        {
+            return map.After(item).Key;
+        }
+
+        public T Before(T item)
+        {
+            return map.Before(item).Key;
+        }
+
+        public T GetIndex(int index)
+        {
+            return map.GetIndex(index).Key;
         }
     }
 }

@@ -26,12 +26,21 @@ namespace Commons.Collections.Set
     [CLSCompliant(true)]
     public class ReferenceSet<T> : AbstractHashedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>
     {
-        public ReferenceSet() : base(new ReferenceMap<T, object>())
+        private readonly ReferenceMap<T, object> map;
+
+        public ReferenceSet()
         {
+            map = new ReferenceMap<T, object>();
         }
 
-        public ReferenceSet(int capacity) : base(new ReferenceMap<T, object>(capacity))
+        public ReferenceSet(int capacity)
         {
+            map = new ReferenceMap<T, object>(capacity);
+        }
+
+        protected override System.Collections.Generic.IDictionary<T, object> Map
+        {
+            get { return map; }
         }
     }
 }
