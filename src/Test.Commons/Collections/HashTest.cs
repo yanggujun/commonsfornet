@@ -599,6 +599,55 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
+        public void TestReferenceSet()
+        {
+            var set = new ReferenceSet<Order>();
+            set.Fill(x => new Order { Id = x }, 10000);
+            Assert.Equal(10000, set.Count);
+
+            var list = new List<Order>();
+            list.Fill(x => new Order { Id = x }, 10000);
+
+            foreach (var item in list)
+            {
+                Assert.False(set.Contains(item));
+            }
+
+            for (var i = 1000; i < 3000; i++)
+            {
+                Assert.False(set.Remove(new Order { Id = i }));
+            }
+            set.Clear();
+            Assert.Equal(0, set.Count);
+
+            var set2 = new ReferenceSet<Order>(10000);
+            var list2 = new List<Order>();
+            for (var i = 0; i < 10000; i++)
+            {
+                var order = new Order { Id = i };
+                set2.Add(order);
+                list2.Add(order);
+            }
+
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.True(set2.Contains(list2[i]));
+            }
+
+            foreach (var item in set2)
+            {
+                Assert.True(list2.Contains(item));
+            }
+
+            for (var i = 1000; i < 3000; i++)
+            {
+                Assert.True(set2.Remove(list2[i]));
+            }
+
+            Assert.Equal(8000, set2.Count);
+        }
+
+        [Fact]
         public void TestLruSetConstructor()
         {
             var lru = new LruSet<int>();

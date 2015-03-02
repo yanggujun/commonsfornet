@@ -31,7 +31,7 @@ namespace Commons.Collections.Set
             map = new LinkedHashedMap<T, object>();
         }
 
-        public LinkedSet(int capacity)
+        public LinkedSet(int capacity)    
         {
             map = new LinkedHashedMap<T, object>(capacity);
         }

@@ -793,6 +793,22 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
+        public void TestReferenceSetCollectionOperations()
+        {
+            var set = new ReferenceSet<Order>();
+            set.Fill(x => new Order { Id = x + 1 });
+            set.CollectionOperations<Order>(1000);
+        }
+
+        [Fact]
+        public void TestLruSetCollectionOperations()
+        {
+            var set = new LruSet<Order>(10000);
+            set.Fill(x => new Order { Id = x }, 10000);
+            set.CollectionOperations<Order>(10000);
+        }
+
+        [Fact]
         public void TestTreeSetCollectionOperations()
         {
             var set = new TreeSet<int>();

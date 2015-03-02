@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Commons.Collections.Map;
 
 namespace Commons.Collections.Set
@@ -38,7 +39,7 @@ namespace Commons.Collections.Set
             map = new ReferenceMap<T, object>(capacity);
         }
 
-        protected override System.Collections.Generic.IDictionary<T, object> Map
+        protected override IDictionary<T, object> Map
         {
             get { return map; }
         }
