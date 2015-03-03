@@ -42,11 +42,6 @@ namespace Test.Commons.Collections
             worldCup.Groups.GroupC = new[] { "Columbia", "Greece", "Cote Divoire", "Japan" };
             worldCup.Cities = new[] { "Rio", "Brazilia", "San Paulo", "Salvador" };
             worldCup.Groups.GroupA.TimeStart = new DateTime(2014, 6, 17);
-            Console.WriteLine(worldCup);
-            foreach (var item in worldCup.Groups.GroupC)
-            {
-                Console.WriteLine(item);
-            }
             Assert.Equal("Spain", (string)worldCup.Groups.GroupB[0]);
             Assert.Equal("Netherland", (string)worldCup.Groups.GroupB[1]);
             Assert.Equal("Chile", (string)worldCup.Groups.GroupB[2]);
@@ -88,7 +83,6 @@ namespace Test.Commons.Collections
             Assert.Equal("yanggujun", (string)package.author);
             Assert.Equal("no logo", (string)package.logo);
             Assert.Equal("~1.8", (string)package.devDependencies.chai);
-            Console.WriteLine(package);
         }
 
         public void TestParseJsonIllEmptyHalfObject()

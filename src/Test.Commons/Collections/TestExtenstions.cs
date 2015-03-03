@@ -67,7 +67,7 @@ namespace Test.Commons.Collections
             Assert.Equal(total, orders.Count);
         }
 
-        public static void TestHashedSetOperations(this HashedSet<string> orders)
+        public static void TestHashedSetOperations(this AbstractHashedSet<string> orders)
         {
             var keys = new string[10000];
             for (var i = 0; i < keys.Length; i++)

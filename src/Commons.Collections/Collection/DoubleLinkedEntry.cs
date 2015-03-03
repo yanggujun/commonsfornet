@@ -14,21 +14,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Commons.Collections.Set
+namespace Commons.Collections.Collection
 {
-    [CLSCompliant(true)]
-    public interface INavigableSet<T> : IStrictSet<T>, ISortedSet<T>, IReadOnlyStrictSet<T>, IEnumerable<T>, IEnumerable, ICollection
-    {
-        T Lower(T item);
+	/// <summary>
+	/// A double linked entry is an entry which has both of its next sibling and its previous sibling.
+	/// </summary>
+	/// <typeparam name="T">The type of the entry.</typeparam>
+	internal class DoubleLinkedEntry<T>
+	{
+		public T Entry { get; set; }
 
-        T Higher(T item);
+		public DoubleLinkedEntry<T> Next { get; set; }
 
-        T Ceiling(T item);
-
-        T Floor(T item);
-    }
+		public DoubleLinkedEntry<T> Previous { get; set; }
+	}
 }

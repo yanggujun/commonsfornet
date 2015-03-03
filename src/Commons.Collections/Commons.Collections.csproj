@@ -58,6 +58,8 @@
     <Compile Include="Bag\AbstractMapBag.cs" />
     <Compile Include="Bag\HashedBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
+    <Compile Include="Collection\DoubleLinkedEntry.cs" />
+    <Compile Include="Collection\Messages.cs" />
     <Compile Include="Map\AbstractBimap.cs" />
     <Compile Include="Map\AbstractHashedMap.cs" />
     <Compile Include="Map\Customized32HashedMap.cs" />
@@ -89,17 +91,24 @@
     <Compile Include="Map\ISortedMap.cs" />
     <Compile Include="Queue\Deque.cs" />
     <Compile Include="Queue\FibonacciHeap.cs" />
+    <Compile Include="Queue\IDeque.cs" />
     <Compile Include="Queue\IPriorityQueue.cs" />
     <Compile Include="Queue\AbstractPriorityQueue.cs" />
+    <Compile Include="Queue\LinkedDeque.cs" />
     <Compile Include="Queue\MaxPriorityQueue.cs" />
     <Compile Include="Queue\MinPriorityQueue.cs" />
     <Compile Include="Set\AbstractSet.cs" />
+    <Compile Include="Set\AbstractHashedSet.cs" />
     <Compile Include="Set\HashedSet.cs" />
     <Compile Include="Set\INavigableSet.cs" />
+    <Compile Include="Set\IOrderedSet.cs" />
     <Compile Include="Set\IReadOnlyStrictSet.cs" />
     <Compile Include="Set\ISortedSet.cs" />
     <Compile Include="Map\TreeMap.cs" />
     <Compile Include="Set\IStrictSet.cs" />
+    <Compile Include="Set\LinkedSet.cs" />
+    <Compile Include="Set\LruSet.cs" />
+    <Compile Include="Set\ReferenceSet.cs" />
     <Compile Include="Set\SkipListSet.cs" />
     <Compile Include="Set\TreeSet.cs" />
   </ItemGroup>

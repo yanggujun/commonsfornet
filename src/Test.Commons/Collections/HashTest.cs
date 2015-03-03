@@ -558,6 +558,112 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
+        public void TestLinkedSetConstructors()
+        {
+            var set = new LinkedSet<string>();
+            set.TestHashedSetOperations();
+
+            var set2 = new LinkedSet<string>(10000);
+            set2.TestHashedSetOperations();
+
+            var set3 = new LinkedSet<string>((x1, x2) => x1 == x2);
+            set3.TestHashedSetOperations();
+
+            var set4 = new LinkedSet<string>(EqualityComparer<string>.Default);
+            set4.TestHashedSetOperations();
+
+            var set5 = new LinkedSet<string>(10000, EqualityComparer<string>.Default.Equals);
+            set5.TestHashedSetOperations();
+
+            var set6 = new LinkedSet<string>(10000, EqualityComparer<string>.Default);
+            set6.TestHashedSetOperations();
+        }
+
+        [Fact]
+        public void TestLinkedSet()
+        {
+            var container = new LinkedSet<int>(10000);
+            Assert.Throws(typeof(InvalidOperationException), () => container.First);
+            Assert.Throws(typeof(InvalidOperationException), () => container.Last);
+            Assert.Throws(typeof(InvalidOperationException), () => container.After(1));
+            Assert.Throws(typeof(InvalidOperationException), () => container.Before(1));
+            container.Fill(x => x, 10000);
+            Assert.Equal(0, container.First);
+            Assert.Equal(9999, container.Last);
+            Assert.Equal(0, container.GetIndex(0));
+            Assert.Equal(1000, container.GetIndex(1000));
+            Assert.Equal(1600, container.GetIndex(1600));
+            Assert.Equal(2749, container.GetIndex(2749));
+            Assert.Equal(4999, container.GetIndex(4999));
+            Assert.Equal(11, container.After(10));
+            Assert.Equal(100, container.After(99));
+            Assert.Equal(1001, container.After(1000));
+            Assert.Equal(5000, container.After(4999));
+            Assert.Equal(50, container.Before(51));
+            Assert.Equal(500, container.Before(501));
+            Assert.Equal(1500, container.Before(1501));
+            Assert.Equal(7900, container.Before(7901));
+            Assert.Throws(typeof(ArgumentException), () => container.After(9999));
+            Assert.Throws(typeof(ArgumentException), () => container.Before(0));
+            Assert.Throws(typeof(ArgumentException), () => container.Before(10000));
+            Assert.Throws(typeof(ArgumentException), () => container.After(10000));
+            Assert.Throws(typeof(ArgumentException), () => container.GetIndex(-100));
+            Assert.Throws(typeof(ArgumentException), () => container.GetIndex(20000));
+
+            for (var i = 2000; i < 5000; i++)
+            {
+                Assert.True(container.Remove(i));
+            }
+            Assert.Equal(0, container.First);
+            Assert.Equal(9999, container.Last);
+            Assert.Equal(1000, container.After(999));
+            Assert.Equal(999, container.Before(1000));
+            Assert.Equal(9000, container.After(8999));
+            Assert.Equal(8999, container.Before(9000));
+            Assert.Equal(8500, container.Before(8501));
+            Assert.Equal(5000, container.After(1999));
+            Assert.Equal(1999, container.Before(5000));
+            
+            for (var i = 7000; i < 8000; i++)
+            {
+                Assert.True(container.Remove(i));
+            }
+            Assert.Equal(0, container.First);
+            Assert.Equal(9999, container.Last);
+            Assert.Equal(1000, container.After(999));
+            Assert.Equal(999, container.Before(1000));
+            Assert.Equal(9000, container.After(8999));
+            Assert.Equal(8999, container.Before(9000));
+            Assert.Equal(8500, container.Before(8501));
+            Assert.Equal(8000, container.After(6999));
+            Assert.Equal(6999, container.Before(8000));
+        }
+
+        [Fact]
+        public void TestOneItemLinkedSet()
+        {
+            var orders = new LinkedSet<int>();
+            orders.Add(1);
+            Assert.Equal(1, orders.First);
+            Assert.Equal(1, orders.Last);
+            Assert.Throws(typeof(ArgumentException), () => orders.Before(1));
+            Assert.Throws(typeof(ArgumentException), () => orders.After(1));
+        }
+
+        [Fact]
+        public void TestEmptyLinkedSet()
+        {
+            var orders = new LinkedSet<string>();
+            Assert.Throws(typeof(InvalidOperationException), () => orders.First);
+            Assert.Throws(typeof(InvalidOperationException), () => orders.Last);
+            Assert.Throws(typeof(InvalidOperationException), () => orders.After("1"));
+            Assert.Throws(typeof(InvalidOperationException), () => orders.Before("2"));
+            Assert.Throws(typeof(ArgumentException), () => orders.GetIndex(0));
+            Assert.Throws(typeof(ArgumentException), () => orders.GetIndex(1));
+        }
+
+
+        [Fact]
         public void TestReferenceMapConstructor()
         {
             var map1 = new ReferenceMap<string, Order>();
@@ -596,6 +702,171 @@ namespace Test.Commons.Collections
             {
                 Assert.False(map.ContainsKey(order));
             }
+        }
+
+        [Fact]
+        public void TestReferenceSet()
+        {
+            var set = new ReferenceSet<Order>();
+            set.Fill(x => new Order { Id = x }, 10000);
+            Assert.Equal(10000, set.Count);
+
+            var list = new List<Order>();
+            list.Fill(x => new Order { Id = x }, 10000);
+
+            foreach (var item in list)
+            {
+                Assert.False(set.Contains(item));
+            }
+
+            for (var i = 1000; i < 3000; i++)
+            {
+                Assert.False(set.Remove(new Order { Id = i }));
+            }
+            set.Clear();
+            Assert.Equal(0, set.Count);
+
+            var set2 = new ReferenceSet<Order>(10000);
+            var list2 = new List<Order>();
+            for (var i = 0; i < 10000; i++)
+            {
+                var order = new Order { Id = i };
+                set2.Add(order);
+                list2.Add(order);
+            }
+
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.True(set2.Contains(list2[i]));
+            }
+
+            foreach (var item in set2)
+            {
+                Assert.True(list2.Contains(item));
+            }
+
+            for (var i = 1000; i < 3000; i++)
+            {
+                Assert.True(set2.Remove(list2[i]));
+            }
+
+            Assert.Equal(8000, set2.Count);
+        }
+
+        [Fact]
+        public void TestLruSetConstructor()
+        {
+            var lru = new LruSet<int>();
+            Assert.Equal(100, lru.MaxSize);
+            lru.Fill(x => x, 100);
+            Assert.Equal(100, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 100; i < 200; i++)
+            {
+                lru.Add(i);
+            }
+            Assert.Equal(100, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.False(lru.Contains(i));
+            }
+            for (var i = 100; i < 200; i++)
+            {
+                Assert.True(lru.Contains(i));
+            }
+            Assert.Throws(typeof(ArgumentException), () => lru.Add(100));
+            Assert.Throws(typeof(ArgumentException), () => lru.Add(101));
+
+            var lru2 = new LruSet<int>(1000);
+            Assert.Equal(1000, lru2.MaxSize);
+            lru2.Fill(x => x);
+            Assert.Equal(1000, lru2.Count);
+            lru2.Fill(x => x + 1000, 100);
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.False(lru2.Contains(i));
+            }
+            for (var i = 100; i < 1100; i++)
+            {
+                Assert.True(lru2.Contains(i));
+            }
+
+            var lru3 = new LruSet<Order>(10000, new OrderEqualityComparer());
+            LruSetConstructor(lru3);
+
+            var lru4 = new LruSet<Order>(10000, (x1, x2) => x1.Id == x2.Id);
+            LruSetConstructor(lru4);
+        }
+
+        [Fact]
+        public void TestLruSetEliminate()
+        {
+            var lru = new LruSet<int>(10000);
+            lru.Fill(x => x, 10000);
+            lru.Add(10000);
+            Assert.False(lru.Contains(0));
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.True(lru.Contains(i + 1));
+            }
+            Assert.True(lru.IsFull);
+        }
+
+        [Fact]
+        public void TestLruSetRemove()
+        {
+            var lru = new LruSet<int>(10000);
+            lru.Fill(x => x, 10000);
+            lru.Fill(x => x + 10000, 5000);
+            Assert.True(lru.IsFull);
+            Assert.Equal(lru.MaxSize, lru.Count);
+
+            for (var i = 0; i < 5000; i++)
+            {
+                Assert.True(lru.Remove(i + 5000));
+            }
+
+            for (var i = 0; i < 5000; i++)
+            {
+                Assert.False(lru.Contains(i));
+            }
+
+            Assert.Equal(5000, lru.Count);
+
+            for (var i = 0; i < 5000; i++)
+            {
+                Assert.False(lru.Remove(i));
+            }
+        }
+
+        [Fact]
+        public void TestLruSetBoundary()
+        {
+            var lru = new LruSet<int>();
+            Assert.False(lru.IsFull);
+
+            lru.Add(0);
+            Assert.False(lru.IsFull);
+            Assert.Equal(1, lru.Count);
+
+            Assert.True(lru.Remove(0));
+            Assert.Equal(0, lru.Count);
+            Assert.False(lru.IsFull);
+
+            lru.Fill(x => x, 100);
+            Assert.Equal(100, lru.Count);
+            Assert.True(lru.IsFull);
+
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.True(lru.Remove(i));
+                Assert.False(lru.IsFull);
+            }
+
+            Assert.Equal(0, lru.Count);
+            lru.Add(0);
+            Assert.Equal(1, lru.Count);
         }
 
         [Fact]
@@ -652,31 +923,6 @@ namespace Test.Commons.Collections
 
             var lru4 = new LruMap<Order, Bill>(10000, new OrderEqualityComparer());
             LruConstructor(lru4);
-        }
-
-        private void LruConstructor(LruMap<Order, Bill> lru)
-        {
-            for (var i = 0; i < 10000; i++)
-            {
-                Assert.False(lru.IsFull);
-                lru.Add(new Order { Id = i }, new Bill());
-            }
-            Assert.Equal(10000, lru.Count);
-            Assert.True(lru.IsFull);
-            for (var i = 10000; i < 20000; i++)
-            {
-                lru.Add(new Order { Id = i }, new Bill());
-            }
-            Assert.Equal(10000, lru.Count);
-            Assert.True(lru.IsFull);
-            for (var i = 0; i < 10000; i++)
-            {
-                Assert.False(lru.ContainsKey(new Order { Id = i }));
-            }
-            for (var i = 10000; i < 20000; i++)
-            {
-                Assert.True(lru.ContainsKey(new Order { Id = i }));
-            }
         }
 
         [Fact]
@@ -758,6 +1004,50 @@ namespace Test.Commons.Collections
             for (var i = 0; i < 10000; i++)
             {
                 Assert.True(lru.ContainsKey(i + 9999));
+            }
+        }
+
+        private void LruSetConstructor(LruSet<Order> lru)
+        {
+            Assert.False(lru.IsFull);
+            lru.Fill(x => new Order { Id = x }, 10000);
+            Assert.Equal(10000, lru.Count);
+            Assert.True(lru.IsFull);
+            lru.Fill(x => new Order { Id = x + 10000 }, 10000);
+            Assert.Equal(10000, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.False(lru.Contains(new Order { Id = i }));
+            }
+            for (var i = 10000; i < 20000; i++)
+            {
+                Assert.True(lru.Contains(new Order { Id = i }));
+            }
+        }
+
+        private void LruConstructor(LruMap<Order, Bill> lru)
+        {
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.False(lru.IsFull);
+                lru.Add(new Order { Id = i }, new Bill());
+            }
+            Assert.Equal(10000, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 10000; i < 20000; i++)
+            {
+                lru.Add(new Order { Id = i }, new Bill());
+            }
+            Assert.Equal(10000, lru.Count);
+            Assert.True(lru.IsFull);
+            for (var i = 0; i < 10000; i++)
+            {
+                Assert.False(lru.ContainsKey(new Order { Id = i }));
+            }
+            for (var i = 10000; i < 20000; i++)
+            {
+                Assert.True(lru.ContainsKey(new Order { Id = i }));
             }
         }
     }

@@ -15,20 +15,33 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using Commons.Collections.Map;
 
 namespace Commons.Collections.Set
 {
+    /// <summary>
+    /// A reference set is a set only diffirenciate the elements inside it by the reference value.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [CLSCompliant(true)]
-    public interface INavigableSet<T> : IStrictSet<T>, ISortedSet<T>, IReadOnlyStrictSet<T>, IEnumerable<T>, IEnumerable, ICollection
+    public class ReferenceSet<T> : AbstractHashedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>
     {
-        T Lower(T item);
+        private readonly ReferenceMap<T, object> map;
 
-        T Higher(T item);
+        public ReferenceSet()
+        {
+            map = new ReferenceMap<T, object>();
+        }
 
-        T Ceiling(T item);
+        public ReferenceSet(int capacity)
+        {
+            map = new ReferenceMap<T, object>(capacity);
+        }
 
-        T Floor(T item);
+        protected override IDictionary<T, object> Map
+        {
+            get { return map; }
+        }
     }
 }

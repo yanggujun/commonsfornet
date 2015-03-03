@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET.
+﻿// Copyright CommonsForNET
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -15,57 +15,47 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Commons.Collections.Map;
+
 using Commons.Utils;
+using Commons.Collections.Map;
+using Commons.Collections.Collection;
 
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public class HashedSet<T> : AbstractHashedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>
+    public class LruSet<T> : AbstractHashedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, IBoundedCollection
     {
-        private readonly HashedMap<T, object> map;
+        private readonly LruMap<T, object> map;
 
-        public HashedSet()
+        public LruSet()
         {
-            map = new HashedMap<T, object>();
+            map = new LruMap<T, object>();
         }
 
-        public HashedSet(int capacity)
+        public LruSet(int fullSize)
         {
-            map = new HashedMap<T, object>(capacity);
+            map = new LruMap<T, object>(fullSize);
         }
 
-        public HashedSet(IEqualityComparer<T> equalityComparer)
+        public LruSet(int fullSize, IEqualityComparer<T> comparer)
         {
-            map = new HashedMap<T, object>(equalityComparer);
+            map = new LruMap<T, object>(fullSize, comparer);
         }
 
-        public HashedSet(Equator<T> equator)
+        public LruSet(int fullSize, Equator<T> equator)
         {
-            map = new HashedMap<T, object>(equator);
+            map = new LruMap<T, object>(fullSize, equator);
         }
 
-        public HashedSet(int capacity, IEqualityComparer<T> equalityComparer)
+        public bool IsFull
         {
-            map = new HashedMap<T, object>(capacity, equalityComparer);
+            get { return map.IsFull; }
         }
 
-        public HashedSet(int capacity, Equator<T> equator)
+        public int MaxSize
         {
-            map = new HashedMap<T, object>(capacity, equator);
-        }
-
-        public HashedSet(IEnumerable<T> items, int capacity, Equator<T> equator) : this(capacity, equator)
-        {
-            if (items != null)
-            {
-                foreach (var item in items)
-                {
-                    Add(item);
-                }
-            }
+            get { return map.MaxSize; }
         }
 
         protected override IDictionary<T, object> Map

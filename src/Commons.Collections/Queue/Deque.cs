@@ -22,7 +22,7 @@ using Commons.Utils;
 namespace Commons.Collections.Queue
 {
     [CLSCompliant(true)]
-    public class Deque<T> : ICollection, IEnumerable<T>, IEnumerable
+    public class Deque<T> : IDeque<T>, ICollection, IEnumerable<T>, IEnumerable
     {
         private const int DefaultCapacity = 32;
         private const int EmptyPointer = -1;
@@ -152,6 +152,8 @@ namespace Commons.Collections.Queue
             }
         }
 
+        public bool IsEmpty { get { return Count <= 0; } }
+
         public IEnumerator<T> GetEnumerator()
         {
             return Items.GetEnumerator();
@@ -162,7 +164,7 @@ namespace Commons.Collections.Queue
             return GetEnumerator();
         }
 
-        public void CopyTo(Array array, int index)
+        void ICollection.CopyTo(Array array, int index)
         {
             Guarder.CheckNull(array);
             var theArray = (T[])array;
@@ -179,12 +181,12 @@ namespace Commons.Collections.Queue
             get { return count; }
         }
 
-        public bool IsSynchronized
+        bool ICollection.IsSynchronized
         {
             get { return false; }
         }
 
-        public object SyncRoot
+        object ICollection.SyncRoot
         {
             get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }

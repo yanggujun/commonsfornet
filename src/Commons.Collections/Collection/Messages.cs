@@ -14,21 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Commons.Collections.Set
+namespace Commons.Collections.Collection
 {
-    [CLSCompliant(true)]
-    public interface INavigableSet<T> : IStrictSet<T>, ISortedSet<T>, IReadOnlyStrictSet<T>, IEnumerable<T>, IEnumerable, ICollection
+    internal static class Messages
     {
-        T Lower(T item);
+        public static readonly string DequeEmptyError = "The deque is empty!";
 
-        T Higher(T item);
+        public static readonly string ArgumentArray = "array";
 
-        T Ceiling(T item);
-
-        T Floor(T item);
+        public static readonly string SyncRootNotSupportError = "The SyncRoot is not supported in the Commons.Collections";
     }
 }
