@@ -20,6 +20,10 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Set
 {
+    /// <summary>
+    /// An ordered set is a set where the elements in the set are sequenced by some rule.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements in the set.</typeparam>
     [CLSCompliant(true)]
     public interface IOrderedSet<T> : IStrictSet<T>, IReadOnlyStrictSet<T>, IEnumerable<T>, ICollection, IEnumerable
     {

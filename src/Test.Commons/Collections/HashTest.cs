@@ -558,6 +558,112 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
+        public void TestLinkedSetConstructors()
+        {
+            var set = new LinkedSet<string>();
+            set.TestHashedSetOperations();
+
+            var set2 = new LinkedSet<string>(10000);
+            set2.TestHashedSetOperations();
+
+            var set3 = new LinkedSet<string>((x1, x2) => x1 == x2);
+            set3.TestHashedSetOperations();
+
+            var set4 = new LinkedSet<string>(EqualityComparer<string>.Default);
+            set4.TestHashedSetOperations();
+
+            var set5 = new LinkedSet<string>(10000, EqualityComparer<string>.Default.Equals);
+            set5.TestHashedSetOperations();
+
+            var set6 = new LinkedSet<string>(10000, EqualityComparer<string>.Default);
+            set6.TestHashedSetOperations();
+        }
+
+        [Fact]
+        public void TestLinkedSet()
+        {
+            var container = new LinkedSet<int>(10000);
+            Assert.Throws(typeof(InvalidOperationException), () => container.First);
+            Assert.Throws(typeof(InvalidOperationException), () => container.Last);
+            Assert.Throws(typeof(InvalidOperationException), () => container.After(1));
+            Assert.Throws(typeof(InvalidOperationException), () => container.Before(1));
+            container.Fill(x => x, 10000);
+            Assert.Equal(0, container.First);
+            Assert.Equal(9999, container.Last);
+            Assert.Equal(0, container.GetIndex(0));
+            Assert.Equal(1000, container.GetIndex(1000));
+            Assert.Equal(1600, container.GetIndex(1600));
+            Assert.Equal(2749, container.GetIndex(2749));
+            Assert.Equal(4999, container.GetIndex(4999));
+            Assert.Equal(11, container.After(10));
+            Assert.Equal(100, container.After(99));
+            Assert.Equal(1001, container.After(1000));
+            Assert.Equal(5000, container.After(4999));
+            Assert.Equal(50, container.Before(51));
+            Assert.Equal(500, container.Before(501));
+            Assert.Equal(1500, container.Before(1501));
+            Assert.Equal(7900, container.Before(7901));
+            Assert.Throws(typeof(ArgumentException), () => container.After(9999));
+            Assert.Throws(typeof(ArgumentException), () => container.Before(0));
+            Assert.Throws(typeof(ArgumentException), () => container.Before(10000));
+            Assert.Throws(typeof(ArgumentException), () => container.After(10000));
+            Assert.Throws(typeof(ArgumentException), () => container.GetIndex(-100));
+            Assert.Throws(typeof(ArgumentException), () => container.GetIndex(20000));
+
+            for (var i = 2000; i < 5000; i++)
+            {
+                Assert.True(container.Remove(i));
+            }
+            Assert.Equal(0, container.First);
+            Assert.Equal(9999, container.Last);
+            Assert.Equal(1000, container.After(999));
+            Assert.Equal(999, container.Before(1000));
+            Assert.Equal(9000, container.After(8999));
+            Assert.Equal(8999, container.Before(9000));
+            Assert.Equal(8500, container.Before(8501));
+            Assert.Equal(5000, container.After(1999));
+            Assert.Equal(1999, container.Before(5000));
+            
+            for (var i = 7000; i < 8000; i++)
+            {
+                Assert.True(container.Remove(i));
+            }
+            Assert.Equal(0, container.First);
+            Assert.Equal(9999, container.Last);
+            Assert.Equal(1000, container.After(999));
+            Assert.Equal(999, container.Before(1000));
+            Assert.Equal(9000, container.After(8999));
+            Assert.Equal(8999, container.Before(9000));
+            Assert.Equal(8500, container.Before(8501));
+            Assert.Equal(8000, container.After(6999));
+            Assert.Equal(6999, container.Before(8000));
+        }
+
+        [Fact]
+        public void TestOneItemLinkedSet()
+        {
+            var orders = new LinkedSet<int>();
+            orders.Add(1);
+            Assert.Equal(1, orders.First);
+            Assert.Equal(1, orders.Last);
+            Assert.Throws(typeof(ArgumentException), () => orders.Before(1));
+            Assert.Throws(typeof(ArgumentException), () => orders.After(1));
+        }
+
+        [Fact]
+        public void TestEmptyLinkedSet()
+        {
+            var orders = new LinkedSet<string>();
+            Assert.Throws(typeof(InvalidOperationException), () => orders.First);
+            Assert.Throws(typeof(InvalidOperationException), () => orders.Last);
+            Assert.Throws(typeof(InvalidOperationException), () => orders.After("1"));
+            Assert.Throws(typeof(InvalidOperationException), () => orders.Before("2"));
+            Assert.Throws(typeof(ArgumentException), () => orders.GetIndex(0));
+            Assert.Throws(typeof(ArgumentException), () => orders.GetIndex(1));
+        }
+
+
+        [Fact]
         public void TestReferenceMapConstructor()
         {
             var map1 = new ReferenceMap<string, Order>();

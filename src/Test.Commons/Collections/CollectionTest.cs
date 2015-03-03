@@ -808,6 +808,13 @@ namespace Test.Commons.Collections
             set.CollectionOperations<Order>(10000);
         }
 
+        public void TestLinkedSetCollectionOperations()
+        {
+            var set = new LinkedSet<Order>(10000, new OrderEqualityComparer());
+            set.Fill(x => new Order { Id = x });
+            set.CollectionOperations<Order>(10000);
+        }
+
         [Fact]
         public void TestTreeSetCollectionOperations()
         {

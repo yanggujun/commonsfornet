@@ -21,6 +21,11 @@ using Commons.Collections.Map;
 
 namespace Commons.Collections.Set
 {
+    /// <summary>
+    /// A <see cref="LinkedSet"/> is an orded set where elements are ordered by the Adding sequence. 
+    /// One can use "First", "Last", "After", "Before" and "GetIndex" operations to retrieve to ordered elements in the set.
+    /// </summary>
+    /// <typeparam name="T">The type of the element in the set.</typeparam>
     [CLSCompliant(true)]
     public class LinkedSet<T> : AbstractHashedSet<T>, IOrderedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>
     {
