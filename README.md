@@ -16,7 +16,7 @@ https://www.nuget.org/packages/Commons/
 
 Or on nuget package manager console type:
 
-PM> Install-Package Commons
+    PM> Install-Package Commons
 
 ###Issues
 
