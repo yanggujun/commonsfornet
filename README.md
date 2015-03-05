@@ -1,8 +1,8 @@
-##.NET Commons Library
+##.NET Commons
 
 ###About
 
-.NET Commons Library is originally inspired by the "apache commons project" for java applications. It is intended to provide the common components and basica application facility for .NET applications.
+.NET Commons is originally inspired by the "apache commons project" for java applications. It is intended to provide the common components and basic application facilities for .NET applications.
 
 ###License
 
@@ -10,7 +10,11 @@ Apache License v2.0
 
 ###Installation
 
-The nuget package could be retrieved from
+The lastest released binaries can be downloaded from 
+
+https://github.com/yanggujun/commonsfornet/releases
+
+The nuget package can be retrieved from 
 
 https://www.nuget.org/packages/Commons/
 
