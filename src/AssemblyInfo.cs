@@ -18,7 +18,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyCopyright("Copyright (c) 2015 yanggujun")]
+[assembly: AssemblyCopyright("")]
 [assembly: ComVisible(false)]
 
 [assembly: Guid("84e7ec63-7b50-4dc1-ae96-c3b56626efd7")]
@@ -36,6 +36,6 @@ using System.Runtime.InteropServices;
 //   build number is increased by one if the number of days to the first day is less than or 
 //   equal to the build number.
 // * TODO: Automated version strategy will be developed in future.
-[assembly: AssemblyVersion("0.1.1.16")]
-[assembly: AssemblyFileVersion("0.1.1.16")]
+[assembly: AssemblyVersion("0.1.1.22")]
+[assembly: AssemblyFileVersion("0.1.1.22")]
 [assembly: CLSCompliant(true)]
