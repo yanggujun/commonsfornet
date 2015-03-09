@@ -18,30 +18,30 @@ using System;
 
 namespace Commons.Patterns.Pool
 {
-	/// <summary>
-	/// The interface defines the operations for an object pool.
-	/// </summary>
-	/// <typeparam name="T">The type of the pooled object.</typeparam>
+    /// <summary>
+    /// The interface defines the operations for an object pool.
+    /// </summary>
+    /// <typeparam name="T">The type of the pooled object.</typeparam>
     [CLSCompliant(true)]
-	public interface IObjectPool<T> : IDisposable
-	{
-		/// <summary>
-		/// Acquires an object from the pool. 
-		/// If there is any object available in the pool, one of the idle objects is returned
-		/// from the pool. And the idle object is marked as allocated.
-		/// If there is not any idle object in the pool, and the pool size is less than the max value,
-		/// the object pool attempts to create an object and returns the object if successful. Pool size is increased.
-		/// If there is not any idle object in the pool and the pool size has reached the max value, 
-		/// <see cref="ResourceUnavailableException"/> is thrown.
-		/// </summary>
-		/// <returns>The object</returns>
-		T Acquire();
+    public interface IObjectPool<T> : IDisposable
+    {
+        /// <summary>
+        /// Acquires an object from the pool. 
+        /// If there is any object available in the pool, one of the idle objects is returned
+        /// from the pool. And the idle object is marked as allocated.
+        /// If there is not any idle object in the pool, and the pool size is less than the max value,
+        /// the object pool attempts to create an object and returns the object if successful. Pool size is increased.
+        /// If there is not any idle object in the pool and the pool size has reached the max value, 
+        /// <see cref="ResourceUnavailableException"/> is thrown.
+        /// </summary>
+        /// <returns>The object</returns>
+        T Acquire();
 
         /// <summary>
         /// Returns an <paramref name="obj"/> to the pool. The object becomes idle when it's returned to the pool.
         /// </summary>
         /// <param name="obj">The returned object</param>
-		void Return(T obj);
+        void Return(T obj);
 
         /// <summary>
         /// Asks the pool to create a new object instance and add the object into the pool.
@@ -80,5 +80,5 @@ namespace Commons.Patterns.Pool
         /// Clears the pool. And diposes the objects in the pool.
         /// </summary>
         void Clear();
-	}
+    }
 }
