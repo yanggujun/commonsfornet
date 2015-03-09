@@ -20,8 +20,10 @@ using System.Collections.Generic;
 namespace Commons.Collections.Queue
 {
     /// <summary>
-    /// 
+    /// A priority queue with minimum item on the top.
     /// </summary>
+    /// <typeparam name="T">The type of the priority queue items.</typeparam>
+    [CLSCompliant(true)]
     public class MinPriorityQueue<T> : AbstractPriorityQueue<T>, IPriorityQueue<T>
     {
         public MinPriorityQueue()

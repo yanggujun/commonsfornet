@@ -20,51 +20,51 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Queue
 {
-	/// <summary>
-	/// The interface defines the operations for a double ended queue. A double ended queue is a queue, for which elements 
-	/// can be added to and removed from both the head and tail of the queue.
-	/// </summary>
-	/// <typeparam name="T">The item type of the deque.</typeparam>
+    /// <summary>
+    /// The interface defines the operations for a double ended queue. A double ended queue is a queue, for which elements 
+    /// can be added to and removed from both the head and tail of the queue.
+    /// </summary>
+    /// <typeparam name="T">The item type of the deque.</typeparam>
     [CLSCompliant(true)]
-	public interface IDeque<T> : IEnumerable<T>, ICollection, IEnumerable
-	{
-		/// <summary>
-		/// Appends an <paramref name="item"/> to the tail of the deque.
-		/// </summary>
-		/// <param name="item">The item.</param>
-		void Append(T item);
+    public interface IDeque<T> : IEnumerable<T>, ICollection, IEnumerable
+    {
+        /// <summary>
+        /// Appends an <paramref name="item"/> to the tail of the deque.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        void Append(T item);
 
-		/// <summary>
-		/// Prepends an <paramref name="item"/> to the head of the deque.
-		/// </summary>
-		/// <param name="item"></param>
-		void Prepend(T item);
+        /// <summary>
+        /// Prepends an <paramref name="item"/> to the head of the deque.
+        /// </summary>
+        /// <param name="item"></param>
+        void Prepend(T item);
 
-		/// <summary>
-		/// Retrieves the item in the tail of the deque and removes it. If the deque is empty, <see cref="System.InvalidOperationException"/> is thrown.
-		/// </summary>
-		/// <returns>The item.</returns>
-		T Pop();
+        /// <summary>
+        /// Retrieves the item in the tail of the deque and removes it. If the deque is empty, <see cref="System.InvalidOperationException"/> is thrown.
+        /// </summary>
+        /// <returns>The item.</returns>
+        T Pop();
 
-		/// <summary>
-		/// Retrieves the item in the head of the deque and removes it. If the deque is empty, <see cref="System.InvalidOperationException"/> is thrown.
-		/// </summary>
-		/// <returns>The item.</returns>
-		T Shift();
+        /// <summary>
+        /// Retrieves the item in the head of the deque and removes it. If the deque is empty, <see cref="System.InvalidOperationException"/> is thrown.
+        /// </summary>
+        /// <returns>The item.</returns>
+        T Shift();
 
-		/// <summary>
-		/// Retrieves the item in the head of the deque. If the deque is empty, <see cref="System.InvalidOperationException"/> is thrown.
-		/// </summary>
-		T First { get; }
+        /// <summary>
+        /// Retrieves the item in the head of the deque. If the deque is empty, <see cref="System.InvalidOperationException"/> is thrown.
+        /// </summary>
+        T First { get; }
 
-		/// <summary>
-		/// Retrieves the item in the tail of the deque. If the deque is empty, <see cref="System.InvalidOperationException"/> is thrown.
-		/// </summary>
-		T Last { get; }
+        /// <summary>
+        /// Retrieves the item in the tail of the deque. If the deque is empty, <see cref="System.InvalidOperationException"/> is thrown.
+        /// </summary>
+        T Last { get; }
 
         /// <summary>
         /// Tests emptyness of the deque.
         /// </summary>
         bool IsEmpty { get; }
-	}
+    }
 }

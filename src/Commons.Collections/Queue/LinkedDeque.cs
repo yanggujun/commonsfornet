@@ -23,17 +23,17 @@ using Commons.Collections.Collection;
 
 namespace Commons.Collections.Queue
 {
-	/// <summary>
-	/// A LinkedDeque is a deque with its entries doubly linked with their next and previous siblings.
-	/// </summary>
-	/// <typeparam name="T">The type of the item in the deque.</typeparam>
+    /// <summary>
+    /// A LinkedDeque is a deque with its entries doubly linked with their next and previous siblings.
+    /// </summary>
+    /// <typeparam name="T">The type of the item in the deque.</typeparam>
     [CLSCompliant(true)]
-	public class LinkedDeque<T> : IDeque<T>, IEnumerable<T>, ICollection, IEnumerable
-	{
+    public class LinkedDeque<T> : IDeque<T>, IEnumerable<T>, ICollection, IEnumerable
+    {
         private DoubleLinkedEntry<T> Header { get; set; }
 
-		public void Append(T item)
-		{
+        public void Append(T item)
+        {
             if (Header == null)
             {
                 MakeHeader(item);
@@ -47,16 +47,16 @@ namespace Commons.Collections.Queue
                 Header.Previous = newEntry;
                 newEntry.Next = Header;
             }
-		}
+        }
 
-		public void Prepend(T item)
-		{
+        public void Prepend(T item)
+        {
             Append(item);
             Header = Header.Previous;
-		}
+        }
 
-		public T Pop()
-		{
+        public T Pop()
+        {
             Header.Validate(x => x != null, new InvalidOperationException(Messages.DequeEmptyError));
             var item = default(T);
             if (Header == Header.Previous && Header == Header.Next)
@@ -75,10 +75,10 @@ namespace Commons.Collections.Queue
             }
 
             return item;
-		}
+        }
 
-		public T Shift()
-		{
+        public T Shift()
+        {
             Header.Validate(x => x != null, new InvalidOperationException(Messages.DequeEmptyError));
             var item = default(T);
 
@@ -101,40 +101,40 @@ namespace Commons.Collections.Queue
             }
 
             return item;
-		}
+        }
 
-		public T First
-		{
+        public T First
+        {
             get
             {
                 Header.Validate(x => x != null, new InvalidOperationException(Messages.DequeEmptyError));
                 return Header.Entry;
             }
-		}
+        }
 
-		public T Last
-		{
+        public T Last
+        {
             get
             {
                 Header.Validate(x => x != null, new InvalidOperationException(Messages.DequeEmptyError));
                 return Header.Previous.Entry;
             }
-		}
+        }
 
         public bool IsEmpty { get { return Header == null; } }
 
-		public IEnumerator<T> GetEnumerator()
-		{
+        public IEnumerator<T> GetEnumerator()
+        {
             return Items.GetEnumerator();
-		}
+        }
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
+        IEnumerator IEnumerable.GetEnumerator()
+        {
             return GetEnumerator();
-		}
+        }
 
-		void ICollection.CopyTo(Array array, int index)
-		{
+        void ICollection.CopyTo(Array array, int index)
+        {
             array.ValidateNotNull(Messages.ArgumentArray);
             var items = (T[])array;
             var cursor = 0;
@@ -142,10 +142,10 @@ namespace Commons.Collections.Queue
             {
                 items[index + (cursor++)] = item;
             }
-		}
+        }
 
-		public int Count
-		{
+        public int Count
+        {
             get
             {
                 var count = 0;
@@ -156,17 +156,17 @@ namespace Commons.Collections.Queue
 
                 return count;
             }
-		}
+        }
 
-		bool ICollection.IsSynchronized
-		{
+        bool ICollection.IsSynchronized
+        {
             get { return false; }
-		}
+        }
 
-		object ICollection.SyncRoot
-		{
+        object ICollection.SyncRoot
+        {
             get { throw new NotSupportedException(Messages.SyncRootNotSupportError); }
-		}
+        }
 
         private void MakeHeader(T item)
         {
@@ -191,5 +191,5 @@ namespace Commons.Collections.Queue
                 }
             }
         }
-	}
+    }
 }
