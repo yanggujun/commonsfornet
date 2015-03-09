@@ -22,6 +22,7 @@ using Commons.Utils;
 
 namespace Commons.Collections.Queue
 {
+    [CLSCompliant(true)]
     public class AbstractPriorityQueue<T> : IPriorityQueue<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         private readonly FibonacciHeap<T> heap;
