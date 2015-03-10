@@ -10,7 +10,7 @@ Apache License v2.0
 
 ###Installation
 
-The lastest released binaries can be downloaded from 
+The lastest release can be found on
 
 https://github.com/yanggujun/commonsfornet/releases
 
