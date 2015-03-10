@@ -16,9 +16,9 @@
 
 using System;
 
-namespace Commons.Patterns.Pool
+namespace Commons.Pool
 {
-    public class PoolConfig
+    public class ExceedLimitException : Exception
     {
     }
 }

@@ -16,7 +16,7 @@
 
 using System;
 
-namespace Commons.Patterns.Pool
+namespace Commons.Pool
 {
     public class ResourceUnavailableException : Exception
     {

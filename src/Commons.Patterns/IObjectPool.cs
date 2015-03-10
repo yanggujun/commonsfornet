@@ -16,7 +16,7 @@
 
 using System;
 
-namespace Commons.Patterns.Pool
+namespace Commons.Pool
 {
     /// <summary>
     /// The interface defines the operations for an object pool.
