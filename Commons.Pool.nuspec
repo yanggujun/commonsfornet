@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Commons.Pool</id>
+    <version>0.1.1.22</version>
+    <authors>yanggujun</authors>
+    <owners>yanggujun</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Commons for .NET applications.
+    </description>
+    <summary>Commons.Pool contains the object pool implementation for .NET applications.
+    </summary>
+    <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
+    <tags>Object Pool</tags>
+    <dependencies>
+        <dependency id="Commons" version="0.1.1.22"/>
+    </dependencies>
+  </metadata>
+  <files>
+      <file src="src\bin\Commons.Pool.dll" target="lib\net45\" />
+  </files>
+</package>
