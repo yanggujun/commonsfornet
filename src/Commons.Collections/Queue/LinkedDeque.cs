@@ -30,7 +30,7 @@ namespace Commons.Collections.Queue
     [CLSCompliant(true)]
     public class LinkedDeque<T> : IDeque<T>, IEnumerable<T>, ICollection, IEnumerable
     {
-        private DoubleLinkedEntry<T> Header { get; set; }
+        private DoublyLinkedEntry<T> Header { get; set; }
 
         public void Append(T item)
         {
@@ -40,7 +40,7 @@ namespace Commons.Collections.Queue
             }
             else
             {
-                var newEntry = new DoubleLinkedEntry<T>();
+                var newEntry = new DoublyLinkedEntry<T>();
                 newEntry.Entry = item;
                 newEntry.Previous = Header.Previous;
                 Header.Previous.Next = newEntry;
@@ -170,7 +170,7 @@ namespace Commons.Collections.Queue
 
         private void MakeHeader(T item)
         {
-            Header = new DoubleLinkedEntry<T>();
+            Header = new DoublyLinkedEntry<T>();
             Header.Entry = item;
             Header.Next = Header;
             Header.Previous = Header;

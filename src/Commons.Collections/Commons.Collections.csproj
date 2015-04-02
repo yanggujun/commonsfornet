@@ -58,7 +58,7 @@
     <Compile Include="Bag\AbstractMapBag.cs" />
     <Compile Include="Bag\HashedBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
-    <Compile Include="Collection\DoubleLinkedEntry.cs" />
+    <Compile Include="Collection\DoublyLinkedEntry.cs" />
     <Compile Include="Collection\Messages.cs" />
     <Compile Include="Concurrent\ConcurrentDeque.cs" />
     <Compile Include="Concurrent\ConcurrentList.cs" />
