@@ -51,6 +51,7 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Atomic.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FnvHash32.cs" />
     <Compile Include="Functors.cs" />
