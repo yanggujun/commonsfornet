@@ -60,6 +60,8 @@
     <Compile Include="Bag\TreeBag.cs" />
     <Compile Include="Collection\DoubleLinkedEntry.cs" />
     <Compile Include="Collection\Messages.cs" />
+    <Compile Include="Concurrent\ConcurrentDeque.cs" />
+    <Compile Include="Concurrent\ConcurrentList.cs" />
     <Compile Include="Map\AbstractBimap.cs" />
     <Compile Include="Map\AbstractHashedMap.cs" />
     <Compile Include="Map\Customized32HashedMap.cs" />
@@ -71,6 +73,8 @@
     <Compile Include="Map\AbstractLinkedMap.cs" />
     <Compile Include="Map\IReadOnlyBimap.cs" />
     <Compile Include="Map\IReadOnlyMultiValueMap.cs" />
+    <Compile Include="Map\ISortedBimap.cs" />
+    <Compile Include="Map\ISortedMultiValueMap.cs" />
     <Compile Include="Map\LinkedHashedMap.cs" />
     <Compile Include="Map\LlrbTree.cs" />
     <Compile Include="Map\LruMap.cs" />
