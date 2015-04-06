@@ -15,11 +15,78 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using Commons.Collections.Queue;
 
 namespace Commons.Collections.Concurrent
 {
     [CLSCompliant(true)]
-    public class ConcurrentDeque
+    public class ConcurrentDeque<T> : IDeque<T>, ICollection, IEnumerable<T>, IEnumerable
     {
+        public void Append(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Prepend(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T Pop()
+        {
+            throw new NotImplementedException();
+        }
+
+        public T Shift()
+        {
+            throw new NotImplementedException();
+        }
+
+        public T First
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public T Last
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool IsEmpty
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICollection.CopyTo(Array array, int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Count
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        bool ICollection.IsSynchronized
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        object ICollection.SyncRoot
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }
