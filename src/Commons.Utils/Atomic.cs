@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Threading;
 namespace Commons.Utils
 {
@@ -24,6 +25,7 @@ namespace Commons.Utils
     /// on different CPU architectures and different OS.
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [CLSCompliant(true)]
     public struct Atomic<T> where T : class
     {
         private T reference;
@@ -35,21 +37,39 @@ namespace Commons.Utils
 
         private Atomic(T reference)
         {
+            if (reference == null)
+            {
+                throw new ArgumentNullException();
+            }
             this.reference = reference;
         }
 
         public bool CompareExchange(T newValue)
         {
+            Check(reference, newValue);
             var old = Interlocked.CompareExchange(ref reference, newValue, reference);
             return !ReferenceEquals(old, reference);
         }
 
         public bool Exchange(T newValue)
         {
+            Check(reference, newValue);
             var old = Interlocked.Exchange(ref reference, newValue);
             return !ReferenceEquals(old, reference);
         }
 
         public T Value { get { return reference; } }
+
+        private void Check(T reference, T newValue)
+        {
+            if (newValue == null)
+            {
+                throw new ArgumentNullException();
+            }
+            if (reference == null)
+            {
+                throw new InvalidOperationException();
+            }
+        }
     }
 }
