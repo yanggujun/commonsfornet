@@ -23,14 +23,32 @@ namespace Commons.Collections.Queue
     [CLSCompliant(true)]
     public interface IPriorityQueue<T> : IEnumerable<T>, IEnumerable
     {
+        /// <summary>
+        /// The element count of the priority queue.
+        /// </summary>
         int Count { get; }
 
+        /// <summary>
+        /// Whether the priority queue is empty.
+        /// </summary>
         bool IsEmpty { get; }
 
+        /// <summary>
+        /// Retrieves the element at the top of the priority queue. The element is removed when <see cref="IPriorityQueue.Pop"/>
+        /// is called.
+        /// </summary>
         T Top { get; }
 
+        /// <summary>
+        /// Pushes a new element to the priority queue.
+        /// </summary>
+        /// <param name="item"></param>
         void Push(T item);
 
+        /// <summary>
+        /// Retrieves the element at the top of the priority queue and removes it.
+        /// </summary>
+        /// <returns>The element at the top of the priority queue.</returns>
         T Pop();
     }
 }
