@@ -22,7 +22,7 @@ namespace Commons.Collections.Collection
     /// <summary>
     /// Defines a collection that is size limited. The size of the collection can vary, but it 
     /// cannot exceed the mas size of the collection.
-    /// The max size of the collection is pre-defined. It cannot be changed in the runtime.
+    /// The max size of the collection is pre-defined. It cannot be changed in the afterwards.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [CLSCompliant(true)]

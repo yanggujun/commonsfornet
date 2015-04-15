@@ -22,15 +22,39 @@ using Commons.Collections.Set;
 
 namespace Commons.Collections.Bag
 {
+    /// <summary>
+    /// A bag is a collection which accept duplicate elements.
+    /// </summary>
+    /// <typeparam name="T">Element type.</typeparam>
     [CLSCompliant(true)]
     public interface IBag<T> : ICollection<T>, IEnumerable<T>, IEnumerable
     {
+        /// <summary>
+        /// Retrieves the number of the elemenet.
+        /// </summary>
+        /// <param name="item">The element.</param>
+        /// <returns></returns>
         int this[T item] { get; }
 
+        /// <summary>
+        /// Add an element with number of copies.
+        /// </summary>
+        /// <param name="item">The element to add.</param>
+        /// <param name="copies">Number of the element copies.</param>
         void Add(T item, int copies);
 
+        /// <summary>
+        /// Remove an element with number of copies.
+        /// </summary>
+        /// <param name="item">The element to remove.</param>
+        /// <param name="copies">Number of the element to remove.</param>
+        /// <returns>True if remove succeeds.</returns>
         bool Remove(T item, int copies);
 
+        /// <summary>
+        /// Retrieves a unique set of the elements in the bag.
+        /// </summary>
+        /// <returns></returns>
         IStrictSet<T> ToUnique();
     }
 }
