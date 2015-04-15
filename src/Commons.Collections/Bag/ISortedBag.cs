@@ -20,11 +20,21 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Bag
 {
+    /// <summary>
+    /// A bag with element sorted.
+    /// </summary>
+    /// <typeparam name="T">The type of the element.</typeparam>
     [CLSCompliant(true)]
     public interface ISortedBag<T> : IBag<T>, ICollection<T>, IEnumerable<T>, IEnumerable
     {
+        /// <summary>
+        /// Retrieves the element with max value.
+        /// </summary>
         T Max { get; }
 
+        /// <summary>
+        /// Retrieves the element with min value.
+        /// </summary>
         T Min { get; }
     }
 }
