@@ -21,8 +21,35 @@ using System.Collections.Generic;
 namespace Commons.Collections.Concurrent
 {
     [CLSCompliant(true)]
-    public class ConcurrentList<T> : ICollection<T>, ICollection, IEnumerable<T>, IEnumerable
+    public class ConcurrentList<T> : IList<T>, ICollection<T>, ICollection, IEnumerable<T>, IEnumerable
     {
+        public int IndexOf(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(int index, T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T this[int index]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public void Add(T item)
         {
             throw new NotImplementedException();
