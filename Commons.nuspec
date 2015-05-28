@@ -8,9 +8,9 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Commons for .NET applications.
+    <description>.NET Commons.
     </description>
-    <summary>.NET Commons porject provides the fundamental components for .NET applications. It includes Commons.Utils, Commons.Collections and Commons.Json.
+    <summary>.NET Commons includes Commons.Utils, Commons.Collections and Commons.Json.
     </summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
     <tags>Collections Utilities JSON</tags>
