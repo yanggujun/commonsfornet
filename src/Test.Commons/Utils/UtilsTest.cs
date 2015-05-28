@@ -47,16 +47,26 @@ namespace Test.Commons.Utils
         {
             var order = new Atomic<Order>();
             var newOrder = new Order();
-            Assert.Throws(typeof(InvalidOperationException), () => order.CompareExchange(newOrder));
-            Assert.Throws(typeof(InvalidOperationException), () => order.Exchange(newOrder));
+			var result = order.CompareExchange(newOrder);
+			Assert.True(result);
+			Assert.True(ReferenceEquals(newOrder, order.Value));
         }
 
         [Fact]
         public void TestAtomicNullArgument()
         {
             var order = Atomic<Order>.From(new Order());
-            Assert.Throws(typeof(ArgumentNullException), () => order.CompareExchange(null));
-            Assert.Throws(typeof(ArgumentNullException), () => order.Exchange(null));
+			var result = order.CompareExchange(null);
+			Assert.True(result);
+			Assert.Equal(null, order.Value);
         }
+
+		[Fact]
+		public void TestAtomicNullReference()
+		{
+			var order = Atomic<Order>.From(null);
+			var result = order.CompareExchange(new Order());
+			Assert.True(result);
+		}
     }
 }
