@@ -17,46 +17,76 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Commons.Collections.Queue;
 
 namespace Commons.Collections.Concurrent
 {
+	/// <summary>
+	/// Concurrent sorted list.
+	/// </summary>
+	/// <typeparam name="T">The type of the elements in the list.</typeparam>
     [CLSCompliant(true)]
-    public class ConcurrentDeque<T> : IDeque<T>, ICollection, IEnumerable<T>, IEnumerable
+    public class ConcurrentSortedList<T> : IList<T>, ICollection<T>, ICollection, IEnumerable<T>, IEnumerable
     {
-        public void Append(T item)
+        public int IndexOf(T item)
         {
             throw new NotImplementedException();
         }
 
-        public void Prepend(T item)
+        public void Insert(int index, T item)
         {
             throw new NotImplementedException();
         }
 
-        public T Pop()
+        public void RemoveAt(int index)
         {
             throw new NotImplementedException();
         }
 
-        public T Shift()
+        public T this[int index]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void Add(T item)
         {
             throw new NotImplementedException();
         }
 
-        public T First
+        public void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Count
         {
             get { throw new NotImplementedException(); }
         }
 
-        public T Last
+        public bool IsReadOnly
         {
             get { throw new NotImplementedException(); }
         }
 
-        public bool IsEmpty
+        public bool Remove(T item)
         {
-            get { throw new NotImplementedException(); }
+            throw new NotImplementedException();
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -74,7 +104,7 @@ namespace Commons.Collections.Concurrent
             throw new NotImplementedException();
         }
 
-        public int Count
+        int ICollection.Count
         {
             get { throw new NotImplementedException(); }
         }
