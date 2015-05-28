@@ -49,6 +49,15 @@ namespace Test.Commons.Collections
             Assert.DoesNotThrow(() => JsonObject.Parse(worldCup.ToString()));
         }
 
+		[Fact]
+		public void TestJsonFromRealWorld()
+		{
+            string json = TestHelper.ReadFrom(@".\Collections\JsonSample9.txt");
+
+			dynamic person = JsonObject.Parse(json);
+			Assert.Equal("USA", (string)person.More.Country);
+		}
+
         [Fact]
         public void TestParseJson()
         {
