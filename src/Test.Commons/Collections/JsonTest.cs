@@ -38,14 +38,14 @@ namespace Test.Commons.Collections
             worldCup.Groups.GroupA.Results.Day2 = new[] { "Bra 0 : 0 Mex", "Cro 4 : 0 Cameroon" };
             worldCup.Groups.GroupA.Qualifiers.First = "Brazil";
             worldCup.Groups.GroupA.Qualifiers.Second = "Mexico";
-            worldCup.Groups.GroupB = new[] { "Spain", "Netherland", "Chile", "Austrilia" };
+            worldCup.Groups.GroupB = new[] { "Spain", "Netherland", "Chile", "Australia" };
             worldCup.Groups.GroupC = new[] { "Columbia", "Greece", "Cote Divoire", "Japan" };
-            worldCup.Cities = new[] { "Rio", "Brazilia", "San Paulo", "Salvador" };
+            worldCup.Cities = new[] { "Rio", "Brasilia", "San Paulo", "Salvador" };
             worldCup.Groups.GroupA.TimeStart = new DateTime(2014, 6, 17);
             Assert.Equal("Spain", (string)worldCup.Groups.GroupB[0]);
             Assert.Equal("Netherland", (string)worldCup.Groups.GroupB[1]);
             Assert.Equal("Chile", (string)worldCup.Groups.GroupB[2]);
-            Assert.Equal("Austrilia", (string)worldCup.Groups.GroupB[3]);
+            Assert.Equal("Australia", (string)worldCup.Groups.GroupB[3]);
             Assert.DoesNotThrow(() => JsonObject.Parse(worldCup.ToString()));
         }
 
@@ -94,6 +94,7 @@ namespace Test.Commons.Collections
             Assert.Equal("~1.8", (string)package.devDependencies.chai);
         }
 
+		[Fact]
         public void TestParseJsonIllEmptyHalfObject()
         {
             var json = "{";
@@ -180,11 +181,12 @@ namespace Test.Commons.Collections
         {
             var json = "{\"test\": { \"nest\": [1, 2, 3, 4, 5, 6]}}";
             dynamic jobj = JsonObject.Parse(json);
-            var count = 1;
+            var count = 0;
             foreach (var item in jobj.test.nest)
             {
-                Assert.Equal(count++, (int)item);
+                Assert.Equal(++count, (int)item);
             }
+			Assert.Equal(6, count);
         }
 
         [Fact]
