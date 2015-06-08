@@ -24,7 +24,10 @@ namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
     public class SkipListMap<K, V> : INavigableMap<K, V>, ISortedMap<K, V>, IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, ICollection,
-        IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+#if NET45
+        IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, 
+#endif
+		IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         private readonly SkipList<K, V> skipList;
 
@@ -270,7 +273,7 @@ namespace Commons.Collections.Map
             get { throw new NotSupportedException("The operation is not supported in Commons.Collections."); }
         }
 
-
+#if NET45
         IEnumerable<K> IReadOnlyDictionary<K, V>.Keys
         {
             get { return Keys; }
@@ -280,6 +283,7 @@ namespace Commons.Collections.Map
         {
             get { return Values; }
         }
+#endif
 
         void IDictionary.Add(object key, object value)
         {

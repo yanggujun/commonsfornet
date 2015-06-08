@@ -16,8 +16,11 @@
     <tags>Collections Utilities JSON</tags>
   </metadata>
   <files>
-      <file src="src\bin\Commons.Utils.dll" target="lib\net45\" />
-      <file src="src\bin\Commons.Collections.dll" target="lib\net45\" />
-      <file src="src\bin\Commons.Json.dll" target="lib\net45\" />
+      <file src="src\bin\NET45\Commons.Utils.dll" target="lib\net45\" />
+      <file src="src\bin\NET45\Commons.Collections.dll" target="lib\net45\" />
+      <file src="src\bin\NET45\Commons.Json.dll" target="lib\net45\" />
+      <file src="src\bin\NET40\Commons.Utils.dll" target="lib\net40\" />
+      <file src="src\bin\NET40\Commons.Collections.dll" target="lib\net40\" />
+      <file src="src\bin\NET40\Commons.Json.dll" target="lib\net40\" />
   </files>
 </package>

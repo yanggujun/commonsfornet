@@ -21,7 +21,10 @@ using Commons.Collections.Set;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class TreeBimap<K, V> : AbstractBimap<K, V>, IBimap<K, V>, IDictionary<K, V>, IReadOnlyBimap<K, V>, IReadOnlyDictionary<K, V>
+    public class TreeBimap<K, V> : AbstractBimap<K, V>, IBimap<K, V>, IDictionary<K, V>, IReadOnlyBimap<K, V>
+#if NET45
+		, IReadOnlyDictionary<K, V>
+#endif
     {
         private readonly Comparison<K> keyComparer;
         private readonly Comparison<V> valueComparer;

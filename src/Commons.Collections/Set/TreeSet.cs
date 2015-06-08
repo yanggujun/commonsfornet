@@ -28,7 +28,11 @@ namespace Commons.Collections.Set
     /// </summary>
     /// <typeparam name="T">Type of the items in the set.</typeparam>
     [CLSCompliant(true)]
-    public sealed class TreeSet<T> : AbstractSet<T>, INavigableSet<T>, ISortedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
+    public sealed class TreeSet<T> : AbstractSet<T>, INavigableSet<T>, ISortedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, 
+#if NET45
+		IReadOnlyCollection<T>, 
+#endif
+		IEnumerable<T>, ICollection, IEnumerable
     {
         private readonly object val = new object();
         private readonly LlrbTree<T, object> llrbTree;

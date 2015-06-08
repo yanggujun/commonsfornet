@@ -24,7 +24,11 @@ namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
     public abstract class AbstractBimap<K, V> : IBimap<K, V>, IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, 
-        ICollection, IReadOnlyBimap<K, V>, IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+        ICollection, IReadOnlyBimap<K, V>, 
+#if NET45
+		IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, 
+#endif
+		IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         protected IDictionary<K, V> KeyValue { get; private set; }
         protected IDictionary<V, K> ValueKey { get; private set; }
@@ -233,6 +237,7 @@ namespace Commons.Collections.Map
             get { throw new NotSupportedException("The SyncRoot is not supported in the Commons.Collections."); }
         }
 
+#if NET45
         IEnumerable<K> IReadOnlyDictionary<K,V>.Keys
         {
             get
@@ -248,6 +253,7 @@ namespace Commons.Collections.Map
                 return Values;
             }
         }
+#endif
 
         /// <summary>
         /// When setting the value to a key, if the key or value already exists, the operation is equivalent to 

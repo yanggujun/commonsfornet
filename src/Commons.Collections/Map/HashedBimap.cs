@@ -23,7 +23,10 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class HashedBimap<K, V> :AbstractBimap<K, V>, IBimap<K, V>, IDictionary<K, V>, IReadOnlyBimap<K, V>, IReadOnlyDictionary<K, V>
+    public class HashedBimap<K, V> :AbstractBimap<K, V>, IBimap<K, V>, IDictionary<K, V>, IReadOnlyBimap<K, V>
+#if NET45
+		, IReadOnlyDictionary<K, V>
+#endif
     {
         private const int DefaultCapacity = 16;
         private readonly Equator<K> keyEquator;

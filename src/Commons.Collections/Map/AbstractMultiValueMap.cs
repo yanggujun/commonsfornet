@@ -23,7 +23,11 @@ namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
     public abstract class AbstractMultiValueMap<K, V> : IMultiValueMap<K, V>, ICollection<KeyValuePair<K, V>>, ICollection,
-        IReadOnlyMultiValueMap<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, 
+        IReadOnlyMultiValueMap<K, V>, 
+#if NET45
+		IReadOnlyCollection<KeyValuePair<K, V>>, 
+#endif
+		IEnumerable<KeyValuePair<K, V>>, 
         IEnumerable<KeyValuePair<K, ICollection<V>>>, IEnumerable
     {
         private readonly Equator<V> valueEquator;

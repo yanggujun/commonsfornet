@@ -30,7 +30,10 @@ namespace Commons.Collections.Map
     /// <typeparam name="V">The value type</typeparam>
     [CLSCompliant(true)]
     public sealed class TreeMap<K, V> : INavigableMap<K, V>, ISortedMap<K, V>, IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, ICollection,
-        IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+#if NET45
+        IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, 
+#endif
+		IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         private readonly LlrbTree<K, V> llrbTree;
 
@@ -338,6 +341,7 @@ namespace Commons.Collections.Map
             get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
 
+#if NET45
         IEnumerable<K> IReadOnlyDictionary<K, V>.Keys
         {
             get { return this.Keys; }
@@ -347,6 +351,7 @@ namespace Commons.Collections.Map
         {
             get { return Values; }
         }
+#endif
 
         public ISortedSet<K> SortedKeySet
         {

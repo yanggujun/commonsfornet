@@ -22,7 +22,11 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class LruMap<K, V> : AbstractLinkedMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>, IBoundedCollection
+    public class LruMap<K, V> : AbstractLinkedMap<K, V>, IDictionary<K, V>, 
+#if NET45
+		IReadOnlyDictionary<K, V>, 
+#endif
+		IBoundedCollection
     {
         private const int DefaultFullSize = 100;
 

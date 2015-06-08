@@ -23,7 +23,11 @@ using Commons.Utils;
 namespace Commons.Collections.Bag
 {
     [CLSCompliant(true)]
-    public abstract class AbstractMapBag<T> : IBag<T>, ICollection<T>, IReadOnlyCollection<T>, ICollection, IEnumerable<T>, IEnumerable
+    public abstract class AbstractMapBag<T> : IBag<T>, ICollection<T>, 
+#if NET45
+		IReadOnlyCollection<T>, 
+#endif
+		ICollection, IEnumerable<T>, IEnumerable
     {
         protected IDictionary<T, int> Map { get; private set; }
 

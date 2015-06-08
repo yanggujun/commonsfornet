@@ -33,7 +33,11 @@ namespace Commons.Collections.Collection
     /// System.Linq.Enumerable.Concat.
     /// </summary>
     [CLSCompliant(true)]
-    public class CompositeCollection<T> : ICollection<T>, IReadOnlyCollection<T>, ICollection, IEnumerable<T>, IEnumerable
+    public class CompositeCollection<T> : ICollection<T>, 
+#if NET45
+		IReadOnlyCollection<T>, 
+#endif
+		ICollection, IEnumerable<T>, IEnumerable
     {
         private readonly List<ICollection<T>> allCollections = new List<ICollection<T>>();
 

@@ -21,7 +21,10 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class HashedMap<K, V> : AbstractHashedMap<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V>
+    public class HashedMap<K, V> : AbstractHashedMap<K, V>, IDictionary<K, V>
+#if NET45
+		, IReadOnlyDictionary<K, V>
+#endif
     {
         private const int DefaultCapacity = 16;
 

@@ -21,7 +21,11 @@ using System.Collections.Generic;
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public interface IReadOnlyStrictSet<T> : IReadOnlyCollection<T>, IEnumerable<T>, IEnumerable
+    public interface IReadOnlyStrictSet<T> : 
+#if NET45
+		IReadOnlyCollection<T>, 
+#endif
+		IEnumerable<T>, IEnumerable
     {
         bool IsSubsetOf(IStrictSet<T> other);
 

@@ -21,7 +21,11 @@ using System.Collections.Generic;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public interface IReadOnlyBimap<K, V> : IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+    public interface IReadOnlyBimap<K, V> : 
+#if NET45
+		IReadOnlyCollection<KeyValuePair<K, V>>, 
+#endif
+		IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         bool ContainsKey(K key);
 

@@ -30,7 +30,10 @@ namespace Commons.Collections.Map
     /// <typeparam name="V"></typeparam>
     [CLSCompliant(true)]
     public abstract class AbstractHashedMap<K, V> : IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, ICollection,
-        IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
+#if NET45
+        IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, 
+#endif
+		IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         private const int MaxCapacity = 1 << 30;
         private const double LoadFactor = 0.75f;
@@ -462,6 +465,8 @@ namespace Commons.Collections.Map
             get { throw new NotSupportedException("The sync root is not supported in Commons.Collections"); }
         }
 
+#if NET45
+
         bool IReadOnlyDictionary<K, V>.ContainsKey(K key)
         {
             return this.ContainsKey(key);
@@ -491,6 +496,7 @@ namespace Commons.Collections.Map
         {
             get { return this.Count; }
         }
+#endif
 
         IEnumerator<KeyValuePair<K, V>> IEnumerable<KeyValuePair<K, V>>.GetEnumerator()
         {
