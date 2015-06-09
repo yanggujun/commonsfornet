@@ -23,7 +23,7 @@ using Commons.Collections.Set;
 namespace Commons.Collections.Bag
 {
     /// <summary>
-    /// A bag is a collection which accept duplicate elements.
+    /// A bag is a collection which accepts duplicate elements. It's the opposite of set, which only accepts unique elements.
     /// </summary>
     /// <typeparam name="T">Element type.</typeparam>
     [CLSCompliant(true)]
