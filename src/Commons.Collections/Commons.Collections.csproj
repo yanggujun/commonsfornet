@@ -72,6 +72,7 @@
     <Compile Include="Map\AbstractHashedMap.cs" />
     <Compile Include="Map\Customized32HashedMap.cs" />
     <Compile Include="Map\HashedBimap.cs" />
+    <Compile Include="Map\ChainHashedMap.cs" />
     <Compile Include="Map\HashedMap.cs" />
     <Compile Include="Map\IBimap.cs" />
     <Compile Include="Map\INavigableMap.cs" />
