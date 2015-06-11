@@ -121,24 +121,23 @@ namespace Commons.Collections.Map
 				}
 			}
 			
-			if (entry.Items == null)
+			if (entries[index].Items == null)
 			{
-				entry.Items = new InnerEntry[1];
+				entries[index].Items = new InnerEntry[2];
 			}
 
-			if (entry.Filled >= entry.Items.Length)
+			if (entries[index].Filled >= entries[index].Items.Length)
 			{
-				var oldItems = entry.Items;
-				entry.Items = new InnerEntry[entry.Filled << 1];
+				var oldItems = entries[index].Items;
+				entries[index].Items = new InnerEntry[entry.Filled << 1];
 				for (var i = 0; i < entry.Filled; i++)
 				{
-					entry.Items[i] = oldItems[i];
+					entries[index].Items[i] = oldItems[i];
 				}
 			}
-			entry.Items[entry.Filled].Key = key;
-			entry.Items[entry.Filled].Value = value;
-			entry.Filled++;
-			entries[index] = entry;
+			entries[index].Items[entry.Filled].Key = key;
+			entries[index].Items[entry.Filled].Value = value;
+			entries[index].Filled++;
 			Count++;
 		}
 
@@ -483,6 +482,7 @@ namespace Commons.Collections.Map
 			get { throw new NotSupportedException("The SyncRoot is not supported in Commons.Collections"); }
 		}
 
+#if NET45
 		bool IReadOnlyDictionary<K, V>.ContainsKey(K key)
 		{
 			return ContainsKey(key);
@@ -512,6 +512,7 @@ namespace Commons.Collections.Map
 		{
 			get { return Count; }
 		}
+#endif
 
 		IEnumerator<KeyValuePair<K, V>> IEnumerable<KeyValuePair<K, V>>.GetEnumerator()
 		{
@@ -521,7 +522,7 @@ namespace Commons.Collections.Map
 		private struct Entry
 		{
 			public int Filled { get; set; }
-			public InnerEntry[] Items { get; set; }
+            public InnerEntry[] Items { get; set; }
 		}
 
 		private struct InnerEntry
