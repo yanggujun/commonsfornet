@@ -17,6 +17,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Commons.Collections.Collection;
+using Commons.Collections.Set;
 using Commons.Utils;
 
 namespace Commons.Collections.Map
@@ -43,11 +45,11 @@ namespace Commons.Collections.Map
         }
 
         public HashedMap(IEqualityComparer<K> comparer)
-            : this(comparer.Equals)
+            : this(DefaultCapacity, comparer)
         {
         }
 
-        public HashedMap(Equator<K> equator) : this(DefaultCapacity, equator)
+        public HashedMap(Equator<K> equator) : this(DefaultCapacity, new EquatorComparer<K>(equator))
         {
         }
 
@@ -58,7 +60,7 @@ namespace Commons.Collections.Map
         public HashedMap(int capacity, IEqualityComparer<K> comparer)
         {
 			Guarder.CheckNull(comparer);
-			if (capacity < 0)
+			if (capacity <= 0)
 			{
 				throw new ArgumentException("The capacity must be larger than zero.");
 			}
@@ -68,19 +70,26 @@ namespace Commons.Collections.Map
 			entries = new Entry[this.capacity];
         }
 
-        public HashedMap(int capacity, Equator<K> equator)
+        public HashedMap(int capacity, Equator<K> equator) : this(capacity, new EquatorComparer<K>(equator))
         {
         }
 
-        public HashedMap(IDictionary<K, V> items, IEqualityComparer<K> comparer) : this(items, comparer.Equals)
+        public HashedMap(IDictionary<K, V> items, IEqualityComparer<K> comparer) : this(DefaultCapacity, comparer)
+        {
+			if (items != null)
+			{ 
+				foreach (var item in items)
+				{
+					Add(item.Key, item.Value);
+				}
+			}
+        }
+
+        public HashedMap(IDictionary<K, V> items) : this(items, EqualityComparer<K>.Default)
         {
         }
 
-        public HashedMap(IDictionary<K, V> items) : this(items, EqualityComparer<K>.Default.Equals)
-        {
-        }
-
-        public HashedMap(IDictionary<K, V> items, Equator<K> equator)
+        public HashedMap(IDictionary<K, V> items, Equator<K> equator) : this(items, new EquatorComparer<K>(equator))
         {
         }
 
@@ -129,6 +138,7 @@ namespace Commons.Collections.Map
 			entry.Items[entry.Filled].Key = key;
 			entry.Items[entry.Filled].Value = value;
 			entry.Filled++;
+			entries[index] = entry;
 			Count++;
 		}
 
@@ -166,54 +176,166 @@ namespace Commons.Collections.Map
 
 		public ICollection<K> Keys
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				var set = new HashedSet<K>(comparer);
+				foreach (var entry in entries)
+				{
+					for (var i = 0; i < entry.Filled; i++)
+					{
+						set.Add(entry.Items[i].Key);
+					}
+				}
+
+				return set;
+			}
 		}
 
 		public bool Remove(K key)
 		{
-			throw new NotImplementedException();
+			Guarder.CheckNull(key);
+			var index = HashIndex(key);
+			var entry = entries[index];
+			var found = false;
+			for (var i = 0; i < entry.Filled; i++)
+			{
+				if (comparer.Equals(key, entry.Items[i].Key))
+				{
+					var cursor = i;
+					for (var j = cursor; j < entry.Filled - 1; j++)
+					{
+						entry.Items[cursor].Key = entry.Items[j + 1].Key;
+						entry.Items[cursor].Value = entry.Items[j + 1].Value;
+						cursor++;
+					}
+					entry.Items[cursor].Key = default(K);
+					entry.Items[cursor].Value = default(V);
+					entry.Filled--;
+					Count--;
+					found = true;
+					break;
+				}
+			}
+			entries[index] = entry;
+
+			return found;
 		}
 
 		public bool TryGetValue(K key, out V value)
 		{
-			throw new NotImplementedException();
+			var index = HashIndex(key);
+			var entry = entries[index];
+			var found = false;
+			value = default(V);
+			for (var i = 0; i < entry.Filled; i++)
+			{
+				if (comparer.Equals(key, entry.Items[i].Key))
+				{
+					value = entry.Items[i].Value;
+					found = true;
+				}
+			}
+
+			return found;
 		}
 
 		public ICollection<V> Values
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				var set = new HashedSet<V>();
+				foreach (var entry in entries)
+				{
+					for (var i = 0; i < entry.Filled; i++)
+					{
+						set.Add(entry.Items[i].Value);
+					}
+				}
+
+				return set;
+			}
 		}
 
 		public V this[K key]
 		{
 			get
 			{
-				throw new NotImplementedException();
+				var index = HashIndex(key);
+				var entry = entries[index];
+				var found = false;
+				var value = default(V);
+				for (var i = 0; i < entry.Filled; i++)
+				{
+					if (comparer.Equals(key, entry.Items[i].Key))
+					{
+						found = true;
+						value = entry.Items[i].Value;
+					}
+				}
+				if (!found)
+				{
+					throw new KeyNotFoundException("The key does not exist in the map.");
+				}
+
+				return value;
 			}
 			set
 			{
-				throw new NotImplementedException();
+				var index = HashIndex(key);
+				var entry = entries[index];
+				var found = false;
+				for (var i = 0; i < entry.Filled; i++)
+				{
+					if (comparer.Equals(key, entry.Items[i].Key))
+					{
+						found = true;
+						entry.Items[i].Value = value;
+					}
+				}
+				if (!found)
+				{
+					throw new KeyNotFoundException("The key does not exist in the map.");
+				}
 			}
 		}
 
 		public void Add(KeyValuePair<K, V> item)
 		{
-			throw new NotImplementedException();
+			Add(item.Key, item.Value);
 		}
 
 		public void Clear()
 		{
-			throw new NotImplementedException();
+			entries = new Entry[capacity];
+			Count = 0;
 		}
 
 		public bool Contains(KeyValuePair<K, V> item)
 		{
-			throw new NotImplementedException();
+			var contains = false;
+			if (ContainsKey(item.Key))
+			{
+				if (Equals(this[item.Key], item.Value))
+				{
+					contains = true;
+				}
+			}
+
+			return contains;
 		}
 
 		public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
 		{
-			throw new NotImplementedException();
+			Guarder.CheckNull(array);
+			var index = 0;
+			foreach (var element in entries)
+			{
+				for (var i = 0; i < element.Filled; i++)
+				{
+					array[arrayIndex + (index++)] = new KeyValuePair<K, V>(element.Items[i].Key, element.Items[i].Value);
+				}
+			}
+
 		}
 
 		public int Count
@@ -224,134 +346,173 @@ namespace Commons.Collections.Map
 
 		public bool IsReadOnly
 		{
-			get { throw new NotImplementedException(); }
+			get { return false; }
 		}
 
 		public bool Remove(KeyValuePair<K, V> item)
 		{
-			throw new NotImplementedException();
+			var removed = false;
+			if (Contains(item))
+			{
+				removed = Remove(item.Key);
+			}
+
+			return removed;
+		}
+		
+		private IEnumerable<KeyValuePair<K, V>> Items
+		{
+			get
+			{
+				foreach (var element in entries)
+				{
+					for (var i = 0; i < element.Filled; i++)
+					{
+						yield return new KeyValuePair<K, V>(element.Items[i].Key, element.Items[i].Value);
+					}
+				}
+			}
 		}
 
 		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
 		{
-			throw new NotImplementedException();
+			return Items.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			throw new NotImplementedException();
+			return GetEnumerator();
 		}
 
 		void IDictionary.Add(object key, object value)
 		{
-			throw new NotImplementedException();
+			Add((K)key, (V)value);
 		}
 
 		void IDictionary.Clear()
 		{
-			throw new NotImplementedException();
+			Clear();
 		}
 
 		bool IDictionary.Contains(object key)
 		{
-			throw new NotImplementedException();
+			return ContainsKey((K)key);
 		}
 
 		IDictionaryEnumerator IDictionary.GetEnumerator()
 		{
-			throw new NotImplementedException();
+			return new MapEnumerator<K, V>(this);
 		}
 
 		bool IDictionary.IsFixedSize
 		{
-			get { throw new NotImplementedException(); }
+			get { return false; }
 		}
 
 		bool IDictionary.IsReadOnly
 		{
-			get { throw new NotImplementedException(); }
+			get { return false; }
 		}
 
 		ICollection IDictionary.Keys
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				var set = new HashedSet<K>(comparer);
+				foreach(var element in Keys)
+				{
+					set.Add(element);
+				}
+
+				return set;
+			}
 		}
 
 		void IDictionary.Remove(object key)
 		{
-			throw new NotImplementedException();
+			Remove((K)key);
 		}
 
 		ICollection IDictionary.Values
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				var set = new HashedSet<V>();
+				foreach(var element in Values)
+				{
+					set.Add(element);
+				}
+
+				return set;
+			}
 		}
 
 		object IDictionary.this[object key]
 		{
 			get
 			{
-				throw new NotImplementedException();
+				return this[(K)key];
 			}
 			set
 			{
-				throw new NotImplementedException();
+				this[(K)key] = (V)value;
 			}
 		}
 
 		void ICollection.CopyTo(Array array, int index)
 		{
-			throw new NotImplementedException();
+			var itemArray = (KeyValuePair<K, V>[])array;
+			CopyTo(itemArray, index);
 		}
 
 		int ICollection.Count
 		{
-			get { throw new NotImplementedException(); }
+			get { return Count; }
 		}
 
 		bool ICollection.IsSynchronized
 		{
-			get { throw new NotImplementedException(); }
+			get { return false;}
 		}
 
 		object ICollection.SyncRoot
 		{
-			get { throw new NotImplementedException(); }
+			get { throw new NotSupportedException("The SyncRoot is not supported in Commons.Collections"); }
 		}
 
 		bool IReadOnlyDictionary<K, V>.ContainsKey(K key)
 		{
-			throw new NotImplementedException();
+			return ContainsKey(key);
 		}
 
 		IEnumerable<K> IReadOnlyDictionary<K, V>.Keys
 		{
-			get { throw new NotImplementedException(); }
+			get { return Keys; }
 		}
 
 		bool IReadOnlyDictionary<K, V>.TryGetValue(K key, out V value)
 		{
-			throw new NotImplementedException();
+			return TryGetValue(key, out value);
 		}
 
 		IEnumerable<V> IReadOnlyDictionary<K, V>.Values
 		{
-			get { throw new NotImplementedException(); }
+			get { return Values; }
 		}
 
 		V IReadOnlyDictionary<K, V>.this[K key]
 		{
-			get { throw new NotImplementedException(); }
+			get { return this[key]; }
 		}
 
 		int IReadOnlyCollection<KeyValuePair<K, V>>.Count
 		{
-			get { throw new NotImplementedException(); }
+			get { return Count; }
 		}
 
 		IEnumerator<KeyValuePair<K, V>> IEnumerable<KeyValuePair<K, V>>.GetEnumerator()
 		{
-			throw new NotImplementedException();
+			return GetEnumerator();
 		}
 
 		private struct Entry

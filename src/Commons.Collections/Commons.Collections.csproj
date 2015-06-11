@@ -66,6 +66,7 @@
     <Compile Include="Bag\HashedBag.cs" />
     <Compile Include="Bag\TreeBag.cs" />
     <Compile Include="Collection\DoublyLinkedEntry.cs" />
+    <Compile Include="Collection\EquatorComparer.cs" />
     <Compile Include="Collection\Messages.cs" />
     <Compile Include="Concurrent\ConcurrentSortedList.cs" />
     <Compile Include="Map\AbstractBimap.cs" />
