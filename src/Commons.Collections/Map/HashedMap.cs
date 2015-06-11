@@ -161,6 +161,7 @@ namespace Commons.Collections.Map
 		
 		public bool ContainsKey(K key)
 		{
+            Guarder.CheckNull(key);
 			var index = HashIndex(key);
 			var entry = entries[index];
 			for (var i = 0; i < entry.Filled; i++)
@@ -270,6 +271,7 @@ namespace Commons.Collections.Map
 					{
 						found = true;
 						value = entry.Items[i].Value;
+                        break;
 					}
 				}
 				if (!found)
@@ -283,19 +285,20 @@ namespace Commons.Collections.Map
 			{
 				var index = HashIndex(key);
 				var entry = entries[index];
-				var found = false;
+                var found = false;
 				for (var i = 0; i < entry.Filled; i++)
 				{
 					if (comparer.Equals(key, entry.Items[i].Key))
 					{
-						found = true;
+                        found = true;
 						entry.Items[i].Value = value;
+                        break;
 					}
 				}
-				if (!found)
-				{
-					throw new KeyNotFoundException("The key does not exist in the map.");
-				}
+                if (!found)
+                {
+                    Add(key, value);
+                }
 			}
 		}
 
