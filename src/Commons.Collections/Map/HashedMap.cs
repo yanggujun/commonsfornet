@@ -102,43 +102,11 @@ namespace Commons.Collections.Map
 		public void Add(K key, V value)
 		{
 			Guarder.CheckNull(key);
-			Enroute(key, value);
-			if (Count > threshold)
+			if (Count >= threshold)
 			{
 				Inflate();
 			}
-		}
-
-		private void Enroute(K key, V value)
-		{
-			var index = HashIndex(key);
-			var entry = entries[index];
-			for (var i = 0; i < entry.Filled; i++)
-			{
-				if (comparer.Equals(key, entry.Items[i].Key))
-				{
-					throw new ArgumentException("The element already exists.");
-				}
-			}
-			
-			if (entries[index].Items == null)
-			{
-				entries[index].Items = new InnerEntry[2];
-			}
-
-			if (entries[index].Filled >= entries[index].Items.Length)
-			{
-				var oldItems = entries[index].Items;
-				entries[index].Items = new InnerEntry[entry.Filled << 1];
-				for (var i = 0; i < entry.Filled; i++)
-				{
-					entries[index].Items[i] = oldItems[i];
-				}
-			}
-			entries[index].Items[entry.Filled].Key = key;
-			entries[index].Items[entry.Filled].Value = value;
-			entries[index].Filled++;
-			Count++;
+			Enroute(key, value);
 		}
 
 		private void Inflate()
@@ -149,29 +117,22 @@ namespace Commons.Collections.Map
 			threshold = Convert.ToInt32(capacity * DefaultLoadFactor);
 			entries = new Entry[capacity];
 			Count = 0;
-			foreach (var element in oldEntries)
-			{
-				for (var i = 0; i < element.Filled; i++)
-				{
-					Enroute(element.Items[i].Key, element.Items[i].Value);
-				}
-			}
+            foreach (var element in oldEntries)
+            {
+                if (element.Occupied)
+                {
+                    Enroute(element.Key, element.Value);
+                }
+            }
 		}
 		
 		public bool ContainsKey(K key)
 		{
             Guarder.CheckNull(key);
-			var index = HashIndex(key);
+			var index = FindEntry(key);
 			var entry = entries[index];
-			for (var i = 0; i < entry.Filled; i++)
-			{
-				if (comparer.Equals(key, entry.Items[i].Key))
-				{
-					return true;
-				}
-			}
 
-			return false;
+            return entry.Occupied;
 		}
 
 		public ICollection<K> Keys
@@ -181,9 +142,9 @@ namespace Commons.Collections.Map
 				var set = new HashedSet<K>(comparer);
 				foreach (var entry in entries)
 				{
-					for (var i = 0; i < entry.Filled; i++)
+                    if (entry.Occupied)
 					{
-						set.Add(entry.Items[i].Key);
+						set.Add(entry.Key);
 					}
 				}
 
@@ -193,50 +154,33 @@ namespace Commons.Collections.Map
 
 		public bool Remove(K key)
 		{
-			Guarder.CheckNull(key);
-			var index = HashIndex(key);
-			var entry = entries[index];
-			var found = false;
-			for (var i = 0; i < entry.Filled; i++)
-			{
-				if (comparer.Equals(key, entry.Items[i].Key))
-				{
-					var cursor = i;
-					for (var j = cursor; j < entry.Filled - 1; j++)
-					{
-						entry.Items[cursor].Key = entry.Items[j + 1].Key;
-						entry.Items[cursor].Value = entry.Items[j + 1].Value;
-						cursor++;
-					}
-					entry.Items[cursor].Key = default(K);
-					entry.Items[cursor].Value = default(V);
-					entry.Filled--;
-					Count--;
-					found = true;
-					break;
-				}
-			}
-			entries[index] = entry;
+            Guarder.CheckNull(key);
+            var index = FindEntry(key);
+            var entry = entries[index];
+            var found = false;
+            if (entry.Occupied)
+            {
+                entries[index].Occupied = false;
+                entries[index].Key = default(K);
+                entries[index].Value = default(V);
+                var cursor = (index + 1) & (capacity - 1);
+                var hash = key.GetHashCode();
+                while (entries[cursor].Occupied)
+                {
+                }
+            }
 
-			return found;
-		}
+            return found;
+        }
 
 		public bool TryGetValue(K key, out V value)
 		{
-			var index = HashIndex(key);
+            Guarder.CheckNull(key);
+            var index = FindEntry(key);
 			var entry = entries[index];
-			var found = false;
-			value = default(V);
-			for (var i = 0; i < entry.Filled; i++)
-			{
-				if (comparer.Equals(key, entry.Items[i].Key))
-				{
-					value = entry.Items[i].Value;
-					found = true;
-				}
-			}
+            value = entry.Value;
 
-			return found;
+            return entry.Occupied;
 		}
 
 		public ICollection<V> Values
@@ -246,10 +190,10 @@ namespace Commons.Collections.Map
 				var set = new HashedSet<V>();
 				foreach (var entry in entries)
 				{
-					for (var i = 0; i < entry.Filled; i++)
-					{
-						set.Add(entry.Items[i].Value);
-					}
+                    if (entry.Occupied)
+                    {
+                        set.Add(entry.Value);
+                    }
 				}
 
 				return set;
@@ -260,44 +204,26 @@ namespace Commons.Collections.Map
 		{
 			get
 			{
-				var index = HashIndex(key);
+                var index = FindEntry(key);
+
 				var entry = entries[index];
-				var found = false;
-				var value = default(V);
-				for (var i = 0; i < entry.Filled; i++)
-				{
-					if (comparer.Equals(key, entry.Items[i].Key))
-					{
-						found = true;
-						value = entry.Items[i].Value;
-                        break;
-					}
-				}
-				if (!found)
+				if (!entry.Occupied)
 				{
 					throw new KeyNotFoundException("The key does not exist in the map.");
 				}
 
-				return value;
+                return entry.Value;
 			}
 			set
 			{
-				var index = HashIndex(key);
+                var index = FindEntry(key);
 				var entry = entries[index];
-                var found = false;
-				for (var i = 0; i < entry.Filled; i++)
-				{
-					if (comparer.Equals(key, entry.Items[i].Key))
-					{
-                        found = true;
-						entry.Items[i].Value = value;
-                        break;
-					}
-				}
-                if (!found)
+                if (!entry.Occupied)
                 {
-                    Add(key, value);
+                    throw new KeyNotFoundException("The key does not exist in the map.");
                 }
+
+                entries[index].Value = value;
 			}
 		}
 
@@ -332,9 +258,9 @@ namespace Commons.Collections.Map
 			var index = 0;
 			foreach (var element in entries)
 			{
-				for (var i = 0; i < element.Filled; i++)
+                if (element.Occupied)
 				{
-					array[arrayIndex + (index++)] = new KeyValuePair<K, V>(element.Items[i].Key, element.Items[i].Value);
+					array[arrayIndex + (index++)] = new KeyValuePair<K, V>(element.Key, element.Value);
 				}
 			}
 
@@ -368,9 +294,9 @@ namespace Commons.Collections.Map
 			{
 				foreach (var element in entries)
 				{
-					for (var i = 0; i < element.Filled; i++)
+                    if (element.Occupied)
 					{
-						yield return new KeyValuePair<K, V>(element.Items[i].Key, element.Items[i].Value);
+						yield return new KeyValuePair<K, V>(element.Key, element.Value);
 					}
 				}
 			}
@@ -521,15 +447,9 @@ namespace Commons.Collections.Map
 
 		private struct Entry
 		{
-			public int Filled { get; set; }
-            public InnerEntry[] Items { get; set; }
-		}
-
-		private struct InnerEntry
-		{
-			public K Key { get; set; }
-
-			public V Value { get; set; }
+			public bool Occupied { get; set; }
+            public K Key { get; set; }
+            public V Value { get; set; }
 		}
 
         private int CalculateCapacity(int proposedCapacity)
@@ -556,5 +476,30 @@ namespace Commons.Collections.Map
 
             return newCapacity;
         }
+
+        private int FindEntry(K key)
+        {
+            var index = HashIndex(key);
+            while (entries[index].Occupied && !comparer.Equals(entries[index].Key, key))
+            {
+                index = (index + 1) & (capacity - 1);
+            }
+
+            return index;
+        }
+
+		private void Enroute(K key, V value)
+		{
+            var index = FindEntry(key);
+            if (entries[index].Occupied)
+            {
+                throw new ArgumentException("The key item already exist in the map.");
+            }
+            entries[index].Key = key;
+            entries[index].Value = value;
+            entries[index].Occupied = true;
+            Count++;
+        }
+
 	}
 }
