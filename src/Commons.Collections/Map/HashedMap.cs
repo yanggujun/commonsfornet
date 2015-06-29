@@ -161,7 +161,7 @@ namespace Commons.Collections.Map
 			{
 				return false;
 			}
-			for (; ; )
+            while (true)
 			{
 				cursor = (cursor + 1) & (capacity - 1);
 				if (!entries[cursor].Occupied)
@@ -179,6 +179,7 @@ namespace Commons.Collections.Map
 			entries[index].Occupied = false;
 			entries[index].Key = default(K);
 			entries[index].Value = default(V);
+            Count--;
 
             return true;
         }
