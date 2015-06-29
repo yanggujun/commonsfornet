@@ -156,21 +156,31 @@ namespace Commons.Collections.Map
 		{
             Guarder.CheckNull(key);
             var index = FindEntry(key);
-            var entry = entries[index];
-            var found = false;
-            if (entry.Occupied)
-            {
-                entries[index].Occupied = false;
-                entries[index].Key = default(K);
-                entries[index].Value = default(V);
-                var cursor = (index + 1) & (capacity - 1);
-                var hash = key.GetHashCode();
-                while (entries[cursor].Occupied)
-                {
-                }
-            }
+			var cursor = index;
+			if (!entries[index].Occupied)
+			{
+				return false;
+			}
+			for (; ; )
+			{
+				cursor = (cursor + 1) & (capacity - 1);
+				if (!entries[cursor].Occupied)
+				{
+					break;
+				}
 
-            return found;
+				var next = entries[cursor].GetHashCode() & (capacity - 1);
+				if ((cursor > index && (next <= index || index > cursor)) || (cursor < index && (next <= index || next > cursor)))
+				{
+					entries[index] = entries[cursor];
+					index = cursor;
+				}
+			}
+			entries[index].Occupied = false;
+			entries[index].Key = default(K);
+			entries[index].Value = default(V);
+
+            return true;
         }
 
 		public bool TryGetValue(K key, out V value)
