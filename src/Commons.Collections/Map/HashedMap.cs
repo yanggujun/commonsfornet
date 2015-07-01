@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Commons.Collections.Collection;
 using Commons.Collections.Set;
 using Commons.Utils;
@@ -31,7 +32,7 @@ namespace Commons.Collections.Map
 		IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         private const int DefaultCapacity = 16;
-		private const double DefaultLoadFactor = 0.75f;
+		private const double DefaultLoadFactor = 0.5;
 		private const int MaxCapacity = 1 << 30;
 
 		private readonly IEqualityComparer<K> comparer;
@@ -142,7 +143,7 @@ namespace Commons.Collections.Map
 				var set = new HashedSet<K>(comparer);
 				foreach (var entry in entries)
 				{
-                    if (entry.Occupied)
+                    if (entry.Occupied && !entry.Deleted)
 					{
 						set.Add(entry.Key);
 					}
@@ -155,33 +156,27 @@ namespace Commons.Collections.Map
 		public bool Remove(K key)
 		{
             Guarder.CheckNull(key);
-            var index = FindEntry(key);
-			var cursor = index;
-			if (!entries[index].Occupied)
+            var index = HashIndex(key);
+			var found = false;
+            while (entries[index].Occupied)
 			{
-				return false;
-			}
-            while (true)
-			{
-				cursor = (cursor + 1) & (capacity - 1);
-				if (!entries[cursor].Occupied)
+				if (!entries[index].Deleted && comparer.Equals(entries[index].Key, key))
 				{
+					entries[index].Deleted = true;
+					entries[index].Key = default(K);
+					entries[index].Value = default(V);
+					Count--;
+					found = true;
 					break;
 				}
-
-				var next = entries[cursor].GetHashCode() & (capacity - 1);
-				if ((cursor > index && (next <= index || index > cursor)) || (cursor < index && (next <= index || next > cursor)))
-				{
-					entries[index] = entries[cursor];
-					index = cursor;
-				}
+				index = (index + 1) & (capacity - 1);
 			}
-			entries[index].Occupied = false;
-			entries[index].Key = default(K);
-			entries[index].Value = default(V);
-            Count--;
+			if (!found)
+			{
+				index++;
+			}
 
-            return true;
+			return found;
         }
 
 		public bool TryGetValue(K key, out V value)
@@ -201,7 +196,7 @@ namespace Commons.Collections.Map
 				var set = new HashedSet<V>();
 				foreach (var entry in entries)
 				{
-                    if (entry.Occupied)
+                    if (entry.Occupied && !entry.Deleted)
                     {
                         set.Add(entry.Value);
                     }
@@ -231,7 +226,7 @@ namespace Commons.Collections.Map
 				var entry = entries[index];
                 if (!entry.Occupied)
                 {
-                    throw new KeyNotFoundException("The key does not exist in the map.");
+					Add(key, value);
                 }
 
                 entries[index].Value = value;
@@ -305,7 +300,7 @@ namespace Commons.Collections.Map
 			{
 				foreach (var element in entries)
 				{
-                    if (element.Occupied)
+                    if (element.Occupied && !element.Deleted)
 					{
 						yield return new KeyValuePair<K, V>(element.Key, element.Value);
 					}
@@ -456,13 +451,6 @@ namespace Commons.Collections.Map
 			return GetEnumerator();
 		}
 
-		private struct Entry
-		{
-			public bool Occupied { get; set; }
-            public K Key { get; set; }
-            public V Value { get; set; }
-		}
-
         private int CalculateCapacity(int proposedCapacity)
         {
             int newCapacity = 1;
@@ -491,8 +479,12 @@ namespace Commons.Collections.Map
         private int FindEntry(K key)
         {
             var index = HashIndex(key);
-            while (entries[index].Occupied && !comparer.Equals(entries[index].Key, key))
+            while (entries[index].Occupied)
             {
+				if (!entries[index].Deleted && comparer.Equals(entries[index].Key, key))
+				{
+					break;
+				}
                 index = (index + 1) & (capacity - 1);
             }
 
@@ -502,15 +494,24 @@ namespace Commons.Collections.Map
 		private void Enroute(K key, V value)
 		{
             var index = FindEntry(key);
-            if (entries[index].Occupied)
+            if (entries[index].Occupied || entries[index].Deleted)
             {
                 throw new ArgumentException("The key item already exist in the map.");
             }
             entries[index].Key = key;
             entries[index].Value = value;
             entries[index].Occupied = true;
+			entries[index].Deleted = false;
             Count++;
         }
 
+		[DebuggerDisplay("Key = {Key}, Value = {Value}, Deleted = {Deleted}")]
+		private struct Entry
+		{
+			public bool Deleted { get; set; }
+			public bool Occupied { get; set; }
+            public K Key { get; set; }
+            public V Value { get; set; }
+		}
 	}
 }
