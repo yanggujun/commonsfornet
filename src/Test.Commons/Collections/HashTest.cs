@@ -348,6 +348,10 @@ namespace Test.Commons.Collections
             Assert.False(map.Remove("a"));
             Assert.Throws(typeof(ArgumentException), () => new HashedMap<string, string>(0));
             Assert.Throws(typeof(ArgumentException), () => new HashedMap<string, string>(-10));
+            map.Add("a", "a");
+            Assert.Throws(typeof(ArgumentException), () => map.Add("a", "b"));
+            Assert.Throws(typeof(ArgumentNullException), () => map.Remove(null));
+            Assert.Throws(typeof(KeyNotFoundException), () => map["b"]);
         }
 
         [Fact]

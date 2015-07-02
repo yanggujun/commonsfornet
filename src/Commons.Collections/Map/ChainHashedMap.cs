@@ -20,8 +20,7 @@ using Commons.Utils;
 
 namespace Commons.Collections.Map
 {
-    [CLSCompliant(true)]
-    public class ChainHashedMap<K, V> : AbstractHashedMap<K, V>, IDictionary<K, V>
+    internal class ChainHashedMap<K, V> : AbstractHashedMap<K, V>, IDictionary<K, V>
 #if NET45
 		, IReadOnlyDictionary<K, V>
 #endif
