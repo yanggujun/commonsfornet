@@ -17,6 +17,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Commons.Utils;
 
 namespace Commons.Collections.Concurrent
 {
@@ -27,6 +29,61 @@ namespace Commons.Collections.Concurrent
     [CLSCompliant(true)]
     public class ConcurrentSortedList<T> : IList<T>, ICollection<T>, ICollection, IEnumerable<T>, IEnumerable
     {
+        private Node<T> head;
+        private Node<T> tail;
+
+        public ConcurrentSortedList()
+        {
+            head = new Node<T>();
+            tail = new Node<T>();
+            head.Next = tail;
+        }
+
+        private bool Insert(T item)
+        {
+            var newNode = new Node<T>();
+            newNode.Key = item;
+            Node<T> rightNode, leftNode;
+            do
+            {
+            } while (true);
+
+            return false;
+        }
+
+        private Node<T> Search(T item, out Node<T> leftNode)
+        {
+            Node<T> leftNodeNext, rightNode;
+            while (true)
+            {
+                do
+                {
+                    var temp = head;
+                    var tempNext = head.Next;
+                    do
+                    {
+                    } while (true);
+                } while (true);
+            }
+
+            return null;
+        }
+
+        private Node<T> Mark(Node<T> node)
+        {
+            return null;
+        }
+
+        private Node<T> Unmark(Node<T> node)
+        {
+            var atomic = Atomic<Node<T>>.From(node);
+            while (!atomic.CompareExchange(new Node<T> { Key = node.Key, Marked = 0, Next = node.Next }))
+            {
+            }
+
+            return null;
+        }
+
         public int IndexOf(T item)
         {
             throw new NotImplementedException();
