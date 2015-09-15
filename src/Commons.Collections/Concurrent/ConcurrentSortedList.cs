@@ -31,12 +31,14 @@ namespace Commons.Collections.Concurrent
     {
         private Node<T> head;
         private Node<T> tail;
+        private IComparer<T> comparer;
 
         public ConcurrentSortedList()
         {
             head = new Node<T>();
             tail = new Node<T>();
             head.Next = tail;
+            comparer = Comparer<T>.Default;
         }
 
         private bool Insert(T item)
@@ -51,18 +53,37 @@ namespace Commons.Collections.Concurrent
             return false;
         }
 
-        private Node<T> Search(T item, out Node<T> leftNode)
+        private Node<T> Search(T key, out Node<T> leftNode)
         {
-            Node<T> leftNodeNext, rightNode;
+            Node<T> leftNodeNext = null;
+            Node<T> rightNode = null;
             while (true)
             {
                 do
                 {
-                    var temp = head;
-                    var tempNext = head.Next;
+                    var cursor = head;
+                    var nextCursor = head.Next;
                     do
                     {
-                    } while (true);
+                        if (nextCursor.Marked == 0)
+                        {
+                            leftNode = cursor;
+                            leftNodeNext = nextCursor;
+                        }
+                        cursor = Unmark(nextCursor);
+                        if (cursor == tail)
+                        {
+                            break;
+                        }
+                        nextCursor = cursor.Next;
+                    } while (nextCursor.Marked == 1 || comparer.Compare(cursor.Key, key) < 0);
+                    rightNode = cursor;
+                    if (leftNodeNext == rightNode)
+                    {
+                        if (rightNode != tail && rightNode.Next.Marked == 1)
+                        {
+                        }
+                    }
                 } while (true);
             }
 
@@ -76,10 +97,6 @@ namespace Commons.Collections.Concurrent
 
         private Node<T> Unmark(Node<T> node)
         {
-            var atomic = Atomic<Node<T>>.From(node);
-            while (!atomic.CompareExchange(new Node<T> { Key = node.Key, Marked = 0, Next = node.Next }))
-            {
-            }
 
             return null;
         }
