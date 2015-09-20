@@ -27,78 +27,171 @@ namespace Commons.Collections.Concurrent
 	/// </summary>
 	/// <typeparam name="T">The type of the elements in the list.</typeparam>
     [CLSCompliant(true)]
-    public class ConcurrentSortedList<T> : IList<T>, ICollection<T>, ICollection, IEnumerable<T>, IEnumerable
+    public class ConcurrentSortedList<T> : IList<T>, 
+#if NET45
+        IReadOnlyList<T>, IReadOnlyCollection<T>,
+#endif
+        ICollection<T>, ICollection, IEnumerable<T>, IEnumerable
     {
         private Node<T> head;
         private Node<T> tail;
         private IComparer<T> comparer;
+        private SpinWait spin;
 
         public ConcurrentSortedList()
         {
             head = new Node<T>();
             tail = new Node<T>();
             head.Next = tail;
+            spin = new SpinWait();
             comparer = Comparer<T>.Default;
         }
 
-        private bool Insert(T item)
+        private bool Insert(T key)
         {
             var newNode = new Node<T>();
-            newNode.Key = item;
+            newNode.Key = key;
             Node<T> rightNode, leftNode;
             do
             {
+                rightNode = Search(key, out leftNode);
+                newNode.Next = rightNode;
+                if (Interlocked.CompareExchange(ref leftNode.Next, newNode, rightNode) == rightNode)
+                {
+                    return true;
+                }
+                spin.SpinOnce();
+            } while (true);
+        }
+
+        private bool Delete(T key)
+        {
+            Node<T> rightNode, rightNodeNext, leftNode;
+            do
+            {
+                rightNode = Search(key, out leftNode);
+                if (rightNode == tail || comparer.Compare(rightNode.Key, key) != 0)
+                {
+                    return false;
+                }
+                rightNodeNext = rightNode.Next;
+                if (rightNodeNext.Marked == 0)
+                {
+                    if (Interlocked.CompareExchange(ref rightNode.Next, Mark(rightNodeNext), rightNodeNext) == rightNodeNext)
+                    {
+                        break;
+                    }
+                }
             } while (true);
 
-            return false;
+            if (Interlocked.CompareExchange(ref leftNode.Next, rightNodeNext, rightNode) == rightNode)
+            {
+                rightNode = Search(rightNode.Key, out leftNode);
+            }
+
+            return true;
+        }
+
+        private bool Find(T key)
+        {
+            Node<T> rightNode, leftNode;
+            rightNode = Search(key, out leftNode);
+            if (rightNode == tail || comparer.Compare(rightNode.Key, key) != 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns true when another loop is needed, otherwise the search is complete.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="leftNode"></param>
+        /// <param name="rightNode"></param>
+        /// <returns></returns>
+        private bool DoSearch(T key, out Node<T> leftNode, out Node<T> rightNode)
+        {
+            Node<T> leftNodeNext = null;
+            leftNode = null;
+            rightNode = null;
+
+            do
+            {
+                var cursor = head;
+                var nextCursor = head.Next;
+                // Find left and right node.
+                do
+                {
+                    if (nextCursor.Marked == 0)
+                    {
+                        leftNode = cursor;
+                        leftNodeNext = nextCursor;
+                    }
+                    cursor = Unmark(nextCursor);
+                    if (cursor == tail)
+                    {
+                        break;
+                    }
+                    nextCursor = cursor.Next;
+                } while (nextCursor.Marked == 1 || comparer.Compare(cursor.Key, key) < 0);
+
+                rightNode = cursor;
+
+                // Check nodes are adjacent.
+                if (leftNodeNext == rightNode)
+                {
+                    if (rightNode != tail && rightNode.Next.Marked == 1)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+
+                // Remove one or more marked nodes.
+                if (Interlocked.CompareExchange(ref leftNode.Next, rightNode, leftNodeNext) == leftNodeNext)
+                {
+                    if (rightNode != tail && rightNode.Next.Marked == 1)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+
+            } while (true);
         }
 
         private Node<T> Search(T key, out Node<T> leftNode)
         {
-            Node<T> leftNodeNext = null;
             Node<T> rightNode = null;
-            while (true)
+            while (DoSearch(key, out leftNode, out rightNode))
             {
-                do
-                {
-                    var cursor = head;
-                    var nextCursor = head.Next;
-                    do
-                    {
-                        if (nextCursor.Marked == 0)
-                        {
-                            leftNode = cursor;
-                            leftNodeNext = nextCursor;
-                        }
-                        cursor = Unmark(nextCursor);
-                        if (cursor == tail)
-                        {
-                            break;
-                        }
-                        nextCursor = cursor.Next;
-                    } while (nextCursor.Marked == 1 || comparer.Compare(cursor.Key, key) < 0);
-                    rightNode = cursor;
-                    if (leftNodeNext == rightNode)
-                    {
-                        if (rightNode != tail && rightNode.Next.Marked == 1)
-                        {
-                        }
-                    }
-                } while (true);
+                spin.SpinOnce();
             }
 
-            return null;
+            return rightNode;
         }
 
         private Node<T> Mark(Node<T> node)
         {
-            return null;
+            var newNode = new Node<T> { Key = node.Key, Next = node.Next, Marked = 1 };
+
+            return newNode;
         }
 
         private Node<T> Unmark(Node<T> node)
         {
-
-            return null;
+            var newNode = new Node<T> { Key = node.Key, Next = node.Next, Marked = 0 };
+            return newNode;
         }
 
         public int IndexOf(T item)

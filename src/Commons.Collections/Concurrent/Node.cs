@@ -18,11 +18,11 @@ namespace Commons.Collections.Concurrent
 {
     internal class Node<T>
     {
-        public T Key { get; set; }
-        public Node<T> Next { get; set; }
+        public T Key;
+        public Node<T> Next;
         /// <summary>
         /// 0 for unmarked; 1 for marked.
         /// </summary>
-        public int Marked { get; set; }
+        public int Marked;
     }
 }
