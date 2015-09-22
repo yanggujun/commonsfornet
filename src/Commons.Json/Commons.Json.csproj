@@ -34,16 +34,9 @@
     <Optimize>true</Optimize>
     <OutputPath>..\bin\$(Framework)</OutputPath>
     <DefineConstants>$(Framework)</DefineConstants>
-    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Framework)' == 'NET40' ">
-    <DefineConstants>NET40</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Framework)' == 'NET45' ">
-    <DefineConstants>NET45</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
