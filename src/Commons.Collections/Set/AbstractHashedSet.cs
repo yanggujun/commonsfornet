@@ -23,7 +23,11 @@ using Commons.Utils;
 namespace Commons.Collections.Set
 {
     [CLSCompliant(true)]
-    public abstract class AbstractHashedSet<T> : AbstractSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, ICollection, IEnumerable
+    public abstract class AbstractHashedSet<T> : AbstractSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, 
+#if NET45
+		IReadOnlyCollection<T>, 
+#endif
+		IEnumerable<T>, ICollection, IEnumerable
     {
         protected readonly object val = new object();
 

@@ -20,12 +20,12 @@ namespace Commons.Collections.Collection
     /// A double linked entry is an entry which has both of its next sibling and its previous sibling.
     /// </summary>
     /// <typeparam name="T">The type of the entry.</typeparam>
-    internal class DoubleLinkedEntry<T>
+    internal class DoublyLinkedEntry<T>
     {
         public T Entry { get; set; }
 
-        public DoubleLinkedEntry<T> Next { get; set; }
+        public DoublyLinkedEntry<T> Next { get; set; }
 
-        public DoubleLinkedEntry<T> Previous { get; set; }
+        public DoublyLinkedEntry<T> Previous { get; set; }
     }
 }

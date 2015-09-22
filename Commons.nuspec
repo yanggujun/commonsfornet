@@ -2,22 +2,25 @@
 <package >
   <metadata>
     <id>Commons</id>
-    <version>0.1.1.22</version>
+    <version>0.1.1.219</version>
     <authors>yanggujun</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Commons for .NET applications.
+    <description>.NET Commons.
     </description>
-    <summary>.NET Commons, an open source project which provides the utilities and extended collections for .NET applications.
+    <summary>.NET Commons includes Commons.Utils, Commons.Collections and Commons.Json.
     </summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
     <tags>Collections Utilities JSON</tags>
   </metadata>
   <files>
-      <file src="src\bin\Commons.Utils.dll" target="lib\net45\" />
-      <file src="src\bin\Commons.Collections.dll" target="lib\net45\" />
-      <file src="src\bin\Commons.Json.dll" target="lib\net45\" />
+      <file src="src\bin\NET45\Commons.Utils.dll" target="lib\net45\" />
+      <file src="src\bin\NET45\Commons.Collections.dll" target="lib\net45\" />
+      <file src="src\bin\NET45\Commons.Json.dll" target="lib\net45\" />
+      <file src="src\bin\NET40\Commons.Utils.dll" target="lib\net40\" />
+      <file src="src\bin\NET40\Commons.Collections.dll" target="lib\net40\" />
+      <file src="src\bin\NET40\Commons.Json.dll" target="lib\net40\" />
   </files>
 </package>

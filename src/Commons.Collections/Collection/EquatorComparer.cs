@@ -15,32 +15,31 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using Commons.Utils;
 
-namespace Commons.Collections.Map
+namespace Commons.Collections.Collection
 {
-    [CLSCompliant(true)]
-    public interface IReadOnlyMultiValueMap<K, V> : 
-#if NET45
-		IReadOnlyCollection<KeyValuePair<K, V>>, 
-#endif
-		IEnumerable<KeyValuePair<K, V>>, IEnumerable
-    {
-        bool ContainsKey(K key);
+	[CLSCompliant(true)]
+	public class EquatorComparer<T> : IEqualityComparer<T>
+	{
+		private readonly Equator<T> equator;
 
-        bool ContainsValue(K key, V value);
+		public EquatorComparer(Equator<T> equator)
+		{
+			Guarder.CheckNull(equator);
+			this.equator = equator;
+		}
 
-        bool TryGetValue(K key, out List<V> values);
+		public bool Equals(T x, T y)
+		{
+			return equator(x, y);
+		}
 
-        int CountOf(K key);
-
-        int KeyCount { get; }
-
-        ICollection<V> this[K key] { get; }
-
-        IEnumerable<K> Keys { get; }
-
-        IEnumerable<V> Values { get; }
-    }
+		public int GetHashCode(T obj)
+		{
+			Guarder.CheckNull(obj);
+			return obj.GetHashCode();
+		}
+	}
 }
