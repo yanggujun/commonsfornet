@@ -20,26 +20,26 @@ using Commons.Utils;
 
 namespace Commons.Collections.Collection
 {
-	[CLSCompliant(true)]
-	public class EquatorComparer<T> : IEqualityComparer<T>
-	{
-		private readonly Equator<T> equator;
+    [CLSCompliant(true)]
+    public class EquatorComparer<T> : IEqualityComparer<T>
+    {
+        private readonly Equator<T> equator;
 
-		public EquatorComparer(Equator<T> equator)
-		{
-			Guarder.CheckNull(equator);
-			this.equator = equator;
-		}
+        public EquatorComparer(Equator<T> equator)
+        {
+            Guarder.CheckNull(equator);
+            this.equator = equator;
+        }
 
-		public bool Equals(T x, T y)
-		{
-			return equator(x, y);
-		}
+        public bool Equals(T x, T y)
+        {
+            return equator(x, y);
+        }
 
-		public int GetHashCode(T obj)
-		{
-			Guarder.CheckNull(obj);
-			return obj.GetHashCode();
-		}
-	}
+        public int GetHashCode(T obj)
+        {
+            Guarder.CheckNull(obj);
+            return obj.GetHashCode();
+        }
+    }
 }

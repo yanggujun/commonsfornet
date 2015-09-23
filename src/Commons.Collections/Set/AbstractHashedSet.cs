@@ -25,9 +25,9 @@ namespace Commons.Collections.Set
     [CLSCompliant(true)]
     public abstract class AbstractHashedSet<T> : AbstractSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, 
 #if NET45
-		IReadOnlyCollection<T>, 
+        IReadOnlyCollection<T>, 
 #endif
-		IEnumerable<T>, ICollection, IEnumerable
+        IEnumerable<T>, ICollection, IEnumerable
     {
         protected readonly object val = new object();
 

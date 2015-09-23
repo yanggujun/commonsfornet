@@ -26,9 +26,9 @@ namespace Commons.Collections.Set
     [CLSCompliant(true)]
     public sealed class SkipListSet<T> : AbstractSet<T>, INavigableSet<T>, ISortedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>, ICollection<T>, 
 #if NET45
-		IReadOnlyCollection<T>, 
+        IReadOnlyCollection<T>, 
 #endif
-		IEnumerable<T>, ICollection, IEnumerable
+        IEnumerable<T>, ICollection, IEnumerable
     {
         private readonly object val = new object();
         private readonly SkipList<T, object> skipList;

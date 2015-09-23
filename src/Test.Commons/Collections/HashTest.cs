@@ -276,70 +276,70 @@ namespace Test.Commons.Collections
             }
         }
 
-		[Fact]
-		public void TestHashedMapComplexOperations()
-		{
-			var map = new HashedMap<string, string>();
-			var set = new HashSet<string>();
-			var list = new List<string>();
-			for (var i = 0; i < 100000; i++)
-			{
-				var key = Guid.NewGuid().ToString();
-				map.Add(key, key);
-				set.Add(key);
-				list.Add(key);
-			}
+        [Fact]
+        public void TestHashedMapComplexOperations()
+        {
+            var map = new HashedMap<string, string>();
+            var set = new HashSet<string>();
+            var list = new List<string>();
+            for (var i = 0; i < 100000; i++)
+            {
+                var key = Guid.NewGuid().ToString();
+                map.Add(key, key);
+                set.Add(key);
+                list.Add(key);
+            }
 
-			Assert.Equal(100000, map.Count);
-			foreach(var element in set)
-			{
-				Assert.True(map.ContainsKey(element));
-				Assert.Equal(element, map[element]);
-			}
+            Assert.Equal(100000, map.Count);
+            foreach(var element in set)
+            {
+                Assert.True(map.ContainsKey(element));
+                Assert.Equal(element, map[element]);
+            }
 
-			var count = 0;
-			foreach(var element in map)
-			{
-				count++;
-				Assert.True(set.Contains(element.Key));
-				Assert.True(set.Contains(element.Value));
-			}
-			Assert.Equal(100000, count);
+            var count = 0;
+            foreach(var element in map)
+            {
+                count++;
+                Assert.True(set.Contains(element.Key));
+                Assert.True(set.Contains(element.Value));
+            }
+            Assert.Equal(100000, count);
 
-			for (var i = 0; i < 20000; i++)
-			{
-				var element = list[i + 10000];
-				Assert.True(map.Remove(element));
-				set.Remove(element);
-			}
-			Assert.Equal(80000, map.Count);
+            for (var i = 0; i < 20000; i++)
+            {
+                var element = list[i + 10000];
+                Assert.True(map.Remove(element));
+                set.Remove(element);
+            }
+            Assert.Equal(80000, map.Count);
 
-			for (var i = 0; i < 40000; i++)
-			{
-				var newKey = Guid.NewGuid().ToString();
-				Assert.False(map.ContainsKey(newKey));
-				map[newKey] = newKey;
-				set.Add(newKey);
-				list.Add(newKey);
-			}
-			Assert.Equal(120000, map.Count);
-			Assert.Equal(set.Count, map.Count);
+            for (var i = 0; i < 40000; i++)
+            {
+                var newKey = Guid.NewGuid().ToString();
+                Assert.False(map.ContainsKey(newKey));
+                map[newKey] = newKey;
+                set.Add(newKey);
+                list.Add(newKey);
+            }
+            Assert.Equal(120000, map.Count);
+            Assert.Equal(set.Count, map.Count);
 
-			count = 0;
-			foreach(var element in map)
-			{
-				count++;
-				Assert.True(set.Contains(element.Key));
-				Assert.True(set.Contains(element.Value));
-			}
-			Assert.Equal(120000, count);
+            count = 0;
+            foreach(var element in map)
+            {
+                count++;
+                Assert.True(set.Contains(element.Key));
+                Assert.True(set.Contains(element.Value));
+            }
+            Assert.Equal(120000, count);
 
-			foreach(var element in set)
-			{
-				Assert.True(map.ContainsKey(element));
-				Assert.Equal(element, map[element]);
-			}
-		}
+            foreach(var element in set)
+            {
+                Assert.True(map.ContainsKey(element));
+                Assert.Equal(element, map[element]);
+            }
+        }
 
         [Fact]
         public void TestPlainHashMapBoundaries()
