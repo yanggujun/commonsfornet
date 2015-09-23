@@ -32,20 +32,11 @@ namespace Commons.Collections.Map
     {
         private readonly Equator<V> valueEquator;
 
-        protected IDictionary<K, ICollection<V>> Map { get; private set; }
+        protected abstract IDictionary<K, ICollection<V>> Map { get; }
 
-        protected AbstractMultiValueMap(IEnumerable<KeyValuePair<K, V>> items, IDictionary<K, ICollection<V>> map, Equator<V> valueEquator)
+        protected AbstractMultiValueMap(Equator<V> valueEquator)
         {
             this.valueEquator = valueEquator;
-            Map = map;
-
-            if (items != null)
-            {
-                foreach(var item in items)
-                {
-                    Add(item);
-                }
-            }
         }
 
         public void Add(K key, V value)

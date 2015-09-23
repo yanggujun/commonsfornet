@@ -20,8 +20,9 @@ using Commons.Utils;
 namespace Commons.Collections.Map
 {
     [CLSCompliant(true)]
-    public class MultiValueTreeMap<K, V> : AbstractMultiValueMap<K, V>, IMultiValueMap<K, V>, IReadOnlyMultiValueMap<K, V>
+    public class MultiValueTreeMap<K, V> : AbstractMultiValueMap<K, V>, ISortedMultiValueMap<K, V>, IMultiValueMap<K, V>, IReadOnlyMultiValueMap<K, V>
     {
+        private readonly TreeMap<K, ICollection<V>> map;
         public MultiValueTreeMap() : this(Comparer<K>.Default)
         {
         }
@@ -54,9 +55,48 @@ namespace Commons.Collections.Map
         {
         }
 
-        private MultiValueTreeMap(IMultiValueMap<K, V> items, ISortedMap<K, ICollection<V>> map, Equator<V> valueEquator) 
-            : base(items, map, valueEquator)
+        private MultiValueTreeMap(IMultiValueMap<K, V> items, TreeMap<K, ICollection<V>> map, Equator<V> valueEquator) 
+            : base(valueEquator)
         {
+            this.map = map;
+
+            if (items != null)
+            {
+                foreach (var item in items)
+                {
+                    Add(item);
+                }
+            }
+        }
+
+        public K Max
+        {
+            get { return map.Max.Key; }
+        }
+
+        public K Min
+        {
+            get { return map.Min.Key; }
+        }
+
+        public void RemoveMax()
+        {
+            map.RemoveMax();
+        }
+
+        public void RemoveMin()
+        {
+            map.RemoveMin();
+        }
+
+        public bool IsEmpty
+        {
+            get { return map.IsEmpty; }
+        }
+
+        protected override IDictionary<K, ICollection<V>> Map
+        {
+            get { return map; }
         }
     }
 }
