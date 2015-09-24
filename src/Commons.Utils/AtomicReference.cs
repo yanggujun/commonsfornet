@@ -20,30 +20,26 @@ namespace Commons.Utils
 {
     /// <summary>
     /// The struct provides the atomic operations for a reference type <typeparamref name="T"/>.
-    /// .NET framework has the x86 and x64 CAS implementation on windows. 
-    /// While on Mono, the implementation is different. The class is to encapsulate the CAS operation 
-    /// on different CPU architectures and different OS.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [CLSCompliant(true)]
-    public struct Atomic<T> where T : class
+    public struct AtomicReference<T> where T : class
     {
         private T reference;
 
-        public static Atomic<T> From(T reference)
+        public static AtomicReference<T> From(T reference)
         {
-            return new Atomic<T>(reference);
+            return new AtomicReference<T>(reference);
         }
 
-        private Atomic(T reference)
+        private AtomicReference(T reference)
         {
             this.reference = reference;
         }
 
-        public bool CompareExchange(T newValue)
+        public bool CompareExchange(T newValue, T oldValue)
         {
-            var old = Interlocked.CompareExchange(ref reference, newValue, reference);
-            return !ReferenceEquals(old, reference);
+            return ReferenceEquals(oldValue, Interlocked.CompareExchange(ref reference, newValue, oldValue));
         }
 
         public bool Exchange(T newValue)
@@ -53,5 +49,22 @@ namespace Commons.Utils
         }
 
         public T Value { get { return reference; } }
+
+        public override string ToString()
+        {
+            if (Value != null)
+            {
+                return Value.ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public static implicit operator T(AtomicReference<T> reference)
+        {
+            return reference.Value;
+        }
     }
 }

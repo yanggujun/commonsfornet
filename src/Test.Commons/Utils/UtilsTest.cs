@@ -22,51 +22,5 @@ namespace Test.Commons.Utils
 {
     public class UtilsTest
     {
-        [Fact]
-        public void TestAtomicReferenceCompareExchange()
-        {
-            var order = new Order();
-            var atomic = Atomic<Order>.From(order);
-            var newOrder = new Order();
-            Assert.True(atomic.CompareExchange(newOrder));
-            Assert.True(ReferenceEquals(atomic.Value, newOrder));
-        }
-
-        [Fact]
-        public void TestAtomicReferenceExchange()
-        {
-            var order = new Order();
-            var atomic = Atomic<Order>.From(order);
-            var newOrder = new Order();
-            Assert.True(atomic.Exchange(newOrder));
-            Assert.True(ReferenceEquals(atomic.Value, newOrder));
-        }
-
-        [Fact]
-        public void TestAtomicStructWithDefaultConstructor()
-        {
-            var order = new Atomic<Order>();
-            var newOrder = new Order();
-            var result = order.CompareExchange(newOrder);
-            Assert.True(result);
-            Assert.True(ReferenceEquals(newOrder, order.Value));
-        }
-
-        [Fact]
-        public void TestAtomicNullArgument()
-        {
-            var order = Atomic<Order>.From(new Order());
-            var result = order.CompareExchange(null);
-            Assert.True(result);
-            Assert.Equal(null, order.Value);
-        }
-
-        [Fact]
-        public void TestAtomicNullReference()
-        {
-            var order = Atomic<Order>.From(null);
-            var result = order.CompareExchange(new Order());
-            Assert.True(result);
-        }
     }
 }
