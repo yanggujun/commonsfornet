@@ -38,7 +38,7 @@ namespace Commons.Utils
 		{
 			get
 			{
-				return value;
+				return Volatile.Read(ref value);
 			}
 		}
 
