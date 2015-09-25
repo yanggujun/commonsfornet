@@ -59,6 +59,11 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AtomicBool.cs" />
+    <Compile Include="AtomicFloat.cs" />
+    <Compile Include="AtomicDouble.cs" />
+    <Compile Include="AtomicInt64.cs" />
+    <Compile Include="AtomicInt32.cs" />
     <Compile Include="AtomicMarkableReference.cs" />
     <Compile Include="AtomicReference.cs" />
     <Compile Include="Extensions.cs" />

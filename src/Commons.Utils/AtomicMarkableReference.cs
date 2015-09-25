@@ -25,7 +25,7 @@ namespace Commons.Utils
     [CLSCompliant(true)]
     public class AtomicMarkableReference<T> where T : class
     {
-        private AtomicReference<Tuple<T, bool>> value;
+		private AtomicReference<Tuple<T, bool>> value;
 
         public AtomicMarkableReference(T reference)
             : this(reference, false)
@@ -52,5 +52,27 @@ namespace Commons.Utils
                 return value.Value.Item2;
             }
         }
+
+		public bool CompareExchange(T oldValue, bool oldMark, T newValue, bool newMark)
+		{
+			var current = value.Value;
+			return ReferenceEquals(oldValue, current.Item1) && oldMark == current.Item2 
+				&& ((ReferenceEquals(newValue, current.Item1) && newMark == current.Item2) 
+				|| value.CompareExchange(current, new Tuple<T, bool>(newValue, newMark)));
+		}
+
+		public bool Exchange(T newValue, bool newMark)
+		{
+			var current = value.Value;
+
+			return (!ReferenceEquals(newValue, current.Item1) || newMark != current.Item2) && value.Exchange(new Tuple<T, bool>(newValue, newMark));
+		}
+
+		public bool AttemptMark(T oldValue, bool newMark)
+		{
+			var current = value.Value;
+
+			return ReferenceEquals(oldValue, current.Item1) && (newMark != current.Item2 || value.CompareExchange(current, new Tuple<T, bool>(oldValue, newMark)));
+		}
     }
 }

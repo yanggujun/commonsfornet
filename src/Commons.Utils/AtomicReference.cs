@@ -25,7 +25,7 @@ namespace Commons.Utils
     [CLSCompliant(true)]
     public struct AtomicReference<T> where T : class
     {
-        private T reference;
+        private volatile T reference;
 
         public static AtomicReference<T> From(T reference)
         {
@@ -37,6 +37,7 @@ namespace Commons.Utils
             this.reference = reference;
         }
 
+#pragma warning disable 420
         public bool CompareExchange(T newValue, T oldValue)
         {
             return ReferenceEquals(oldValue, Interlocked.CompareExchange(ref reference, newValue, oldValue));
@@ -47,6 +48,7 @@ namespace Commons.Utils
             var old = Interlocked.Exchange(ref reference, newValue);
             return !ReferenceEquals(old, reference);
         }
+#pragma warning restore 420
 
         public T Value { get { return reference; } }
 
