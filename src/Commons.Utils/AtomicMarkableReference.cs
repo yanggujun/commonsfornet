@@ -53,6 +53,13 @@ namespace Commons.Utils
             }
         }
 
+        public T TryGetValue(out bool isMarked)
+        {
+            var current = value;
+            isMarked = value.Value.Item2;
+            return value.Value.Item1;
+        }
+
 		public bool CompareExchange(T oldValue, bool oldMark, T newValue, bool newMark)
 		{
 			var current = value.Value;
