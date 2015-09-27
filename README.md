@@ -32,7 +32,7 @@ or send an email to: alanier@sina.cn
 
 ###Release Notes V0.1.1
 
-Initial release for .NET Commons Library. Support .NET framework 4.5 and later.
+Initial release for .NET Commons Library. Support .NET framework 4.0 and 4.5.
 
 ####Commons.Utils
 
