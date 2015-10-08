@@ -38,7 +38,12 @@ namespace Commons.Utils
 		{
 			get
 			{
+#if NET45
 				return Volatile.Read(ref value);
+#endif
+#if NET40
+                return Thread.VolatileRead(ref value);
+#endif 
 			}
 		}
 
