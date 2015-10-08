@@ -170,64 +170,64 @@ namespace Test.Commons.Collections
             }
         }
 
-		[Fact]
-		public void TestMultiValueTreeMapMax()
-		{
-			var mvMap = new MultiValueTreeMap<int, Bill>();
-			Fill(mvMap, 1000, 20, x => x, valueGen);
-			Assert.Equal(999, mvMap.Max);
-		}
+        [Fact]
+        public void TestMultiValueTreeMapMax()
+        {
+            var mvMap = new MultiValueTreeMap<int, Bill>();
+            Fill(mvMap, 1000, 20, x => x, valueGen);
+            Assert.Equal(999, mvMap.Max);
+        }
 
-		[Fact]
-		public void TestMultiValueTreeMapMin()
-		{
-			var mvMap = new MultiValueTreeMap<int, Bill>();
-			Fill(mvMap, 1000, 20, x => x, valueGen);
-			Assert.Equal(0, mvMap.Min);
-		}
+        [Fact]
+        public void TestMultiValueTreeMapMin()
+        {
+            var mvMap = new MultiValueTreeMap<int, Bill>();
+            Fill(mvMap, 1000, 20, x => x, valueGen);
+            Assert.Equal(0, mvMap.Min);
+        }
 
-		[Fact]
-		public void TestMultiValueTreeMapRemoveMax()
-		{
-			var mvMap = new MultiValueTreeMap<int, Bill>();
-			Fill(mvMap, 1000, 20, x => x, valueGen);
-			mvMap.RemoveMax();
-			Assert.Equal(999, mvMap.KeyCount);
-			Assert.Equal(999, mvMap.Keys.Count);
-			Assert.Equal(998, mvMap.Max);
-			Assert.Equal(999 * 20, mvMap.Count);
-		}
+        [Fact]
+        public void TestMultiValueTreeMapRemoveMax()
+        {
+            var mvMap = new MultiValueTreeMap<int, Bill>();
+            Fill(mvMap, 1000, 20, x => x, valueGen);
+            mvMap.RemoveMax();
+            Assert.Equal(999, mvMap.KeyCount);
+            Assert.Equal(999, mvMap.Keys.Count);
+            Assert.Equal(998, mvMap.Max);
+            Assert.Equal(999 * 20, mvMap.Count);
+        }
 
-		[Fact]
-		public void TestMultiValueTreeMapRemoveMin()
-		{
-			var mvMap = new MultiValueTreeMap<int, Bill>();
-			Fill(mvMap, 1000, 20, x => x, valueGen);
-			mvMap.RemoveMin();
-			Assert.Equal(999, mvMap.KeyCount);
-			Assert.Equal(999, mvMap.Keys.Count);
-			Assert.Equal(1, mvMap.Min);
-			Assert.Equal(999 * 20, mvMap.Count);
-		}
+        [Fact]
+        public void TestMultiValueTreeMapRemoveMin()
+        {
+            var mvMap = new MultiValueTreeMap<int, Bill>();
+            Fill(mvMap, 1000, 20, x => x, valueGen);
+            mvMap.RemoveMin();
+            Assert.Equal(999, mvMap.KeyCount);
+            Assert.Equal(999, mvMap.Keys.Count);
+            Assert.Equal(1, mvMap.Min);
+            Assert.Equal(999 * 20, mvMap.Count);
+        }
 
-		[Fact]
-		public void TestMultiValueTreeMapEmpty()
-		{
-			var mvMap = new MultiValueTreeMap<int, Bill>();
-			Assert.True(mvMap.IsEmpty);
-			Fill(mvMap, 100, 10, x => x, (y, z) => new Bill { Id = z });
-			Assert.False(mvMap.IsEmpty);
-		}
+        [Fact]
+        public void TestMultiValueTreeMapEmpty()
+        {
+            var mvMap = new MultiValueTreeMap<int, Bill>();
+            Assert.True(mvMap.IsEmpty);
+            Fill(mvMap, 100, 10, x => x, (y, z) => new Bill { Id = z });
+            Assert.False(mvMap.IsEmpty);
+        }
 
-		[Fact]
-		public void TestMultiValueSortedMapExceptions()
-		{
-			var mvMap = new MultiValueTreeMap<int, Bill>();
-			Assert.Throws(typeof(InvalidOperationException), () => mvMap.Max);
-			Assert.Throws(typeof(InvalidOperationException), () => mvMap.Min);
-			Assert.Throws(typeof(InvalidOperationException), () => mvMap.RemoveMin());
-			Assert.Throws(typeof(InvalidOperationException), () => mvMap.RemoveMax());
-		}
+        [Fact]
+        public void TestMultiValueSortedMapExceptions()
+        {
+            var mvMap = new MultiValueTreeMap<int, Bill>();
+            Assert.Throws(typeof(InvalidOperationException), () => mvMap.Max);
+            Assert.Throws(typeof(InvalidOperationException), () => mvMap.Min);
+            Assert.Throws(typeof(InvalidOperationException), () => mvMap.RemoveMin());
+            Assert.Throws(typeof(InvalidOperationException), () => mvMap.RemoveMax());
+        }
 
         private void MultiValueMapOperations(IMultiValueMap<int, int> mvMap)
         {

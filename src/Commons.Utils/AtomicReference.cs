@@ -45,9 +45,9 @@ namespace Commons.Utils
 
         public bool Exchange(T newValue)
         {
-			var o = reference;
+            var o = reference;
             var r = Interlocked.Exchange(ref reference, newValue);
-			return ReferenceEquals(o, r);
+            return ReferenceEquals(o, r);
         }
 #pragma warning restore 420
 

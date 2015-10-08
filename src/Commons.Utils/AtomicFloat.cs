@@ -19,52 +19,52 @@ using System.Threading;
 
 namespace Commons.Utils
 {
-	[CLSCompliant(true)]
-	public struct AtomicFloat
-	{
-		private volatile float value;
+    [CLSCompliant(true)]
+    public struct AtomicFloat
+    {
+        private volatile float value;
 
-		private AtomicFloat(float initialValue)
-		{
-			value = initialValue;
-		}
+        private AtomicFloat(float initialValue)
+        {
+            value = initialValue;
+        }
 
-		public static AtomicFloat From(float initialValue)
-		{
-			return new AtomicFloat(initialValue);
-		}
+        public static AtomicFloat From(float initialValue)
+        {
+            return new AtomicFloat(initialValue);
+        }
 
-		public float Value
-		{
-			get
-			{
-				return value;
-			}
-		}
+        public float Value
+        {
+            get
+            {
+                return value;
+            }
+        }
 
 #pragma warning disable 420
-		public bool CompareExchange(float newValue, float oldValue)
-		{
-			return Interlocked.CompareExchange(ref value, newValue, oldValue) == oldValue;
-		}
+        public bool CompareExchange(float newValue, float oldValue)
+        {
+            return Interlocked.CompareExchange(ref value, newValue, oldValue) == oldValue;
+        }
 
-		public bool Exchange(float newValue)
-		{
-			var o = value;
-			var r = Interlocked.Exchange(ref value, newValue);
-			return o == r;
-		}
+        public bool Exchange(float newValue)
+        {
+            var o = value;
+            var r = Interlocked.Exchange(ref value, newValue);
+            return o == r;
+        }
 #pragma warning restore 420
 
-		public override string ToString()
-		{
-			return value.ToString();
-		}
+        public override string ToString()
+        {
+            return value.ToString();
+        }
 
-		public static implicit operator float(AtomicFloat atomic)
-		{
-			return atomic.Value;
-		}
-	
-	}
+        public static implicit operator float(AtomicFloat atomic)
+        {
+            return atomic.Value;
+        }
+    
+    }
 }

@@ -20,11 +20,11 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Map
 {
-	/// <summary>
-	/// The keys of the multi-value map are sorted. The map provides the operations on maximum and minimum keys.
-	/// </summary>
-	/// <typeparam name="K">The type of the key.</typeparam>
-	/// <typeparam name="V">The type of the value.</typeparam>
+    /// <summary>
+    /// The keys of the multi-value map are sorted. The map provides the operations on maximum and minimum keys.
+    /// </summary>
+    /// <typeparam name="K">The type of the key.</typeparam>
+    /// <typeparam name="V">The type of the value.</typeparam>
     [CLSCompliant(true)]
     public interface ISortedMultiValueMap<K, V> : IMultiValueMap<K, V>, ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {

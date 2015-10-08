@@ -19,52 +19,52 @@ using System.Threading;
 
 namespace Commons.Utils
 {
-	[CLSCompliant(true)]
-	public struct AtomicInt32
-	{
-		private volatile Int32 value;
+    [CLSCompliant(true)]
+    public struct AtomicInt32
+    {
+        private volatile Int32 value;
 
-		private AtomicInt32(Int32 initialValue)
-		{
-			value = initialValue;
-		}
+        private AtomicInt32(Int32 initialValue)
+        {
+            value = initialValue;
+        }
 
-		public static AtomicInt32 From(Int32 initialValue)
-		{
-			return new AtomicInt32(initialValue);
-		}
+        public static AtomicInt32 From(Int32 initialValue)
+        {
+            return new AtomicInt32(initialValue);
+        }
 
-		public Int32 Value
-		{
-			get
-			{
-				return value;
-			}
-		}
+        public Int32 Value
+        {
+            get
+            {
+                return value;
+            }
+        }
 
 #pragma warning disable 420
-		public bool CompareExchange(Int32 newValue, Int32 oldValue)
-		{
-			return Interlocked.CompareExchange(ref value, newValue, oldValue) == oldValue;
-		}
+        public bool CompareExchange(Int32 newValue, Int32 oldValue)
+        {
+            return Interlocked.CompareExchange(ref value, newValue, oldValue) == oldValue;
+        }
 
-		public bool Exchange(Int32 newValue)
-		{
-			var o = value;
-			var r = Interlocked.Exchange(ref value, newValue);
-			return o == r;
-		}
+        public bool Exchange(Int32 newValue)
+        {
+            var o = value;
+            var r = Interlocked.Exchange(ref value, newValue);
+            return o == r;
+        }
 #pragma warning restore 420
 
-		public override string ToString()
-		{
-			return value.ToString();
-		}
+        public override string ToString()
+        {
+            return value.ToString();
+        }
 
-		public static implicit operator int(AtomicInt32 atomic)
-		{
-			return atomic.Value;
-		}
-	
-	}
+        public static implicit operator int(AtomicInt32 atomic)
+        {
+            return atomic.Value;
+        }
+    
+    }
 }
