@@ -26,9 +26,9 @@ namespace Commons.Collections.Map
     public abstract class AbstractBimap<K, V> : IBimap<K, V>, IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IDictionary, 
         ICollection, IReadOnlyBimap<K, V>, 
 #if NET45
-		IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, 
+        IReadOnlyDictionary<K, V>, IReadOnlyCollection<KeyValuePair<K, V>>, 
 #endif
-		IEnumerable<KeyValuePair<K, V>>, IEnumerable
+        IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         protected IDictionary<K, V> KeyValue { get; private set; }
         protected IDictionary<V, K> ValueKey { get; private set; }

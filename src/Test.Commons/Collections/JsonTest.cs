@@ -49,14 +49,14 @@ namespace Test.Commons.Collections
             Assert.DoesNotThrow(() => JsonObject.Parse(worldCup.ToString()));
         }
 
-		[Fact]
-		public void TestJsonFromRealWorld()
-		{
+        [Fact]
+        public void TestJsonFromRealWorld()
+        {
             string json = TestHelper.ReadFrom(@".\Collections\JsonSample9.txt");
 
-			dynamic person = JsonObject.Parse(json);
-			Assert.Equal("USA", (string)person.More.Country);
-		}
+            dynamic person = JsonObject.Parse(json);
+            Assert.Equal("USA", (string)person.More.Country);
+        }
 
         [Fact]
         public void TestParseJson()
@@ -94,7 +94,7 @@ namespace Test.Commons.Collections
             Assert.Equal("~1.8", (string)package.devDependencies.chai);
         }
 
-		[Fact]
+        [Fact]
         public void TestParseJsonIllEmptyHalfObject()
         {
             var json = "{";
@@ -186,7 +186,7 @@ namespace Test.Commons.Collections
             {
                 Assert.Equal(++count, (int)item);
             }
-			Assert.Equal(6, count);
+            Assert.Equal(6, count);
         }
 
         [Fact]

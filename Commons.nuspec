@@ -2,18 +2,16 @@
 <package >
   <metadata>
     <id>Commons</id>
-    <version>0.1.1.219</version>
+    <version>0.1.1.235</version>
     <authors>yanggujun</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>.NET Commons.
-    </description>
-    <summary>.NET Commons includes Commons.Utils, Commons.Collections and Commons.Json.
-    </summary>
+    <description>.NET Commons</description>
+    <summary>Atomics Hashes Collections JSON</summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
-    <tags>Collections Utilities JSON</tags>
+    <tags>Atomics Hashes Collections JSON</tags>
   </metadata>
   <files>
       <file src="src\bin\NET45\Commons.Utils.dll" target="lib\net45\" />

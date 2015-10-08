@@ -36,6 +36,24 @@ Initial release for .NET Commons Library. Support .NET framework 4.0 and 4.5.
 
 ####Commons.Utils
 
+  * __Atomic Primitives__
+
+    The class libary provides the following atomic primitives for concurrent computing. Those .NET structures enable the compare and swap (CAS) or compare exchange capability.
+  
+    * AtomicBool
+
+    * AtomicDouble
+
+    * AtomicFloat
+
+    * AtomicInt32
+
+    * AtomicInt64
+
+    * AtomicReference
+
+    * AtomicMarkableReference, a reference type with a flag incidating the state of the reference. A C# counterpart of java.util.concurrent.atomic.AtomicMarkableReference<T>
+
   * __Supported hash functions__
 
     Murmur hash 32bit
@@ -74,9 +92,9 @@ Initial release for .NET Commons Library. Support .NET framework 4.0 and 4.5.
   
   * __TreeBimap__, a sorted bidirectional map. 
   
-  * __MultiValueHashedMap__, an unsorted map which multiple values are available for a given key.
+  * __MultiValueHashedMap__, an unsorted map where multiple values are allowed for a given key.
   
-  * __MultiValueTreeMap__, a sorted multi value map.
+  * __MultiValueTreeMap__, a sorted version of multi-value map.
   
   * __HashedBag__, a bag containing the unsorted items. A bag is a collection that allows duplicate values.
   
@@ -92,11 +110,11 @@ Initial release for .NET Commons Library. Support .NET framework 4.0 and 4.5.
   
   * __BoundedQueue__, a FIFO queue with a maximum size.
   
-  * __HashedSet__, a set with unsorted items. It's a set strictly follows the definition in math.
+  * __HashedSet__, a set with unsorted items. It's a set strictly follows the definition in maths.
   
-  * __TreeSet__, a set with sorted items. It's a set strictly follows the definition in math.
+  * __TreeSet__, a set with sorted items. It's a set strictly follows the definition in maths.
   
-  * __SkipListSet__, a set with sorted items. It's a set strictly follows the definition in math.
+  * __SkipListSet__, a set with sorted items. It's a set strictly follows the definition in maths.
 
   * __ReferenceSet__, a hash set which calculates the hash value only from its object reference value.
   
@@ -108,7 +126,7 @@ Initial release for .NET Commons Library. Support .NET framework 4.0 and 4.5.
 
   * A JSON parser and composer with the power of "dynamic" keyword.
   
-  * Parse and Compose a JSON string with Commons.Json:
+  * Parse and compose a JSON string with Commons.Json:
   
   ```csharp
       //given the following json text:

@@ -25,27 +25,18 @@ namespace Commons.Collections.Map
     public abstract class AbstractMultiValueMap<K, V> : IMultiValueMap<K, V>, ICollection<KeyValuePair<K, V>>, ICollection,
         IReadOnlyMultiValueMap<K, V>, 
 #if NET45
-		IReadOnlyCollection<KeyValuePair<K, V>>, 
+        IReadOnlyCollection<KeyValuePair<K, V>>, 
 #endif
-		IEnumerable<KeyValuePair<K, V>>, 
+        IEnumerable<KeyValuePair<K, V>>, 
         IEnumerable<KeyValuePair<K, ICollection<V>>>, IEnumerable
     {
         private readonly Equator<V> valueEquator;
 
-        protected IDictionary<K, ICollection<V>> Map { get; private set; }
+        protected abstract IDictionary<K, ICollection<V>> Map { get; }
 
-        protected AbstractMultiValueMap(IEnumerable<KeyValuePair<K, V>> items, IDictionary<K, ICollection<V>> map, Equator<V> valueEquator)
+        protected AbstractMultiValueMap(Equator<V> valueEquator)
         {
             this.valueEquator = valueEquator;
-            Map = map;
-
-            if (items != null)
-            {
-                foreach(var item in items)
-                {
-                    Add(item);
-                }
-            }
         }
 
         public void Add(K key, V value)

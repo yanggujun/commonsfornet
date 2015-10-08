@@ -22,7 +22,7 @@ namespace Commons.Collections.Map
 {
     internal class ChainHashedMap<K, V> : AbstractHashedMap<K, V>, IDictionary<K, V>
 #if NET45
-		, IReadOnlyDictionary<K, V>
+        , IReadOnlyDictionary<K, V>
 #endif
     {
         private const int DefaultCapacity = 16;

@@ -20,8 +20,37 @@ using System.Collections.Generic;
 
 namespace Commons.Collections.Map
 {
+    /// <summary>
+    /// The keys of the multi-value map are sorted. The map provides the operations on maximum and minimum keys.
+    /// </summary>
+    /// <typeparam name="K">The type of the key.</typeparam>
+    /// <typeparam name="V">The type of the value.</typeparam>
     [CLSCompliant(true)]
     public interface ISortedMultiValueMap<K, V> : IMultiValueMap<K, V>, ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
+        /// <summary>
+        /// Retrieves the maximum key in the multi value map.
+        /// </summary>
+        K Max { get; }
+
+        /// <summary>
+        /// Retrieves the minimum key in the multi value map.
+        /// </summary>
+        K Min { get; }
+
+        /// <summary>
+        /// Removes the max value of the multi value map.
+        /// </summary>
+        void RemoveMax();
+
+        /// <summary>
+        /// Removes the min value of the multi value map.
+        /// </summary>
+        void RemoveMin();
+
+        /// <summary>
+        /// Check whether the map is empty.
+        /// </summary>
+        bool IsEmpty { get; }
     }
 }

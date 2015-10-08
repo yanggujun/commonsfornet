@@ -23,9 +23,9 @@ namespace Commons.Collections.Set
     [CLSCompliant(true)]
     public interface IReadOnlyStrictSet<T> : 
 #if NET45
-		IReadOnlyCollection<T>, 
+        IReadOnlyCollection<T>, 
 #endif
-		IEnumerable<T>, IEnumerable
+        IEnumerable<T>, IEnumerable
     {
         bool IsSubsetOf(IStrictSet<T> other);
 

@@ -35,9 +35,9 @@ namespace Commons.Collections.Collection
     [CLSCompliant(true)]
     public class CompositeCollection<T> : ICollection<T>, 
 #if NET45
-		IReadOnlyCollection<T>, 
+        IReadOnlyCollection<T>, 
 #endif
-		ICollection, IEnumerable<T>, IEnumerable
+        ICollection, IEnumerable<T>, IEnumerable
     {
         private readonly List<ICollection<T>> allCollections = new List<ICollection<T>>();
 

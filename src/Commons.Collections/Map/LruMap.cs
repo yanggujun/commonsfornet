@@ -24,9 +24,9 @@ namespace Commons.Collections.Map
     [CLSCompliant(true)]
     public class LruMap<K, V> : AbstractLinkedMap<K, V>, IDictionary<K, V>, 
 #if NET45
-		IReadOnlyDictionary<K, V>, 
+        IReadOnlyDictionary<K, V>, 
 #endif
-		IBoundedCollection
+        IBoundedCollection
     {
         private const int DefaultFullSize = 100;
 
