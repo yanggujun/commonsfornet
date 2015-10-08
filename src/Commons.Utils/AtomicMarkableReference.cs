@@ -1,5 +1,4 @@
-﻿// Copyright CommonsForNET.
-// Licensed to the Apache Software Foundation (ASF) under one or more
+﻿// Copyright CommonsForNET.  // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
 // The ASF licenses this file to You under the Apache License, Version 2.0
@@ -19,7 +18,7 @@ using System;
 namespace Commons.Utils
 {
     /// <summary>
-    /// Access an reference atomically with the reference marked by a bit.
+    /// Access an reference atomically with the reference marked by a flag.
     /// </summary>
     /// <typeparam name="T">The type of the reference.</typeparam>
     [CLSCompliant(true)]
@@ -58,7 +57,7 @@ namespace Commons.Utils
 			var current = value.Value;
 			return ReferenceEquals(oldValue, current.Item1) && oldMark == current.Item2 
 				&& ((ReferenceEquals(newValue, current.Item1) && newMark == current.Item2) 
-				|| value.CompareExchange(current, new Tuple<T, bool>(newValue, newMark)));
+				|| value.CompareExchange(new Tuple<T, bool>(newValue, newMark), current));
 		}
 
 		public bool Exchange(T newValue, bool newMark)
@@ -73,6 +72,11 @@ namespace Commons.Utils
 			var current = value.Value;
 
 			return ReferenceEquals(oldValue, current.Item1) && (newMark != current.Item2 || value.CompareExchange(current, new Tuple<T, bool>(oldValue, newMark)));
+		}
+
+		public static implicit operator T(AtomicMarkableReference<T> r)
+		{
+			return r.Value;
 		}
     }
 }

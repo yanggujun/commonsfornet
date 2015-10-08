@@ -49,8 +49,9 @@ namespace Commons.Utils
 
 		public bool Exchange(Double newValue)
 		{
-			var o = Interlocked.Exchange(ref value, newValue);
-			return o == value;
+			var o = value;
+			var r = Interlocked.Exchange(ref value, newValue);
+			return r == o;
 		}
 
 		public override string ToString()

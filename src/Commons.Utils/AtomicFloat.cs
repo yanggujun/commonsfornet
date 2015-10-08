@@ -50,8 +50,9 @@ namespace Commons.Utils
 
 		public bool Exchange(float newValue)
 		{
-			var o = Interlocked.Exchange(ref value, newValue);
-			return o == value;
+			var o = value;
+			var r = Interlocked.Exchange(ref value, newValue);
+			return o == r;
 		}
 #pragma warning restore 420
 
