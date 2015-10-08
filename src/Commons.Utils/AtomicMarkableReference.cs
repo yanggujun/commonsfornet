@@ -74,6 +74,13 @@ namespace Commons.Utils
             return ReferenceEquals(oldValue, current.Item1) && (newMark != current.Item2 || value.CompareExchange(current, new Tuple<T, bool>(oldValue, newMark)));
         }
 
+        public T TryGetValue(out bool isMarked)
+        {
+            var current = value;
+            isMarked = current.Value.Item2;
+            return current.Value.Item1;
+        }
+
         public static implicit operator T(AtomicMarkableReference<T> r)
         {
             return r.Value;
