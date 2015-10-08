@@ -19,49 +19,55 @@ using System.Threading;
 
 namespace Commons.Utils
 {
-	[CLSCompliant(true)]
-	public struct AtomicDouble
-	{
-		private Double value;
+    [CLSCompliant(true)]
+    public struct AtomicDouble
+    {
+        private Double value;
 
-		private AtomicDouble(Double initialValue)
-		{
-			value = initialValue;
-		}
+        private AtomicDouble(Double initialValue)
+        {
+            value = initialValue;
+        }
 
-		public static AtomicDouble From(Double initialValue)
-		{
-			return new AtomicDouble(initialValue);
-		}
+        public static AtomicDouble From(Double initialValue)
+        {
+            return new AtomicDouble(initialValue);
+        }
 
-		public Double Value
-		{
-			get
-			{
-				return Volatile.Read(ref value);
-			}
-		}
+        public Double Value
+        {
+            get
+            {
+#if NET45
+                return Volatile.Read(ref value);
+#endif 
+#if NET40
+                return Thread.VolatileRead(ref value);
+#endif
+            }
+        }
 
-		public bool CompareExchange(Double newValue, Double oldValue)
-		{
-			return Interlocked.CompareExchange(ref value, newValue, oldValue) == oldValue;
-		}
+        public bool CompareExchange(Double newValue, Double oldValue)
+        {
+            return Interlocked.CompareExchange(ref value, newValue, oldValue) == oldValue;
+        }
 
-		public bool Exchange(Double newValue)
-		{
-			var o = Interlocked.Exchange(ref value, newValue);
-			return o == value;
-		}
+        public bool Exchange(Double newValue)
+        {
+            var o = value;
+            var r = Interlocked.Exchange(ref value, newValue);
+            return r == o;
+        }
 
-		public override string ToString()
-		{
-			return value.ToString();
-		}
+        public override string ToString()
+        {
+            return value.ToString();
+        }
 
-		public static implicit operator double(AtomicDouble atomic)
-		{
-			return atomic.Value;
-		}
-	
-	}
+        public static implicit operator double(AtomicDouble atomic)
+        {
+            return atomic.Value;
+        }
+    
+    }
 }

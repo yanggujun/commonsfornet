@@ -119,7 +119,7 @@ namespace Commons.Collections.Map
         {
             get
             {
-                return header.GetForward(1) != null;
+                return header.GetForward(1) == null;
             }
         }
 

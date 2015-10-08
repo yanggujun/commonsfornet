@@ -279,7 +279,7 @@ namespace Commons.Collections.Map
         {
             get
             {
-                return root != null;
+                return root == null;
             }
         }
 

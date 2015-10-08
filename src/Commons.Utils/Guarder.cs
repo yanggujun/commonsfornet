@@ -21,6 +21,14 @@ namespace Commons.Utils
     [CLSCompliant(true)]
     public static class Guarder
     {
+        public static void CheckNull<T>(T param, string name)
+        {
+            if (ReferenceEquals(null, param))
+            {
+                throw new ArgumentException(string.Format("The argument {0} is null.", name));
+            }
+        }
+
         public static void CheckNull(params object[] objs)
         {
             foreach (var obj in objs)
