@@ -177,6 +177,56 @@ namespace Test.Commons.Collections
             SortedSetAdd(orderSet);
         }
 
+		[Fact]
+		public void TestTreeMapEmpty()
+		{
+			var map = new TreeMap<int, int>();
+			Assert.True(map.IsEmpty);
+			map.Add(1, 1);
+			Assert.False(map.IsEmpty);
+		}
+
+		[Fact]
+		public void TestSkipListMapEmpty()
+		{
+			var map = new SkipListMap<int, int>();
+			Assert.True(map.IsEmpty);
+			map.Add(1, 1);
+			Assert.False(map.IsEmpty);
+		}
+
+		[Fact]
+		public void TestTreeSetEmpty()
+		{
+			var set = new TreeSet<int>();
+			Assert.True(set.IsEmpty);
+			set.Add(1);
+			Assert.False(set.IsEmpty);
+		}
+
+		[Fact]
+		public void TestSkipListSetEmpty()
+		{
+			var set = new SkipListSet<int>();
+			Assert.True(set.IsEmpty);
+			set.Add(1);
+			Assert.False(set.IsEmpty);
+		}
+
+        [Fact]
+        public void TestTreeSetRemove()
+        {
+            var orderSet = new TreeSet<Order>(new OrderComparer());
+            SortedSetRemove(orderSet);
+        }
+
+        [Fact]
+        public void TestSkipListSetRemove()
+        {
+            var orderSet = new SkipListSet<Order>(new OrderComparer());
+            SortedSetRemove(orderSet);
+        }
+
         private void SortedSetAdd(ISortedSet<Order> orderSet)
         {
             Random randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
@@ -206,20 +256,6 @@ namespace Test.Commons.Collections
             }
             orderSet.Clear();
             Assert.Equal(0, orderSet.Count);
-        }
-
-        [Fact]
-        public void TestTreeSetRemove()
-        {
-            var orderSet = new TreeSet<Order>(new OrderComparer());
-            SortedSetRemove(orderSet);
-        }
-
-        [Fact]
-        public void TestSkipListSetRemove()
-        {
-            var orderSet = new SkipListSet<Order>(new OrderComparer());
-            SortedSetRemove(orderSet);
         }
 
         private void SortedSetRemove(ISortedSet<Order> orderSet)
