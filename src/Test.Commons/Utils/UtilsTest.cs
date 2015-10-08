@@ -175,7 +175,7 @@ namespace Test.Commons.Utils
 			Assert.False(amr.IsMarked);
 
 			var newOrder = new Order { Id = 2, Name = "2" };
-			Assert.True(amr.CompareExchange(order, false, newOrder, false));
+            Assert.True(amr.CompareExchange(newOrder, false, order, false));
 			Assert.Same(newOrder, amr.Value);
 			Assert.Equal(2, amr.Value.Id);
 			Assert.Equal("2", amr.Value.Name);
@@ -192,7 +192,7 @@ namespace Test.Commons.Utils
 			Assert.False(amr.IsMarked);
 
 			var newOrder = new Order { Id = 2, Name = "2" };
-			Assert.True(amr.CompareExchange(order, false, newOrder, true));
+			Assert.True(amr.CompareExchange(newOrder, true, order, false));
 			Assert.Same(newOrder, amr.Value);
 			Assert.Equal(2, amr.Value.Id);
 			Assert.Equal("2", amr.Value.Name);

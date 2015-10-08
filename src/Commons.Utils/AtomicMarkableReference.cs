@@ -52,7 +52,7 @@ namespace Commons.Utils
             }
         }
 
-		public bool CompareExchange(T oldValue, bool oldMark, T newValue, bool newMark)
+		public bool CompareExchange(T newValue, bool newMark, T oldValue, bool oldMark)
 		{
 			var current = value.Value;
 			return ReferenceEquals(oldValue, current.Item1) && oldMark == current.Item2 
