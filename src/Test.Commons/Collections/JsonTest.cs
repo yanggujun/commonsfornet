@@ -46,7 +46,7 @@ namespace Test.Commons.Collections
             Assert.Equal("Netherland", (string)worldCup.Groups.GroupB[1]);
             Assert.Equal("Chile", (string)worldCup.Groups.GroupB[2]);
             Assert.Equal("Australia", (string)worldCup.Groups.GroupB[3]);
-            Assert.DoesNotThrow(() => JsonObject.Parse(worldCup.ToString()));
+            JsonObject.Parse(worldCup.ToString());
         }
 
         [Fact]
@@ -259,15 +259,15 @@ namespace Test.Commons.Collections
         public void TestParseJsonStrings()
         {
             var json4 = TestHelper.ReadFrom(@".\Collections\JsonSample4.txt");
-            Assert.DoesNotThrow(() => JsonObject.Parse(json4));
+            JsonObject.Parse(json4);
             var json5 = TestHelper.ReadFrom(@".\Collections\JsonSample5.txt");
-            Assert.DoesNotThrow(() => JsonObject.Parse(json5));
+            JsonObject.Parse(json5);
             var json6 = TestHelper.ReadFrom(@".\Collections\JsonSample6.txt");
-            Assert.DoesNotThrow(() => JsonObject.Parse(json6));
+            JsonObject.Parse(json6);
             var json7 = TestHelper.ReadFrom(@".\Collections\JsonSample7.txt");
-            Assert.DoesNotThrow(() => JsonObject.Parse(json7));
+            JsonObject.Parse(json7);
             var json8 = TestHelper.ReadFrom(@".\Collections\JsonSample8.txt");
-            Assert.DoesNotThrow(() => JsonObject.Parse(json8));
+            JsonObject.Parse(json8);
         }
     }
 }
