@@ -29,24 +29,28 @@ namespace Commons.Collections.Concurrent
     [CLSCompliant(true)]
     public class ConcurrentSortedList<T> : IEnumerable<T>, IEnumerable
     {
-        private Node<T> head;
-        private Node<T> tail;
-        private IComparer<T> comparer;
+        private readonly Node head;
+        private readonly Node tail;
+        private readonly IComparer<T> comparer;
 
-        public ConcurrentSortedList()
+        public ConcurrentSortedList() : this(Comparer<T>.Default)
         {
-            head = new Node<T>();
-            tail = new Node<T>();
-            head.Next = new AtomicMarkableReference<Node<T>>(tail);
-            comparer = Comparer<T>.Default;
+        }
+
+        public ConcurrentSortedList(IComparer<T> comparer)
+        {
+            head = new Node();
+            tail = new Node();
+            head.Next = new AtomicMarkableReference<Node>(tail);
+            this.comparer = comparer;
         }
 
         private bool Insert(T key)
         {
-            var newNode = new Node<T>();
+            var newNode = new Node();
             var spin = new SpinWait();
             newNode.Key = key;
-            Node<T> rightNode, leftNode;
+            Node rightNode, leftNode;
             do
             {
                 rightNode = Search(key, out leftNode);
@@ -61,7 +65,7 @@ namespace Commons.Collections.Concurrent
 
         private bool Delete(T key)
         {
-            Node<T> rightNode, leftNode;
+            Node rightNode, leftNode;
             var spin = new SpinWait();
 
             do
@@ -85,7 +89,7 @@ namespace Commons.Collections.Concurrent
 
         private bool Find(T key)
         {
-            Node<T> rightNode, leftNode;
+            Node rightNode, leftNode;
             rightNode = Search(key, out leftNode);
             if (rightNode == tail || comparer.Compare(rightNode.Key, key) != 0)
             {
@@ -104,9 +108,9 @@ namespace Commons.Collections.Concurrent
         /// <param name="leftNode"></param>
         /// <param name="rightNode"></param>
         /// <returns></returns>
-        private bool DoSearch(T key, out Node<T> leftNode, out Node<T> rightNode)
+        private bool DoSearch(T key, out Node leftNode, out Node rightNode)
         {
-            Node<T> leftNodeNext = null;
+            Node leftNodeNext = null;
             leftNode = null;
             rightNode = null;
 
@@ -137,9 +141,9 @@ namespace Commons.Collections.Concurrent
             }
         }
 
-        private Node<T> Search(T key, out Node<T> leftNode)
+        private Node Search(T key, out Node leftNode)
         {
-            Node<T> rightNode = null;
+            Node rightNode = null;
             if (ReferenceEquals(head.Next.Value, tail))
             {
                 leftNode = head;
@@ -164,10 +168,10 @@ namespace Commons.Collections.Concurrent
             throw new NotImplementedException();
         }
 
-        private class Node<T>
+        private class Node
         {
             public T Key;
-            public AtomicMarkableReference<Node<T>> Next;
+            public AtomicMarkableReference<Node> Next;
         }
     }
 }
