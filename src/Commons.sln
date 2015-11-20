@@ -34,7 +34,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.Json", "Commons.Jso
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04_Commons.Patterns", "04_Commons.Patterns", "{99B0AA79-415A-4C2D-AC5E-F092EBB630EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.Pool", "Commons.Patterns\Commons.Pool.csproj", "{1C0B57BF-8039-49BD-A641-6FF9E6860530}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.Pool", "Commons.Pool\Commons.Pool.csproj", "{1C0B57BF-8039-49BD-A641-6FF9E6860530}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

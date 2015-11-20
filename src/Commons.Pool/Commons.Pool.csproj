@@ -54,9 +54,7 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ExceedLimitException.cs" />
     <Compile Include="IObjectPool.cs" />
-    <Compile Include="PoolConfig.cs" />
     <Compile Include="ResourceUnavailableException.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +64,12 @@
     <None Include="..\FullKey.snk">
       <Link>FullKey.snk</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj">
+      <Project>{ea220245-82ac-455e-b108-70d48f43ac2b}</Project>
+      <Name>Commons.Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

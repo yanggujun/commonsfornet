@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System;
+using Commons.Utils;
 
 namespace Commons.Pool
 {
@@ -37,24 +38,20 @@ namespace Commons.Pool
         /// <returns>The object</returns>
         T Acquire();
 
+		/// <summary>
+		/// Acquires an object from the pool. If there is no object available in the pool, it waits until timeout. Iif the time out is less than or equal to 0, 
+		/// it waits for the object infinitively.
+		/// </summary>
+		/// <param name="timeout">The timeout in milli-seconds.</param>
+		/// <param name="obj">The object from the pool.</param>
+		/// <returns>True if any idle object is retrieved from the pool, otherwise false.</returns>
+	    bool TryAcquire(long timeout, out T obj);
+
         /// <summary>
         /// Returns an <paramref name="obj"/> to the pool. The object becomes idle when it's returned to the pool.
         /// </summary>
         /// <param name="obj">The returned object</param>
         void Return(T obj);
-
-        /// <summary>
-        /// Asks the pool to create a new object instance and add the object into the pool.
-        /// If the pool has already reaches the maximum size, <see cref="ExceedLimitException"/> is thrown.
-        /// </summary>
-        void AddObject();
-
-        /// <summary>
-        /// When the operations on the object fail, need to call this method to tell the 
-        /// pool that the object state is invalidated. And the object shall be abandoned.
-        /// </summary>
-        /// <param name="obj">The object to invalidate.</param>
-        void Invalidate(T obj);
 
         /// <summary>
         /// The number of the idle objects which can be acquired from the pool.
@@ -67,18 +64,13 @@ namespace Commons.Pool
         int ActiveCount { get; }
 
         /// <summary>
-        /// The maximum number of all the objects created in the pool.
+        /// The maximum number of all the objects created in the pool. The capacity must be larger than or equal to <see cref="InitialSize"/>.
         /// </summary>
-        int MaxSize { get; }
+        int Capacity { get; }
 
-        /// <summary>
-        /// The configuration for the pool.
-        /// </summary>
-        PoolConfig PoolConfiguration { get; }
-
-        /// <summary>
-        /// Clears the pool. And diposes the objects in the pool.
-        /// </summary>
-        void Clear();
+		/// <summary>
+		/// The initial size of the pool. If the pool grows, its size eventually reaches the <see cref="Capacity"/>;
+		/// </summary>
+		int InitialSize { get; }
     }
 }
