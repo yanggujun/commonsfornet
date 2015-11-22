@@ -39,7 +39,7 @@ namespace Commons.Pool
         T Acquire();
 
 		/// <summary>
-		/// Acquires an object from the pool. If there is no object available in the pool, it waits until timeout. Iif the time out is less than or equal to 0, 
+		/// Acquires an object from the pool. If there is no object available in the pool, it waits until timeout. If the time out is less than or equal to 0, 
 		/// it waits for the object infinitively.
 		/// </summary>
 		/// <param name="timeout">The timeout in milli-seconds.</param>

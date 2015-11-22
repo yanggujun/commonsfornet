@@ -54,6 +54,8 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="GenericObjectPool.cs" />
+    <Compile Include="IKeyedObjectPool.cs" />
     <Compile Include="IObjectPool.cs" />
     <Compile Include="ResourceUnavailableException.cs" />
   </ItemGroup>
