@@ -72,5 +72,25 @@ namespace Commons.Pool
 		/// The initial size of the pool. If the pool grows, its size eventually reaches the <see cref="Capacity"/>;
 		/// </summary>
 		int InitialSize { get; }
+
+		/// <summary>
+		/// The event is fired when a pool object is created successfully.
+		/// </summary>
+	    event EventHandler<T> ObjectCreated;
+
+		/// <summary>
+		/// The event is fired when a pool object is obtained by the client.
+		/// </summary>
+	    event EventHandler<T> ObjectObtained;
+
+		/// <summary>
+		/// The event is fired when a pool object is restracted to the pool.
+		/// </summary>
+	    event EventHandler<T> ObjectRetracted;
+
+		/// <summary>
+		/// The event is fired when a pool object is being destroyed.
+		/// </summary>
+	    event EventHandler<T> ObjectDestroying;
     }
 }

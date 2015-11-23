@@ -57,6 +57,7 @@
     <Compile Include="GenericObjectPool.cs" />
     <Compile Include="IKeyedObjectPool.cs" />
     <Compile Include="IObjectPool.cs" />
+    <Compile Include="IPooledObjectFactory.cs" />
     <Compile Include="ResourceUnavailableException.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +69,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Commons.Collections\Commons.Collections.csproj">
+      <Project>{e8221711-1b2b-4ed7-b359-9a5d990b3abd}</Project>
+      <Name>Commons.Collections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj">
       <Project>{ea220245-82ac-455e-b108-70d48f43ac2b}</Project>
       <Name>Commons.Utils</Name>
