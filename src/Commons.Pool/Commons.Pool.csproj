@@ -58,7 +58,6 @@
     <Compile Include="IKeyedObjectPool.cs" />
     <Compile Include="IObjectPool.cs" />
     <Compile Include="IPooledObjectFactory.cs" />
-    <Compile Include="ResourceUnavailableException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

@@ -17,23 +17,24 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using Commons.Collections.Set;
-using Commons.Utils;
+using Commons.Collections.Queue;
 
 namespace Commons.Pool
 {
 	/// <summary>
 	/// The generic object pool. The pool is used when the objects are identical, for example, the connection pool.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="T">The type of the pooled object.</typeparam>
 	[CLSCompliant(true)]
     public class GenericObjectPool<T> : IObjectPool<T>
 	{
 		private IPooledObjectFactory<T> factory;
-		private ConcurrentBag<T> pooledObjects;
+        private LinkedDeque<T> idleObjects;
 		private ReaderWriterLockSlim locker;
 		private int initialSize;
 		private int maxSize;
+        private int createdCount;
+        private AutoResetEvent objectReturned;
 
 		/// <summary>
 		/// Constructor with the intialSize and maxSize. <see cref="ArgumentException"/> is thrown when <param name="initialSize"/> is larger than <param name="maxSize"/>
@@ -60,11 +61,14 @@ namespace Commons.Pool
 			this.initialSize = initialSize;
 			this.maxSize = maxSize;
 			this.factory = factory;
+            this.createdCount = 0;
+            objectReturned = new AutoResetEvent(false);
 			locker = new ReaderWriterLockSlim();
-			pooledObjects = new ConcurrentBag<T>();
+            idleObjects = new LinkedDeque<T>();
 			for (var i = 0; i < initialSize; i++)
 			{
-				pooledObjects.Add(this.factory.Create());
+                idleObjects.Prepend(factory.Create());
+                createdCount++;
 			}
 		}
 
@@ -75,87 +79,119 @@ namespace Commons.Pool
 		public T Acquire()
 		{
 			T obj;
-			locker.EnterWriteLock();
-			try
-			{
-				if (!pooledObjects.TryTake(out obj))
-				{
-				}
-			}
-			finally
-			{
-				locker.ExitWriteLock();
-			}
+            TryAcquire(-1, out obj);
 
 			return obj;
 		}
 
-        public bool TryAcquire(long timeout, out T obj)
+        public bool TryAcquire(int timeout, out T obj)
         {
-	        var result = false;
+	        var acquired = false;
+            obj = default(T);
 			locker.EnterWriteLock();
 	        try
 	        {
-		        if (pooledObjects.TryTake(out obj))
-		        {
-			        result = true;
-		        }
-		        else
-		        {
-			        if (pooledObjects.Count < maxSize)
-			        {
-			        }
-		        }
+                if (idleObjects.IsEmpty)
+                {
+                    if (createdCount < maxSize)
+                    {
+                        obj = factory.Create();
+                        createdCount++;
+                        idleObjects.Prepend(obj);
+                        acquired = true;
+                    }
+                    else
+                    {
+                        if (objectReturned.WaitOne(timeout))
+                        {
+                            obj = idleObjects.Pop();
+                            acquired = true;
+                        }
+                    }
+                }
+                else
+                {
+                    obj = idleObjects.Pop();
+                    acquired = true;
+                }
 	        }
 	        finally
 	        {
 				locker.ExitWriteLock();
 	        }
 
-	        return result;
+	        return acquired;
         }
 
         public void Return(T obj)
         {
-            throw new NotImplementedException();
+            locker.EnterWriteLock();
+            try
+            {
+                idleObjects.Prepend(obj);
+                objectReturned.Set();
+            }
+            finally
+            {
+                locker.ExitWriteLock();
+            }
         }
 
         public int IdleCount
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                var count = 0;
+                locker.EnterReadLock();
+                try
+                {
+                    count = idleObjects.Count;
+                }
+                finally
+                {
+                    locker.ExitWriteLock();
+                }
+                return count;
+            }
         }
 
         public int ActiveCount
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                var created = createdCount;
+                var idleCount = IdleCount;
+                return created - idleCount;
+            }
         }
 
         public int Capacity
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return maxSize;
+            }
         }
 
         public int InitialSize
         {
-            get { throw new NotImplementedException(); }
+            get { return initialSize; }
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            locker.EnterWriteLock();
+            try
+            {
+                foreach(var element in idleObjects)
+                {
+                    factory.Destroy(element);
+                }
+            }
+            finally
+            {
+                locker.ExitWriteLock();
+            }
         }
-
-		public event EventHandler<T> ObjectCreated;
-
-		public event EventHandler<T> ObjectObtained;
-
-		public event EventHandler<T> ObjectRetracted;
-
-		public event EventHandler<T> ObjectDestroying;
-
-		protected T NewObject()
-		{
-			return factory.Create();
-		}
     }
 }
