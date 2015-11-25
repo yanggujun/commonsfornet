@@ -97,7 +97,6 @@ namespace Commons.Pool
                     {
                         obj = factory.Create();
                         createdCount++;
-                        idleObjects.Prepend(obj);
                         acquired = true;
                     }
                     else

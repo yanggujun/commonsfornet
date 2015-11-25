@@ -61,6 +61,7 @@
     <Compile Include="Collections\SortedMapTest.cs" />
     <Compile Include="Collections\TestExtenstions.cs" />
     <Compile Include="Order.cs" />
+    <Compile Include="Pool\ObjectPoolTest.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="Utils\UtilsTest.cs" />
   </ItemGroup>
@@ -75,6 +76,10 @@
     <ProjectReference Include="..\Commons.Json\Commons.Json.csproj">
       <Project>{1eeb9b63-c564-4c51-a88b-5d253bc68c99}</Project>
       <Name>Commons.Json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Commons.Pool\Commons.Pool.csproj">
+      <Project>{1c0b57bf-8039-49bd-a641-6ff9e6860530}</Project>
+      <Name>Commons.Pool</Name>
     </ProjectReference>
     <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj">
       <Project>{ea220245-82ac-455e-b108-70d48f43ac2b}</Project>
