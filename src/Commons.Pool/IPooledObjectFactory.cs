@@ -29,7 +29,8 @@ namespace Commons.Pool
 		T Create();
 
 		/// <summary>
-		/// Destroys the object in the pool.
+		/// Destroys the object in the pool. When overriding this method, exceptions shall be caught, as it will break the 
+        /// process and remaining pooled object cannot be destroyed.
 		/// </summary>
 		/// <param name="obj"></param>
 		void Destroy(T obj);

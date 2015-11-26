@@ -15,7 +15,6 @@
 // limitations under the License.
 
 using System;
-using Commons.Utils;
 
 namespace Commons.Pool
 {

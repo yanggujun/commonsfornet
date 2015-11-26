@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using Commons.Collections.Queue;
 
 namespace Commons.Pool
 {
@@ -29,7 +28,7 @@ namespace Commons.Pool
     public class GenericObjectPool<T> : IObjectPool<T>
 	{
 		private IPooledObjectFactory<T> factory;
-        private LinkedDeque<T> idleObjects;
+        private ConcurrentQueue<T> idleObjects;
 		private ReaderWriterLockSlim locker;
 		private int initialSize;
 		private int maxSize;
@@ -64,16 +63,16 @@ namespace Commons.Pool
             this.createdCount = 0;
             objectReturned = new AutoResetEvent(false);
 			locker = new ReaderWriterLockSlim();
-            idleObjects = new LinkedDeque<T>();
+            idleObjects = new ConcurrentQueue<T>();
 			for (var i = 0; i < initialSize; i++)
 			{
-                idleObjects.Prepend(factory.Create());
+                idleObjects.Enqueue(factory.Create());
                 createdCount++;
 			}
 		}
 
 		/// <summary>
-		/// Acquires an object from the pool. 
+		/// Acquires an object from the pool. The method is recommended to use when the objects are sufficient.
 		/// </summary>
 		/// <returns></returns>
 		public T Acquire()
@@ -88,36 +87,51 @@ namespace Commons.Pool
         {
 	        var acquired = false;
             obj = default(T);
-			locker.EnterWriteLock();
-	        try
-	        {
-                if (idleObjects.IsEmpty)
+            var localTimeout = timeout < 0 ? -1 : timeout;
+            if (idleObjects.TryDequeue(out obj))
+            {
+                acquired = true;
+            }
+            else
+            {
+                locker.EnterUpgradeableReadLock();
+                try
                 {
                     if (createdCount < maxSize)
                     {
-                        obj = factory.Create();
-                        createdCount++;
+                        locker.EnterWriteLock();
+                        try
+                        {
+                            obj = factory.Create();
+                            createdCount++;
+                        }
+                        finally
+                        {
+                            locker.ExitWriteLock();
+                        }
                         acquired = true;
                     }
                     else
                     {
-                        if (objectReturned.WaitOne(timeout))
+                        if (objectReturned.WaitOne(localTimeout))
                         {
-                            obj = idleObjects.Pop();
-                            acquired = true;
+                            locker.EnterWriteLock();
+                            try
+                            {
+                                acquired = idleObjects.TryDequeue(out obj);
+                            }
+                            finally
+                            {
+                                locker.ExitWriteLock();
+                            }
                         }
                     }
                 }
-                else
+                finally
                 {
-                    obj = idleObjects.Pop();
-                    acquired = true;
+                    locker.ExitUpgradeableReadLock();
                 }
-	        }
-	        finally
-	        {
-				locker.ExitWriteLock();
-	        }
+            }
 
 	        return acquired;
         }
@@ -127,7 +141,7 @@ namespace Commons.Pool
             locker.EnterWriteLock();
             try
             {
-                idleObjects.Prepend(obj);
+                idleObjects.Enqueue(obj);
                 objectReturned.Set();
             }
             finally
