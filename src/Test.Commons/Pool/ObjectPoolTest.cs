@@ -15,6 +15,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,28 +26,31 @@ using Xunit;
 namespace Test.Commons.Pool
 {
 	public class ObjectPoolTest
-	{
+	{	
+		private const string connString = @"Data Source=(local)\Test;Initial Catalog=Test; UID=; PWD="; 
+		private static object locker = new object();
+
 		[Fact]
-		public void TestNormalAcquire()
+		public void TestNormalAcquirePoolNotFull()
 		{
-			var conn = @"Data Source=(local);Initial Catalog=Test; UID=admin; PWD=111111";
-			var objectPool = new GenericObjectPool<SqlConnection>(0, 5, new DefaultDbConnectionFactory<SqlConnection>(conn));
-			var tasks = new Task[6];
-			for (var i = 0; i < 6; i++)
+			var objectPool = new GenericObjectPool<SqlConnection>(0, 5, new DefaultDbConnectionFactory<SqlConnection>(connString));
+			var tasks = new Task[3];
+			var connections = new List<SqlConnection>();
+			for (var i = 0; i < 3; i++)
 			{
 				 tasks[i] = new Task(() =>
 				 {
 					 var connection = objectPool.Acquire();
+					 Assert.NotNull(connection);
+					 lock (locker)
+					 {
+						connections.Add(connection);
+					 }
 					 using (var command = connection.CreateCommand())
 					 {
-						 command.CommandText = @"select top 1 * from [Test]";
-						 using (var reader = command.ExecuteReader())
-						 {
-							 if (reader.Read())
-							 {
-								 Console.WriteLine(reader[0].ToString());
-							 }
-						 }
+						 command.CommandText = @"select count (*) from [Test]";
+						 var count = (int) command.ExecuteScalar();
+						 Assert.True(count > 0);
 					 }
 					 Thread.Sleep(100);
 				 });
@@ -55,6 +60,28 @@ namespace Test.Commons.Pool
 				task.Start();
 			}
 			Task.WaitAll(tasks);
+			Assert.Equal(3, connections.Count);
+			Assert.Equal(0, objectPool.IdleCount);
+			Assert.Equal(3, objectPool.ActiveCount);
+			Assert.Equal(0, objectPool.InitialSize);
+			Assert.Equal(5, objectPool.Capacity);
+
+			var returnTasks = new Task[connections.Count];
+			for (var i = 0; i < connections.Count; i++)
+			{
+				var conn = connections[i];
+				returnTasks[i] = new Task(() => objectPool.Return(conn)); 
+			}
+
+			foreach (var task in returnTasks)
+			{
+				task.Start();
+			}
+			Task.WaitAll(returnTasks);
+			Assert.Equal(3, objectPool.IdleCount);
+			Assert.Equal(0, objectPool.ActiveCount);
+			Assert.Equal(0, objectPool.InitialSize);
+			Assert.Equal(5, objectPool.Capacity);
 		}
 	}
 }

@@ -94,43 +94,27 @@ namespace Commons.Pool
             }
             else
             {
-                locker.EnterUpgradeableReadLock();
-                try
-                {
-                    if (createdCount < maxSize)
-                    {
-                        locker.EnterWriteLock();
-                        try
-                        {
-                            obj = factory.Create();
-                            createdCount++;
-                        }
-                        finally
-                        {
-                            locker.ExitWriteLock();
-                        }
-                        acquired = true;
-                    }
-                    else
-                    {
-                        if (objectReturned.WaitOne(localTimeout))
-                        {
-                            locker.EnterWriteLock();
-                            try
-                            {
-                                acquired = idleObjects.TryDequeue(out obj);
-                            }
-                            finally
-                            {
-                                locker.ExitWriteLock();
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    locker.ExitUpgradeableReadLock();
-                }
+				if (createdCount < maxSize)
+				{
+					locker.EnterWriteLock();
+					try
+					{
+						obj = factory.Create();
+						createdCount++;
+					}
+					finally
+					{
+						locker.ExitWriteLock();
+					}
+					acquired = true;
+				}
+				else
+				{
+					if (objectReturned.WaitOne(localTimeout))
+					{ 
+						acquired = idleObjects.TryDequeue(out obj);
+					}
+				}
             }
 
 	        return acquired;
@@ -138,16 +122,8 @@ namespace Commons.Pool
 
         public void Return(T obj)
         {
-            locker.EnterWriteLock();
-            try
-            {
-                idleObjects.Enqueue(obj);
-                objectReturned.Set();
-            }
-            finally
-            {
-                locker.ExitWriteLock();
-            }
+			idleObjects.Enqueue(obj);
+			objectReturned.Set();
         }
 
         public int IdleCount
@@ -162,7 +138,7 @@ namespace Commons.Pool
                 }
                 finally
                 {
-                    locker.ExitWriteLock();
+                    locker.ExitReadLock();
                 }
                 return count;
             }
@@ -172,9 +148,19 @@ namespace Commons.Pool
         {
             get
             {
-                var created = createdCount;
-                var idleCount = IdleCount;
-                return created - idleCount;
+	            var created = 0;
+	            var idleCount = 0;
+	            locker.EnterReadLock();
+	            try
+	            {
+		            created = createdCount;
+		            idleCount = idleObjects.Count;
+	            }
+	            finally
+	            {
+					locker.ExitReadLock();
+	            }
+	            return created - idleCount;
             }
         }
 
