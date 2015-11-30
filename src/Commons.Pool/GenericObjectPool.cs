@@ -86,7 +86,6 @@ namespace Commons.Pool
         public bool TryAcquire(int timeout, out T obj)
         {
 	        var acquired = false;
-            obj = default(T);
             var localTimeout = timeout < 0 ? -1 : timeout;
             if (idleObjects.TryDequeue(out obj))
             {
@@ -94,27 +93,35 @@ namespace Commons.Pool
             }
             else
             {
-				if (createdCount < maxSize)
-				{
-					locker.EnterWriteLock();
-					try
-					{
-						obj = factory.Create();
-						createdCount++;
-					}
-					finally
-					{
-						locker.ExitWriteLock();
-					}
-					acquired = true;
-				}
-				else
-				{
-					if (objectReturned.WaitOne(localTimeout))
-					{ 
-						acquired = idleObjects.TryDequeue(out obj);
-					}
-				}
+				locker.EnterUpgradeableReadLock();
+	            try
+	            {
+		            if (createdCount < maxSize)
+		            {
+			            locker.EnterWriteLock();
+			            try
+			            {
+				            obj = factory.Create();
+				            createdCount++;
+			            }
+			            finally
+			            {
+				            locker.ExitWriteLock();
+			            }
+			            acquired = true;
+		            }
+		            else
+		            {
+			            if (objectReturned.WaitOne(localTimeout))
+			            {
+				            acquired = idleObjects.TryDequeue(out obj);
+			            }
+		            }
+	            }
+	            finally
+	            {
+					locker.ExitUpgradeableReadLock();
+	            }
             }
 
 	        return acquired;
