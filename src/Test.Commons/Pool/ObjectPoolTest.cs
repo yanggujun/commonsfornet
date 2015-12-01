@@ -16,6 +16,7 @@
 
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Commons.Pool;
@@ -27,39 +28,24 @@ namespace Test.Commons.Pool
 	public class ObjectPoolTest
 	{	
 		private static object locker = new object();
+        private Mock<IPooledObjectFactory<IDbConnection>> mockFactory;
+        private Mock<IDbConnection> mockConnection;
+        private Mock<IDbCommand> mockCommand;
 
 		[Fact]
 		public void TestNormalAcquirePoolNotFull()
 		{
-			var mockFactory = new Mock<IPooledObjectFactory<IDbConnection>>();
-			var mockConnection = new Mock<IDbConnection>();
-			var mockCommand = new Mock<IDbCommand>();
-			mockFactory.Setup(x => x.Create()).Returns(mockConnection.Object);
-			mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
-			mockCommand.Setup(x => x.ExecuteScalar()).Callback(() => Thread.Sleep(100));
+            Setup();
 			var objectPool = new GenericObjectPool<IDbConnection>(0, 100, mockFactory.Object);
 			var tasks = new Task[50];
 			var connections = new List<IDbConnection>();
 			for (var i = 0; i < 50; i++)
 			{
-				 tasks[i] = new Task(() =>
-				 {
-					 var connection = objectPool.Acquire();
-					 Assert.NotNull(connection);
-					 lock (locker)
-					 {
-						connections.Add(connection);
-					 }
-					 using (var command = connection.CreateCommand())
-					 {
-						 command.ExecuteScalar();
-					 }
-				 });
+				 tasks[i] = new Task(() => Do(connections, objectPool));
 			}
-			foreach (var task in tasks)
-			{
-				task.Start();
-			}
+
+            tasks.ToList().ForEach(x => x.Start());
+
 			Task.WaitAll(tasks);
 			Assert.Equal(50, connections.Count);
 			Assert.Equal(0, objectPool.IdleCount);
@@ -74,15 +60,91 @@ namespace Test.Commons.Pool
 				returnTasks[i] = new Task(() => objectPool.Return(conn)); 
 			}
 
-			foreach (var task in returnTasks)
-			{
-				task.Start();
-			}
+            returnTasks.ToList().ForEach(x => x.Start());
+
 			Task.WaitAll(returnTasks);
 			Assert.Equal(50, objectPool.IdleCount);
 			Assert.Equal(0, objectPool.ActiveCount);
 			Assert.Equal(0, objectPool.InitialSize);
 			Assert.Equal(100, objectPool.Capacity);
 		}
+
+        [Fact]
+        public void TestAcquireAgain()
+        {
+            Setup();
+            var objectPool = new GenericObjectPool<IDbConnection>(0, 100, mockFactory.Object);
+
+            var tasks1 = new Task[30];
+            var connections = new List<IDbConnection>();
+            for (var i = 0; i < 30; i++)
+            {
+                tasks1[i] = new Task(() => Do(connections, objectPool));
+            }
+            tasks1.ToList().ForEach(x => x.Start());
+
+            Task.WaitAll(tasks1);
+
+            Assert.Equal(0, objectPool.IdleCount);
+            Assert.Equal(30, objectPool.ActiveCount);
+            Assert.Equal(0, objectPool.InitialSize);
+            Assert.Equal(100, objectPool.Capacity);
+
+            var tasks2 = new Task[30];
+            for (var i = 0; i < 30; i++)
+            {
+                tasks2[i] = new Task(() => Do(connections, objectPool));
+            }
+            tasks2.ToList().ForEach(x => x.Start());
+            Task.WaitAll(tasks2);
+
+            Assert.Equal(0, objectPool.IdleCount);
+            Assert.Equal(60, objectPool.ActiveCount);
+
+            var returnTasks = new Task[40];
+
+            for (var i = 0; i < 40; i++)
+            {
+                var conn = connections[i];
+                returnTasks[i] = new Task(() => objectPool.Return(conn));
+            }
+
+            returnTasks.ToList().ForEach(x => x.Start());
+            Task.WaitAll(returnTasks);
+
+            Assert.Equal(40, objectPool.IdleCount);
+            Assert.Equal(20, objectPool.ActiveCount);
+
+            for (var i = 0; i < 20; i++)
+            {
+                objectPool.Return(connections[i + 40]);
+            }
+            Assert.Equal(60, objectPool.IdleCount);
+            Assert.Equal(0, objectPool.ActiveCount);
+        }
+
+        private void Do(IList<IDbConnection> connections, IObjectPool<IDbConnection> objectPool)
+        {
+            var connection = objectPool.Acquire();
+            Assert.NotNull(connection);
+            lock (locker)
+            {
+                connections.Add(connection);
+            }
+            using (var command = connection.CreateCommand())
+            {
+                command.ExecuteScalar();
+            }
+        }
+
+        private void Setup()
+        {
+            mockFactory = new Mock<IPooledObjectFactory<IDbConnection>>();
+            mockConnection = new Mock<IDbConnection>();
+            mockCommand = new Mock<IDbCommand>();
+			mockFactory.Setup(x => x.Create()).Returns(mockConnection.Object);
+			mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+			mockCommand.Setup(x => x.ExecuteScalar()).Callback(() => Thread.Sleep(100));
+        }
 	}
 }
