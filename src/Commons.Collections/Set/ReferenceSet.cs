@@ -25,7 +25,7 @@ namespace Commons.Collections.Set
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [CLSCompliant(true)]
-    public class ReferenceSet<T> : AbstractHashedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T>
+    public class ReferenceSet<T> : AbstractHashedSet<T>, IStrictSet<T>, IReadOnlyStrictSet<T> where T : class
     {
         private readonly ReferenceMap<T, object> map;
 

@@ -23,7 +23,7 @@ namespace Commons.Pool
     /// </summary>
     /// <typeparam name="T">The type of the pooled object.</typeparam>
     [CLSCompliant(true)]
-    public interface IObjectPool<T> : IDisposable
+    public interface IObjectPool<T> : IDisposable where T : class
     {
         /// <summary>
         /// Acquires an object from the pool. 

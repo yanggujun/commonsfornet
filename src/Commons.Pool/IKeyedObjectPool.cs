@@ -26,7 +26,7 @@ namespace Commons.Pool
     /// Object pool where the object can be retrieved by its key.
     /// </summary>
     /// <typeparam name="T">The object type.</typeparam>
-    internal interface IKeyedObjectPool<K, T> : IObjectPool<T>
+    internal interface IKeyedObjectPool<K, T> : IObjectPool<T> where T : class
     {
         /// <summary>
         /// Acquires an object from the pool by the key.

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using Commons.Collections.Set;
 
 namespace Commons.Pool
 {
@@ -25,15 +26,16 @@ namespace Commons.Pool
 	/// </summary>
 	/// <typeparam name="T">The type of the pooled object.</typeparam>
 	[CLSCompliant(true)]
-    public class GenericObjectPool<T> : IObjectPool<T>
+    public class GenericObjectPool<T> : IObjectPool<T> where T : class
 	{
 		private IPooledObjectFactory<T> factory;
-        private ConcurrentQueue<T> idleObjects;
+        private ConcurrentQueue<T> objQueue;
 		private ReaderWriterLockSlim locker;
 		private int initialSize;
 		private int maxSize;
         private int createdCount;
         private AutoResetEvent objectReturned;
+		private ReferenceSet<T> idleObjects; 
 
 		/// <summary>
 		/// Constructor with the intialSize and maxSize. <see cref="ArgumentException"/> is thrown when <param name="initialSize"/> is larger than <param name="maxSize"/>
@@ -60,13 +62,14 @@ namespace Commons.Pool
 			this.initialSize = initialSize;
 			this.maxSize = maxSize;
 			this.factory = factory;
-            this.createdCount = 0;
+            createdCount = 0;
             objectReturned = new AutoResetEvent(false);
 			locker = new ReaderWriterLockSlim();
-            idleObjects = new ConcurrentQueue<T>();
+            objQueue = new ConcurrentQueue<T>();
+			idleObjects = new ReferenceSet<T>();
 			for (var i = 0; i < initialSize; i++)
 			{
-                idleObjects.Enqueue(factory.Create());
+                objQueue.Enqueue(factory.Create());
                 createdCount++;
 			}
 		}
@@ -87,9 +90,18 @@ namespace Commons.Pool
         {
 	        var acquired = false;
             var localTimeout = timeout < 0 ? -1 : timeout;
-            if (idleObjects.TryDequeue(out obj))
+            if (objQueue.TryDequeue(out obj))
             {
                 acquired = true;
+				locker.EnterWriteLock();
+				try
+				{
+					idleObjects.Remove(obj);
+				}
+				finally
+				{
+					locker.ExitWriteLock();
+				}
             }
             else
             {
@@ -114,7 +126,19 @@ namespace Commons.Pool
 		            {
 			            if (objectReturned.WaitOne(localTimeout))
 			            {
-				            acquired = idleObjects.TryDequeue(out obj);
+							locker.EnterWriteLock();
+				            try
+				            {
+					            acquired = objQueue.TryDequeue(out obj);
+					            if (acquired)
+					            {
+						            idleObjects.Remove(obj);
+					            }
+				            }
+				            finally
+				            {
+					            locker.ExitWriteLock();
+				            }
 			            }
 		            }
 	            }
@@ -129,8 +153,29 @@ namespace Commons.Pool
 
         public void Return(T obj)
         {
-			idleObjects.Enqueue(obj);
-			objectReturned.Set();
+			locker.EnterUpgradeableReadLock();
+	        try
+	        {
+		        if (idleObjects.Contains(obj))
+		        {
+			        throw new InvalidOperationException("The object is already returned to the pool.");
+		        }
+		        locker.EnterWriteLock();
+		        try
+		        {
+			        objQueue.Enqueue(obj);
+			        idleObjects.Add(obj);
+		        }
+		        finally
+		        {
+			        locker.ExitWriteLock();
+		        }
+	        }
+	        finally
+	        {
+				locker.ExitUpgradeableReadLock();
+	        }
+	        objectReturned.Set();
         }
 
         public int IdleCount
@@ -141,7 +186,7 @@ namespace Commons.Pool
                 locker.EnterReadLock();
                 try
                 {
-                    count = idleObjects.Count;
+                    count = objQueue.Count;
                 }
                 finally
                 {
@@ -161,7 +206,7 @@ namespace Commons.Pool
 	            try
 	            {
 		            created = createdCount;
-		            idleCount = idleObjects.Count;
+		            idleCount = objQueue.Count;
 	            }
 	            finally
 	            {
@@ -189,7 +234,7 @@ namespace Commons.Pool
             locker.EnterWriteLock();
             try
             {
-                foreach(var element in idleObjects)
+                foreach(var element in objQueue)
                 {
                     factory.Destroy(element);
                 }

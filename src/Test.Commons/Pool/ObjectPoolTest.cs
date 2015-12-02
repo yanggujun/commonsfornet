@@ -30,7 +30,6 @@ namespace Test.Commons.Pool
 		private static object locker = new object();
         private Mock<IPooledObjectFactory<IDbConnection>> mockFactory;
         private Mock<IDbConnection> mockConnection;
-        private Mock<IDbCommand> mockCommand;
 
 		[Fact]
 		public void TestNormalAcquirePoolNotFull()
@@ -67,6 +66,7 @@ namespace Test.Commons.Pool
 			Assert.Equal(0, objectPool.ActiveCount);
 			Assert.Equal(0, objectPool.InitialSize);
 			Assert.Equal(100, objectPool.Capacity);
+			objectPool.Dispose();
 		}
 
         [Fact]
@@ -101,16 +101,13 @@ namespace Test.Commons.Pool
             Assert.Equal(0, objectPool.IdleCount);
             Assert.Equal(60, objectPool.ActiveCount);
 
-            var returnTasks = new Task[40];
 
             for (var i = 0; i < 40; i++)
             {
                 var conn = connections[i];
-                returnTasks[i] = new Task(() => objectPool.Return(conn));
+				objectPool.Return(conn);
             }
 
-            returnTasks.ToList().ForEach(x => x.Start());
-            Task.WaitAll(returnTasks);
 
             Assert.Equal(40, objectPool.IdleCount);
             Assert.Equal(20, objectPool.ActiveCount);
@@ -121,6 +118,7 @@ namespace Test.Commons.Pool
             }
             Assert.Equal(60, objectPool.IdleCount);
             Assert.Equal(0, objectPool.ActiveCount);
+			objectPool.Dispose();
         }
 
         private void Do(IList<IDbConnection> connections, IObjectPool<IDbConnection> objectPool)
@@ -131,20 +129,12 @@ namespace Test.Commons.Pool
             {
                 connections.Add(connection);
             }
-            using (var command = connection.CreateCommand())
-            {
-                command.ExecuteScalar();
-            }
         }
 
         private void Setup()
         {
             mockFactory = new Mock<IPooledObjectFactory<IDbConnection>>();
-            mockConnection = new Mock<IDbConnection>();
-            mockCommand = new Mock<IDbCommand>();
-			mockFactory.Setup(x => x.Create()).Returns(mockConnection.Object);
-			mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
-			mockCommand.Setup(x => x.ExecuteScalar()).Callback(() => Thread.Sleep(100));
+            var mockCommand = new Mock<IDbCommand>();
         }
 	}
 }
