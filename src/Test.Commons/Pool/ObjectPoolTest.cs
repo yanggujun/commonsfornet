@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -164,40 +165,52 @@ namespace Test.Commons.Pool
         public void TestAcquireExceedsCapacity()
         {
             Setup();
-            var connectionPool = new GenericObjectPool<IDbConnection>(0, 100, mockObjFactory);
-            var connectTasks = new Task[200];
-            var results = new List<bool>();
-            for (var i = 0; i < 200; i++)
-            {
-                connectTasks[i] = new Task(() =>
-                {
-                    try
-                    {
-                        IDbConnection connection = null;
-                        while (!connectionPool.TryAcquire(1000, out connection))
-                        {
-                        }
+	        for (var j = 0; j < 10; j++)
+	        {
+		        var connectionPool = new GenericObjectPool<IDbConnection>(0, 10, mockObjFactory);
+		        var connectTasks = new Task[200];
+		        var results = new List<bool>();
+		        for (var i = 0; i < 200; i++)
+		        {
+			        connectTasks[i] = new Task(() =>
+			        {
+				        try
+				        {
+					        var spin = new SpinWait();
+					        IDbConnection connection = null;
+					        while (!connectionPool.TryAcquire(1000, out connection))
+					        {
+						        spin.SpinOnce();
+					        }
 
-                        connection.Open();
-                        connectionPool.Return(connection);
-                        results.Add(true);
-                    }
-                    catch 
-                    {
-                        results.Add(false);
-                    }
-                });
-            }
-            Parallel.ForEach(connectTasks, x => x.Start());
-            Task.WaitAll(connectTasks);
+					        connection.Open();
+					        connectionPool.Return(connection);
+					        lock (locker)
+					        {
+						        results.Add(true);
+					        }
+				        }
+				        catch
+				        {
+					        lock (locker)
+					        {
+						        results.Add(false);
+					        }
+				        }
+			        });
+		        }
+		        connectTasks.ToList().ForEach(x => x.Start());
+		        Task.WaitAll(connectTasks);
 
-            Assert.Equal(200, results.Count);
-            foreach (var r in results)
-            {
-                Assert.True(r);
-            }
-            Assert.Equal(0, connectionPool.ActiveCount);
-            Assert.Equal(100, connectionPool.Capacity);
+		        Assert.Equal(200, results.Count);
+		        foreach (var r in results)
+		        {
+			        Assert.True(r);
+		        }
+		        Assert.True(connectionPool.IdleCount <= 10);
+		        Assert.Equal(0, connectionPool.ActiveCount);
+		        Assert.Equal(10, connectionPool.Capacity);
+	        }
         }
 
 
@@ -223,7 +236,7 @@ namespace Test.Commons.Pool
         public IDbConnection Create()
         {
             var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.Open()).Callback(() => Thread.Sleep(10));
+            mockConnection.Setup(x => x.Open()).Callback(() => Thread.Sleep(50));
             return mockConnection.Object;
         }
 

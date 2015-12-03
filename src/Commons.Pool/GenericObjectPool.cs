@@ -62,7 +62,7 @@ namespace Commons.Pool
 			this.initialSize = initialSize;
 			this.maxSize = maxSize;
 			this.factory = factory;
-            createdCount = 0;
+			createdCount = 0;
             objectReturned = new AutoResetEvent(false);
 			locker = new ReaderWriterLockSlim();
             objQueue = new ConcurrentQueue<T>();
@@ -90,63 +90,55 @@ namespace Commons.Pool
         {
 	        var acquired = false;
             var localTimeout = timeout < 0 ? -1 : timeout;
-            if (objQueue.TryDequeue(out obj))
-            {
-                acquired = true;
-				locker.EnterWriteLock();
-				try
-				{
-					idleObjects.Remove(obj);
-				}
-				finally
-				{
-					locker.ExitWriteLock();
-				}
-            }
-            else
-            {
-				locker.EnterUpgradeableReadLock();
-	            try
-	            {
-		            if (createdCount < maxSize)
-		            {
-			            locker.EnterWriteLock();
-			            try
-			            {
-				            obj = factory.Create();
-				            createdCount++;
-			            }
-			            finally
-			            {
-				            locker.ExitWriteLock();
-			            }
-			            acquired = true;
-		            }
-		            else
-		            {
-			            if (objectReturned.WaitOne(localTimeout))
-			            {
-							locker.EnterWriteLock();
-				            try
-				            {
-					            acquired = objQueue.TryDequeue(out obj);
-					            if (acquired)
-					            {
-						            idleObjects.Remove(obj);
-					            }
-				            }
-				            finally
-				            {
-					            locker.ExitWriteLock();
-				            }
-			            }
-		            }
-	            }
-	            finally
-	            {
-					locker.ExitUpgradeableReadLock();
-	            }
-            }
+	        if (objQueue.TryDequeue(out obj))
+	        {
+		        acquired = true;
+		        locker.EnterWriteLock();
+		        try
+		        {
+			        idleObjects.Remove(obj);
+		        }
+		        finally
+		        {
+			        locker.ExitWriteLock();
+		        }
+	        }
+	        else
+	        {
+		        locker.EnterWriteLock();
+		        try
+		        {
+			        if (createdCount < maxSize)
+			        {
+					    obj = factory.Create();
+					    createdCount++;
+				        acquired = true;
+			        }
+		        }
+		        finally
+		        {
+			        locker.ExitWriteLock();
+		        }
+		        if (!acquired)
+		        {
+			        if (objectReturned.WaitOne(localTimeout))
+			        {
+				        locker.EnterWriteLock();
+				        try
+				        {
+					        acquired = objQueue.TryDequeue(out obj);
+					        if (acquired)
+					        {
+						        idleObjects.Remove(obj);
+					        }
+				        }
+				        finally
+				        {
+					        locker.ExitWriteLock();
+				        }
+			        }
+		        }
+			}
 
 	        return acquired;
         }
@@ -238,6 +230,7 @@ namespace Commons.Pool
                 {
                     factory.Destroy(element);
                 }
+				objectReturned.Dispose();
             }
             finally
             {
