@@ -53,7 +53,7 @@ namespace Commons.Pool
 			}
 			if (maxSize < initialSize)
 			{
-				throw new ArgumentException("Mas size is smaller than initialSize.");
+				throw new ArgumentException("Max size is smaller than initialSize.");
 			}
 			if (factory == null)
 			{
@@ -75,17 +75,35 @@ namespace Commons.Pool
 		}
 
 		/// <summary>
-		/// Acquires an object from the pool. The method is recommended to use when the objects are sufficient.
+		/// Acquires an object from the pool. The method is blocked when there is no object available 
+		/// in the pool. When there is no object, it waits until any object is returned to the pool.
+		/// The method is recommended to use when the objects are sufficient.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The pooled object</returns>
 		public T Acquire()
 		{
 			T obj;
-            TryAcquire(-1, out obj);
+			var spin = new SpinWait();
+            while (!TryAcquire(-1, out obj))
+			{
+				spin.SpinOnce();
+			}
 
 			return obj;
 		}
 
+		/// <summary>
+		/// Tries to acquire an object in the pool. The method waits until <param name="timeout"></param> expires.
+		/// When no object is available when waiting times out, it returns false.
+		/// When <param name="timeout"></param> is set to 0, it only tests whether there is any
+		/// object in the pool and return immediately. If <param name="timeout"></param> is set to 
+		/// a negative number, it waits infinitely. But it does not guarantee that an object is 
+		/// acquired. The return result still can be false. If you want to wait infinitely and expect 
+		/// a object is returned anyway, use <see cref="Acquire"/> method.
+		/// </summary>
+		/// <param name="timeout">The time to wait for an object available in the pool.</param>
+		/// <param name="obj">The object acquired.</param>
+		/// <returns>True if an object is acquired, otherwise false.</returns>
         public bool TryAcquire(int timeout, out T obj)
         {
 	        var acquired = false;
@@ -143,6 +161,10 @@ namespace Commons.Pool
 	        return acquired;
         }
 
+		/// <summary>
+		/// Returns the object to the pool. If the object is already returned to the pool, <exception cref="InvalidOperationException"></exception> is thrown.
+		/// </summary>
+		/// <param name="obj">The object to return.</param>
         public void Return(T obj)
         {
 			locker.EnterUpgradeableReadLock();
@@ -170,6 +192,9 @@ namespace Commons.Pool
 	        objectReturned.Set();
         }
 
+		/// <summary>
+		/// The number of objects available in the pool.
+		/// </summary>
         public int IdleCount
         {
             get
@@ -188,6 +213,10 @@ namespace Commons.Pool
             }
         }
 
+		/// <summary>
+		/// The number of objects which are actively used by pool consumers. 
+		/// Those objects are already acquired.
+		/// </summary>
         public int ActiveCount
         {
             get
@@ -208,6 +237,9 @@ namespace Commons.Pool
             }
         }
 
+		/// <summary>
+		/// The size of the pool.
+		/// </summary>
         public int Capacity
         {
             get
@@ -216,11 +248,17 @@ namespace Commons.Pool
             }
         }
 
+		/// <summary>
+		/// The initial size of the pool.
+		/// </summary>
         public int InitialSize
         {
             get { return initialSize; }
         }
 
+		/// <summary>
+		/// Dispose the pool.
+		/// </summary>
         public void Dispose()
         {
             locker.EnterWriteLock();

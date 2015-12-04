@@ -28,7 +28,7 @@ namespace Commons.Pool
         /// <summary>
         /// Acquires an object from the pool. 
         /// If there is any object available in the pool, one of the idle objects is returned
-        /// from the pool. And the idle object is marked as allocated.
+        /// from the pool. 
         /// If there is not any idle object in the pool, and the pool size is less than the max value,
         /// the object pool attempts to create an object and returns the object if successful. Pool size is increased.
         /// If there is not any idle object in the pool and the pool size has reached the max value, it waits infinitively.

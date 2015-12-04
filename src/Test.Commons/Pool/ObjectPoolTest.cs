@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Commons.Collections.Queue;
@@ -29,7 +28,7 @@ namespace Test.Commons.Pool
 {
 	public class ObjectPoolTest
 	{	
-		private static object locker = new object();
+		private static readonly object locker = new object();
         private MockConnectionFactory mockObjFactory;
         private LinkedDeque<IDbConnection> mockConnections;
 
@@ -128,7 +127,7 @@ namespace Test.Commons.Pool
         public void TestAcquireAndReturnAtTheSameTime()
         {
             Setup();
-            for (var j = 0; j < 100; j++)
+            for (var j = 0; j < 10; j++)
             {
                 var objectPool = new GenericObjectPool<IDbConnection>(0, 100, mockObjFactory);
                 var tasks1 = new Task[60];
@@ -254,6 +253,7 @@ namespace Test.Commons.Pool
                     {
                         connections.Add(connection);
                     }
+					connection.Open();
                 });
             }
             Parallel.ForEach(tasks, x => x.Start());
@@ -299,16 +299,21 @@ namespace Test.Commons.Pool
             {
                 connectTasks[i] = new Task(() =>
                 {
-                    IDbConnection conn = null;
-                    var result = pool.TryAcquire(50, out conn);
-                    results.Add(result);
-                    if (result)
+	                IDbConnection conn = null;
+	                var result = pool.TryAcquire(50, out conn);
+	                lock (locker)
+	                {
+						results.Add(result);
+	                }
+	                if (result)
                     {
                         Assert.NotNull(conn);
                         lock (locker)
                         {
                             connections.Add(conn);
                         }
+						conn.Open();
+
                     }
                 });
             }
@@ -348,6 +353,7 @@ namespace Test.Commons.Pool
                             {
                                 connections.Add(conn);
                             }
+							conn.Open();
                         }
                     });
             }
@@ -367,7 +373,167 @@ namespace Test.Commons.Pool
             Assert.Equal(20, acquiredCount);
         }
 
-        private void OperateOnPool(IObjectPool<IDbConnection> pool)
+		[Fact]
+		public void TestInitialSizeLessThanZero()
+		{
+			Setup();
+			Assert.Throws(typeof(ArgumentException), () => new GenericObjectPool<IDbConnection>(-1, 10, new MockConnectionFactory()));
+		}
+
+		[Fact]
+		public void TestMaxSizeLessThanZero()
+		{
+			Setup();
+			Assert.Throws(typeof (ArgumentException),
+				() => new GenericObjectPool<IDbConnection>(0, -100, new MockConnectionFactory()));
+		}
+
+		[Fact]
+		public void TestMaxSizeLessThanInitialSize()
+		{
+			Setup();
+			Assert.Throws((typeof (ArgumentException)),
+				() => new GenericObjectPool<IDbConnection>(10, 1, new MockConnectionFactory()));
+		}
+
+		[Fact]
+		public void TestReturnSameObjectMoreThanOnce()
+		{
+			Setup();
+			var pool = new GenericObjectPool<IDbConnection>(10, 20, new MockConnectionFactory());
+			var connectTasks = new Task[20];
+			var connections = new List<IDbConnection>();
+			for (var i = 0; i < 20; i++)
+			{
+				connectTasks[i] = new Task(() =>
+				{
+					var connection = pool.Acquire();
+					lock (locker)
+					{
+						connections.Add(connection);
+					}
+					connection.Open();
+				});
+			}
+			Parallel.ForEach(connectTasks, x => x.Start());
+			Task.WaitAll(connectTasks);
+
+			var returnTasks = new Task[22];
+			for (var i = 0; i < 19; i++)
+			{
+				var connection = connections[i];
+				returnTasks[i] = new Task(() =>
+				{
+					pool.Return((connection));
+				});
+			}
+
+			var last = connections[19];
+			var results = new List<bool>();
+			for (var i = 0; i < 3; i++)
+			{
+				returnTasks[i + 19] = new Task(() =>
+				{
+					try
+					{
+						pool.Return(last);
+						lock (locker)
+						{
+							results.Add(true);
+						}
+					}
+					catch (InvalidOperationException)
+					{
+						lock (locker)
+						{
+							results.Add(false);
+						}
+					}
+				});
+			}
+			Parallel.ForEach(returnTasks, x => x.Start());
+			Task.WaitAll(returnTasks);
+			var returnedCount = 0;
+			var failureCount = 0;
+			foreach (var r in results)
+			{
+				if (r)
+				{
+					returnedCount++;
+				}
+				else
+				{
+					failureCount++;
+				}
+			}
+
+			Assert.Equal(1, returnedCount);
+			Assert.Equal(2, failureCount);
+		}
+
+		[Fact]
+		public void TestAcquireAlways()
+		{
+			Setup();
+			var pool = new GenericObjectPool<IDbConnection>(0, 10, new MockConnectionFactory());
+			var connectTasks = new Task[10];
+			var connections = new List<IDbConnection>();
+			for (var i = 0; i < connectTasks.Length; i++)
+			{
+				connectTasks[i] = new Task(() =>
+				{
+					var connection = pool.Acquire();
+					lock (locker)
+					{
+						connections.Add(connection);
+					}
+					connection.Open();
+				});
+			}
+			Parallel.ForEach(connectTasks, x => x.Start());
+			Task.WaitAll(connectTasks);
+
+			var newConnectTasks = new Task[2];
+			var newConnections = new List<IDbConnection>();
+			for (var i = 0; i < newConnectTasks.Length; i++)
+			{
+				newConnectTasks[i] = new Task(() =>
+				{
+					var connection = pool.Acquire();
+					lock (locker)
+					{
+						newConnections.Add(connection);
+					}
+					connection.Open();
+				});
+			}
+			Parallel.ForEach(newConnectTasks, x => x.Start());
+			Thread.Sleep(1000);
+			var connection0 = connections[0];
+			var connection1 = connections[1];
+			Task.Factory.StartNew(() => pool.Return(connection0));
+			Task.Factory.StartNew(() => pool.Return(connection1));
+			Task.WaitAll(newConnectTasks);
+			Assert.Equal(0, pool.IdleCount);
+			Assert.Equal(10, pool.ActiveCount);
+			var acquired0 = false;
+			var acquired1 = false;
+			foreach (var c in newConnections)
+			{
+				if (ReferenceEquals(c, connection0))
+				{
+					acquired0 = true;
+				}
+				if (ReferenceEquals(c, connection1))
+				{
+					acquired1 = true;
+				}
+			}
+			Assert.True(acquired0);
+			Assert.True(acquired1);
+		}
+
+		private void OperateOnPool(IObjectPool<IDbConnection> pool)
         {
             var connectTasks = new Task[10];
             var connections = new List<IDbConnection>();
