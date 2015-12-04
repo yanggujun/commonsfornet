@@ -42,10 +42,77 @@ namespace Commons.Collections.Concurrent
             head = new Node();
             tail = new Node();
             head.Next = new AtomicMarkableReference<Node>(tail);
+			tail.Next = new AtomicMarkableReference<Node>(null);
             this.comparer = comparer;
         }
 
-        private bool Insert(T key)
+		public void Add(T key)
+		{
+			var spin = new SpinWait();
+			while (!Insert(key))
+			{
+				spin.SpinOnce();
+			}
+		}
+
+		public bool Remove(T key)
+		{
+			return Delete(key);
+		}
+
+		public bool Contains(T key)
+		{
+			return Find(key);
+		}
+
+		public void Clear()
+		{
+			var headNext = head.Next;
+			var newTail = new AtomicMarkableReference<Node>(tail, false);
+			var spin = new SpinWait();
+			while (!head.Next.CompareExchange(headNext, headNext.IsMarked, newTail, false))
+			{
+				spin.SpinOnce();
+			}
+		}
+
+		public int Count
+		{
+			get
+			{
+				var count = 0;
+				var cursor = head.Next;
+				while (!ReferenceEquals(cursor.Value, tail))
+				{
+					if (!cursor.IsMarked)
+					{
+						count++;
+					}
+					cursor = cursor.Value.Next;
+				}
+				return count;
+			}
+		}
+
+		public IEnumerator<T> GetEnumerator()
+        {
+	        var cursor = head.Next;
+	        while (!ReferenceEquals(cursor.Value, tail))
+	        {
+		        if (!cursor.IsMarked)
+		        {
+			        yield return cursor.Value.Key;
+		        }
+		        cursor = cursor.Value.Next;
+	        }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+	        return GetEnumerator();
+        }
+
+		private bool Insert(T key)
         {
             var newNode = new Node();
             var spin = new SpinWait();
@@ -54,7 +121,7 @@ namespace Commons.Collections.Concurrent
             do
             {
                 rightNode = Search(key, out leftNode);
-                newNode.Next.Exchange(rightNode, false);
+                newNode.Next = new AtomicMarkableReference<Node>(rightNode, false);
                 if (leftNode.Next.CompareExchange(rightNode, false, newNode, false))
                 {
                     return true;
@@ -76,7 +143,7 @@ namespace Commons.Collections.Concurrent
                     return false;
                 }
                 var rightNodeNext = rightNode.Next.Value;
-                if (!rightNodeNext.Next.CompareExchange(rightNodeNext, false, rightNodeNext, true))
+                if (!rightNode.Next.CompareExchange(rightNodeNext, false, rightNodeNext, true))
                 {
                     spin.SpinOnce();
                     continue;
@@ -156,16 +223,6 @@ namespace Commons.Collections.Concurrent
             }
 
             return rightNode;
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
         }
 
         private class Node
