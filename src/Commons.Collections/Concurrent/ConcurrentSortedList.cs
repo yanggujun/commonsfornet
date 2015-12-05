@@ -25,6 +25,7 @@ namespace Commons.Collections.Concurrent
 	/// <summary>
 	/// Concurrent sorted list.
 	/// </summary>
+    /// <remarks>This implementation is only for experiment and research use.</remarks>
 	/// <typeparam name="T">The type of the elements in the list.</typeparam>
     [CLSCompliant(true)]
     public class ConcurrentSortedList<T> : IEnumerable<T>, IEnumerable
