@@ -8,9 +8,9 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Commons for .NET applications.
+    <description>A lightweight object pool.
     </description>
-    <summary>Commons.Pool contains the object pool implementation for .NET applications.
+    <summary>A lightweight object pool.
     </summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
     <tags>Object Pool</tags>
@@ -19,6 +19,7 @@
     </dependencies>
   </metadata>
   <files>
-      <file src="src\bin\Commons.Pool.dll" target="lib\net45\" />
+      <file src="src\bin\NET45\Commons.Pool.dll" target="lib\net45\" />
+      <file src="src\bin\NET40\Commons.Pool.dll" target="lib\net40\" />
   </files>
 </package>

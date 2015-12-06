@@ -19,42 +19,42 @@ using System.Data;
 
 namespace Commons.Pool
 {
-	/// <summary>
-	/// A default database connection factory. 
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	[CLSCompliant(true)]
-	public class DefaultDbConnectionFactory<T> : IPooledObjectFactory<T> where T : IDbConnection, new()
-	{
-		protected string ConnectionString { get; private set; }
+    /// <summary>
+    /// A default database connection factory. 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    [CLSCompliant(true)]
+    public class DefaultDbConnectionFactory<T> : IPooledObjectFactory<T> where T : IDbConnection, new()
+    {
+        protected string ConnectionString { get; private set; }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="connString"></param>
-		public DefaultDbConnectionFactory(string connString)
-		{
-			ConnectionString = connString;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connString"></param>
+        public DefaultDbConnectionFactory(string connString)
+        {
+            ConnectionString = connString;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		public virtual T Create()
-		{
-			var connection = new T {ConnectionString = ConnectionString};
-			connection.Open();
-			return connection;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public virtual T Create()
+        {
+            var connection = new T {ConnectionString = ConnectionString};
+            connection.Open();
+            return connection;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="obj"></param>
-		public virtual void Destroy(T obj)
-		{
-			obj.Close();
-		}
-	}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        public virtual void Destroy(T obj)
+        {
+            obj.Close();
+        }
+    }
 }

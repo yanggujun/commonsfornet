@@ -25,58 +25,58 @@ using Xunit;
 
 namespace Test.Commons.Collections
 {
-	public class ConcurrentListTest
-	{
-		private readonly object locker = new object();
+    public class ConcurrentListTest
+    {
+        private readonly object locker = new object();
 
-		[Fact]
-		public void TestSingleThreadAdd()
-		{
-			var list = new ConcurrentSortedList<Order>(new OrderComparer());
-			var random = new Random((int) DateTime.Now.Ticks & 0x0000ffff);
-			for (var i = 0; i < 10000; i++)
-			{
-				var number = random.Next();
-				var order = new Order {Id = number, Name = number.ToString()};
-				list.Add(order);
-			}
-			AssertOrderList(list, 10000);
-		}
+        [Fact]
+        public void TestSingleThreadAdd()
+        {
+            var list = new ConcurrentSortedList<Order>(new OrderComparer());
+            var random = new Random((int) DateTime.Now.Ticks & 0x0000ffff);
+            for (var i = 0; i < 10000; i++)
+            {
+                var number = random.Next();
+                var order = new Order {Id = number, Name = number.ToString()};
+                list.Add(order);
+            }
+            AssertOrderList(list, 10000);
+        }
 
-		[Fact]
-		public void TestMultithreadAdd()
-		{
-			var list = new ConcurrentSortedList<Order>(new OrderComparer());
-			var tasks = new Task[10000];
-			var random = new Random((int) DateTime.Now.Ticks & 0x0000ffff);
-			for (var i = 0; i < 10000; i++)
-			{
-				tasks[i] = Task.Factory.StartNew(() =>
-				{
-					var id = 0;
-					lock (locker)
-					{
-						id = random.Next();
-					}
-					list.Add(new Order{Id = id, Name = id.ToString()});
-				});
-			}
-			Task.WaitAll(tasks);
-			AssertOrderList(list, 10000);
-		}
+        [Fact]
+        public void TestMultithreadAdd()
+        {
+            var list = new ConcurrentSortedList<Order>(new OrderComparer());
+            var tasks = new Task[10000];
+            var random = new Random((int) DateTime.Now.Ticks & 0x0000ffff);
+            for (var i = 0; i < 10000; i++)
+            {
+                tasks[i] = Task.Factory.StartNew(() =>
+                {
+                    var id = 0;
+                    lock (locker)
+                    {
+                        id = random.Next();
+                    }
+                    list.Add(new Order{Id = id, Name = id.ToString()});
+                });
+            }
+            Task.WaitAll(tasks);
+            AssertOrderList(list, 10000);
+        }
 
         [Fact]
         public void TestParallelAdd()
         {
-			var list = new ConcurrentSortedList<Order>(new OrderComparer());
-			var random = new Random((int) DateTime.Now.Ticks & 0x0000ffff);
+            var list = new ConcurrentSortedList<Order>(new OrderComparer());
+            var random = new Random((int) DateTime.Now.Ticks & 0x0000ffff);
             var idList = new List<int>();
-			for (var i = 0; i < 10000; i++)
-			{
+            for (var i = 0; i < 10000; i++)
+            {
                 idList.Add(random.Next());
-			}
+            }
             Parallel.ForEach(idList, x => list.Add(new Order { Id = x, Name = x.ToString() }));
-			AssertOrderList(list, 10000);
+            AssertOrderList(list, 10000);
         }
 
         [Fact]
@@ -331,7 +331,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestConcurrentListAndNormalListWithLock()
         {
-			var list = new ConcurrentSortedList<Order>(new OrderComparer());
+            var list = new ConcurrentSortedList<Order>(new OrderComparer());
             var idList = ConstructIdList(10000);
 
             var sw1 = new Stopwatch();
@@ -363,46 +363,46 @@ namespace Test.Commons.Collections
 
         private List<int> ConstructIdList(int number)
         {
-			var random = new Random((int) DateTime.Now.Ticks & 0x0000ffff);
+            var random = new Random((int) DateTime.Now.Ticks & 0x0000ffff);
             var idList = new List<int>();
-			for (var i = 0; i < number; i++)
-			{
+            for (var i = 0; i < number; i++)
+            {
                 idList.Add(random.Next());
-			}
+            }
 
             return idList;
         }
 
-		private void AssertOrderList(ConcurrentSortedList<Order> list, int number)
-		{
-			Assert.Equal(number, list.Count);
-			var orders = new Order[number];
-			var cursor = 0;
-			foreach (var i in list)
-			{
-				orders[cursor] = i;
-				cursor++;
-			}
-			for (var i = 1; i < number; i++)
-			{
-				Assert.True(orders[i - 1].Id <= orders[i].Id);
-			}
-		}
+        private void AssertOrderList(ConcurrentSortedList<Order> list, int number)
+        {
+            Assert.Equal(number, list.Count);
+            var orders = new Order[number];
+            var cursor = 0;
+            foreach (var i in list)
+            {
+                orders[cursor] = i;
+                cursor++;
+            }
+            for (var i = 1; i < number; i++)
+            {
+                Assert.True(orders[i - 1].Id <= orders[i].Id);
+            }
+        }
 
-		private void AssertIntList(ConcurrentSortedList<int> list, int number)
-		{
-			Assert.Equal(number, list.Count);
-			var items = new int[number];
-			var cursor = 0;
-			foreach (var i in list)
-			{
-				items[cursor] = i;
-				cursor++;
-			}
-			for (var i = 1; i < number; i++)
-			{
-				Assert.True(items[i - 1] <= items[i]);
-			}
-		}
-	}
+        private void AssertIntList(ConcurrentSortedList<int> list, int number)
+        {
+            Assert.Equal(number, list.Count);
+            var items = new int[number];
+            var cursor = 0;
+            foreach (var i in list)
+            {
+                items[cursor] = i;
+                cursor++;
+            }
+            for (var i = 1; i < number; i++)
+            {
+                Assert.True(items[i - 1] <= items[i]);
+            }
+        }
+    }
 }

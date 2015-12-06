@@ -22,11 +22,11 @@ using Commons.Utils;
 
 namespace Commons.Collections.Concurrent
 {
-	/// <summary>
-	/// Concurrent sorted list.
-	/// </summary>
+    /// <summary>
+    /// Concurrent sorted list.
+    /// </summary>
     /// <remarks>This implementation is only for experiment and research use.</remarks>
-	/// <typeparam name="T">The type of the elements in the list.</typeparam>
+    /// <typeparam name="T">The type of the elements in the list.</typeparam>
     [CLSCompliant(true)]
     public class ConcurrentSortedList<T> : IEnumerable<T>, IEnumerable
     {
@@ -43,77 +43,77 @@ namespace Commons.Collections.Concurrent
             head = new Node();
             tail = new Node();
             head.Next = new AtomicMarkableReference<Node>(tail);
-			tail.Next = new AtomicMarkableReference<Node>(null);
+            tail.Next = new AtomicMarkableReference<Node>(null);
             this.comparer = comparer;
         }
 
-		public void Add(T key)
-		{
-			var spin = new SpinWait();
-			while (!Insert(key))
-			{
-				spin.SpinOnce();
-			}
-		}
-
-		public bool Remove(T key)
-		{
-			return Delete(key);
-		}
-
-		public bool Contains(T key)
-		{
-			return Find(key);
-		}
-
-		public void Clear()
-		{
-			var headNext = head.Next;
-			var newTail = new AtomicMarkableReference<Node>(tail, false);
-			var spin = new SpinWait();
-			while (!head.Next.CompareExchange(headNext, headNext.IsMarked, newTail, false))
-			{
-				spin.SpinOnce();
-			}
-		}
-
-		public int Count
-		{
-			get
-			{
-				var count = 0;
-				var cursor = head.Next;
-				while (!ReferenceEquals(cursor.Value, tail))
-				{
-					if (!cursor.IsMarked)
-					{
-						count++;
-					}
-					cursor = cursor.Value.Next;
-				}
-				return count;
-			}
-		}
-
-		public IEnumerator<T> GetEnumerator()
+        public void Add(T key)
         {
-	        var cursor = head.Next;
-	        while (!ReferenceEquals(cursor.Value, tail))
-	        {
-		        if (!cursor.IsMarked)
-		        {
-			        yield return cursor.Value.Key;
-		        }
-		        cursor = cursor.Value.Next;
-	        }
+            var spin = new SpinWait();
+            while (!Insert(key))
+            {
+                spin.SpinOnce();
+            }
+        }
+
+        public bool Remove(T key)
+        {
+            return Delete(key);
+        }
+
+        public bool Contains(T key)
+        {
+            return Find(key);
+        }
+
+        public void Clear()
+        {
+            var headNext = head.Next;
+            var newTail = new AtomicMarkableReference<Node>(tail, false);
+            var spin = new SpinWait();
+            while (!head.Next.CompareExchange(headNext, headNext.IsMarked, newTail, false))
+            {
+                spin.SpinOnce();
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                var count = 0;
+                var cursor = head.Next;
+                while (!ReferenceEquals(cursor.Value, tail))
+                {
+                    if (!cursor.IsMarked)
+                    {
+                        count++;
+                    }
+                    cursor = cursor.Value.Next;
+                }
+                return count;
+            }
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            var cursor = head.Next;
+            while (!ReferenceEquals(cursor.Value, tail))
+            {
+                if (!cursor.IsMarked)
+                {
+                    yield return cursor.Value.Key;
+                }
+                cursor = cursor.Value.Next;
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-	        return GetEnumerator();
+            return GetEnumerator();
         }
 
-		private bool Insert(T key)
+        private bool Insert(T key)
         {
             var newNode = new Node();
             var spin = new SpinWait();

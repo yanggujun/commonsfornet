@@ -36,14 +36,14 @@ namespace Commons.Pool
         /// <returns>The object</returns>
         T Acquire();
 
-		/// <summary>
-		/// Acquires an object from the pool. If there is no object available in the pool, it waits until timeout. If the time out is less than or equal to 0, 
-		/// it waits for the object infinitively.
-		/// </summary>
-		/// <param name="timeout">The timeout in milli-seconds.</param>
-		/// <param name="obj">The object from the pool.</param>
-		/// <returns>True if any idle object is retrieved from the pool, otherwise false.</returns>
-	    bool TryAcquire(int timeout, out T obj);
+        /// <summary>
+        /// Acquires an object from the pool. If there is no object available in the pool, it waits until timeout. If the time out is less than or equal to 0, 
+        /// it waits for the object infinitively.
+        /// </summary>
+        /// <param name="timeout">The timeout in milli-seconds.</param>
+        /// <param name="obj">The object from the pool.</param>
+        /// <returns>True if any idle object is retrieved from the pool, otherwise false.</returns>
+        bool TryAcquire(int timeout, out T obj);
 
         /// <summary>
         /// Returns an <paramref name="obj"/> to the pool. The object becomes idle when it's returned to the pool.
@@ -66,9 +66,9 @@ namespace Commons.Pool
         /// </summary>
         int Capacity { get; }
 
-		/// <summary>
-		/// The initial size of the pool. If the pool grows, its size eventually reaches the <see cref="Capacity"/>;
-		/// </summary>
-		int InitialSize { get; }
+        /// <summary>
+        /// The initial size of the pool. If the pool grows, its size eventually reaches the <see cref="Capacity"/>;
+        /// </summary>
+        int InitialSize { get; }
     }
 }

@@ -26,7 +26,7 @@ namespace Commons.Collections.Map
 #if NET45
         , IReadOnlyDictionary<K, V>
 #endif
-	where K : class
+    where K : class
     {
         private const int DefaultCapacity = 16;
         private static readonly Equator<K> referenceEquator = (x1, x2) => ReferenceEquals(x1, x2);
