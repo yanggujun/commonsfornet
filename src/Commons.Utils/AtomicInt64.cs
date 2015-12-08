@@ -68,6 +68,45 @@ namespace Commons.Utils
         {
             return atomic.Value;
         }
-    
+
+	    public static AtomicInt64 operator ++(AtomicInt64 atomic)
+	    {
+		    Interlocked.Increment(ref atomic.value);
+		    return atomic;
+	    }
+
+	    public static AtomicInt64 operator --(AtomicInt64 atomic)
+	    {
+		    Interlocked.Add(ref atomic.value, -1);
+		    return atomic;
+	    }
+
+	    public static bool operator <(AtomicInt64 left, AtomicInt64 right)
+	    {
+		    var leftValue = left.Value;
+		    var rightValue = right.Value;
+		    return leftValue < rightValue;
+	    }
+
+	    public static bool operator >=(AtomicInt64 left, AtomicInt64 right)
+	    {
+		    var leftValue = left.value;
+		    var rightValue = right.Value;
+		    return leftValue >= rightValue;
+	    }
+
+	    public static bool operator <=(AtomicInt64 left, AtomicInt64 right)
+	    {
+		    var leftValue = left.Value;
+		    var rightValue = right.Value;
+		    return leftValue <= rightValue;
+	    }
+
+	    public static bool operator >(AtomicInt64 left, AtomicInt64 right)
+	    {
+		    var leftValue = left.Value;
+		    var rightValue = right.Value;
+		    return leftValue > rightValue;
+	    }
     }
 }

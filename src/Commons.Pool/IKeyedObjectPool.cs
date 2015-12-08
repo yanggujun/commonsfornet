@@ -26,7 +26,7 @@ namespace Commons.Pool
     /// Object pool where the object can be retrieved by its key.
     /// </summary>
     /// <typeparam name="T">The object type.</typeparam>
-    internal interface IKeyedObjectPool<K, T> : IObjectPool<T> where T : class
+    internal interface IKeyedObjectPool<K, T> : ICountable, IDisposable where T : class
     {
         /// <summary>
         /// Acquires an object from the pool by the key.
@@ -43,5 +43,13 @@ namespace Commons.Pool
         /// <param name="obj">The object retrieved from pool.</param>
         /// <returns>True if the object is retrieved from the pool. Otherwise false.</returns>
         bool TryAcquire(long timeout, K key, out T obj);
+
+		/// <summary>
+		/// Returns the object with its key to the pool. If the key does not exit/never created by the pool or the object
+		/// already exist in the pool, <exception cref="InvalidOperationException"></exception> is thrown. 
+		/// </summary>
+		/// <param name="key">The key of the object.</param>
+		/// <param name="obj">The object reference.</param>
+	    void Return(K key, T obj);
     }
 }

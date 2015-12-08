@@ -54,6 +54,18 @@ namespace Commons.Utils
             var r = Interlocked.Exchange(ref value, newValue);
             return o == r;
         }
+
+	    public static AtomicInt32 operator ++(AtomicInt32 atomic)
+	    {
+		    Interlocked.Increment(ref atomic.value);
+		    return atomic;
+	    }
+
+	    public static AtomicInt32 operator --(AtomicInt32 atomic)
+	    {
+		    Interlocked.Add(ref atomic.value, -1);
+		    return atomic;
+	    }
 #pragma warning restore 420
 
         public override string ToString()
@@ -65,6 +77,34 @@ namespace Commons.Utils
         {
             return atomic.Value;
         }
+
+	    public static bool operator <(AtomicInt32 left, AtomicInt32 right)
+	    {
+		    var leftValue = left.Value;
+		    var rightValue = right.Value;
+		    return leftValue < rightValue;
+	    }
+
+	    public static bool operator >=(AtomicInt32 left, AtomicInt32 right)
+	    {
+		    var leftValue = left.value;
+		    var rightValue = right.Value;
+		    return leftValue >= rightValue;
+	    }
+
+	    public static bool operator <=(AtomicInt32 left, AtomicInt32 right)
+	    {
+		    var leftValue = left.Value;
+		    var rightValue = right.Value;
+		    return leftValue <= rightValue;
+	    }
+
+	    public static bool operator >(AtomicInt32 left, AtomicInt32 right)
+	    {
+		    var leftValue = left.Value;
+		    var rightValue = right.Value;
+		    return leftValue > rightValue;
+	    }
     
     }
 }

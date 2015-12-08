@@ -55,6 +55,7 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="GenericObjectPool.cs" />
+    <Compile Include="ICountable.cs" />
     <Compile Include="IKeyedObjectPool.cs" />
     <Compile Include="IObjectPool.cs" />
     <Compile Include="IPooledObjectFactory.cs" />

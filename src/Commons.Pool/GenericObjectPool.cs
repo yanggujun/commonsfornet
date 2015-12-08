@@ -22,20 +22,20 @@ using Commons.Collections.Set;
 namespace Commons.Pool
 {
     /// <summary>
-    /// The generic object pool. The pool is used when the objects are identical, for example, the connection pool.
+    /// The generic object pool. The pool is used when the object behavior is identical, for example, the connection pool.
     /// </summary>
     /// <typeparam name="T">The type of the pooled object.</typeparam>
     [CLSCompliant(true)]
     public class GenericObjectPool<T> : IObjectPool<T> where T : class
     {
-        private IPooledObjectFactory<T> factory;
-        private ConcurrentQueue<T> objQueue;
-        private ReaderWriterLockSlim locker;
-        private int initialSize;
-        private int maxSize;
+        private readonly IPooledObjectFactory<T> factory;
+        private readonly ConcurrentQueue<T> objQueue;
+        private readonly ReaderWriterLockSlim locker;
+        private readonly int initialSize;
+        private readonly int maxSize;
         private int createdCount;
-        private AutoResetEvent objectReturned;
-        private ReferenceSet<T> idleObjects; 
+        private readonly AutoResetEvent objectReturned;
+        private readonly ReferenceSet<T> idleObjects; 
 
         /// <summary>
         /// Constructor with the intialSize and maxSize. <see cref="ArgumentException"/> is thrown when <param name="initialSize"/> is larger than <param name="maxSize"/>
