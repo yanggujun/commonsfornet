@@ -22,7 +22,7 @@ namespace Commons.Utils
     /// </summary>
     /// <typeparam name="T">The type of the reference.</typeparam>
     [CLSCompliant(true)]
-    public class AtomicMarkableReference<T> where T : class
+    public struct AtomicMarkableReference<T> where T : class
     {
         private AtomicReference<Tuple<T, bool>> value;
 

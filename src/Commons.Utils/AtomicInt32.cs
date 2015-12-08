@@ -55,17 +55,43 @@ namespace Commons.Utils
             return o == r;
         }
 
-	    public static AtomicInt32 operator ++(AtomicInt32 atomic)
-	    {
-		    Interlocked.Increment(ref atomic.value);
-		    return atomic;
-	    }
+        public void Increment()
+        {
+		    Interlocked.Increment(ref value);
+        }
 
-	    public static AtomicInt32 operator --(AtomicInt32 atomic)
-	    {
-		    Interlocked.Add(ref atomic.value, -1);
-		    return atomic;
-	    }
+        public void Decrement()
+        {
+            Interlocked.Decrement(ref value);
+        }
+
+
+        public static AtomicInt32 operator +(AtomicInt32 left, AtomicInt32 right)
+        {
+            var leftValue = left.Value;
+            var rightValue = right.Value;
+            return AtomicInt32.From(leftValue + rightValue);
+        }
+
+        public static AtomicInt32 operator +(AtomicInt32 left, Int32 right)
+        {
+            Interlocked.Add(ref left.value, right);
+            return left;
+        }
+
+        public static AtomicInt32 operator -(AtomicInt32 left, AtomicInt32 right)
+        {
+            var leftValue = left.Value;
+            var rightValue = right.Value;
+            return AtomicInt32.From(leftValue - rightValue);
+        }
+
+        public static AtomicInt32 operator -(AtomicInt32 left, Int32 right)
+        {
+            var rightOprand = 0 - right;
+            Interlocked.Add(ref left.value, rightOprand);
+            return left;
+        }
 #pragma warning restore 420
 
         public override string ToString()
@@ -105,6 +131,5 @@ namespace Commons.Utils
 		    var rightValue = right.Value;
 		    return leftValue > rightValue;
 	    }
-    
     }
 }

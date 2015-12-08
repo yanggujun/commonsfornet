@@ -69,17 +69,15 @@ namespace Commons.Utils
             return atomic.Value;
         }
 
-	    public static AtomicInt64 operator ++(AtomicInt64 atomic)
-	    {
-		    Interlocked.Increment(ref atomic.value);
-		    return atomic;
-	    }
+        public void Increment()
+        {
+            Interlocked.Increment(ref value);
+        }
 
-	    public static AtomicInt64 operator --(AtomicInt64 atomic)
-	    {
-		    Interlocked.Add(ref atomic.value, -1);
-		    return atomic;
-	    }
+        public void Decrement()
+        {
+            Interlocked.Decrement(ref value);
+        }
 
 	    public static bool operator <(AtomicInt64 left, AtomicInt64 right)
 	    {
@@ -108,5 +106,32 @@ namespace Commons.Utils
 		    var rightValue = right.Value;
 		    return leftValue > rightValue;
 	    }
+
+        public static AtomicInt64 operator +(AtomicInt64 left, AtomicInt64 right)
+        {
+            var leftValue = left.Value;
+            var rightValue = right.Value;
+            return AtomicInt64.From(leftValue + rightValue);
+        }
+
+        public static AtomicInt64 operator +(AtomicInt64 left, Int32 right)
+        {
+            Interlocked.Add(ref left.value, right);
+            return left;
+        }
+
+        public static AtomicInt64 operator -(AtomicInt64 left, AtomicInt64 right)
+        {
+            var leftValue = left.Value;
+            var rightValue = right.Value;
+            return AtomicInt64.From(leftValue - rightValue);
+        }
+
+        public static AtomicInt64 operator -(AtomicInt64 left, Int32 right)
+        {
+            var rightOprand = 0 - right;
+            Interlocked.Add(ref left.value, rightOprand);
+            return left;
+        }
     }
 }
