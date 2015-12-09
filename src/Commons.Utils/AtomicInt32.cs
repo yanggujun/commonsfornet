@@ -65,33 +65,17 @@ namespace Commons.Utils
             Interlocked.Decrement(ref value);
         }
 
-
-        public static AtomicInt32 operator +(AtomicInt32 left, AtomicInt32 right)
+        public void Add(Int32 right)
         {
-            var leftValue = left.Value;
-            var rightValue = right.Value;
-            return AtomicInt32.From(leftValue + rightValue);
+            Interlocked.Add(ref value, right);
         }
 
-        public static AtomicInt32 operator +(AtomicInt32 left, Int32 right)
+        public void Minus(Int32 right)
         {
-            Interlocked.Add(ref left.value, right);
-            return left;
+            var oprand = -right;
+            Interlocked.Add(ref value, oprand);
         }
 
-        public static AtomicInt32 operator -(AtomicInt32 left, AtomicInt32 right)
-        {
-            var leftValue = left.Value;
-            var rightValue = right.Value;
-            return AtomicInt32.From(leftValue - rightValue);
-        }
-
-        public static AtomicInt32 operator -(AtomicInt32 left, Int32 right)
-        {
-            var rightOprand = 0 - right;
-            Interlocked.Add(ref left.value, rightOprand);
-            return left;
-        }
 #pragma warning restore 420
 
         public override string ToString()
@@ -103,33 +87,5 @@ namespace Commons.Utils
         {
             return atomic.Value;
         }
-
-	    public static bool operator <(AtomicInt32 left, AtomicInt32 right)
-	    {
-		    var leftValue = left.Value;
-		    var rightValue = right.Value;
-		    return leftValue < rightValue;
-	    }
-
-	    public static bool operator >=(AtomicInt32 left, AtomicInt32 right)
-	    {
-		    var leftValue = left.value;
-		    var rightValue = right.Value;
-		    return leftValue >= rightValue;
-	    }
-
-	    public static bool operator <=(AtomicInt32 left, AtomicInt32 right)
-	    {
-		    var leftValue = left.Value;
-		    var rightValue = right.Value;
-		    return leftValue <= rightValue;
-	    }
-
-	    public static bool operator >(AtomicInt32 left, AtomicInt32 right)
-	    {
-		    var leftValue = left.Value;
-		    var rightValue = right.Value;
-		    return leftValue > rightValue;
-	    }
     }
 }

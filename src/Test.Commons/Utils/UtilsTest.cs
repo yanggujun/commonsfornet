@@ -14,9 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Commons.Collections.Map;
 using Commons.Utils;
 using Xunit;
 
@@ -24,6 +26,7 @@ namespace Test.Commons.Utils
 {
     public class UtilsTest
     {
+        private static readonly object locker = new object();
         [Fact]
         public void TestAtomicBool()
         {
@@ -304,5 +307,114 @@ namespace Test.Commons.Utils
             }
         }
 
+        [Fact]
+        public void TestAtomicInt32OperatorAdd()
+        {
+            for (var j = 0; j < 10; j++)
+            {
+                var x = AtomicInt32.From(0);
+                var tasks = new Task[100];
+                for (var i = 0; i < 100; i++)
+                {
+                    tasks[i] = Task.Factory.StartNew(() => x.Add(5));
+                }
+                Task.WaitAll(tasks);
+                Assert.Equal(500, x.Value);
+            }
+        }
+
+        [Fact]
+        public void TestAtomicInt32OperatorMinus()
+        {
+            for (var j = 0; j < 10; j++)
+            {
+                var x = AtomicInt32.From(1000);
+                var tasks = new Task[100];
+                for (var i = 0; i < 100; i++)
+                {
+                    tasks[i] = Task.Factory.StartNew(() => x.Minus(5));
+                }
+                Task.WaitAll(tasks);
+                Assert.Equal(500, x.Value);
+            }
+        }
+
+        [Fact]
+        public void TestAtomicInt64OperatorAdd()
+        {
+            for (var j = 0; j < 10; j++)
+            {
+                var x = AtomicInt64.From(0);
+                var tasks = new Task[100];
+                for (var i = 0; i < 100; i++)
+                {
+                    tasks[i] = Task.Factory.StartNew(() => x.Add(5));
+                }
+                Task.WaitAll(tasks);
+                Assert.Equal(500, x.Value);
+            }
+        }
+
+        [Fact]
+        public void TestAtomicInt64OperatorMinus()
+        {
+            for (var j = 0; j < 10; j++)
+            {
+                var x = AtomicInt64.From(1000);
+                var tasks = new Task[100];
+                for (var i = 0; i < 100; i++)
+                {
+                    tasks[i] = Task.Factory.StartNew(() => x.Minus(5));
+                }
+                Task.WaitAll(tasks);
+                Assert.Equal(500, x.Value);
+            }
+        }
+
+        [Fact]
+        public void TestParallelAmr()
+        {
+            var random = new Random((int)DateTime.Now.Ticks & 0x0000ffff);
+            for (var j = 0; j < 50; j++)
+            {
+                var orders = new HashedMap<Order, bool>(10, new OrderEqualityComparer());
+                var orderRef = new Order {Id = -1, Name = "-1"};
+                var markedOrder = new AtomicMarkableReference<Order>(orderRef, false);
+                for (var i = 0; i < 10; i++)
+                {
+                    var order = new Order { Id = i, Name = i.ToString() };
+                    var marked = (random.Next() % 2) == 1;
+                    orders.Add(order, marked);
+                }
+
+                var results = new bool[10];
+                Parallel.ForEach(orders, x =>
+                    {
+                        var rand = 0;
+                        lock (locker)
+                        {
+                            rand = random.Next() % 20;
+                        }
+                        Thread.Sleep(rand);
+                        var result = markedOrder.CompareExchange(orderRef, false, x.Key, x.Value);
+                        lock (locker)
+                        {
+                            results[x.Key.Id] = result;
+                        }
+                    });
+                Assert.Equal(orders[markedOrder.Value], markedOrder.IsMarked);
+                for (var i = 0; i < 10; i++)
+                {
+                    if (i != markedOrder.Value.Id)
+                    {
+                        Assert.False(results[i]);
+                    }
+                    else
+                    {
+                        Assert.True(results[i]);
+                    }
+                }
+            }
+        }
     }
 }
