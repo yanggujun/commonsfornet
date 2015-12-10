@@ -328,7 +328,6 @@ namespace Test.Commons.Collections
             AssertIntList(list, 5000);
         }
 
-        [Fact]
         public void TestConcurrentListAndNormalListWithLock()
         {
             var list = new ConcurrentSortedList<Order>(new OrderComparer());

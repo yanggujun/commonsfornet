@@ -247,7 +247,6 @@ namespace Test.Commons.Utils
             for (var j = 0; j < 10; j++)
             {
                 var atomic = AtomicInt32.From(0);
-                var x = 0;
                 var tasks = new Task[100];
                 for (var i = 0; i < 100; i++)
                 {
@@ -280,7 +279,6 @@ namespace Test.Commons.Utils
             for (var j = 0; j < 10; j++)
             {
                 var atomic = AtomicInt64.From(0);
-                var x = 0;
                 var tasks = new Task[100];
                 for (var i = 0; i < 100; i++)
                 {

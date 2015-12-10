@@ -10,17 +10,30 @@ Apache License v2.0
 
 ###Installation
 
-The lastest release can be found on
+The lastest release source code can be found on
 
 https://github.com/yanggujun/commonsfornet/releases
 
-The nuget package can be retrieved from 
+    * Commons  
+    The package includes Commons.Utils, Commons.Collections and Commons.Json
 
-https://www.nuget.org/packages/Commons/
+    The nuget package can be retrieved from 
 
-Or on nuget package manager console type:
+    https://www.nuget.org/packages/Commons/
 
-    PM> Install-Package Commons
+    Or on nuget package manager console, type:
+
+        PM> Install-Package Commons
+
+    * Commons.Pool  
+    
+    The nuget package can be retrieved from 
+
+    https://www.nuget.org/packages/Commons.Pool/
+
+    Or on nuget package manager console, type:
+
+        PM> Install-Package Commons.Pool
 
 ###Issues
 
@@ -30,7 +43,7 @@ https://github.com/yanggujun/commonsfornet/issues
 
 or send an email to: alanier@sina.cn
 
-###Release Notes V0.1.1
+###Release Notes V0.2
 
 Initial release for .NET Commons Library. Support .NET framework 4.0 and 4.5.
 
@@ -140,4 +153,19 @@ Initial release for .NET Commons Library. Support .NET framework 4.0 and 4.5.
       jsonObj.EPL.ClubNumber = 20;
       jsonObj.EPL.LastChampion = "ManCity";
       Console.WriteLine(jsonObj) // output : { "EPL": { "ClubNumber": 20, "LastChampion": "ManCity"} } 
+  ```
 
+####Commons.Pool
+
+  * A light weight generic object pool.
+  
+  ```csharp
+      var sqlFactory = new DefaultDbConnectionFactory(connectionString);
+      var connectionPool = new GenericObjectPool<IDbConnection>(0, 10, sqlFactory);
+      //...
+      var connection = connectionPool.Acquire();
+      // use the connection.
+      connectionPool.Return(connection);
+      //...
+      connectionPool.Dispose();
+  ```

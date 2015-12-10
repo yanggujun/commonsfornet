@@ -2,20 +2,20 @@
 <package >
   <metadata>
     <id>Commons.Pool</id>
-    <version>0.1.1.22</version>
+    <version>0.2.0.298</version>
     <authors>yanggujun</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A lightweight object pool.
+    <description>A lightweight generic object pool.
     </description>
-    <summary>A lightweight object pool.
+    <summary>A lightweight generic object pool.
     </summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
     <tags>Object Pool</tags>
     <dependencies>
-        <dependency id="Commons" version="0.1.1.22"/>
+        <dependency id="Commons" version="0.2.0.298"/>
     </dependencies>
   </metadata>
   <files>
