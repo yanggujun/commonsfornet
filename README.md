@@ -14,26 +14,27 @@ The lastest release source code can be found on
 
 https://github.com/yanggujun/commonsfornet/releases
 
-    * Commons  
-    The package includes Commons.Utils, Commons.Collections and Commons.Json
-
-    The nuget package can be retrieved from 
-
-    https://www.nuget.org/packages/Commons/
-
-    Or on nuget package manager console, type:
-
-        PM> Install-Package Commons
-
-    * Commons.Pool  
+__Commons__
     
-    The nuget package can be retrieved from 
+The package includes Commons.Utils, Commons.Collections and Commons.Json
 
-    https://www.nuget.org/packages/Commons.Pool/
+The nuget package can be retrieved from 
 
-    Or on nuget package manager console, type:
+https://www.nuget.org/packages/Commons/
 
-        PM> Install-Package Commons.Pool
+Or on nuget package manager console, type:
+
+      PM> Install-Package Commons
+
+ __Commons.Pool__
+    
+The nuget package can be retrieved from 
+
+https://www.nuget.org/packages/Commons.Pool/
+
+Or on nuget package manager console, type:
+
+      PM> Install-Package Commons.Pool
 
 ###Issues
 
