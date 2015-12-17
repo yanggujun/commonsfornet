@@ -63,6 +63,7 @@
     <Compile Include="Collection\DoublyLinkedEntry.cs" />
     <Compile Include="Collection\EquatorComparer.cs" />
     <Compile Include="Collection\Messages.cs" />
+    <Compile Include="Concurrent\ConcurrentBoundedSet.cs" />
     <Compile Include="Concurrent\ConcurrentSortedList.cs" />
     <Compile Include="Map\AbstractBimap.cs" />
     <Compile Include="Map\AbstractHashedMap.cs" />

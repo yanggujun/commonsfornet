@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>.NET Commons</description>
-    <summary>Atomics Hashes Collections JSON</summary>
+    <summary>Atomic Primitives, Hash Functions, Collections, JSON Manipulator</summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
     <tags>Atomics Hashes Collections JSON</tags>
   </metadata>
