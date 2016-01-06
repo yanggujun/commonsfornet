@@ -27,7 +27,7 @@ namespace Commons.Collections.Concurrent
 	/// 
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class ConcurrentBoundedSet<T> : IProducerConsumerCollection<T>, IEnumerable<T>, IEnumerable
+	public class ConcurrentBoundedSet<T> : IEnumerable<T>, IEnumerable
 	{
 		private Node head;
 		private Node tail;
@@ -59,46 +59,6 @@ namespace Commons.Collections.Concurrent
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			throw new NotImplementedException();
-		}
-
-		public void CopyTo(T[] array, int index)
-		{
-			throw new NotImplementedException();
-		}
-
-		public T[] ToArray()
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool TryAdd(T item)
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool TryTake(out T item)
-		{
-			throw new NotImplementedException();
-		}
-
-		void ICollection.CopyTo(Array array, int index)
-		{
-			throw new NotImplementedException();
-		}
-
-		public int Count
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		bool ICollection.IsSynchronized
-		{
-			get { return false; }
-		}
-
-		object ICollection.SyncRoot
-		{
-			get { throw new NotSupportedException(Messages.SyncRootNotSupportError); }
 		}
 
 		private class Node

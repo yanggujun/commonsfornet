@@ -68,10 +68,9 @@ namespace Commons.Collections.Concurrent
 
         public void Clear()
         {
-            var headNext = head.Next;
-            var newTail = new AtomicMarkableReference<Node>(tail, false);
+	        var headNext = head.Next;
             var spin = new SpinWait();
-            while (!head.Next.CompareExchange(headNext, headNext.IsMarked, newTail, false))
+            while (!head.Next.CompareExchange(headNext.Value, headNext.IsMarked, tail, false))
             {
                 spin.SpinOnce();
             }
