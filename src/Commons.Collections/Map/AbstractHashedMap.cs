@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Collections;
+using Commons.Collections.Collection;
 using Commons.Utils;
 
 namespace Commons.Collections.Map
@@ -260,7 +261,7 @@ namespace Commons.Collections.Map
         { 
             Guarder.CheckNull(key);
             var entry = GetEntry(key);
-            entry.Validate(x => x != null, new KeyNotFoundException(string.Format("The key {0} does not exist in the map. ", key)));
+            entry.Validate(x => x != null, new KeyNotFoundException(string.Format(Messages.KeyDoesNotExistInMap, key)));
             return entry.Value;
         }
 

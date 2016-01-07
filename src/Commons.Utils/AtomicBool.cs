@@ -40,6 +40,11 @@ namespace Commons.Utils
             {
                 return value == 1;
             }
+	        set
+	        {
+		        var v = value ? 1 : 0;
+		        this.value = v;
+	        }
         }
 
 #pragma warning disable 420

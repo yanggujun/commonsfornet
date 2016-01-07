@@ -215,7 +215,7 @@ namespace Commons.Collections.Map
                 var entry = entries[index];
                 if (!entry.Occupied)
                 {
-                    throw new KeyNotFoundException("The key does not exist in the map.");
+	                throw new KeyNotFoundException(string.Format(Messages.KeyDoesNotExistInMap, key));
                 }
 
                 return entry.Value;

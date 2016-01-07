@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Commons.Collections.Collection;
 using Commons.Collections.Set;
 using Commons.Utils;
 
@@ -138,7 +139,7 @@ namespace Commons.Collections.Map
             }
             else
             {
-                throw new KeyNotFoundException("The key is not found in the bimap.");
+	            throw new KeyNotFoundException(Messages.KeyIsNotFoundInBimap);
             }
 
             return v;
@@ -153,7 +154,7 @@ namespace Commons.Collections.Map
             }
             else
             {
-                throw new KeyNotFoundException("The value is not found in the bimap.");
+	            throw new KeyNotFoundException(Messages.ValueIsNotFoundInBimap);
             }
 
             return k;
