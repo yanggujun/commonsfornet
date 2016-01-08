@@ -15,20 +15,23 @@
 // limitations under the License.
 
 
+
 namespace Commons.Collections.Collection
 {
     internal static class Messages
     {
-        public static readonly string DequeEmptyError = "The deque is empty!";
+        public const string DequeEmptyError = "The deque is empty!";
 
-        public static readonly string ArgumentArray = "array";
+        public const string ArgumentArray = "array";
 
-        public static readonly string SyncRootNotSupportError = "The SyncRoot is not supported in the Commons.Collections";
+        public const string SyncRootNotSupportError = "The SyncRoot is not supported in the Commons.Collections";
 
-	    public static readonly string KeyDoesNotExistInMap = "The key {0} does not exist in the map";
+	    public const string KeyDoesNotExistInMap = "The key {0} does not exist in the map";
 
-	    public static readonly string KeyIsNotFoundInBimap = "The key is not found in the bimap";
+	    public const string KeyIsNotFoundInBimap = "The key is not found in the bimap";
 
-	    public static readonly string ValueIsNotFoundInBimap = "The value is not found in the bimap";
+	    public const string ValueIsNotFoundInBimap = "The value is not found in the bimap";
+
+	    public const string CollectionEmpty = "The collection is empty";
     }
 }

@@ -328,39 +328,17 @@ namespace Test.Commons.Collections
             AssertIntList(list, 5000);
         }
 
-        public void TestConcurrentListAndNormalListWithLock()
-        {
-            var list = new ConcurrentSortedList<Order>(new OrderComparer());
-            var idList = ConstructIdList(10000);
+		[Fact]
+	    public void TestConcurrentListBasedMapAdd()
+		{
+			var map = new ConcurrentListBasedMap<int, int>();
+			var idList = Enumerable.Range(0, 10000).ToList();
+			Parallel.ForEach(idList, x => map.TryAdd(x, x));
+			Assert.Equal(0, map.Min.Key);
+			Assert.Equal(9999, map.Max.Key);
+		}
 
-            var sw1 = new Stopwatch();
-            sw1.Start();
-            Parallel.ForEach(idList, x => list.Add(new Order { Id = x, Name = x.ToString() }));
-            sw1.Stop();
-            Console.WriteLine(sw1.ElapsedMilliseconds);
-
-            var normal = new SortedList<int, Order>();
-            var sw2 = new Stopwatch();
-            sw2.Start();
-            Parallel.ForEach(idList, x =>
-                {
-                    lock (locker)
-                    {
-                        normal.Add(x, new Order { Id = x, Name = x.ToString() });
-                    }
-                });
-            sw2.Stop();
-            Console.WriteLine(sw2.ElapsedMilliseconds);
-
-            var normal2 = new SortedList<int, Order>();
-            var sw3 = new Stopwatch();
-            sw3.Start();
-            idList.ForEach(x => normal2.Add(x, new Order { Id = x, Name = x.ToString() }));
-            sw3.Stop();
-            Console.WriteLine(sw3.ElapsedMilliseconds);
-        }
-
-        private List<int> ConstructIdList(int number)
+	    private List<int> ConstructIdList(int number)
         {
             var random = new Random((int) DateTime.Now.Ticks & 0x0000ffff);
             var idList = new List<int>();

@@ -31,8 +31,8 @@ namespace Commons.Collections.Concurrent
 	[CLSCompliant(true)]
 	public class ConcurrentListBasedMap<K, V> : IEnumerable<KeyValuePair<K, V>>, IEnumerable
 	{
-		private Entry head;
-		private Entry tail;
+		private LockableNode head;
+		private LockableNode tail;
 		private IComparer<K> comparer;
 
 		public ConcurrentListBasedMap() : this(Comparer<K>.Default)
@@ -41,17 +41,19 @@ namespace Commons.Collections.Concurrent
 
 		public ConcurrentListBasedMap(IComparer<K> comparer)
 		{
+			Guarder.CheckNull(comparer, "comparer");
 			this.comparer = comparer;
-			head = new Entry();
-			tail = new Entry();
+			head = new LockableNode();
+			tail = new LockableNode();
 			head.Next = tail;
 		}
 
 		public bool TryRemove(K key)
 		{
+			Guarder.CheckNull(comparer, "key");
 			while (true)
 			{
-				Entry pred, curr;
+				LockableNode pred, curr;
 				Find(key, out pred, out curr);
 
 				pred.Lock();
@@ -88,9 +90,11 @@ namespace Commons.Collections.Concurrent
 
 		public bool TryAdd(K key, V value)
 		{
+			Guarder.CheckNull(key, "key");
+			Guarder.CheckNull(value, "value");
 			while (true)
 			{
-				Entry pred, curr;
+				LockableNode pred, curr;
 				Find(key, out pred, out curr);
 
 				pred.Lock();
@@ -107,7 +111,7 @@ namespace Commons.Collections.Concurrent
 							}
 							else
 							{
-								var entry = new Entry {Key = key, Value = value, Marked = false, Next = curr};
+								var entry = new LockableNode {Key = key, Value = value, Marked = false, Next = curr};
 								pred.Next = entry;
 								return true;
 							}
@@ -127,7 +131,8 @@ namespace Commons.Collections.Concurrent
 
 		public bool ContainsKey(K key)
 		{
-			Entry pred, curr;
+			Guarder.CheckNull(key, "key");
+			LockableNode pred, curr;
 			Find(key, out pred, out curr);
 			return comparer.Compare(curr.Key, key) == 0 && !curr.Marked;
 		}
@@ -136,7 +141,8 @@ namespace Commons.Collections.Concurrent
 		{
 			get
 			{
-				Entry pred, curr;
+				Guarder.CheckNull(key, "key");
+				LockableNode pred, curr;
 				Find(key, out pred, out curr);
 				if (comparer.Compare(curr.Key, key) == 0 && !curr.Marked)
 				{
@@ -149,9 +155,10 @@ namespace Commons.Collections.Concurrent
 			}
 			set
 			{
+				Guarder.CheckNull(key, "key");
 				while (true)
 				{
-					Entry pred, curr;
+					LockableNode pred, curr;
 					Find(key, out pred, out curr);
 					curr.Lock();
 					try
@@ -174,17 +181,66 @@ namespace Commons.Collections.Concurrent
 			}
 		}
 
+		public KeyValuePair<K, V> Min
+		{
+			get
+			{
+				while (true)
+				{
+					var min = head.Next;
+					if (ReferenceEquals(min, tail))
+					{
+						throw new InvalidOperationException(Messages.CollectionEmpty);
+					}
+					if (!min.Marked)
+					{
+						return new KeyValuePair<K, V>(min.Key, min.Value);
+					}
+				}
+			}
+		}
+
+		public KeyValuePair<K, V> Max
+		{
+			get
+			{
+				while (true)
+				{
+					var max = head;
+					while (!ReferenceEquals(max.Next, tail))
+					{
+						max = max.Next;
+					}
+					if (ReferenceEquals(max, head))
+					{
+						throw new InvalidOperationException(Messages.CollectionEmpty);
+					}
+					if (!max.Marked)
+					{
+						return new KeyValuePair<K, V>(max.Key, max.Value);
+					}
+				}
+			}
+		}
+
 		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
 		{
-			throw new System.NotImplementedException();
+			var curr = head.Next;
+			while (!ReferenceEquals(curr, tail))
+			{
+				if (!curr.Marked)
+				{
+					yield return new KeyValuePair<K, V>(curr.Key, curr.Value);
+				}
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			throw new System.NotImplementedException();
+			return GetEnumerator();
 		}
 
-		private void Find(K key, out Entry pred, out Entry curr)
+		private void Find(K key, out LockableNode pred, out LockableNode curr)
 		{
 			pred = head;
 			curr = head.Next;
@@ -195,12 +251,12 @@ namespace Commons.Collections.Concurrent
 			}
 		}
 
-		private bool Validate(Entry pred, Entry curr)
+		private bool Validate(LockableNode pred, LockableNode curr)
 		{
 			return !pred.Marked && !curr.Marked && pred.Next == curr;
 		}
 
-		private class Entry
+		private class LockableNode
 		{
 			private const int SpinCount = 10;
 			private const int YieldCount = 5;
@@ -211,7 +267,7 @@ namespace Commons.Collections.Concurrent
 
 			public V Value { get; set; }
 
-			public Entry Next { get; set; }
+			public LockableNode Next { get; set; }
 
 			public bool Marked { get; set; }
 
