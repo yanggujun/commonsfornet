@@ -105,15 +105,15 @@ namespace Commons.Collections.Concurrent
 					{
 						if (Validate(pred, curr))
 						{
-							if (comparer.Compare(curr.Key, key) == 0)
-							{
-								return false;
-							}
-							else
-							{
+                            if ((ReferenceEquals(pred.Next, tail) && ReferenceEquals(curr, tail)) || (comparer.Compare(curr.Key, key) != 0))
+                            {
 								var entry = new LockableNode {Key = key, Value = value, Marked = false, Next = curr};
 								pred.Next = entry;
 								return true;
+                            }
+							else
+							{
+								return false;
 							}
 						}
 					}
