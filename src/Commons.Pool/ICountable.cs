@@ -18,9 +18,9 @@ using System;
 
 namespace Commons.Pool
 {
-	[CLSCompliant(true)]
-	public interface ICountable
-	{
+    [CLSCompliant(true)]
+    public interface ICountable
+    {
         /// <summary>
         /// The number of the idle objects.
         /// </summary>
@@ -40,5 +40,5 @@ namespace Commons.Pool
         /// The initial size of the pool. If the pool grows, its size eventually reaches the <see cref="Capacity"/>;
         /// </summary>
         int InitialSize { get; }
-	}
+    }
 }

@@ -26,12 +26,12 @@ namespace Commons.Collections.Collection
 
         public const string SyncRootNotSupportError = "The SyncRoot is not supported in the Commons.Collections";
 
-	    public const string KeyDoesNotExistInMap = "The key {0} does not exist in the map";
+        public const string KeyDoesNotExistInMap = "The key {0} does not exist in the map";
 
-	    public const string KeyIsNotFoundInBimap = "The key is not found in the bimap";
+        public const string KeyIsNotFoundInBimap = "The key is not found in the bimap";
 
-	    public const string ValueIsNotFoundInBimap = "The value is not found in the bimap";
+        public const string ValueIsNotFoundInBimap = "The value is not found in the bimap";
 
-	    public const string CollectionEmpty = "The collection is empty";
+        public const string CollectionEmpty = "The collection is empty";
     }
 }

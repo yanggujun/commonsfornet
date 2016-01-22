@@ -57,7 +57,7 @@ namespace Commons.Utils
 
         public void Increment()
         {
-		    Interlocked.Increment(ref value);
+            Interlocked.Increment(ref value);
         }
 
         public void Decrement()

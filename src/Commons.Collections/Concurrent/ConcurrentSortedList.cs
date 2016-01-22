@@ -40,7 +40,7 @@ namespace Commons.Collections.Concurrent
 
         public ConcurrentSortedList(IComparer<T> comparer)
         {
-			Guarder.CheckNull(comparer, "comparer");
+            Guarder.CheckNull(comparer, "comparer");
             head = new Node();
             tail = new Node();
             head.Next = new AtomicMarkableReference<Node>(tail);
@@ -50,7 +50,7 @@ namespace Commons.Collections.Concurrent
 
         public void Add(T key)
         {
-			Guarder.CheckNull(key, "key");
+            Guarder.CheckNull(key, "key");
             var spin = new SpinWait();
             while (!Insert(key))
             {
@@ -60,19 +60,19 @@ namespace Commons.Collections.Concurrent
 
         public bool Remove(T key)
         {
-			Guarder.CheckNull(key, "key");
+            Guarder.CheckNull(key, "key");
             return Delete(key);
         }
 
         public bool Contains(T key)
         {
-			Guarder.CheckNull(key, "key");
+            Guarder.CheckNull(key, "key");
             return Find(key);
         }
 
         public void Clear()
         {
-	        var headNext = head.Next;
+            var headNext = head.Next;
             var spin = new SpinWait();
             while (!head.Next.CompareExchange(headNext.Value, headNext.IsMarked, tail, false))
             {

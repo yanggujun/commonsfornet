@@ -331,175 +331,175 @@ namespace Test.Commons.Collections
             AssertIntList(list, 5000);
         }
 
-		[Fact]
-	    public void TestConcurrentListBasedMapAddSingleThread()
-		{
-			var map = new ConcurrentListBasedMap<int, int>();
-			var idList = Enumerable.Range(0, 10000).ToList();
-			foreach (var id in idList)
-			{
-				Assert.True((map.TryAdd(id, id)));
-			}
+        [Fact]
+        public void TestConcurrentListBasedMapAddSingleThread()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = Enumerable.Range(0, 10000).ToList();
+            foreach (var id in idList)
+            {
+                Assert.True((map.TryAdd(id, id)));
+            }
 
-			Assert.Equal(10000, map.Count);
-			foreach (var id in idList)
-			{
-				Assert.True(map.ContainsKey(id));
-			}
-		}
+            Assert.Equal(10000, map.Count);
+            foreach (var id in idList)
+            {
+                Assert.True(map.ContainsKey(id));
+            }
+        }
 
-		[Fact]
-	    public void TestConcurrentListBasedMapTryAddFailsSingleThread()
-	    {
-			var map = new ConcurrentListBasedMap<int, int>();
-			var idList = Enumerable.Range(0, 10000).ToList();
-			foreach (var id in idList)
-			{
-				Assert.True(map.TryAdd(id, id));
-			}
+        [Fact]
+        public void TestConcurrentListBasedMapTryAddFailsSingleThread()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = Enumerable.Range(0, 10000).ToList();
+            foreach (var id in idList)
+            {
+                Assert.True(map.TryAdd(id, id));
+            }
 
-			foreach (var id in idList)
-			{
-				Assert.False(map.TryAdd(id, id));
-			}
+            foreach (var id in idList)
+            {
+                Assert.False(map.TryAdd(id, id));
+            }
 
-			Assert.Equal(10000, map.Count);
-	    }
+            Assert.Equal(10000, map.Count);
+        }
 
-		[Fact]
-	    public void TestConcurrentListBasedMapRemoveSomeSingleThread()
-	    {
-			var map = new ConcurrentListBasedMap<int, int>();
-			var idList = Enumerable.Range(0, 10000).ToList();
-			foreach (var id in idList)
-			{
-				Assert.True(map.TryAdd(id, id));
-			}
+        [Fact]
+        public void TestConcurrentListBasedMapRemoveSomeSingleThread()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = Enumerable.Range(0, 10000).ToList();
+            foreach (var id in idList)
+            {
+                Assert.True(map.TryAdd(id, id));
+            }
 
-			for (var i = 0; i < 5000; i++)
-			{
-				Assert.True(map.TryRemove(idList[i + 2000]));
-			}
-			Assert.Equal(5000, map.Count);
-			for (var i = 0; i < 2000; i++)
-			{
-				Assert.True(map.ContainsKey(idList[i]));
-			}
-			for (var i = 0; i < 5000; i++)
-			{
-				Assert.False(map.ContainsKey(idList[i + 2000]));
-			}
-	    }
+            for (var i = 0; i < 5000; i++)
+            {
+                Assert.True(map.TryRemove(idList[i + 2000]));
+            }
+            Assert.Equal(5000, map.Count);
+            for (var i = 0; i < 2000; i++)
+            {
+                Assert.True(map.ContainsKey(idList[i]));
+            }
+            for (var i = 0; i < 5000; i++)
+            {
+                Assert.False(map.ContainsKey(idList[i + 2000]));
+            }
+        }
 
-	    [Fact]
-	    public void TestConcurrentListBasedMapRemoveAllSingleThread()
-	    {
-		    var map = new ConcurrentListBasedMap<int, int>();
-		    var idList = Enumerable.Range(0, 10000).ToList();
-		    foreach (var id in idList)
-		    {
-			    Assert.True(map.TryAdd(id, id));
-		    }
+        [Fact]
+        public void TestConcurrentListBasedMapRemoveAllSingleThread()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = Enumerable.Range(0, 10000).ToList();
+            foreach (var id in idList)
+            {
+                Assert.True(map.TryAdd(id, id));
+            }
 
-		    foreach (var id in idList)
-		    {
-			    Assert.True(map.TryRemove(id));
-		    }
-		    Assert.Equal(0, map.Count);
-		    foreach (var id in idList)
-		    {
-			    Assert.False(map.ContainsKey(id));
-		    }
-		}
+            foreach (var id in idList)
+            {
+                Assert.True(map.TryRemove(id));
+            }
+            Assert.Equal(0, map.Count);
+            foreach (var id in idList)
+            {
+                Assert.False(map.ContainsKey(id));
+            }
+        }
 
-		[Fact]
-	    public void TestConcurrentListBasedMapRemoveEmpty()
-	    {
-		    var map = new ConcurrentListBasedMap<int, int>();
-			Assert.False(map.TryRemove(1));
-			Assert.False(map.TryRemove(2));
-			Assert.False(map.TryRemove(200));
-			Assert.False(map.TryRemove(3000));
-	    }
+        [Fact]
+        public void TestConcurrentListBasedMapRemoveEmpty()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            Assert.False(map.TryRemove(1));
+            Assert.False(map.TryRemove(2));
+            Assert.False(map.TryRemove(200));
+            Assert.False(map.TryRemove(3000));
+        }
 
-	    [Fact]
-	    public void TestConcurrentListBasedMapAddMultithread()
-		{
-			var map = new ConcurrentListBasedMap<int, int>();
-			var idList = Enumerable.Range(0, 10000).ToList();
-			Parallel.ForEach(idList, x => Assert.True(map.TryAdd(x, x)));
-			Assert.Equal(0, map.Min.Key);
-			Assert.Equal(9999, map.Max.Key);
-			Assert.Equal(10000, map.Count);
-		}
+        [Fact]
+        public void TestConcurrentListBasedMapAddMultithread()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = Enumerable.Range(0, 10000).ToList();
+            Parallel.ForEach(idList, x => Assert.True(map.TryAdd(x, x)));
+            Assert.Equal(0, map.Min.Key);
+            Assert.Equal(9999, map.Max.Key);
+            Assert.Equal(10000, map.Count);
+        }
 
-		[Fact]
-	    public void TestConcurrentListBasedMapAddMultithreadOrder()
-	    {
-		    var map = new ConcurrentListBasedMap<int, int>();
-		    var rand = new Random((int) (0x0000ffff & DateTime.Now.Ticks));
-		    var idList = new List<int>();
-		    for (var i = 0; i < 10000; i++)
-		    {
-				idList.Add(rand.Next());
-		    }
-		    Parallel.ForEach(idList, x => Assert.True((map.TryAdd(x, x))));
-			AssertListBasedMapOrder(map);
-	    }
+        [Fact]
+        public void TestConcurrentListBasedMapAddMultithreadOrder()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var rand = new Random((int) (0x0000ffff & DateTime.Now.Ticks));
+            var idList = new List<int>();
+            for (var i = 0; i < 10000; i++)
+            {
+                idList.Add(rand.Next());
+            }
+            Parallel.ForEach(idList, x => Assert.True((map.TryAdd(x, x))));
+            AssertListBasedMapOrder(map);
+        }
 
-		[Fact]
-	    public void TestConcurrentListBasedMapAddAndRemoveMultithread()
-	    {
-		    var map = new ConcurrentListBasedMap<int, int>();
-		    var idList = new List<int>();
-		    var newList = new List<int>();
-		    var rand = new Random((int) (0x0000ffff & DateTime.Now.Ticks));
-		    for (var i = 0; i < 10000; i++)
-		    {
-			    idList.Add(rand.Next());
-		    }
-		    for (var i = 0; i < 5000; i++)
-		    {
-				newList.Add(rand.Next());
-		    }
-			Parallel.ForEach(idList, x => Assert.True(map.TryAdd(x, x)));
-		    var remove = new Task(() =>
-		    {
-			    for (var i = 0; i < 5000; i++)
-			    {
-					Assert.True(map.TryRemove(idList[i]));
-			    }
-		    });
-		    var add = new Task(() =>
-		    {
-			    foreach (var element in newList)
-			    {
-					Assert.True(map.TryAdd(element, element));
-			    }
-		    });
-			add.Start();
-			remove.Start();
-		    Task.WaitAll(add, remove);
-		    Assert.Equal(10000, map.Count);
-			AssertListBasedMapOrder(map);
-	    }
+        [Fact]
+        public void TestConcurrentListBasedMapAddAndRemoveMultithread()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = new List<int>();
+            var newList = new List<int>();
+            var rand = new Random((int) (0x0000ffff & DateTime.Now.Ticks));
+            for (var i = 0; i < 10000; i++)
+            {
+                idList.Add(rand.Next());
+            }
+            for (var i = 0; i < 5000; i++)
+            {
+                newList.Add(rand.Next());
+            }
+            Parallel.ForEach(idList, x => Assert.True(map.TryAdd(x, x)));
+            var remove = new Task(() =>
+            {
+                for (var i = 0; i < 5000; i++)
+                {
+                    Assert.True(map.TryRemove(idList[i]));
+                }
+            });
+            var add = new Task(() =>
+            {
+                foreach (var element in newList)
+                {
+                    Assert.True(map.TryAdd(element, element));
+                }
+            });
+            add.Start();
+            remove.Start();
+            Task.WaitAll(add, remove);
+            Assert.Equal(10000, map.Count);
+            AssertListBasedMapOrder(map);
+        }
 
-	    private void AssertListBasedMapOrder(ConcurrentListBasedMap<int, int> map)
-	    {
-		    var index = 0;
-		    var previous = 0;
-		    foreach (var element in map)
-		    {
-			    if (index != 0)
-			    {
-					Assert.True(element.Key > previous);
-			    }
-			    previous = element.Key;
-			    index++;
-		    }
-	    }
+        private void AssertListBasedMapOrder(ConcurrentListBasedMap<int, int> map)
+        {
+            var index = 0;
+            var previous = 0;
+            foreach (var element in map)
+            {
+                if (index != 0)
+                {
+                    Assert.True(element.Key > previous);
+                }
+                previous = element.Key;
+                index++;
+            }
+        }
 
-	    private List<int> ConstructIdList(int number)
+        private List<int> ConstructIdList(int number)
         {
             var random = new Random((int) DateTime.Now.Ticks & 0x0000ffff);
             var idList = new List<int>();

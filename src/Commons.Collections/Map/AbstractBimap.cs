@@ -139,7 +139,7 @@ namespace Commons.Collections.Map
             }
             else
             {
-	            throw new KeyNotFoundException(Messages.KeyIsNotFoundInBimap);
+                throw new KeyNotFoundException(Messages.KeyIsNotFoundInBimap);
             }
 
             return v;
@@ -154,7 +154,7 @@ namespace Commons.Collections.Map
             }
             else
             {
-	            throw new KeyNotFoundException(Messages.ValueIsNotFoundInBimap);
+                throw new KeyNotFoundException(Messages.ValueIsNotFoundInBimap);
             }
 
             return k;
