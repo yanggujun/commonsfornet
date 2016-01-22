@@ -64,7 +64,7 @@ namespace Commons.Collections.Concurrent
 					{
 						if (Validate(pred, curr))
 						{
-							if (comparer.Compare(curr.Key, key) != 0)
+							if ((ReferenceEquals(pred.Next, tail) && ReferenceEquals(curr, tail)) || comparer.Compare(curr.Key, key) != 0)
 							{
 								return false;
 							}
@@ -134,7 +134,39 @@ namespace Commons.Collections.Concurrent
 			Guarder.CheckNull(key, "key");
 			LockableNode pred, curr;
 			Find(key, out pred, out curr);
-			return comparer.Compare(curr.Key, key) == 0 && !curr.Marked;
+			return !IsNotFound(pred, curr) && (comparer.Compare(curr.Key, key) == 0 && !curr.Marked);
+		}
+
+		public bool TryGetValue(K key, out V value)
+		{
+			Guarder.CheckNull(key, "key");
+			LockableNode pred, curr;
+			Find(key, out pred, out curr);
+			value = default(V);
+			var found = false;
+			if (!ReferenceEquals(pred.Next, tail) || !ReferenceEquals(curr, tail))
+			{
+				if (!curr.Marked)
+				{
+					value = curr.Value;
+					found = true;
+				}
+			}
+
+			return found;
+		}
+
+		public void Clear()
+		{
+			head.Lock();
+			try
+			{
+				head.Next = tail;
+			}
+			finally
+			{
+				head.Unlock();
+			}
 		}
 
 		public V this[K key]
@@ -223,6 +255,25 @@ namespace Commons.Collections.Concurrent
 			}
 		}
 
+		public int Count
+		{
+			get
+			{
+				var count = 0;
+				var curr = head.Next;
+				while (!ReferenceEquals(curr, tail))
+				{
+					if (!curr.Marked)
+					{
+						count++;
+					}
+					curr = curr.Next;
+				}
+
+				return count;
+			}
+		}
+
 		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
 		{
 			var curr = head.Next;
@@ -231,6 +282,7 @@ namespace Commons.Collections.Concurrent
 				if (!curr.Marked)
 				{
 					yield return new KeyValuePair<K, V>(curr.Key, curr.Value);
+					curr = curr.Next;
 				}
 			}
 		}
@@ -249,6 +301,11 @@ namespace Commons.Collections.Concurrent
 				pred = curr;
 				curr = curr.Next;
 			}
+		}
+
+		private bool IsNotFound(LockableNode pred, LockableNode curr)
+		{
+			return ReferenceEquals(pred.Next, tail) && ReferenceEquals(curr, tail);
 		}
 
 		private bool Validate(LockableNode pred, LockableNode curr)
