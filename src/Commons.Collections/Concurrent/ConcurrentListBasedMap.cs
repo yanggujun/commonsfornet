@@ -144,13 +144,10 @@ namespace Commons.Collections.Concurrent
             Find(key, out pred, out curr);
             value = default(V);
             var found = false;
-            if (!ReferenceEquals(pred.Next, tail) || !ReferenceEquals(curr, tail))
+            if (!IsNotFound(pred, curr) && (comparer.Compare(curr.Key, key) == 0 && !curr.Marked))
             {
-                if (!curr.Marked)
-                {
-                    value = curr.Value;
-                    found = true;
-                }
+                value = curr.Value;
+                found = true;
             }
 
             return found;

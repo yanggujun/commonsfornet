@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting;
+using System.Threading;
 using System.Threading.Tasks;
 using Commons.Collections.Concurrent;
 using Commons.Utils;
@@ -482,6 +483,240 @@ namespace Test.Commons.Collections
             Task.WaitAll(add, remove);
             Assert.Equal(10000, map.Count);
             AssertListBasedMapOrder(map);
+        }
+
+        [Fact]
+        public void TestConcurrentListBasedMapTryGetValue()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = new List<int>();
+            var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
+            for (var i = 0; i < 10000; i++)
+            {
+                idList.Add(rand.Next());
+            }
+
+            var newList = idList.ToList();
+
+            Parallel.ForEach(idList, x => map.TryAdd(x, x));
+
+            var remove = new Task(() =>
+            { 
+                for (var i = 0; i < 5000; i++)
+                {
+                    Assert.True(map.TryRemove(idList[i]));
+                }
+            });
+
+            var tryGet = new Task(() =>
+            {
+                for (var i = 0; i < 5000; i++)
+                {
+                    var v = 0;
+                    Assert.True(map.TryGetValue(newList[i + 5000], out v));
+                    Assert.Equal(v, newList[i + 5000]);
+                }
+            });
+
+            tryGet.Start();
+            remove.Start();
+            Task.WaitAll(remove, tryGet);
+            Assert.Equal(5000, map.Count);
+
+            for (var i = 0; i < 5000; i++)
+            {
+                Assert.False(map.ContainsKey(idList[i]));
+            }
+
+            for (var i = 0; i < 5000; i++)
+            {
+                var v = 0;
+                Assert.False(map.TryGetValue(idList[i], out v));
+            }
+        }
+
+        [Fact]
+        public void TestConcurrentListBasedMapIndexer()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = new List<int>();
+            var newList = new List<int>();
+            var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
+            for (var i = 0; i < 5000; i++)
+            {
+                idList.Add(rand.Next());
+                newList.Add(rand.Next());
+            }
+
+            var add = new Task(() =>
+            {
+                foreach (var id in idList)
+                {
+                    Assert.True(map.TryAdd(id, id));
+                }
+            });
+
+            var set = new Task(() =>
+            {
+                foreach (var id in newList)
+                {
+                    map[id] = id;
+                }
+            });
+
+            add.Start();
+            set.Start();
+            Task.WaitAll(add, set);
+            foreach(var id in idList)
+            {
+                Assert.Equal(id, map[id]);
+            }
+
+            foreach(var id in newList)
+            {
+                Assert.Equal(id, map[id]);
+            }
+        }
+
+        [Fact]
+        public void TestConcurrentListBasedMapIndexerGet()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = new List<int>();
+            var newList = new List<int>();
+            var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
+            for (var i = 0; i < 5000; i++)
+            {
+                idList.Add(rand.Next());
+                newList.Add(rand.Next());
+            }
+            Parallel.ForEach(idList, x => map.TryAdd(x, x));
+            Parallel.ForEach(idList, x => Assert.Equal(x, map[x]));
+            Parallel.ForEach(newList, x => Assert.Throws(typeof(KeyNotFoundException), () => map[x]));
+        }
+
+        [Fact]
+        public void TestConcurrentListBasedMapUpdate()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = Enumerable.Range(0, 5000).ToList();
+            Parallel.ForEach(idList, x => map.TryAdd(x, x));
+            Parallel.ForEach(idList, x => 
+            {
+                if (x % 2 == 0)
+                {
+                    map[x] = x + 1;
+                }
+                else
+                {
+                    Assert.True(map.TryRemove(x));
+                }
+            });
+            Assert.Equal(2500, map.Count);
+            foreach (var element in map)
+            {
+                Assert.Equal(element.Key + 1, element.Value);
+                Assert.True(element.Key % 2 == 0);
+            }
+            for (var i = 0; i < 2500; i++)
+            {
+                Assert.False(map.ContainsKey(i * 2 + 1));
+            }
+        }
+
+        [Fact]
+        public void TestConcurrentListBasedMapRemoveMultithread()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = new List<int>();
+            var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
+            for (var i = 0; i < 5000; i++)
+            {
+                idList.Add(rand.Next());
+            }
+            Parallel.ForEach(idList, x => map.TryAdd(x, x));
+            Parallel.ForEach(idList, x => Assert.True(map.TryRemove(x)));
+            Assert.Equal(0, map.Count);
+            Parallel.ForEach(idList, x => Assert.False(map.TryRemove(x)));
+        }
+
+        [Fact]
+        public void TestConcurrentListBasedMapClear()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            var idList = new List<int>();
+            var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
+            for (var i = 0; i < 5000; i++)
+            {
+                idList.Add(rand.Next());
+            }
+            Parallel.ForEach(idList, x => map.TryAdd(x, x));
+            Assert.Equal(5000, map.Count);
+            map.Clear();
+            Assert.Equal(0, map.Count);
+        }
+
+        [Fact]
+        public void TestConcurrentListBasedMapEmptyMin()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            Assert.Throws(typeof(InvalidOperationException), () => map.Min);
+        }
+
+        [Fact]
+        public void TestConcurrentListBasedMapEmptyMax()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            Assert.Throws(typeof(InvalidOperationException), () => map.Max);
+        }
+
+        [Fact]
+        public void TestConcurrentListBasedMapOneItemMinMax()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            map.TryAdd(30, 30);
+            Assert.Equal(30, map.Min.Key);
+            Assert.Equal(30, map.Min.Value);
+            Assert.Equal(30, map.Max.Key);
+            Assert.Equal(30, map.Max.Value);
+        }
+
+        [Fact]
+        public void TestConcurrentListBasedMapMinMaxMultithread()
+        {
+            var map = new ConcurrentListBasedMap<int, int>();
+            map.TryAdd(-1, -1);
+            map.TryAdd(10000, 10000);
+            var idList = Enumerable.Range(0, 5000).ToList();
+            var add = new Task(() =>
+            {
+                foreach (var element in idList)
+                {
+                    map.TryAdd(element, element);
+                }
+            });
+            var getMin = new Task(() =>
+            {
+                for (var i = 0; i < 1000; i++)
+                {
+                    Assert.Equal(-1, map.Min.Key);
+                    Thread.Sleep(0);
+                }
+            });
+            var getMax = new Task(() =>
+            {
+                for (var i = 0; i < 1000; i++)
+                {
+                    Assert.Equal(10000, map.Max.Key);
+                    Thread.Sleep(0);
+                }
+
+            });
+            add.Start();
+            getMin.Start();
+            getMax.Start();
+            Task.WaitAll(add, getMin, getMax);
+            Assert.Equal(5002, map.Count);
         }
 
         private void AssertListBasedMapOrder(ConcurrentListBasedMap<int, int> map)
