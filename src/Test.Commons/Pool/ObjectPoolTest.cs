@@ -35,7 +35,12 @@ namespace Test.Commons.Pool
         public void TestNormalAcquirePoolNotFull()
         {
             Setup();
-            var objectPool = new GenericObjectPool<IDbConnection>(0, 100, mockObjFactory);
+	        var poolManager = new PoolManager();
+	        var objectPool = poolManager.NewObjectPool<IDbConnection>()
+										.InitialSize(0)
+										.MaxSize(100)
+										.WithFactory(mockObjFactory)
+										.Instance();
             var tasks = new Task[50];
             var connections = new List<IDbConnection>();
             for (var i = 0; i < 50; i++)
@@ -73,7 +78,12 @@ namespace Test.Commons.Pool
         public void TestAcquireAgain()
         {
             Setup();
-            var objectPool = new GenericObjectPool<IDbConnection>(0, 100, mockObjFactory);
+	        var poolManager = new PoolManager();
+	        var objectPool = poolManager.NewObjectPool<IDbConnection>()
+										.InitialSize(0)
+										.MaxSize(100)
+										.WithFactory(mockObjFactory)
+										.Instance();
 
             var tasks1 = new Task[30];
             var connections = new List<IDbConnection>();
@@ -128,7 +138,12 @@ namespace Test.Commons.Pool
             Setup();
             for (var j = 0; j < 10; j++)
             {
-                var objectPool = new GenericObjectPool<IDbConnection>(0, 100, mockObjFactory);
+	        var poolManager = new PoolManager();
+	        var objectPool = poolManager.NewObjectPool<IDbConnection>()
+										.InitialSize(0)
+										.MaxSize(100)
+										.WithFactory(mockObjFactory)
+										.Instance();
                 var tasks1 = new Task[60];
                 var connections = new List<IDbConnection>();
                 for (var i = 0; i < 60; i++)
@@ -165,7 +180,12 @@ namespace Test.Commons.Pool
             Setup();
             for (var j = 0; j < 10; j++)
             {
-                var connectionPool = new GenericObjectPool<IDbConnection>(0, 10, mockObjFactory);
+	        var poolManager = new PoolManager();
+	        var connectionPool = poolManager.NewObjectPool<IDbConnection>()
+										.InitialSize(0)
+										.MaxSize(10)
+										.WithFactory(mockObjFactory)
+										.Instance();
                 var connectTasks = new Task[200];
                 var results = new List<bool>();
                 for (var i = 0; i < 200; i++)
@@ -215,7 +235,9 @@ namespace Test.Commons.Pool
         public void TestAcquireTimeout()
         {
             Setup();
-            var connectionPool = new GenericObjectPool<IDbConnection>(0, 10, new MockConnectionFactory());
+	        var poolManager = new PoolManager();
+	        var connectionPool =
+		        poolManager.NewObjectPool<IDbConnection>().InitialSize(0).MaxSize(10).WithFactory(mockObjFactory).Instance();
             OperateOnPool(connectionPool);
             Assert.Equal(0, connectionPool.IdleCount);
             Assert.Equal(10, connectionPool.ActiveCount);
@@ -229,7 +251,13 @@ namespace Test.Commons.Pool
         public void TestPoolInitialSize()
         {
             Setup();
-            var pool = new GenericObjectPool<IDbConnection>(5, 10, new MockConnectionFactory());
+	        var poolManager = new PoolManager();
+	        var pool =
+		        poolManager.NewObjectPool<IDbConnection>()
+			        .InitialSize(5)
+			        .MaxSize(10)
+			        .WithFactory(new MockConnectionFactory())
+			        .Instance();
             OperateOnPool(pool);
             Assert.Equal(5, pool.InitialSize);
             Assert.Equal(10, pool.ActiveCount);
@@ -239,7 +267,13 @@ namespace Test.Commons.Pool
         public void TestAcquireImmediatelyFailure()
         {
             Setup();
-            var pool = new GenericObjectPool<IDbConnection>(5, 10, new MockConnectionFactory());
+	        var poolManager = new PoolManager();
+	        var pool =
+		        poolManager.NewObjectPool<IDbConnection>()
+			        .InitialSize(5)
+			        .MaxSize(10)
+			        .WithFactory(new MockConnectionFactory())
+			        .Instance();
             var tasks = new Task[10];
             var connections = new List<IDbConnection>();
             for (var i = 0; i < 10; i++)
@@ -267,7 +301,13 @@ namespace Test.Commons.Pool
         public void TestSequenceOperations()
         {
             Setup();
-            var pool = new GenericObjectPool<IDbConnection>(5, 10, new MockConnectionFactory());
+	        var poolManager = new PoolManager();
+	        var pool =
+		        poolManager.NewObjectPool<IDbConnection>()
+			        .InitialSize(5)
+			        .MaxSize(10)
+			        .WithFactory(new MockConnectionFactory())
+			        .Instance();
             var connections = new List<IDbConnection>();
             for (var i = 0; i < 10; i++)
             {
@@ -290,7 +330,13 @@ namespace Test.Commons.Pool
         public void TestHungrySituation()
         {
             Setup();
-            var pool = new GenericObjectPool<IDbConnection>(0, 20, new MockConnectionFactory());
+	        var poolManager = new PoolManager();
+	        var pool =
+		        poolManager.NewObjectPool<IDbConnection>()
+			        .InitialSize(0)
+			        .MaxSize(20)
+			        .WithFactory(new MockConnectionFactory())
+			        .Instance();
             var connectTasks = new Task[200];
             var results = new List<bool>();
             var connections = new List<IDbConnection>();
@@ -376,30 +422,54 @@ namespace Test.Commons.Pool
         public void TestInitialSizeLessThanZero()
         {
             Setup();
-            Assert.Throws(typeof(ArgumentException), () => new GenericObjectPool<IDbConnection>(-1, 10, new MockConnectionFactory()));
+	        Assert.Throws(typeof (ArgumentException), () =>
+	        {
+		        var poolManager = new PoolManager();
+		        var pool =
+			        poolManager.NewObjectPool<IDbConnection>()
+				        .InitialSize(-1)
+				        .MaxSize(10)
+				        .WithFactory(new MockConnectionFactory())
+				        .Instance();
+	        });
         }
 
         [Fact]
         public void TestMaxSizeLessThanZero()
         {
             Setup();
-            Assert.Throws(typeof (ArgumentException),
-                () => new GenericObjectPool<IDbConnection>(0, -100, new MockConnectionFactory()));
+	        Assert.Throws(typeof (ArgumentException),
+		        () =>
+			        new PoolManager().NewObjectPool<IDbConnection>()
+				        .InitialSize(0)
+				        .MaxSize(-100)
+				        .WithFactory(new MockConnectionFactory())
+				        .Instance());
         }
 
         [Fact]
         public void TestMaxSizeLessThanInitialSize()
         {
             Setup();
-            Assert.Throws((typeof (ArgumentException)),
-                () => new GenericObjectPool<IDbConnection>(10, 1, new MockConnectionFactory()));
+	        Assert.Throws((typeof (ArgumentException)),
+		        () =>
+			        new PoolManager().NewObjectPool<IDbConnection>()
+				        .InitialSize(10)
+				        .MaxSize(1)
+				        .WithFactory(new MockConnectionFactory())
+				        .Instance());
         }
 
         [Fact]
         public void TestReturnSameObjectMoreThanOnce()
         {
             Setup();
-            var pool = new GenericObjectPool<IDbConnection>(10, 20, new MockConnectionFactory());
+	        var pool =
+		        new PoolManager().NewObjectPool<IDbConnection>()
+			        .InitialSize(10)
+			        .MaxSize(20)
+			        .WithFactory(new MockConnectionFactory())
+			        .Instance();
             var connectTasks = new Task[20];
             var connections = new List<IDbConnection>();
             for (var i = 0; i < 20; i++)
@@ -474,7 +544,12 @@ namespace Test.Commons.Pool
         public void TestAcquireAlways()
         {
             Setup();
-            var pool = new GenericObjectPool<IDbConnection>(0, 10, new MockConnectionFactory());
+	        var pool =
+		        new PoolManager().NewObjectPool<IDbConnection>()
+			        .InitialSize(0)
+			        .MaxSize(10)
+			        .WithFactory(new MockConnectionFactory())
+			        .Instance();
             var connectTasks = new Task[10];
             var connections = new List<IDbConnection>();
             for (var i = 0; i < connectTasks.Length; i++)

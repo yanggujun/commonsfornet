@@ -55,11 +55,14 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="GenericObjectPool.cs" />
-    <Compile Include="ICountable.cs" />
-    <Compile Include="IKeyedObjectPool.cs" />
+    <Compile Include="GenericPoolDescriptor.cs" />
     <Compile Include="IObjectPool.cs" />
+    <Compile Include="IPoolDescriptor.cs" />
     <Compile Include="IPooledObjectFactory.cs" />
     <Compile Include="DefaultDbConnectionFactory.cs" />
+    <Compile Include="IPoolManager.cs" />
+    <Compile Include="ObjectFactory.cs" />
+    <Compile Include="PoolManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

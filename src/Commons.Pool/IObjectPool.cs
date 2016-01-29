@@ -23,7 +23,7 @@ namespace Commons.Pool
     /// </summary>
     /// <typeparam name="T">The type of the pooled object.</typeparam>
     [CLSCompliant(true)]
-    public interface IObjectPool<T> : ICountable, IDisposable where T : class
+    public interface IObjectPool<T> : IDisposable where T : class
     {
         /// <summary>
         /// Acquires an object from the pool. 
@@ -50,5 +50,25 @@ namespace Commons.Pool
         /// </summary>
         /// <param name="obj">The returned object</param>
         void Return(T obj);
+
+		/// <summary>
+		/// The number of the idle objects.
+		/// </summary>
+		int IdleCount { get; }
+
+		/// <summary>
+		/// The number of the active objects.
+		/// </summary>
+		int ActiveCount { get; }
+
+		/// <summary>
+		/// The maximum number of all the objects.
+		/// </summary>
+		int Capacity { get; }
+
+		/// <summary>
+		/// The initial size of the pool. If the pool grows, its size eventually reaches the <see cref="Capacity"/>;
+		/// </summary>
+		int InitialSize { get; }
     }
 }

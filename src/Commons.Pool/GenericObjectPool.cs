@@ -25,8 +25,7 @@ namespace Commons.Pool
     /// The generic object pool. The pool is used when the object behavior is identical, for example, the connection pool.
     /// </summary>
     /// <typeparam name="T">The type of the pooled object.</typeparam>
-    [CLSCompliant(true)]
-    public class GenericObjectPool<T> : IObjectPool<T> where T : class
+    internal class GenericObjectPool<T> : IObjectPool<T> where T : class
     {
         private readonly IPooledObjectFactory<T> factory;
         private readonly ConcurrentQueue<T> objQueue;
@@ -38,8 +37,8 @@ namespace Commons.Pool
         private readonly ReferenceSet<T> idleObjects; 
 
         /// <summary>
-        /// Constructor with the intialSize and maxSize. <see cref="ArgumentException"/> is thrown when <param name="initialSize"/> is larger than <param name="maxSize"/>
-        /// <see cref="IPooledObjectFactory{T}.Create"/> is called to create objects with the number of <param name="initialSize"></param>. If it returns the object with null, it is not 
+        /// Constructor with the intialSize and maxSize. <see cref="ArgumentException"/> is thrown when <paramref name="initialSize"/> is larger than <paramref name="maxSize"/>
+        /// <see cref="IPooledObjectFactory{T}.Create"/> is called to create objects with the number of <paramref name="initialSize"/>. If it returns the object with null, it is not 
         /// added to the pool.
         /// </summary>
         /// <param name="initialSize">The initial object number of the pool.</param>
@@ -93,10 +92,10 @@ namespace Commons.Pool
         }
 
         /// <summary>
-        /// Tries to acquire an object in the pool. The method waits until <param name="timeout"></param> expires.
+        /// Tries to acquire an object in the pool. The method waits until <paramref name="timeout"/> expires.
         /// When no object is available when waiting times out, it returns false.
-        /// When <param name="timeout"></param> is set to 0, it only tests whether there is any
-        /// object in the pool and return immediately. If <param name="timeout"></param> is set to 
+        /// When <paramref name="timeout"/> is set to 0, it only tests whether there is any
+        /// object in the pool and return immediately. If <paramref name="timeout"/> is set to 
         /// a negative number, it waits infinitely. But it does not guarantee that an object is 
         /// acquired. The return result still can be false. If you want to wait infinitely and expect 
         /// a object is returned anyway, use <see cref="Acquire"/> method.
@@ -162,7 +161,7 @@ namespace Commons.Pool
         }
 
         /// <summary>
-        /// Returns the object to the pool. If the object is already returned to the pool, <exception cref="InvalidOperationException"></exception> is thrown.
+        /// Returns the object to the pool. If the object is already returned to the pool, <see cref="InvalidOperationException"/> is thrown.
         /// </summary>
         /// <param name="obj">The object to return.</param>
         public void Return(T obj)

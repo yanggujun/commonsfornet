@@ -18,27 +18,20 @@ using System;
 
 namespace Commons.Pool
 {
-    [CLSCompliant(true)]
-    public interface ICountable
-    {
-        /// <summary>
-        /// The number of the idle objects.
-        /// </summary>
-        int IdleCount { get; }
+	internal class ObjectFactory<T> : IPooledObjectFactory<T> where T : class
+	{
+		public Func<T> Creator { get; set; }
 
-        /// <summary>
-        /// The number of the active objects.
-        /// </summary>
-        int ActiveCount { get; }
+		public Action<T> Destroyer { get; set; }
 
-        /// <summary>
-        /// The maximum number of all the objects.
-        /// </summary>
-        int Capacity { get; }
+		public T Create()
+		{
+			return Creator();
+		}
 
-        /// <summary>
-        /// The initial size of the pool. If the pool grows, its size eventually reaches the <see cref="Capacity"/>;
-        /// </summary>
-        int InitialSize { get; }
-    }
+		public void Destroy(T obj)
+		{
+			Destroyer(obj);
+		}
+	}
 }
