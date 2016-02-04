@@ -18,20 +18,20 @@ using System;
 
 namespace Commons.Pool
 {
-	internal class ObjectFactory<T> : IPooledObjectFactory<T> where T : class
-	{
-		public Func<T> Creator { get; set; }
+    internal class ObjectFactory<T> : IPooledObjectFactory<T> where T : class
+    {
+        public Func<T> Creator { get; set; }
 
-		public Action<T> Destroyer { get; set; }
+        public Action<T> Destroyer { get; set; }
 
-		public T Create()
-		{
-			return Creator();
-		}
+        public T Create()
+        {
+            return Creator();
+        }
 
-		public void Destroy(T obj)
-		{
-			Destroyer(obj);
-		}
-	}
+        public void Destroy(T obj)
+        {
+            Destroyer(obj);
+        }
+    }
 }

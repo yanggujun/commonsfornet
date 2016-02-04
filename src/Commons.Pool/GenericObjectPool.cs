@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using Commons.Collections.Map;
 using Commons.Collections.Set;
 
 namespace Commons.Pool
@@ -34,7 +35,7 @@ namespace Commons.Pool
         private readonly int maxSize;
         private int createdCount;
         private readonly AutoResetEvent objectReturned;
-        private readonly ReferenceSet<T> idleObjects; 
+        private readonly ReferenceMap<T, bool> idleObjects; 
 
         /// <summary>
         /// Constructor with the intialSize and maxSize. <see cref="ArgumentException"/> is thrown when <paramref name="initialSize"/> is larger than <paramref name="maxSize"/>
@@ -65,7 +66,7 @@ namespace Commons.Pool
             objectReturned = new AutoResetEvent(false);
             locker = new ReaderWriterLockSlim();
             objQueue = new ConcurrentQueue<T>();
-            idleObjects = new ReferenceSet<T>();
+            idleObjects = new ReferenceMap<T, bool>();
             for (var i = 0; i < initialSize; i++)
             {
                 objQueue.Enqueue(factory.Create());
@@ -113,7 +114,7 @@ namespace Commons.Pool
                 locker.EnterWriteLock();
                 try
                 {
-                    idleObjects.Remove(obj);
+                    idleObjects[obj] = false;
                 }
                 finally
                 {
@@ -130,6 +131,7 @@ namespace Commons.Pool
                         obj = factory.Create();
                         createdCount++;
                         acquired = true;
+                        idleObjects[obj] = false;
                     }
                 }
                 finally
@@ -146,7 +148,7 @@ namespace Commons.Pool
                             acquired = objQueue.TryDequeue(out obj);
                             if (acquired)
                             {
-                                idleObjects.Remove(obj);
+                                idleObjects[obj] = false;
                             }
                         }
                         finally
@@ -169,7 +171,11 @@ namespace Commons.Pool
             locker.EnterUpgradeableReadLock();
             try
             {
-                if (idleObjects.Contains(obj))
+                if (!idleObjects.ContainsKey(obj))
+                {
+                    throw new InvalidOperationException("The object is never created by the pool.");
+                }
+                if (idleObjects[obj])
                 {
                     throw new InvalidOperationException("The object is already returned to the pool.");
                 }
@@ -177,7 +183,7 @@ namespace Commons.Pool
                 try
                 {
                     objQueue.Enqueue(obj);
-                    idleObjects.Add(obj);
+                    idleObjects[obj] = true;
                 }
                 finally
                 {
@@ -263,11 +269,12 @@ namespace Commons.Pool
             locker.EnterWriteLock();
             try
             {
-                foreach(var element in objQueue)
+                foreach(var element in idleObjects)
                 {
-                    factory.Destroy(element);
+                    factory.Destroy(element.Key);
                 }
                 objectReturned.Dispose();
+                idleObjects.Clear();
             }
             finally
             {

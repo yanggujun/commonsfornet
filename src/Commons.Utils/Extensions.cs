@@ -31,5 +31,19 @@ namespace Commons.Utils
             Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
             return bytes;
         }
+
+        public static void Swallow<T>(this T target, Action<T> action)
+        {
+            Guarder.CheckNull(target, "target");
+            Guarder.CheckNull(action, "action");
+            try
+            {
+                action(target);
+            }
+            catch
+            {
+                //quiet
+            }
+        }
     }
 }
