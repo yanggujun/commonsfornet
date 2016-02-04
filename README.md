@@ -161,12 +161,33 @@ Initial release for .NET Commons Library. Support .NET framework 4.0 and 4.5.
   * A light weight generic object pool.
   
   ```csharp
+      // When initializing the IOC container...
+      IocContainer.Register<PoolManager>();
+      //...
+      // Somewhere in the application.
+      var poolManager = IocContainer.Resolve<IPoolManager>();
+
+      //...
+
+      // Create a new pool.
       var sqlFactory = new DefaultDbConnectionFactory(connectionString);
-      var connectionPool = new GenericObjectPool<IDbConnection>(0, 10, sqlFactory);
+      var connectionPool = poolManager.NewPoolOf<IDbConnection>()
+                                      .InitialSize(0)
+                                      .MaxSize(10)
+                                      .WithFactory(sqlFactory)
+                                      .Instance();
+
       //...
       var connection = connectionPool.Acquire();
+ 
+      // ...
       // use the connection.
+      // ...
+
       connectionPool.Return(connection);
       //...
-      connectionPool.Dispose();
+
+
+      // When pool manager is disposed, the pool is disposed too.
+      poolManager.Dispose();
   ```
