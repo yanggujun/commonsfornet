@@ -18,4 +18,5 @@ call src\packages\xunit.runners.1.9.2\tools\xunit.console.clr4.exe src\bin\NET40
 
 call nuget pack Commons.nuspec -OutputDirectory ".\src\bin"
 call nuget pack Commons.Pool.nuspec -OutputDirectory ".\src\bin"
+call nuget pack Commons.Json.nuspec -OutputDirectory ".\src\bin"
 call PAUSE

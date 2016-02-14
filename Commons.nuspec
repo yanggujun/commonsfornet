@@ -8,17 +8,16 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>.NET Commons</description>
-    <summary>Atomic Primitives, Hash Functions, Collections, JSON Manipulator</summary>
+    <description>The library provides extensive collections other than the ones in .NET framework (corefx). For more information about .NET Commons project please visit: https://github.com/yanggujun/commonsfornet
+    </description>
+    <summary>Atomic Primitives, Hash Functions, Collections</summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
     <tags>Atomics Hashes Collections JSON</tags>
   </metadata>
   <files>
       <file src="src\bin\NET45\Commons.Utils.dll" target="lib\net45\" />
       <file src="src\bin\NET45\Commons.Collections.dll" target="lib\net45\" />
-      <file src="src\bin\NET45\Commons.Json.dll" target="lib\net45\" />
       <file src="src\bin\NET40\Commons.Utils.dll" target="lib\net40\" />
       <file src="src\bin\NET40\Commons.Collections.dll" target="lib\net40\" />
-      <file src="src\bin\NET40\Commons.Json.dll" target="lib\net40\" />
   </files>
 </package>
