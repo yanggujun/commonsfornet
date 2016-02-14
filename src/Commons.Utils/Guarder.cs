@@ -44,13 +44,9 @@ namespace Commons.Utils
         {
             foreach (var item in inputs)
             {
-                if (string.IsNullOrEmpty(item))
+                if (string.IsNullOrWhiteSpace(item))
                 {
                     throw new ArgumentNullException("The input string argument is null");
-                }
-                if (string.IsNullOrEmpty(item.Trim()))
-                {
-                    throw new ArgumentNullException("the input string argument is empty");
                 }
             }
         }

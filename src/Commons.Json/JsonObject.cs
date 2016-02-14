@@ -64,7 +64,7 @@ namespace Commons.Json
         {
             var name = indexes[0] as string;
             var success = false;
-            if (!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrWhiteSpace(name))
             {
                 JsonValue jvalue;
                 success = valueMap.TryGetValue(name, out jvalue);
@@ -91,7 +91,7 @@ namespace Commons.Json
         {
             var name = indexes[0] as string;
             var success = false;
-            if (!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrWhiteSpace(name))
             {
                 if (valueMap.ContainsKey(name))
                 {

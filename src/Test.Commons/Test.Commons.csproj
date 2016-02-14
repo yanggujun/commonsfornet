@@ -60,7 +60,9 @@
     <Compile Include="Collections\CollectionTest.cs" />
     <Compile Include="Collections\ConcurrentListTest.cs" />
     <Compile Include="Collections\HashTest.cs" />
-    <Compile Include="Collections\JsonTest.cs" />
+    <Compile Include="Json\ComplexPoco.cs" />
+    <Compile Include="Json\JsonMapperTest.cs" />
+    <Compile Include="Json\JsonTest.cs" />
     <Compile Include="Collections\MultiMapTest.cs" />
     <Compile Include="Collections\PriorityQueueTest.cs" />
     <Compile Include="Collections\SortedMapTest.cs" />
@@ -98,31 +100,31 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Collections\JsonSample9.txt">
+    <Content Include="Json\JsonSample9.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Collections\JsonSample.txt">
+    <Content Include="Json\JsonSample.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Collections\JsonSample2.txt">
+    <Content Include="Json\JsonSample2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Collections\JsonSample3.txt">
+    <Content Include="Json\JsonSample3.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Collections\JsonSample4.txt">
+    <Content Include="Json\JsonSample4.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Collections\JsonSample5.txt">
+    <Content Include="Json\JsonSample5.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Collections\JsonSample6.txt">
+    <Content Include="Json\JsonSample6.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Collections\JsonSample7.txt">
+    <Content Include="Json\JsonSample7.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Collections\JsonSample8.txt">
+    <Content Include="Json\JsonSample8.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

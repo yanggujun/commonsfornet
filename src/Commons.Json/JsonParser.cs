@@ -163,7 +163,7 @@ namespace Commons.Json
                             var array = objectStack.Pop() as ArrayList;
                             array.Verify(x => x != null);
                             var key = objectStack.Pop() as string;
-                            key.Verify(x => !string.IsNullOrEmpty(x));
+                            key.Verify(x => !string.IsNullOrWhiteSpace(x));
                             dynamic outerObj = objectStack.Peek();
                             outerObj[key] = array;
                             charStack.Push(ch);
@@ -187,7 +187,7 @@ namespace Commons.Json
                                 else
                                 {
                                     var str = objectStack.Pop() as string;
-                                    str.Verify(x => !string.IsNullOrEmpty(x));
+                                    str.Verify(x => !string.IsNullOrWhiteSpace(x));
                                     dynamic outer = objectStack.Peek();
                                     outer[str] = inner;
                                 }
@@ -239,7 +239,7 @@ namespace Commons.Json
         {
             if (charStack.Peek() == RightBrace || charStack.Peek() == RightBracket)
             {
-                currentFragment.ToString().Trim().Verify(x => string.IsNullOrEmpty(x));
+                currentFragment.ToString().Trim().Verify(x => string.IsNullOrWhiteSpace(x));
                 charStack.Pop();
             }
             else
@@ -256,7 +256,7 @@ namespace Commons.Json
             if (charStack.Peek() == Quoter)
             {
                 charStack.Pop();
-                value.Verify(x => !string.IsNullOrEmpty(x));
+                value.Verify(x => !string.IsNullOrWhiteSpace(x));
                 value.Verify(x => x[0] == Quoter && x[x.Length - 1] == Quoter);
                 jsonValue = value.Trim().Trim(Quoter);
             }
@@ -292,7 +292,7 @@ namespace Commons.Json
             else
             {
                 var key = objectStack.Pop() as string;
-                key.Verify(x => !string.IsNullOrEmpty(x));
+                key.Verify(x => !string.IsNullOrWhiteSpace(x));
                 dynamic jsonObject = objectStack.Peek();
                 jsonObject[key] = jsonValue;
             }

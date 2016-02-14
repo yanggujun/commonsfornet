@@ -15,14 +15,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Commons.Json;
 using Xunit;
 
-namespace Test.Commons.Collections
+namespace Test.Commons.Json
 {
     public class JsonTest
     {
@@ -52,7 +48,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestJsonFromRealWorld()
         {
-            string json = TestHelper.ReadFrom(@".\Collections\JsonSample9.txt");
+            string json = TestHelper.ReadFrom(@".\Json\JsonSample9.txt");
 
             dynamic person = JsonObject.Parse(json);
             Assert.Equal("USA", (string)person.More.Country);
@@ -61,7 +57,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestParseJson()
         {
-            string json = TestHelper.ReadFrom(@".\Collections\JsonSample.txt");
+            string json = TestHelper.ReadFrom(@".\Json\JsonSample.txt");
             dynamic worldcup = JsonObject.Parse(json);
             string host = worldcup.Host;
             int teams = worldcup.Teams;
@@ -75,7 +71,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestParseJson2()
         {
-            var json = TestHelper.ReadFrom(@".\Collections\JsonSample2.txt");
+            var json = TestHelper.ReadFrom(@".\Json\JsonSample2.txt");
             dynamic package = JsonObject.Parse(json);
             Assert.Equal("yanggujun", (string)package.author);
             Assert.Equal("commons", (string)package.name);
@@ -87,7 +83,7 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestParseJson3()
         {
-            var json = TestHelper.ReadFrom(@".\Collections\JsonSample3.txt");
+            var json = TestHelper.ReadFrom(@".\Json\JsonSample3.txt");
             dynamic package = JsonObject.Parse(json);
             Assert.Equal("yanggujun", (string)package.author);
             Assert.Equal("no logo", (string)package.logo);
@@ -258,15 +254,15 @@ namespace Test.Commons.Collections
         [Fact]
         public void TestParseJsonStrings()
         {
-            var json4 = TestHelper.ReadFrom(@".\Collections\JsonSample4.txt");
+            var json4 = TestHelper.ReadFrom(@".\Json\JsonSample4.txt");
             Assert.DoesNotThrow(() => JsonObject.Parse(json4));
-            var json5 = TestHelper.ReadFrom(@".\Collections\JsonSample5.txt");
+            var json5 = TestHelper.ReadFrom(@".\Json\JsonSample5.txt");
             Assert.DoesNotThrow(() => JsonObject.Parse(json5));
-            var json6 = TestHelper.ReadFrom(@".\Collections\JsonSample6.txt");
+            var json6 = TestHelper.ReadFrom(@".\Json\JsonSample6.txt");
             Assert.DoesNotThrow(() => JsonObject.Parse(json6));
-            var json7 = TestHelper.ReadFrom(@".\Collections\JsonSample7.txt");
+            var json7 = TestHelper.ReadFrom(@".\Json\JsonSample7.txt");
             Assert.DoesNotThrow(() => JsonObject.Parse(json7));
-            var json8 = TestHelper.ReadFrom(@".\Collections\JsonSample8.txt");
+            var json8 = TestHelper.ReadFrom(@".\Json\JsonSample8.txt");
             Assert.DoesNotThrow(() => JsonObject.Parse(json8));
         }
     }

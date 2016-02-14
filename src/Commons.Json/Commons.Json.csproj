@@ -56,6 +56,8 @@
     <Compile Include="JsonObject.cs" />
     <Compile Include="JsonParser.cs" />
     <Compile Include="JsonValue.cs" />
+    <Compile Include="Mapper\IJsonObjectMapper.cs" />
+    <Compile Include="Mapper\JsonMapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

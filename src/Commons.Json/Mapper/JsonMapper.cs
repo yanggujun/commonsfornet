@@ -16,34 +16,14 @@
 
 using System;
 
-namespace Commons.Utils
+namespace Commons.Json.Mapper
 {
-    [CLSCompliant(true)]
-    public static class Extensions
-    {
-        public static byte[] ToBytes(this string str)
-        {
-            if (string.IsNullOrWhiteSpace(str))
-            {
-                throw new ArgumentException("The input string is null or empty.");
-            }
-            var bytes = new byte[str.Length * sizeof(char)];
-            Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
-        }
-
-        public static void Swallow<T>(this T target, Action<T> action)
-        {
-            Guarder.CheckNull(target, "target");
-            Guarder.CheckNull(action, "action");
-            try
-            {
-                action(target);
-            }
-            catch
-            {
-                //quiet
-            }
-        }
-    }
+	[CLSCompliant(true)]
+	public static class JsonMapper
+	{
+		public static T MapObject<T>(string json)
+		{
+			return default(T);
+		}
+	}
 }
