@@ -14,45 +14,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 
+using System.Linq.Expressions;
 namespace Commons.Json.Mapper
 {
-	[CLSCompliant(true)]
-	public static class JsonMapper
+	internal class JsonObjectMapper<T> : IJsonObjectMapper<T>
 	{
-		private static MapperContainer mapperContainer = new MapperContainer();
-
-		public static IJsonObjectMapper<T> For<T>()
+		public IJsonObjectMapper<T> MapProperty(string jsonPath, Expression<System.Func<T, object>> propertyExp)
 		{
-			IJsonObjectMapper<T> mapper;
-			if (mapperContainer.ContainsMapper<T>())
-			{
-				mapper = mapperContainer.GetMapper<T>();
-			}
-			else
-			{
-				mapper = new JsonObjectMapper<T>();
-				mapperContainer.PushMapper(mapper);
-			}
-			return mapper;
-		}
-
-		public static T ToObject<T>(string json)
-		{
-			var parseEngine = new JsonParseEngine();
-			var jsonValue = parseEngine.Parse(json);
-			var mapEngine = new MapEngine<T>(For<T>());
-			return mapEngine.Map(jsonValue);
-		}
-
-		public static void FillWith<T>(string json, ref T obj)
-		{
-		}
-
-		public static string ToJson<T>(T target)
-		{
-			return null;
+			return this;
 		}
 	}
 }

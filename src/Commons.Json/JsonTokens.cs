@@ -14,14 +14,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Linq.Expressions;
-
-namespace Commons.Json.Mapper
+namespace Commons.Json
 {
-	[CLSCompliant(true)]
-	public interface IJsonObjectMapper<T>
+	internal static class JsonTokens
 	{
-		IJsonObjectMapper<T> MapProperty(string jsonPath, Expression<Func<T, object>> propertyExp);
+		public const char LeftBrace = '{';
+		public const char RightBrace = '}';
+		public const char LeftBracket = '[';
+		public const char RightBracket = ']';
+		public const char Comma = ',';
+		public const char Colon = ':';
+		public const char Quoter = '"';
+		public const char SingleQuoter = '\'';
+		public const char Dot = '.';
+		public const char Space = ' ';
+		public const char Slash = '\\';
+		public const char Negtive = '-';
+		public const string Null = "null";
+		public const string Tab = "    ";
 	}
 }

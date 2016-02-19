@@ -121,6 +121,153 @@ namespace Test.Commons.Json
             Assert.Equal(string.Empty, jobj.test[0].ToString().Trim('{', '}').Trim());
         }
 
+		[Fact]
+	    public void TestParseJsonSimpleArray()
+	    {
+		    var json = @"[0, 1, 2, 3, 4, 5, 6]";
+		    dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Equal(0, jsonObj[0]);
+			Assert.Equal(1, jsonObj[1]);
+	    }
+
+		[Fact]
+	    public void TestParseJsonComplexArray()
+	    {
+		    var json = @"[0, {'Test': [true, false, 20, 'testvalue1']}, true, 1.0004, 200000, 'testvalue2']";
+		    dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Equal(0, jsonObj[0]);
+			Assert.True(jsonObj[1].Test[0]);
+			Assert.False(jsonObj[1].Test[1]);
+			Assert.Equal(20, jsonObj[1].Test[2]);
+			Assert.Equal("testvalue1", jsonObj[1].Test[3]);
+			Assert.True(jsonObj[2]);
+			Assert.Equal(1.0004, jsonObj[3], 0.000001);
+			Assert.Equal(200000, jsonObj[4]);
+			Assert.Equal("testvalue2", jsonObj[5]);
+	    }
+
+		[Fact]
+	    public void TestParseJsonSingleString()
+		{
+			var json = @"'simple'";
+			dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Equal("simple", jsonObj);
+		}
+
+		[Fact]
+	    public void TestParseJsonSingleNumber()
+	    {
+		    var json = "1000";
+			dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Equal(1000, jsonObj);
+	    }
+
+		[Fact]
+	    public void TestParseJsonSingleNegtiveNumber()
+	    {
+		    var json = "-5";
+		    dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Equal(-5, jsonObj);
+	    }
+
+	    [Fact]
+	    public void TestParseJsonSingleNegtiveDecimal()
+	    {
+		    var json = "-0.334";
+		    dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Equal(-0.334, jsonObj, 0.00001);
+	    }
+
+		[Fact]
+	    public void TestParseJsonSingleDecimal()
+		{
+			var json = "200.01234";
+			dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Equal(200.01234, jsonObj, 0.00000001);
+		}
+
+		[Fact]
+	    public void TestParseJsonSingleTrue()
+	    {
+		    var json = "true";
+		    dynamic jsonObj = JsonObject.Parse(json);
+			Assert.True(jsonObj);
+	    }
+
+		[Fact]
+	    public void TestParseJsonSingleTrueIgnoreCase()
+	    {
+		    var json = "TruE";
+			dynamic jsonObj = JsonObject.Parse(json);
+			Assert.True(jsonObj);
+	    }
+
+		[Fact]
+	    public void TestParseJsonSingleFalse()
+	    {
+		    var json = "false";
+		    dynamic jsonObj = JsonObject.Parse(json);
+			Assert.False(jsonObj);
+	    }
+
+		[Fact]
+	    public void TestParseJsonSingleFalseIgnoreCase()
+	    {
+		    var json = "falSe";
+			dynamic jsonObj = JsonObject.Parse(json);
+			Assert.False(jsonObj);
+	    }
+
+		[Fact]
+	    public void TestParseJsonIllString()
+	    {
+		    var json = @"'i'll'";
+		    Assert.Throws(typeof (ArgumentException), () => JsonObject.Parse(json));
+	    }
+
+		[Fact]
+	    public void TestParseJsonIllString2()
+		{
+			var json = @"'i\ll'";
+			Assert.Throws(typeof (ArgumentException), () => JsonObject.Parse(json));
+		}
+
+		[Fact]
+	    public void TestParseJsonIllBool()
+		{
+			var json = @"truee";
+			Assert.Throws(typeof (ArgumentException), () => JsonObject.Parse(json));
+		}
+
+		[Fact]
+	    public void TestParseJsonSingleNull()
+	    {
+		    var json = "null";
+		    dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Null(jsonObj);
+	    }
+
+		[Fact]
+	    public void TestParseJsonSingleNullIgnoreCase()
+	    {
+		    var json = "nULL";
+		    dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Null(jsonObj);
+	    }
+
+		[Fact]
+	    public void TestParseJsonIllSingleNumber()
+	    {
+		    var json = "4r565";
+		    Assert.Throws(typeof (ArgumentException), () => JsonObject.Parse(json));
+	    }
+
+		[Fact]
+	    public void TestParseJsonControlCharacter()
+	    {
+			Assert.Equal(0, 1);
+	    }
+
         [Fact]
         public void TestParseJsonEmptyArray()
         {
@@ -171,6 +318,13 @@ namespace Test.Commons.Json
             var json = "{\"test\": { \"nest\": null}";
             Assert.Throws(typeof(ArgumentException), () => JsonObject.Parse(json));
         }
+
+		[Fact]
+	    public void TestParseJsonIllFormat2()
+	    {
+		    var json = "{\"nam\"e\": \"Jack\"}";
+		    Assert.Throws(typeof (ArgumentException), () => JsonObject.Parse(json));
+	    }
 
         [Fact]
         public void TestParseJsonNumberArray()

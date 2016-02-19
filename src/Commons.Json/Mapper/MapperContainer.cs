@@ -15,43 +15,33 @@
 // limitations under the License.
 
 using System;
+using Commons.Collections.Map;
 
 namespace Commons.Json.Mapper
 {
-	[CLSCompliant(true)]
-	public static class JsonMapper
+	internal class MapperContainer
 	{
-		private static MapperContainer mapperContainer = new MapperContainer();
+		private ReferenceMap<Type, object> mappers = new ReferenceMap<Type, object>();
 
-		public static IJsonObjectMapper<T> For<T>()
+		public bool ContainsMapper<T>()
 		{
-			IJsonObjectMapper<T> mapper;
-			if (mapperContainer.ContainsMapper<T>())
+			var type = typeof (T);
+			return mappers.ContainsKey(type);
+		}
+
+		public void PushMapper<T>(IJsonObjectMapper<T> mapper)
+		{
+			var type = typeof (T);
+			mappers[type] = mapper;
+		}
+
+		public IJsonObjectMapper<T> GetMapper<T>()
+		{
+			var type = typeof (T);
+			if (mappers.ContainsKey(type))
 			{
-				mapper = mapperContainer.GetMapper<T>();
+				return (IJsonObjectMapper<T>) mappers[type];
 			}
-			else
-			{
-				mapper = new JsonObjectMapper<T>();
-				mapperContainer.PushMapper(mapper);
-			}
-			return mapper;
-		}
-
-		public static T ToObject<T>(string json)
-		{
-			var parseEngine = new JsonParseEngine();
-			var jsonValue = parseEngine.Parse(json);
-			var mapEngine = new MapEngine<T>(For<T>());
-			return mapEngine.Map(jsonValue);
-		}
-
-		public static void FillWith<T>(string json, ref T obj)
-		{
-		}
-
-		public static string ToJson<T>(T target)
-		{
 			return null;
 		}
 	}
