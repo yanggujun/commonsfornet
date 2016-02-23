@@ -32,5 +32,7 @@ namespace Commons.Json
 		public const char Negtive = '-';
 		public const string Null = "null";
 		public const string Tab = "    ";
+		public const string True = "true";
+		public const string False = "false";
 	}
 }
