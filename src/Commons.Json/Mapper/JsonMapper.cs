@@ -54,5 +54,10 @@ namespace Commons.Json.Mapper
 		{
 			return null;
 		}
+
+        public static dynamic ToDynamic(string json)
+        {
+            return null;
+        }
 	}
 }
