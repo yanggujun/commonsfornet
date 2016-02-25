@@ -14,64 +14,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.Dynamic;
+using Commons.Json.Mapper;
 
 namespace Commons.Json
 {
-    internal class JsonValue : DynamicObject
+    public class JsonValue : DynamicObject
     {
-        private readonly object jsonValue;
+	    private readonly JValue jsonValue;
 
-        public JsonValue(object value)
+        public JsonValue(JValue value)
         {
-            jsonValue = value == null ? null : Convert(value);
-        }
-
-        private static object Convert(object value)
-        {
-            var type = value.GetType();
-            object obj = null;
-            if (type.IsPrimitive || type == typeof(bool) || type == typeof(string) || type == typeof(JsonObject))
-            {
-                obj = value;
-            }
-            else if (type.IsArray)
-            {
-                var values = value as object[];
-                var items = new JsonValue[values.Length];
-                for (var i = 0; i < values.Length; i++)
-                {
-                    items[i] = new JsonValue(values[i]);
-                }
-                obj = items;
-            }
-            else if (typeof(IEnumerable).IsAssignableFrom(type))
-            {
-                var items = value as IEnumerable;
-                var list = new List<JsonValue>();
-                foreach (var item in items)
-                {
-                    list.Add(new JsonValue(item));
-                }
-                obj = list.ToArray();
-            }
-            else
-            {
-                obj = value.ToString();
-            }
-            return obj;
+	        jsonValue = value;
         }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            var jobj = jsonValue as JsonObject;
             var success = false;
-            if (null != jobj)
+            if (null != jsonValue)
             {
-                dynamic obj = jobj;
-                result = obj[binder.Name];
+	            var obj = jsonValue as JObject;
+	            if (obj == null)
+	            {
+		            throw new InvalidOperationException();
+	            }
+                result = new JsonValue(JValue.From(obj[binder.Name]));
                 success = true;
             }
             else
@@ -83,12 +51,15 @@ namespace Commons.Json
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            var jobj = jsonValue as JsonObject;
             var success = false;
-            if (null != jobj)
+            if (null != jsonValue)
             {
-                dynamic obj = jobj;
-                obj[binder.Name] = value;
+	            var obj = jsonValue as JObject;
+	            if (null == obj)
+	            {
+		            throw new InvalidOperationException();
+	            }
+                obj[binder.Name] = JValue.From(value);
                 success = true;
             }
             else
@@ -102,9 +73,14 @@ namespace Commons.Json
         {
             var hasValue = false;
             int index;
-            if (jsonValue != null && jsonValue.GetType().IsArray && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
+            if (jsonValue != null && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
             {
-                result = ((JsonValue[])jsonValue)[index];
+	            var array = jsonValue as JArray;
+	            if (array == null)
+	            {
+		            throw new InvalidOperationException();
+	            }
+	            result = new JsonValue(array[index]);
                 hasValue = true;
             }
             else
@@ -119,9 +95,14 @@ namespace Commons.Json
         {
             var success = false;
             int index;
-            if (jsonValue != null && jsonValue.GetType().IsArray && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
+            if (jsonValue != null && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
             {
-                ((JsonValue[])jsonValue)[index] = new JsonValue(value);
+	            var array = jsonValue as JArray;
+	            if (array == null)
+	            {
+		            throw new InvalidOperationException();
+	            }
+	            array[index] = JValue.From(value);
                 success = true;
             }
             else
