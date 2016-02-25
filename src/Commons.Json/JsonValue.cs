@@ -22,7 +22,12 @@ namespace Commons.Json
 {
     public class JsonValue : DynamicObject
     {
-	    private readonly JValue jsonValue;
+	    private JValue jsonValue;
+
+        public JsonValue()
+        {
+
+        }
 
         public JsonValue(JValue value)
         {
@@ -51,7 +56,6 @@ namespace Commons.Json
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            var success = false;
             if (null != jsonValue)
             {
 	            var obj = jsonValue as JObject;
@@ -60,28 +64,47 @@ namespace Commons.Json
 		            throw new InvalidOperationException();
 	            }
                 obj[binder.Name] = JValue.From(value);
-                success = true;
             }
             else
             {
-                success = base.TrySetMember(binder, value);
+                var newObj = new JObject();
+                newObj[binder.Name] = JValue.From(value);
+                jsonValue = newObj;
             }
-            return success;
+
+            return true;
         }
 
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
         {
             var hasValue = false;
-            int index;
-            if (jsonValue != null && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
+            if (jsonValue != null && indexes.Length > 0)
             {
-	            var array = jsonValue as JArray;
-	            if (array == null)
-	            {
-		            throw new InvalidOperationException();
-	            }
-	            result = new JsonValue(array[index]);
-                hasValue = true;
+                int index;
+                if (int.TryParse(indexes[0].ToString(), out index) && index >= 0)
+                {
+                    var array = jsonValue as JArray;
+                    if (array == null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                    result = new JsonValue(array[index]);
+                    hasValue = true;
+                }
+                else if (indexes[0].GetType().IsAssignableFrom(typeof(string)))
+                {
+                    var jsonObject = jsonValue as JObject;
+                    if (jsonObject == null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                    result = new JsonValue(jsonObject[indexes[0] as string]);
+                    hasValue = true;
+                }
+                else
+                {
+                    hasValue = base.TryGetIndex(binder, indexes, out result);
+                }
             }
             else
             {
@@ -97,12 +120,16 @@ namespace Commons.Json
             int index;
             if (jsonValue != null && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
             {
-	            var array = jsonValue as JArray;
-	            if (array == null)
-	            {
-		            throw new InvalidOperationException();
-	            }
-	            array[index] = JValue.From(value);
+                var array = jsonValue as JArray;
+                if (array == null)
+                {
+                    throw new InvalidOperationException();
+                }
+                if (index > array.Length - 1)
+                {
+                    throw new InvalidOperationException();
+                }
+                array[index] = JValue.From(value);
                 success = true;
             }
             else
@@ -120,7 +147,7 @@ namespace Commons.Json
 
         public override string ToString()
         {
-            return jsonValue == null ? "null" : jsonValue.FormatJsonValue();
+            return jsonValue == null ? "null" : jsonValue.ToString();
         }
     }
 }
