@@ -30,16 +30,6 @@ namespace Commons.Json.Mapper
 			get { return culture; }
 			set { culture = value; }
 		}
-
-		public static JValue From<T>(T value)
-		{
-			return null;
-		}
-
-		public static JValue From(object value)
-		{
-			return null;
-		}
 	}
 
 	public abstract class JPrimitive<T> : JValue
@@ -159,7 +149,6 @@ namespace Commons.Json.Mapper
 				}
 				return null;
 			}
-			set { values[index] = value; }
 		}
 
 		public IEnumerator<JValue> GetEnumerator()
