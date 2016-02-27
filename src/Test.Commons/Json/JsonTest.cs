@@ -16,7 +16,6 @@
 
 using System;
 using Commons.Json;
-using Commons.Json.Mapper;
 using Xunit;
 
 namespace Test.Commons.Json
@@ -26,7 +25,7 @@ namespace Test.Commons.Json
         [Fact]
         public void TestJsonObject()
         {
-            dynamic worldCup = new JsonValue();
+            dynamic worldCup = new JsonObject();
             worldCup.Host = "Brazil";
             worldCup.TotalTeams = 32;
             worldCup.Started = true;
@@ -43,7 +42,7 @@ namespace Test.Commons.Json
             Assert.Equal("Netherland", (string)worldCup.Groups.GroupB[1]);
             Assert.Equal("Chile", (string)worldCup.Groups.GroupB[2]);
             Assert.Equal("Australia", (string)worldCup.Groups.GroupB[3]);
-            Assert.DoesNotThrow(() => JsonMapper.ToDynamic(worldCup.ToString()));
+            Assert.DoesNotThrow(() => JsonObject.Parse(worldCup.ToString()));
         }
 
         [Fact]

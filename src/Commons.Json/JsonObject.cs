@@ -17,14 +17,9 @@
 using System;
 using System.Dynamic;
 using Commons.Collections.Map;
-using Commons.Json.Mapper;
 
 namespace Commons.Json
 {
-    /// <summary>
-    /// Oops! The class is obsolete from version 0.2.3. Please use JsonMapper.ToDynamic for dynamic json manipulation.
-    /// </summary>
-    [Obsolete]
     [CLSCompliant(true)]
     public class JsonObject : DynamicObject
     {
@@ -40,11 +35,11 @@ namespace Commons.Json
             var name = binder.Name;
             if (valueMap.ContainsKey(name))
             {
-                valueMap[name] = new JsonValue(JValue.From(value));
+                valueMap[name] = new JsonValue(value);
             }
             else
             {
-                valueMap.Add(name, new JsonValue(JValue.From(value)));
+                valueMap.Add(name, new JsonValue(value));
             }
 
             return true;
@@ -59,7 +54,7 @@ namespace Commons.Json
             if (!success)
             {
                 var obj = new JsonObject();
-                valueMap.Add(name, new JsonValue(JValue.From(obj)));
+                valueMap.Add(name, new JsonValue(obj));
                 result = obj;
             }
             return true;
@@ -76,7 +71,7 @@ namespace Commons.Json
                 if (!success)
                 {
                     var obj = new JsonObject();
-                    valueMap.Add(name, new JsonValue(JValue.From(obj)));
+                    valueMap.Add(name, new JsonValue(obj));
                     result = obj;
                     success = true;
                 }
@@ -100,11 +95,11 @@ namespace Commons.Json
             {
                 if (valueMap.ContainsKey(name))
                 {
-                    valueMap[name] = new JsonValue(JValue.From(value));
+                    valueMap[name] = new JsonValue(value);
                 }
                 else
                 {
-                    valueMap.Add(name, new JsonValue(JValue.From(value)));
+                    valueMap.Add(name, new JsonValue(value));
                 }
                 success = true;
             }

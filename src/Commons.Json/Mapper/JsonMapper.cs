@@ -57,9 +57,7 @@ namespace Commons.Json.Mapper
 
         public static JsonValue ToDynamic(string json)
         {
-            var parseEngine = new JsonParseEngine();
-            var jsonValue = parseEngine.Parse(json);
-            return new JsonValue(jsonValue);
+            return null;
         }
 	}
 }

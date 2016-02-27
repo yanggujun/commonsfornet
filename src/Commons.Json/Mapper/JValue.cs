@@ -31,68 +31,13 @@ namespace Commons.Json.Mapper
 			set { culture = value; }
 		}
 
+		public static JValue From<T>(T value)
+		{
+			return null;
+		}
+
 		public static JValue From(object value)
 		{
-            if (value == null)
-            {
-                return JNull.Null;
-            }
-
-            var type = value.GetType();
-            if (type == typeof(int))
-            {
-                return new JInteger().As((int)value);
-            }
-            else if (type == typeof(long))
-            {
-                return new JInteger().As((long)value);
-            }
-            else if (type == typeof(double))
-            {
-                return new JDecimal().As(Convert.ToDecimal((double)value));
-            }
-            else if (type == typeof(decimal))
-            {
-                return new JDecimal().As((decimal)value);
-            }
-            else if (type == typeof(float))
-            {
-                return new JDecimal().As(Convert.ToDecimal((float)value));
-            }
-            else if (type == typeof(bool))
-            {
-                return new JBoolean().As((bool)value);
-            }
-            else if (type == typeof(string))
-            {
-                return new JString((string)value);
-            }
-            else if (type.IsArray)
-            {
-                var array = value as object[];
-                var jarray = new JArray();
-                for (var i = 0; i < array.Length; i++)
-                {
-                    jarray.Add(JValue.From(array[i]));
-                }
-                return jarray;
-            }
-            else if (type.IsAssignableFrom(typeof(IEnumerable)))
-            {
-                var elements = value as IEnumerable;
-                var array = new JArray();
-                foreach(var element in elements)
-                {
-                    array.Add(JValue.From(element));
-                }
-
-                return array;
-            }
-            else
-            {
-                //TODO:
-            }
-
 			return null;
 		}
 	}
@@ -217,11 +162,6 @@ namespace Commons.Json.Mapper
 			set { values[index] = value; }
 		}
 
-        public int Length
-        {
-            get { return values.Count; }
-        }
-
 		public IEnumerator<JValue> GetEnumerator()
 		{
 			return values.GetEnumerator();
@@ -239,11 +179,6 @@ namespace Commons.Json.Mapper
 
 	public class JNull : JValue
 	{
-        private static JNull jnull = new JNull();
-        public static JNull Null
-        {
-            get { return jnull; }
-        }
 		public override string ToString()
 		{
 			return "null";
