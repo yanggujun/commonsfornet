@@ -15,19 +15,30 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using Commons.Collections.Map;
 
 namespace Commons.Json
 {
     [CLSCompliant(true)]
-    public class JsonObject : DynamicObject
+    public class JsonObject : JsonValue
     {
         private readonly LinkedHashedMap<string, JsonValue> valueMap = new LinkedHashedMap<string, JsonValue>();
 
+        /// <summary>
+        /// Oops! The method is obsolete from 0.2.2. Use Json.Parse(json) instead.
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        [Obsolete]
         public static JsonObject Parse(string json)
         {
-            return json.ToJson();
+            return JsonParser.ParseJsonObject(json);
+        }
+
+        public JsonObject()
+        {
         }
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
@@ -35,11 +46,11 @@ namespace Commons.Json
             var name = binder.Name;
             if (valueMap.ContainsKey(name))
             {
-                valueMap[name] = new JsonValue(value);
+                valueMap[name] = JsonValue.From(value);
             }
             else
             {
-                valueMap.Add(name, new JsonValue(value));
+                valueMap.Add(name, JsonValue.From(value));
             }
 
             return true;
@@ -54,7 +65,7 @@ namespace Commons.Json
             if (!success)
             {
                 var obj = new JsonObject();
-                valueMap.Add(name, new JsonValue(obj));
+                valueMap.Add(name, JsonValue.From(obj));
                 result = obj;
             }
             return true;
@@ -71,7 +82,7 @@ namespace Commons.Json
                 if (!success)
                 {
                     var obj = new JsonObject();
-                    valueMap.Add(name, new JsonValue(obj));
+                    valueMap.Add(name, JsonValue.From(obj));
                     result = obj;
                     success = true;
                 }
@@ -82,7 +93,7 @@ namespace Commons.Json
             }
             else
             {
-                result = null;
+                throw new InvalidOperationException(Messages.JsonObjectCannotIndex);
             }
             return success;
         }
@@ -95,13 +106,17 @@ namespace Commons.Json
             {
                 if (valueMap.ContainsKey(name))
                 {
-                    valueMap[name] = new JsonValue(value);
+                    valueMap[name] = JsonValue.From(value);
                 }
                 else
                 {
-                    valueMap.Add(name, new JsonValue(value));
+                    valueMap.Add(name, JsonValue.From(value));
                 }
                 success = true;
+            }
+            else
+            {
+                throw new InvalidOperationException(Messages.JsonObjectCannotIndex);
             }
 
             return success;
@@ -116,6 +131,16 @@ namespace Commons.Json
                 result = ToString();
                 success = true;
             }
+            else if (targetType == typeof(IDictionary<string, JsonValue>))
+            {
+                var dict = new Dictionary<string, JsonValue>();
+                foreach (var item in valueMap)
+                {
+                    dict.Add(item.Key, item.Value);
+                }
+                result = dict;
+                success = true;
+            }
             else
             {
                 result = null;
@@ -126,7 +151,7 @@ namespace Commons.Json
 
         public override string ToString()
         {
-            return JsonParser.FormatJsonObject(valueMap);
+            return JsonUtils.FormatJsonObject(valueMap);
         }
     }
 }

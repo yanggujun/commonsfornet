@@ -53,9 +53,12 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="JsonArray.cs" />
     <Compile Include="JsonObject.cs" />
     <Compile Include="JsonParser.cs" />
+    <Compile Include="JsonPrimitive.cs" />
     <Compile Include="JsonTokens.cs" />
+    <Compile Include="JsonUtils.cs" />
     <Compile Include="JsonValue.cs" />
     <Compile Include="Mapper\ArrayParser.cs" />
     <Compile Include="Mapper\BoolParser.cs" />
@@ -72,6 +75,7 @@
     <Compile Include="Mapper\NumberParser.cs" />
     <Compile Include="Mapper\ObjectParser.cs" />
     <Compile Include="Mapper\StringParser.cs" />
+    <Compile Include="Messages.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

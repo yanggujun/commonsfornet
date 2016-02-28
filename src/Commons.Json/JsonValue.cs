@@ -20,22 +20,16 @@ using System.Dynamic;
 
 namespace Commons.Json
 {
-    internal class JsonValue : DynamicObject
+    public abstract class JsonValue : DynamicObject
     {
-        private readonly object jsonValue;
-
-        public JsonValue(object value)
-        {
-            jsonValue = value == null ? null : Convert(value);
-        }
-
-        private static object Convert(object value)
+        public static JsonValue From(object value)
         {
             var type = value.GetType();
             object obj = null;
-            if (type.IsPrimitive || type == typeof(bool) || type == typeof(string) || type == typeof(JsonObject))
+
+            if (type.IsPrimitive || type == typeof(bool) || type == typeof(string))
             {
-                obj = value;
+                return new JsonPrimitive(value);
             }
             else if (type.IsArray)
             {
@@ -43,9 +37,14 @@ namespace Commons.Json
                 var items = new JsonValue[values.Length];
                 for (var i = 0; i < values.Length; i++)
                 {
-                    items[i] = new JsonValue(values[i]);
+                    items[i] = From(values[i]);
                 }
-                obj = items;
+                return new JsonArray(items);
+            }
+            else if (typeof(IDictionary).IsAssignableFrom(type))
+            {
+                //TODO:
+                return new JsonObject();
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
@@ -53,93 +52,15 @@ namespace Commons.Json
                 var list = new List<JsonValue>();
                 foreach (var item in items)
                 {
-                    list.Add(new JsonValue(item));
+                    list.Add(From(item));
                 }
-                obj = list.ToArray();
+                return new JsonArray(list.ToArray());
             }
             else
             {
-                obj = value.ToString();
+                return new JsonPrimitive(value);
             }
-            return obj;
-        }
-
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
-        {
-            var jobj = jsonValue as JsonObject;
-            var success = false;
-            if (null != jobj)
-            {
-                dynamic obj = jobj;
-                result = obj[binder.Name];
-                success = true;
-            }
-            else
-            {
-                success = base.TryGetMember(binder, out result);
-            }
-            return success;
-        }
-
-        public override bool TrySetMember(SetMemberBinder binder, object value)
-        {
-            var jobj = jsonValue as JsonObject;
-            var success = false;
-            if (null != jobj)
-            {
-                dynamic obj = jobj;
-                obj[binder.Name] = value;
-                success = true;
-            }
-            else
-            {
-                success = base.TrySetMember(binder, value);
-            }
-            return success;
-        }
-
-        public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
-        {
-            var hasValue = false;
-            int index;
-            if (jsonValue != null && jsonValue.GetType().IsArray && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
-            {
-                result = ((JsonValue[])jsonValue)[index];
-                hasValue = true;
-            }
-            else
-            {
-                hasValue = base.TryGetIndex(binder, indexes, out result);
-            }
-
-            return hasValue;
-        }
-
-        public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
-        {
-            var success = false;
-            int index;
-            if (jsonValue != null && jsonValue.GetType().IsArray && int.TryParse(indexes[0].ToString(), out index) && index >= 0)
-            {
-                ((JsonValue[])jsonValue)[index] = new JsonValue(value);
-                success = true;
-            }
-            else
-            {
-                success = base.TrySetIndex(binder, indexes, value);
-            }
-            return success;
-        }
-
-        public override bool TryConvert(ConvertBinder binder, out object result)
-        {
-            result = jsonValue;
-            return true;
-        }
-
-        public override string ToString()
-        {
-            return jsonValue == null ? "null" : jsonValue.FormatJsonValue();
+            return null;
         }
     }
 }

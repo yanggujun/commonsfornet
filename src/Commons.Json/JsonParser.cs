@@ -28,101 +28,9 @@ namespace Commons.Json
 {
     internal static class JsonParser
     {
-        private const string InvalidFormat = "The input JSON string format is invalid";
+        private static readonly char[] SpecialChars = { JsonTokens.LeftBrace, JsonTokens.RightBrace, JsonTokens.LeftBracket, JsonTokens.RightBracket, JsonTokens.Comma, JsonTokens.Colon };
 
-        private const char LeftBrace = '{';
-        private const char RightBrace = '}';
-        private const char LeftBracket = '[';
-        private const char RightBracket = ']';
-        private const char Comma = ',';
-        private const char Colon = ':';
-        private const char Quoter = '"';
-        private const char Dot = '.';
-        private const char Space = ' ';
-        private const string Null = "null";
-        private const string Tab = "    ";
-
-        private static readonly char[] SpecialChars = { LeftBrace, RightBrace, LeftBracket, RightBracket, Comma, Colon };
-
-        public static JsonObject ToJson(this string json)
-        {
-            Guarder.ValidateString(json);
-            return ParseJson(json);
-        }
-
-        public static string FormatJsonObject(this LinkedHashedMap<string, JsonValue> valueMap)
-        {
-            var builder = new StringBuilder();
-            builder.Append(LeftBrace).AppendLine();
-            var count = 0;
-            var total = valueMap.Count;
-            foreach (var item in valueMap)
-            {
-                builder.Append(Tab).Append(Quoter).Append((string) item.Key).Append(Quoter).Append(Colon).Append(Space);
-                using (var reader = new StringReader(item.Value.ToString()))
-                {
-                    builder.Append(reader.ReadLine());
-                    while (true)
-                    {
-                        var line = reader.ReadLine();
-                        if (null == line)
-                        {
-                            break;
-                        }
-                        builder.AppendLine().Append(Tab).Append(line);
-                    }
-                }
-                count++;
-                if (count < total)
-                {
-                    builder.Append(Comma).AppendLine();
-                }
-            }
-            builder.AppendLine().Append(RightBrace);
-            return builder.ToString();
-        }
-
-        public static string FormatJsonValue(this object jsonValue)
-        {
-            var type = jsonValue.GetType();
-            var str = string.Empty;
-            if (type.IsPrimitive || type == typeof(bool))
-            {
-                str = jsonValue.ToString();
-            }
-            else if (type == typeof(string))
-            {
-                var builder = new StringBuilder();
-                builder.Append(Quoter).Append(jsonValue).Append(Quoter);
-                str = builder.ToString();
-            }
-            else if (type == typeof(JsonObject))
-            {
-                str = jsonValue.ToString();
-            }
-            else if (type.IsArray)
-            {
-                var items = jsonValue as object[];
-                var builder = new StringBuilder();
-                var count = 0;
-                var total = items.Length;
-                builder.Append(LeftBracket).AppendLine().Append(Tab);
-                foreach (var item in items)
-                {
-                    builder.Append(item.ToString());
-                    count++;
-                    if (count < total)
-                    {
-                        builder.Append(Comma).Append(Space);
-                    }
-                }
-                builder.AppendLine().Append(RightBracket);
-                str = builder.ToString();
-            }
-            return str;
-        }
-
-        private static JsonObject ParseJson(string json)
+        public static JsonObject ParseJsonObject(string json)
         {
             JsonObject jsonObj = null;
             using (var reader = new StringReader(json.Trim()))
@@ -135,9 +43,9 @@ namespace Commons.Json
                 while ((intCh = reader.Read())!= -1)
                 {
                     var ch = Convert.ToChar(intCh);
-                    if (charStack.Count == 0 && ch != LeftBrace)
+                    if (charStack.Count == 0 && ch != JsonTokens.LeftBrace)
                     {
-                        throw new ArgumentException(InvalidFormat);
+                        throw new ArgumentException(Messages.InvalidFormat);
                     }
                     if (currentIsQuoted && SpecialChars.Any(x => x == ch))
                     {
@@ -146,20 +54,20 @@ namespace Commons.Json
                     }
                     switch (ch)
                     {
-                        case LeftBrace:
+                        case JsonTokens.LeftBrace:
                             charStack.Push(ch);
                             objectStack.Push(new JsonObject());
                             break;
-                        case LeftBracket: //[
+                        case JsonTokens.LeftBracket: //[
                             objectStack.Push(new ArrayList());
                             charStack.Push(ch);
                             break;
-                        case RightBracket: //]
-                            if (charStack.Peek() != LeftBracket || currentFragment.ToString().Trim() != string.Empty)
+                        case JsonTokens.RightBracket: //]
+                            if (charStack.Peek() != JsonTokens.LeftBracket || currentFragment.ToString().Trim() != string.Empty)
                             {
                                 ExtractJsonValue(charStack, currentFragment, objectStack);
                             }
-                            charStack.Pop().Verify(x => x == LeftBracket);
+                            charStack.Pop().Verify(x => x == JsonTokens.LeftBracket);
                             var array = objectStack.Pop() as ArrayList;
                             array.Verify(x => x != null);
                             var key = objectStack.Pop() as string;
@@ -168,17 +76,17 @@ namespace Commons.Json
                             outerObj[key] = array;
                             charStack.Push(ch);
                             break;
-                        case RightBrace:
+                        case JsonTokens.RightBrace:
                             //Potential problems here
-                            if (charStack.Peek() != LeftBrace || currentFragment.ToString().Trim() != string.Empty)
+                            if (charStack.Peek() != JsonTokens.LeftBrace || currentFragment.ToString().Trim() != string.Empty)
                             {
                                 ExtractJsonValue(charStack, currentFragment, objectStack);
                             }
-                            charStack.Pop().Verify(x => x == LeftBrace);
+                            charStack.Pop().Verify(x => x == JsonTokens.LeftBrace);
                             var inner = objectStack.Pop() as JsonObject;
                             if (objectStack.Count > 0)
                             {
-                                if (charStack.Count > 0 && charStack.Peek() == LeftBracket)
+                                if (charStack.Count > 0 && charStack.Peek() == JsonTokens.LeftBracket)
                                 {
                                     var lastArray = objectStack.Peek() as ArrayList;
                                     lastArray.Verify(x => x != null);
@@ -198,19 +106,19 @@ namespace Commons.Json
                                 jsonObj = inner;
                             }
                             break;
-                        case Comma:
+                        case JsonTokens.Comma:
                             ExtractJsonValue(charStack, currentFragment, objectStack);
                             break;
-                        case Colon:
-                            charStack.Pop().Verify(x => x == Quoter);
+                        case JsonTokens.Colon:
+                            charStack.Pop().Verify(x => x == JsonTokens.Quoter);
                             var keyStr = currentFragment.ToString().Trim();
-                            keyStr.Verify(x => x[0] == Quoter && x[x.Length - 1] == Quoter);
+                            keyStr.Verify(x => x[0] == JsonTokens.Quoter && x[x.Length - 1] == JsonTokens.Quoter);
                             keyStr = keyStr.Substring(1, keyStr.Length - 2);
                             objectStack.Push(keyStr);
                             currentFragment.Clear();
                             break;
-                        case Quoter:
-                            if (charStack.Peek() != Quoter)
+                        case JsonTokens.Quoter:
+                            if (charStack.Peek() != JsonTokens.Quoter)
                             {
                                 charStack.Push(ch);
                                 currentIsQuoted = true;
@@ -228,16 +136,21 @@ namespace Commons.Json
                 }
                 if (charStack.Count > 0)
                 {
-                    throw new ArgumentException(InvalidFormat);
+                    throw new ArgumentException(Messages.InvalidFormat);
                 }
 
                 return jsonObj;
             }
         }
 
+        public static JsonArray ParseJsonArray(string json)
+        {
+            return null;
+        }
+
         private static void ExtractJsonValue(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
         {
-            if (charStack.Peek() == RightBrace || charStack.Peek() == RightBracket)
+            if (charStack.Peek() == JsonTokens.RightBrace || charStack.Peek() == JsonTokens.RightBracket)
             {
                 currentFragment.ToString().Trim().Verify(x => string.IsNullOrWhiteSpace(x));
                 charStack.Pop();
@@ -253,24 +166,24 @@ namespace Commons.Json
             object jsonValue;
             var value = currentFragment.ToString().Trim();
             var boolValue = false;
-            if (charStack.Peek() == Quoter)
+            if (charStack.Peek() == JsonTokens.Quoter)
             {
                 charStack.Pop();
                 value.Verify(x => !string.IsNullOrWhiteSpace(x));
-                value.Verify(x => x[0] == Quoter && x[x.Length - 1] == Quoter);
-                jsonValue = value.Trim().Trim(Quoter);
+                value.Verify(x => x[0] == JsonTokens.Quoter && x[x.Length - 1] == JsonTokens.Quoter);
+                jsonValue = value.Trim().Trim(JsonTokens.Quoter);
             }
             else if (bool.TryParse(value, out boolValue))
             {
                 jsonValue = boolValue;
             }
-            else if (value.ToLower(CultureInfo.InvariantCulture) == Null)
+            else if (value.ToLower(CultureInfo.InvariantCulture) == JsonTokens.Null)
             {
-                jsonValue = null;
+                jsonValue = JsonTokens.Null;
             }
             else
             {
-                if (value.IndexOf(Dot) != -1)
+                if (value.IndexOf(JsonTokens.Dot) != -1)
                 {
                     double number = 0;
                     value.Verify(x => double.TryParse(x, out number));
@@ -303,7 +216,7 @@ namespace Commons.Json
         {
             if (!check(x))
             {
-                throw new ArgumentException(InvalidFormat);
+                throw new ArgumentException(Messages.InvalidFormat);
             }
         }
     }
