@@ -30,7 +30,7 @@ namespace Commons.Json
     {
         private static readonly char[] SpecialChars = { JsonTokens.LeftBrace, JsonTokens.RightBrace, JsonTokens.LeftBracket, JsonTokens.RightBracket, JsonTokens.Comma, JsonTokens.Colon };
 
-        public static JsonObject ParseJsonObject(string json)
+        public static JsonObject Parse(string json)
         {
             JsonObject jsonObj = null;
             using (var reader = new StringReader(json.Trim()))
@@ -43,10 +43,6 @@ namespace Commons.Json
                 while ((intCh = reader.Read())!= -1)
                 {
                     var ch = Convert.ToChar(intCh);
-                    if (charStack.Count == 0 && ch != JsonTokens.LeftBrace)
-                    {
-                        throw new ArgumentException(Messages.InvalidFormat);
-                    }
                     if (currentIsQuoted && SpecialChars.Any(x => x == ch))
                     {
                         currentFragment.Append(ch);
@@ -59,7 +55,7 @@ namespace Commons.Json
                             objectStack.Push(new JsonObject());
                             break;
                         case JsonTokens.LeftBracket: //[
-                            objectStack.Push(new ArrayList());
+                            objectStack.Push(new JsonArray());
                             charStack.Push(ch);
                             break;
                         case JsonTokens.RightBracket: //]
@@ -68,7 +64,7 @@ namespace Commons.Json
                                 ExtractJsonValue(charStack, currentFragment, objectStack);
                             }
                             charStack.Pop().Verify(x => x == JsonTokens.LeftBracket);
-                            var array = objectStack.Pop() as ArrayList;
+                            var array = objectStack.Pop() as JsonArray;
                             array.Verify(x => x != null);
                             var key = objectStack.Pop() as string;
                             key.Verify(x => !string.IsNullOrWhiteSpace(x));
@@ -88,7 +84,7 @@ namespace Commons.Json
                             {
                                 if (charStack.Count > 0 && charStack.Peek() == JsonTokens.LeftBracket)
                                 {
-                                    var lastArray = objectStack.Peek() as ArrayList;
+                                    var lastArray = objectStack.Peek() as JsonArray;
                                     lastArray.Verify(x => x != null);
                                     lastArray.Add(inner);
                                 }
@@ -134,18 +130,13 @@ namespace Commons.Json
                             break;
                     }
                 }
-                if (charStack.Count > 0)
+                if (charStack.Count > 0 || currentIsQuoted)
                 {
                     throw new ArgumentException(Messages.InvalidFormat);
                 }
 
                 return jsonObj;
             }
-        }
-
-        public static JsonArray ParseJsonArray(string json)
-        {
-            return null;
         }
 
         private static void ExtractJsonValue(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
@@ -163,7 +154,7 @@ namespace Commons.Json
 
         private static void ParseJsonValue(StringBuilder currentFragment, Stack<char> charStack, Stack<object> objectStack)
         {
-            object jsonValue;
+            JsonValue jsonValue;
             var value = currentFragment.ToString().Trim();
             var boolValue = false;
             if (charStack.Peek() == JsonTokens.Quoter)
@@ -171,35 +162,40 @@ namespace Commons.Json
                 charStack.Pop();
                 value.Verify(x => !string.IsNullOrWhiteSpace(x));
                 value.Verify(x => x[0] == JsonTokens.Quoter && x[x.Length - 1] == JsonTokens.Quoter);
-                jsonValue = value.Trim().Trim(JsonTokens.Quoter);
+	            jsonValue = new JsonPrimitive((value.Trim().Trim(JsonTokens.Quoter)));
             }
             else if (bool.TryParse(value, out boolValue))
             {
-                jsonValue = boolValue;
+	            jsonValue = new JsonPrimitive(boolValue);
             }
             else if (value.ToLower(CultureInfo.InvariantCulture) == JsonTokens.Null)
             {
-                jsonValue = JsonTokens.Null;
+	            jsonValue = new JsonPrimitive(null);
             }
             else
             {
-                if (value.IndexOf(JsonTokens.Dot) != -1)
+	            var dotIndex = 0;
+                if ((dotIndex = value.IndexOf(JsonTokens.Dot)) != -1)
                 {
+	                if (dotIndex == 0 || dotIndex == value.Length - 1)
+	                {
+		                throw new ArgumentException(Messages.InvalidFormat);
+	                }
                     double number = 0;
                     value.Verify(x => double.TryParse(x, out number));
-                    jsonValue = number;
+	                jsonValue = new JsonPrimitive(number);
                 }
                 else
                 {
                     var number = 0;
                     value.Verify(x => int.TryParse(x, out number));
-                    jsonValue = number;
+                    jsonValue = new JsonPrimitive(number);
                 }
             }
             var last = objectStack.Peek();
-            if (last is ArrayList)
+            if (last is JsonArray)
             {
-                var array = last as ArrayList;
+                var array = last as JsonArray;
                 array.Add(jsonValue);
             }
             else

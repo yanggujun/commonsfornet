@@ -31,14 +31,9 @@ namespace Commons.Json
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
-        [Obsolete]
-        public static JsonObject Parse(string json)
+        public static dynamic Parse(string json)
         {
-            return JsonParser.ParseJsonObject(json);
-        }
-
-        public JsonObject()
-        {
+            return JsonParser.Parse(json);
         }
 
         public override bool TrySetMember(SetMemberBinder binder, object value)

@@ -54,6 +54,7 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="JsonArray.cs" />
+    <Compile Include="JsonMapper.cs" />
     <Compile Include="JsonObject.cs" />
     <Compile Include="JsonParser.cs" />
     <Compile Include="JsonPrimitive.cs" />
@@ -67,7 +68,6 @@
     <Compile Include="Mapper\JsonParseEngine.cs" />
     <Compile Include="Mapper\JValue.cs" />
     <Compile Include="Mapper\IJsonObjectMapper.cs" />
-    <Compile Include="Mapper\JsonMapper.cs" />
     <Compile Include="Mapper\JsonObjectMapper.cs" />
     <Compile Include="Mapper\MapEngine.cs" />
     <Compile Include="Mapper\MapperContainer.cs" />

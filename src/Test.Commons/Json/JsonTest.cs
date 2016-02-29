@@ -90,6 +90,40 @@ namespace Test.Commons.Json
             Assert.Equal("~1.8", (string)package.devDependencies.chai);
         }
 
+		[Fact]
+	    public void TestJson1()
+		{
+			var json = "{\"name\": \"Jack\"}";
+			dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Equal("Jack", (string)jsonObj["name"]);
+		}
+
+		[Fact]
+	    public void TestJson2()
+	    {
+			var json = "{\"name\": \"Jack\", \"age\": 30}";
+		    dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Equal(30, (int)jsonObj["age"]);
+	    }
+
+		[Fact]
+	    public void TestJson3()
+	    {
+		    var json = "{\"name\": \"Jack\", \"age\": 30, \"children\": [\"Jason\", \"Ann\"]}";
+		    dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Equal("Jason", (string)jsonObj["children"][0]);
+			Assert.Equal("Ann", (string)jsonObj["children"][1]);
+	    }
+
+		[Fact]
+	    public void TestJson4()
+	    {
+		    var json = "{\"name\": \"Jack\", \"age\": 30, \"children\": [\"Jason\", \"Ann\"], \"edu\": {\"college\": \"nyu\", \"graduate\": \"mit\"}}";
+		    dynamic jsonObj = JsonObject.Parse(json);
+			Assert.Equal("nyu", (string)jsonObj["edu"]["college"]);
+			Assert.Equal("mit", (string)jsonObj["edu"]["graduate"]);
+	    }
+
         [Fact]
         public void TestParseJsonIllEmptyHalfObject()
         {
@@ -101,7 +135,7 @@ namespace Test.Commons.Json
         public void TestParseJsonEmptyObject()
         {
             var json = @"{}";
-            dynamic jobj = JsonObject.Parse(json);
+	        dynamic jobj = JsonObject.Parse(json);
             Assert.Equal(string.Empty, jobj.ToString().Trim('{', '}').Trim());
         }
 

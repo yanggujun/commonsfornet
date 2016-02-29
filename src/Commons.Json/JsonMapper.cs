@@ -15,8 +15,9 @@
 // limitations under the License.
 
 using System;
+using Commons.Json.Mapper;
 
-namespace Commons.Json.Mapper
+namespace Commons.Json
 {
 	[CLSCompliant(true)]
 	public static class JsonMapper
