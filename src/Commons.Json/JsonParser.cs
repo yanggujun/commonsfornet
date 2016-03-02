@@ -79,7 +79,16 @@ namespace Commons.Json
 			{
 				throw new ArgumentException(Messages.InvalidFormat);
 			}
-	        return objectStack.Pop() as JsonValue;
+            JsonValue jsonValue;
+            if (objectStack.Count == 0)
+            {
+                jsonValue = ParseJsonValue(currentFragment);
+            }
+            else 
+            {
+                jsonValue = objectStack.Pop() as JsonValue;
+            }
+            return jsonValue;
         }
 
 	    private static void OnLeftBrace(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
@@ -91,22 +100,27 @@ namespace Commons.Json
 	    private static void OnRightBrace(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
 	    {
 		    JsonValue value;
-			charStack.Pop().Verify(x => x == JsonTokens.LeftBrace);
-		    var text = currentFragment.ToString();
-		    if (string.IsNullOrWhiteSpace(text))
-		    {
-			    value = objectStack.Pop() as JsonValue;
-				value.Verify(x => x != null);
-		    }
-		    else
-		    {
-			    value = ParseJsonValue(currentFragment);
-		    }
-		    var key = objectStack.Pop() as string;
-			key.Verify(x => !string.IsNullOrWhiteSpace(x));
-		    var outer = objectStack.Peek() as JsonObject;
-		    outer.Verify(x => x != null);
-		    outer[key] = value;
+            var ch = charStack.Pop();
+			ch.Verify(x => x == JsonTokens.LeftBrace || x == JsonTokens.Colon);
+            if (ch == JsonTokens.Colon)
+            {
+                charStack.Pop().Verify(x => x == JsonTokens.LeftBrace);
+                var text = currentFragment.ToString();
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    value = objectStack.Pop() as JsonValue;
+                    value.Verify(x => x != null);
+                }
+                else
+                {
+                    value = ParseJsonValue(currentFragment);
+                }
+                var key = objectStack.Pop() as string;
+                key.Verify(x => !string.IsNullOrWhiteSpace(x));
+                var outer = objectStack.Peek() as JsonObject;
+                outer.Verify(x => x != null);
+                outer[key] = value;
+            }
 	    }
 
 	    private static void OnLeftBracket(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
@@ -138,7 +152,13 @@ namespace Commons.Json
 	    {
 		    JsonValue value;
 		    var ch = charStack.Peek();
-			ch.Verify(x => x == JsonTokens.LeftBrace || x == JsonTokens.LeftBracket);
+            ch.Verify(x => x == JsonTokens.Colon || x == JsonTokens.LeftBracket);
+            if (ch == JsonTokens.Colon)
+            {
+                charStack.Pop();
+                charStack.Peek().Verify(x => x == JsonTokens.LeftBrace);
+            }
+
 		    var text = currentFragment.ToString();
 		    if (string.IsNullOrWhiteSpace(text))
 		    {
@@ -150,7 +170,7 @@ namespace Commons.Json
 			    value = ParseJsonValue(currentFragment);
 		    }
 
-		    if (ch == JsonTokens.LeftBrace)
+		    if (ch == JsonTokens.Colon)
 		    {
 			    var key = objectStack.Pop() as string;
 				key.Verify(x => !string.IsNullOrWhiteSpace(x));
@@ -175,12 +195,13 @@ namespace Commons.Json
 			key.Verify(x => x[0] == JsonTokens.Quoter && x[x.Length - 1] == JsonTokens.Quoter);
 		    key = key.Trim(JsonTokens.Quoter);
 			objectStack.Push(key);
+            charStack.Push(JsonTokens.Colon);
 		    currentFragment.Clear();
 	    }
 
 	    private static void OnQuoter(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack, ref bool quoted)
 	    {
-		    if (charStack.Peek() != JsonTokens.Quoter)
+		    if (!quoted)
 		    {
 			    charStack.Push(JsonTokens.Quoter);
 			    quoted = true;
@@ -192,36 +213,6 @@ namespace Commons.Json
 		    }
 			currentFragment.Append(JsonTokens.Quoter);
 	    }
-
-        private static JsonValue ExtractJsonValue(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
-        {
-	        JsonValue jsonValue = null;
-            if (charStack.Peek() == JsonTokens.RightBrace || charStack.Peek() == JsonTokens.RightBracket)
-            {
-                currentFragment.ToString().Trim().Verify(x => string.IsNullOrWhiteSpace(x));
-                var ch = charStack.Pop();
-	            if (ch == JsonTokens.RightBrace)
-	            {
-		            var inner = objectStack.Pop() as JsonObject;
-					inner.Verify(x => x != null);
-		            jsonValue = inner;
-					charStack.Pop().Verify(x => x == JsonTokens.LeftBrace);
-	            }
-				else if (ch == JsonTokens.RightBracket)
-				{
-					var array = objectStack.Pop() as JsonArray;
-					array.Verify(x => x!= null);
-					jsonValue = array;
-					charStack.Pop().Verify(x => x == JsonTokens.LeftBracket);
-				}
-            }
-            else
-            {
-	            jsonValue = ParseJsonValue(currentFragment);
-            }
-
-	        return jsonValue;
-        }
 
         private static JsonValue ParseJsonValue(StringBuilder currentFragment)
         {

@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
@@ -137,6 +138,11 @@ namespace Commons.Json
 		    sb.Append(JsonTokens.RightBracket);
 		    return sb.ToString();
 	    }
+
+        public int Length
+        {
+            get { return values.Count; }
+        }
 
     }
 }

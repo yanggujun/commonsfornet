@@ -125,6 +125,14 @@ namespace Test.Commons.Json
 	    }
 
         [Fact]
+        public void TestJson5()
+        {
+            var json = "[]";
+            dynamic jsonObj = JsonObject.Parse(json);
+            Assert.Equal(0, jsonObj.Length);
+        }
+
+        [Fact]
         public void TestParseJsonIllEmptyHalfObject()
         {
             var json = "{";
@@ -160,8 +168,8 @@ namespace Test.Commons.Json
 	    {
 		    var json = @"[0, 1, 2, 3, 4, 5, 6]";
 		    dynamic jsonObj = JsonObject.Parse(json);
-			Assert.Equal(0, jsonObj[0]);
-			Assert.Equal(1, jsonObj[1]);
+			Assert.Equal(0, (int)jsonObj[0]);
+			Assert.Equal(1, (int)jsonObj[1]);
 	    }
 
 		[Fact]
@@ -183,9 +191,9 @@ namespace Test.Commons.Json
 		[Fact]
 	    public void TestParseJsonSingleString()
 		{
-			var json = @"'simple'";
+			var json = "\"simple\"";
 			dynamic jsonObj = JsonObject.Parse(json);
-			Assert.Equal("simple", jsonObj);
+			Assert.Equal("simple", (string)jsonObj);
 		}
 
 		[Fact]
@@ -193,7 +201,7 @@ namespace Test.Commons.Json
 	    {
 		    var json = "1000";
 			dynamic jsonObj = JsonObject.Parse(json);
-			Assert.Equal(1000, jsonObj);
+			Assert.Equal(1000, (int)jsonObj);
 	    }
 
 		[Fact]
@@ -201,7 +209,7 @@ namespace Test.Commons.Json
 	    {
 		    var json = "-5";
 		    dynamic jsonObj = JsonObject.Parse(json);
-			Assert.Equal(-5, jsonObj);
+			Assert.Equal(-5, (int)jsonObj);
 	    }
 
 	    [Fact]
@@ -225,7 +233,7 @@ namespace Test.Commons.Json
 	    {
 		    var json = "true";
 		    dynamic jsonObj = JsonObject.Parse(json);
-			Assert.True(jsonObj);
+			Assert.True((bool)jsonObj);
 	    }
 
 		[Fact]
@@ -233,7 +241,7 @@ namespace Test.Commons.Json
 	    {
 		    var json = "TruE";
 			dynamic jsonObj = JsonObject.Parse(json);
-			Assert.True(jsonObj);
+			Assert.True((bool)jsonObj);
 	    }
 
 		[Fact]
@@ -241,7 +249,7 @@ namespace Test.Commons.Json
 	    {
 		    var json = "false";
 		    dynamic jsonObj = JsonObject.Parse(json);
-			Assert.False(jsonObj);
+			Assert.False((bool)jsonObj);
 	    }
 
 		[Fact]
@@ -249,7 +257,7 @@ namespace Test.Commons.Json
 	    {
 		    var json = "falSe";
 			dynamic jsonObj = JsonObject.Parse(json);
-			Assert.False(jsonObj);
+			Assert.False((bool)jsonObj);
 	    }
 
 		[Fact]
