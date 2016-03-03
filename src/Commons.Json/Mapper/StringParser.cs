@@ -23,7 +23,7 @@ namespace Commons.Json.Mapper
 		public JValue Parse(string json)
 		{
 			var value = json.Trim();
-			if (!value[0].Equals(JsonTokens.Quoter) || !value[value.Length - 1].Equals(JsonTokens.Quoter))
+			if (string.IsNullOrWhiteSpace(value) || value.Length < 2 || !value[0].Equals(JsonTokens.Quoter) || !value[value.Length - 1].Equals(JsonTokens.Quoter))
 			{
 				throw new ArgumentException();
 			}

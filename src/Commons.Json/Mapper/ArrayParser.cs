@@ -53,6 +53,7 @@ namespace Commons.Json.Mapper
 					fragment.Append(ch);
 					continue;
 				}
+
 				if (ch.Equals(JsonTokens.LeftBracket))
 				{
 					++bracketMatch;
@@ -73,6 +74,10 @@ namespace Commons.Json.Mapper
 				}
 				else if (ch.Equals(JsonTokens.Comma) && bracketMatch == 1 && braceMatch == 0)
 				{
+                    if (string.IsNullOrWhiteSpace(fragment.ToString().Trim()))
+                    {
+                        throw new ArgumentException(Messages.InvalidFormat);
+                    }
 					AppendValue(array, fragment);
 				}
 				else if (ch.Equals(JsonTokens.RightBracket))

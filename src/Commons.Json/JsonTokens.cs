@@ -31,6 +31,9 @@ namespace Commons.Json
 		public const char Slash = '\\';
 		public const char Negtive = '-';
 		public const char NonEmptyArrayMark = 'a';
+        public const char NonEmptyObjectMark = 'o';
+        public const char TabChar = '\t';
+        public const char LineSeparator = '\n';
 		public const string Null = "null";
 		public const string Tab = "    ";
 		public const string True = "true";

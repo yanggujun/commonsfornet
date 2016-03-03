@@ -25,7 +25,6 @@ namespace Commons.Json
         public static JsonValue From(object value)
         {
             var type = value.GetType();
-            object obj = null;
 
 	        if (value is JsonValue)
 	        {
@@ -64,7 +63,6 @@ namespace Commons.Json
             {
                 return new JsonPrimitive(value);
             }
-            return null;
         }
     }
 }

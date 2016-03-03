@@ -54,6 +54,18 @@ namespace Commons.Json
 			{
 				result = Convert.ToDecimal(primitive);
 			}
+            else if (binder.Type == typeof (Int64))
+            {
+                result = Convert.ToInt64(primitive);
+            }
+            else if (binder.Type == typeof (Int32))
+            {
+                result = Convert.ToInt32(primitive);
+            }
+            else if (binder.Type == typeof (Int16))
+            {
+                result = Convert.ToInt16(primitive);
+            }
 			else
 			{
 				result = primitive;

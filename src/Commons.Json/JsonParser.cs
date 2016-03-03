@@ -32,6 +32,7 @@ namespace Commons.Json
 			var objectStack = new Stack<object>();
 			var currentFragment = new StringBuilder();
 			var currentIsQuoted = false;
+            var commaEncounted = false;
 			var text = json.Trim();
 			foreach (var ch in text)
 			{
@@ -40,6 +41,19 @@ namespace Commons.Json
 					currentFragment.Append(ch);
 					continue;
 				}
+
+                if (commaEncounted && !IsEmpty(ch))
+                {
+                    if (ch != JsonTokens.RightBracket && ch != JsonTokens.RightBrace && ch != JsonTokens.Comma)
+                    {
+                        commaEncounted = false;
+                    }
+                    else
+                    {
+                        throw new ArgumentException(Messages.InvalidFormat);
+                    }
+                }
+
 				switch (ch)
 				{
 					case JsonTokens.LeftBrace:
@@ -56,6 +70,7 @@ namespace Commons.Json
 						break;
 					case JsonTokens.Comma:
 						OnComma(charStack, currentFragment, objectStack);
+                        commaEncounted = true;
 						break;
 					case JsonTokens.Colon:
 						OnColon(charStack, currentFragment, objectStack);
@@ -68,8 +83,7 @@ namespace Commons.Json
 						break;
 				}
 				if (charStack.Count > 0 && charStack.Peek() == JsonTokens.LeftBracket 
-										&& ch != JsonTokens.LeftBracket 
-										&& ch != JsonTokens.Space)
+										&& ch != JsonTokens.LeftBracket && !IsEmpty(ch))
 				{
 					charStack.Push(JsonTokens.NonEmptyArrayMark);
 				}
@@ -89,6 +103,11 @@ namespace Commons.Json
                 jsonValue = objectStack.Pop() as JsonValue;
             }
             return jsonValue;
+        }
+
+        private static bool IsEmpty(char ch)
+        {
+            return ch == JsonTokens.Space || ch == JsonTokens.TabChar || ch == JsonTokens.LineSeparator;
         }
 
 	    private static void OnLeftBrace(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
@@ -122,6 +141,10 @@ namespace Commons.Json
 			    outer.Verify(x => x != null);
 			    outer[key] = value;
 		    }
+            else
+            {
+                currentFragment.ToString().Trim().Verify(x => string.IsNullOrWhiteSpace(x));
+            }
 	    }
 
 	    private static void OnLeftBracket(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)

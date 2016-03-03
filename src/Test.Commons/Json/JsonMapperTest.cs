@@ -35,7 +35,7 @@ namespace Test.Commons.Json
 		public void TestToJsonNormalObject()
 		{
 			var json = JsonMapper.ToJson(new {FieldA = "AValue", FieldB = "BValue"});
-			dynamic jsonObject = JsonObject.Parse(json);
+			dynamic jsonObject = JsonMapper.Parse(json);
 			Assert.Equal("AValue", jsonObject.FieldA);
 			Assert.Equal("BValue", jsonObject.FieldB);
 		}
@@ -44,7 +44,7 @@ namespace Test.Commons.Json
 		public void TestToJsonSimpleArray()
 		{
 			var json = JsonMapper.ToJson(new[] {1, 2, 3, 4, 5, 6});
-			dynamic jsonObject = JsonObject.Parse(json);
+			dynamic jsonObject = JsonMapper.Parse(json);
 			Assert.Equal(1, jsonObject[0]);
 		}
 
@@ -52,7 +52,7 @@ namespace Test.Commons.Json
 		public void TestToJsonComplexArray()
 		{
 			var json = JsonMapper.ToJson(new object[] {1, "a string", 6.04, new {FieldA = "ValueA", FieldB = "ValueB"}});
-			dynamic jsonObject = JsonObject.Parse(json);
+			dynamic jsonObject = JsonMapper.Parse(json);
 			Assert.Equal(1, jsonObject[1]);
 			Assert.Equal("a string", jsonObject[1]);
 			Assert.Equal(6.04, jsonObject[2], 0.0001);
@@ -419,6 +419,54 @@ namespace Test.Commons.Json
 			}
 		}
 
+        [Fact]
+        public void TestParseEngine34()
+        {
+            var engine = new JsonParseEngine();
+            var json = "{\"a\",}";
+            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+        }
+
+        [Fact]
+        public void TestParseEngine35()
+        {
+            var engine = new JsonParseEngine();
+            var json = "{,}";
+            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+        }
+
+        [Fact]
+        public void TestParseEngine36()
+        {
+            var engine = new JsonParseEngine();
+            var json = "[,]";
+            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+        }
+
+        [Fact]
+        public void TestParseEngine37()
+        {
+            var engine = new JsonParseEngine();
+            var json = "[,\"a\"]";
+            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+        }
+
+        [Fact]
+        public void TestParseEngine38()
+        {
+            var engine = new JsonParseEngine();
+            var json = "[\"a\", ]";
+            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+        }
+
+        [Fact]
+        public void TestParseEngine39()
+        {
+            var engine = new JsonParseEngine();
+            var json = "{\"a\"}";
+            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+        }
+
 		public void TestPerformance()
 		{
 			var engine = new JsonParseEngine();
@@ -439,7 +487,7 @@ namespace Test.Commons.Json
 			sw.Start();
 			for (var i = 0; i < 10000; i++)
 			{
-				dynamic obj = JsonObject.Parse(json7);
+				dynamic obj = JsonMapper.Parse(json7);
 				Assert.NotNull(obj["web-app"].servlet[0]);
 			}
 			sw.Stop();

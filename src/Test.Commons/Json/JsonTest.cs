@@ -77,10 +77,10 @@ namespace Test.Commons.Json
 		[Fact]
 	    public void TestJsonPrimitiveFloat()
 		{
-			dynamic number = new JsonPrimitive(45.234117f);
+            dynamic number = new JsonPrimitive(45.2f);
 			var json = number.ToString();
 			var prim = JsonMapper.Parse(json);
-			Assert.Equal(45.234117f, (float)prim, 7);
+			Assert.Equal(45.2f, (float)prim, 3);
 		}
 
 		[Fact]
@@ -477,6 +477,41 @@ namespace Test.Commons.Json
 			Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
 		}
 
+        [Fact]
+        public void TestJsonBadObjectFormat3()
+        {
+            var json = "{\"a\", \"b\"}";
+            Assert.Throws(typeof(ArgumentException), () => JsonMapper.Parse(json));
+        }
+
+        [Fact]
+        public void TestJsonBadObjectFormat4()
+        {
+            var json = "{\"a\",}";
+            Assert.Throws(typeof(ArgumentException), () => JsonMapper.Parse(json));
+        }
+
+        [Fact]
+        public void TestJsonBadObjectFormat5()
+        {
+            var json = "{,}";
+            Assert.Throws(typeof(ArgumentException), () => JsonMapper.Parse(json));
+        }
+
+        [Fact]
+        public void TestJsonBadObjectFormat6()
+        {
+            var json = "{, \"a\": {}}";
+            Assert.Throws(typeof(ArgumentException), () => JsonMapper.Parse(json));
+        }
+
+        [Fact]
+        public void TestJsonBadObjectFormat7()
+        {
+            var json = "{\"a\", \"b\": \"c\"}";
+            Assert.Throws(typeof(ArgumentException), () => JsonMapper.Parse(json));
+        }
+
 		[Fact]
 	    public void TestJsonBadArrayFormat()
 	    {
@@ -504,6 +539,20 @@ namespace Test.Commons.Json
 			var json = "{\"a\": [], }";
 		    Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
 	    }
+
+        [Fact]
+        public void TestJsonBadArrayFormat5()
+        {
+            var json = "[,]";
+            Assert.Throws(typeof(ArgumentException), () => JsonMapper.Parse(json));
+        }
+
+        [Fact]
+        public void TestJsonBadArrayFormat6()
+        {
+            var json = "[, \"a\"]";
+            Assert.Throws(typeof(ArgumentException), () => JsonMapper.Parse(json));
+        }
 
 		[Fact]
 	    public void TestParseJsonIllFormat2()
