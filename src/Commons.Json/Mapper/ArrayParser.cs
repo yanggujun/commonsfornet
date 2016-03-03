@@ -107,8 +107,12 @@ namespace Commons.Json.Mapper
 
 		private void AppendValue(JArray array, StringBuilder jsonFragment)
 		{
-			var value = jsonParseEngine.Parse(jsonFragment.ToString());
-			array.Add(value);
+			var text = jsonFragment.ToString();
+			if (!string.IsNullOrWhiteSpace(text))
+			{
+				var value = jsonParseEngine.Parse(jsonFragment.ToString());
+				array.Add(value);
+			}
 			jsonFragment.Clear();
 		}
 	}

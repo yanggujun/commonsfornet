@@ -55,5 +55,10 @@ namespace Commons.Json
 		{
 			return null;
 		}
+
+		public static dynamic Parse(string json)
+		{
+			return JsonParser.Parse(json);
+		}
 	}
 }

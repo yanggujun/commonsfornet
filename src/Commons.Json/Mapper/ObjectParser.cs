@@ -94,11 +94,15 @@ namespace Commons.Json.Mapper
 					--braceMatch;
 					if (braceMatch == 0)
 					{
-						var v = parser.Parse(fragment.ToString());
-						jsonObject.PutObject(v);
-						if (pos < json.Length - 1)
+						var text = fragment.ToString();
+						if (!string.IsNullOrWhiteSpace(text))
 						{
-							throw new ArgumentException();
+							var v = parser.Parse(text);
+							jsonObject.PutObject(v);
+							if (pos < json.Length - 1)
+							{
+								throw new ArgumentException();
+							}
 						}
 					}
 					else if (braceMatch > 0)
@@ -114,6 +118,10 @@ namespace Commons.Json.Mapper
 			if (quoted || braceMatch != 0)
 			{
 				throw new ArgumentException();
+			}
+			if (!jsonObject.Validate())
+			{
+				throw new ArgumentException(Messages.InvalidFormat);
 			}
 			return jsonObject;
 		}

@@ -26,11 +26,6 @@ namespace Commons.Json
     {
         private readonly List<JsonValue> values;
 
-	    public static dynamic Parse(string json)
-	    {
-		    return JsonParser.Parse(json);
-	    }
-
 	    public JsonArray()
 	    {
 		    values = new List<JsonValue>();
@@ -86,6 +81,10 @@ namespace Commons.Json
 		    {
 			    values[index] = From(value);
 		    }
+			else if (index == values.Count)
+			{
+				values.Add(From(value));
+			}
 		    else
 		    {
 			    throw new InvalidOperationException(Messages.OutOfRange);
@@ -106,20 +105,12 @@ namespace Commons.Json
 
 	    public override bool TryConvert(ConvertBinder binder, out object result)
 	    {
-		    var type = binder.Type;
-		    if (type.IsArray && type.IsInstanceOfType(typeof(JsonValue[])))
-		    {
-			    var jsonValues = new JsonValue[values.Count];
-				for (var i = 0; i < jsonValues.Length; i++)
-				{
-					jsonValues[i] = values[i];
-				}
-			    result = jsonValues;
-		    }
-		    else
-		    {
-			    throw new InvalidOperationException(Messages.CannotConvertToArray);
-		    }
+			var jsonValues = new JsonValue[values.Count];
+			for (var i = 0; i < jsonValues.Length; i++)
+			{
+				jsonValues[i] = values[i];
+			}
+			result = jsonValues;
 		    return true;
 	    }
 

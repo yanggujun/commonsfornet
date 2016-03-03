@@ -15,15 +15,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Commons.Collections.Map;
-using Commons.Utils;
 
 namespace Commons.Json
 {
@@ -33,7 +28,6 @@ namespace Commons.Json
 
         public static dynamic Parse(string json)
         {
-	        JsonValue value = null;
 			var charStack = new Stack<char>();
 			var objectStack = new Stack<object>();
 			var currentFragment = new StringBuilder();
@@ -73,6 +67,12 @@ namespace Commons.Json
 						currentFragment.Append(ch);
 						break;
 				}
+				if (charStack.Count > 0 && charStack.Peek() == JsonTokens.LeftBracket 
+										&& ch != JsonTokens.LeftBracket 
+										&& ch != JsonTokens.Space)
+				{
+					charStack.Push(JsonTokens.NonEmptyArrayMark);
+				}
 			}
 
 			if (charStack.Count > 0 || currentIsQuoted)
@@ -100,27 +100,28 @@ namespace Commons.Json
 	    private static void OnRightBrace(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
 	    {
 		    JsonValue value;
+			charStack.Count.Verify(x => x > 0);
             var ch = charStack.Pop();
 			ch.Verify(x => x == JsonTokens.LeftBrace || x == JsonTokens.Colon);
-            if (ch == JsonTokens.Colon)
-            {
-                charStack.Pop().Verify(x => x == JsonTokens.LeftBrace);
-                var text = currentFragment.ToString();
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    value = objectStack.Pop() as JsonValue;
-                    value.Verify(x => x != null);
-                }
-                else
-                {
-                    value = ParseJsonValue(currentFragment);
-                }
-                var key = objectStack.Pop() as string;
-                key.Verify(x => !string.IsNullOrWhiteSpace(x));
-                var outer = objectStack.Peek() as JsonObject;
-                outer.Verify(x => x != null);
-                outer[key] = value;
-            }
+		    if (ch == JsonTokens.Colon)
+		    {
+			    charStack.Pop().Verify(x => x == JsonTokens.LeftBrace);
+			    var text = currentFragment.ToString();
+			    if (string.IsNullOrWhiteSpace(text))
+			    {
+				    value = objectStack.Pop() as JsonValue;
+				    value.Verify(x => x != null);
+			    }
+			    else
+			    {
+				    value = ParseJsonValue(currentFragment);
+			    }
+			    var key = objectStack.Pop() as string;
+			    key.Verify(x => !string.IsNullOrWhiteSpace(x));
+			    var outer = objectStack.Peek() as JsonObject;
+			    outer.Verify(x => x != null);
+			    outer[key] = value;
+		    }
 	    }
 
 	    private static void OnLeftBracket(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
@@ -132,27 +133,34 @@ namespace Commons.Json
 	    private static void OnRightBracket(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
 	    {
 		    JsonValue value;
-		    charStack.Pop().Verify(x => x == JsonTokens.LeftBracket);
-		    var text = currentFragment.ToString();
-		    if (string.IsNullOrWhiteSpace(text))
+		    var ch = charStack.Pop();
+		    ch.Verify(x => x == JsonTokens.NonEmptyArrayMark || x == JsonTokens.LeftBracket);
+
+		    if (ch == JsonTokens.NonEmptyArrayMark)
 		    {
-			    value = objectStack.Pop() as JsonValue;
-				value.Verify(x => x != null);
+				charStack.Pop().Verify(x => x == JsonTokens.LeftBracket);
+			    var text = currentFragment.ToString();
+			    if (string.IsNullOrWhiteSpace(text))
+			    {
+				    value = objectStack.Pop() as JsonValue;
+				    value.Verify(x => x != null);
+			    }
+			    else
+			    {
+				    value = ParseJsonValue(currentFragment);
+			    }
+				objectStack.Count.Verify(x => x > 0);
+			    var outer = objectStack.Peek() as JsonArray;
+			    outer.Verify(x => x != null);
+			    outer.Add(value);
 		    }
-		    else
-		    {
-			    value = ParseJsonValue(currentFragment);
-		    }
-		    var outer = objectStack.Peek() as JsonArray;
-			outer.Verify(x => x  != null);
-		    outer.Add(value);
 	    }
 
 	    private static void OnComma(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
 	    {
 		    JsonValue value;
 		    var ch = charStack.Peek();
-            ch.Verify(x => x == JsonTokens.Colon || x == JsonTokens.LeftBracket);
+            ch.Verify(x => x == JsonTokens.Colon || x == JsonTokens.LeftBracket || x == JsonTokens.NonEmptyArrayMark);
             if (ch == JsonTokens.Colon)
             {
                 charStack.Pop();
@@ -178,7 +186,7 @@ namespace Commons.Json
 				outer.Verify(x => x != null);
 			    outer[key] = value;
 		    }
-			else if (ch == JsonTokens.LeftBracket)
+			else if (ch == JsonTokens.NonEmptyArrayMark)
 			{
 				var array = objectStack.Peek() as JsonArray;
 				array.Verify(x => x != null);
@@ -247,9 +255,20 @@ namespace Commons.Json
                 }
                 else
                 {
-                    var number = 0;
-                    value.Verify(x => int.TryParse(x, out number));
-                    jsonValue = new JsonPrimitive(number);
+                    var integer = 0;
+	                long longInteger = 0;
+	                if (int.TryParse(value, out integer))
+	                {
+		                jsonValue = new JsonPrimitive(integer);
+	                }
+					else if (long.TryParse(value, out longInteger))
+					{
+						jsonValue = new JsonPrimitive(longInteger);
+					}
+					else
+					{
+						throw new ArgumentException(Messages.InvalidFormat);
+					}
                 }
             }
             currentFragment.Clear();

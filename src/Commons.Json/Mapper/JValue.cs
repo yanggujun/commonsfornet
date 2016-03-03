@@ -93,10 +93,15 @@ namespace Commons.Json.Mapper
 		{
 			if (lastKey == null)
 			{
-				throw new ArgumentException("blaaaah");
+				throw new ArgumentException(Messages.InvalidFormat);
 			}
 			values.Add(lastKey, value);
 			lastKey = null;
+		}
+
+		public bool Validate()
+		{
+			return lastKey == null;
 		}
 
 		public JValue this[JString key]
@@ -149,6 +154,11 @@ namespace Commons.Json.Mapper
 				}
 				return null;
 			}
+		}
+
+		public int Length
+		{
+			get { return values.Count; }
 		}
 
 		public IEnumerator<JValue> GetEnumerator()

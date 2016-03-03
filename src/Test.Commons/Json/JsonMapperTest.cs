@@ -373,6 +373,52 @@ namespace Test.Commons.Json
 		}
 
 		[Fact]
+		public void TestParseEngine30()
+		{
+			var engine = new JsonParseEngine();
+			var json = "[]";
+			var array = engine.Parse(json) as JArray;
+			Assert.Equal(0, array.Length);
+		}
+
+		[Fact]
+		public void TestParseEngine31()
+		{
+			var engine = new JsonParseEngine();
+			var json = "{}";
+			var obj = engine.Parse(json) as JObject;
+			Assert.NotNull(obj);
+			var valueCount = 0;
+			foreach (var item in obj)
+			{
+				valueCount++;
+			}
+			Assert.Equal(0, valueCount);
+		}
+
+		[Fact]
+		public void TestParseEngine32()
+		{
+			var engine = new JsonParseEngine();
+			var json = "{\"a\": }";
+			Assert.Throws(typeof (ArgumentException), () => engine.Parse(json));
+		}
+
+		[Fact]
+		public void TestParseEngine33()
+		{
+			var engine = new JsonParseEngine();
+			var json = "[{}]";
+			var array = engine.Parse(json) as JArray;
+			Assert.NotNull(array);
+			var obj = array[0] as JObject;
+			Assert.NotNull(obj);
+			foreach (var item in obj)
+			{
+				Assert.Equal(0, 1);
+			}
+		}
+
 		public void TestPerformance()
 		{
 			var engine = new JsonParseEngine();

@@ -31,6 +31,7 @@ namespace Commons.Json
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
+		[Obsolete]
         public static dynamic Parse(string json)
         {
             return JsonParser.Parse(json);

@@ -38,7 +38,26 @@ namespace Commons.Json
 
 	    public override bool TryConvert(ConvertBinder binder, out object result)
 	    {
-		    result = primitive;
+		    if (primitive == null)
+		    {
+			    result = null;
+		    }
+			else if (binder.Type == typeof (double))
+		    {
+			    result = Convert.ToDouble(primitive);
+		    }
+			else if (binder.Type == typeof (float))
+			{
+				result = Convert.ToSingle(primitive);
+			}
+			else if (binder.Type == typeof (decimal))
+			{
+				result = Convert.ToDecimal(primitive);
+			}
+			else
+			{
+				result = primitive;
+			}
 		    return true;
 	    }
 

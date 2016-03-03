@@ -30,6 +30,7 @@ namespace Commons.Json
 		public const char Space = ' ';
 		public const char Slash = '\\';
 		public const char Negtive = '-';
+		public const char NonEmptyArrayMark = 'a';
 		public const string Null = "null";
 		public const string Tab = "    ";
 		public const string True = "true";

@@ -21,7 +21,6 @@ namespace Commons.Json.Mapper
 {
 	public class JsonParseEngine : IParseEngine
 	{
-		private const string InvalidJson = "The format of the JSON string is invalid";
 		private CultureInfo culture = CultureInfo.InvariantCulture;
 		private IParseEngine objectParser;
 		private IParseEngine arrayParser;
@@ -44,7 +43,7 @@ namespace Commons.Json.Mapper
 		{
 			if (string.IsNullOrWhiteSpace(json))
 			{
-				throw new ArgumentException(InvalidJson);
+				throw new ArgumentException(Messages.InvalidFormat);
 			}
 			var text = json.Trim();
 			var firstCh = text[0];
@@ -76,7 +75,7 @@ namespace Commons.Json.Mapper
 			}
 			else
 			{
-				throw new ArgumentException(InvalidJson);
+				throw new ArgumentException(Messages.InvalidFormat);
 			}
 
 			return parser.Parse(text);
