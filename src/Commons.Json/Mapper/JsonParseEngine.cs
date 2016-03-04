@@ -80,6 +80,5 @@ namespace Commons.Json.Mapper
 
 			return parser.Parse(text);
 		}
-
 	}
 }

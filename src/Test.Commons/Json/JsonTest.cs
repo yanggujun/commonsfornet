@@ -138,6 +138,14 @@ namespace Test.Commons.Json
             Assert.Equal("USA", (string)person.More.Country);
         }
 
+		[Fact]
+	    public void TestJsonFromRealWorld1()
+		{
+			var json = TestHelper.ReadFrom(@".\Json\JsonSample10.txt");
+			dynamic sample = JsonMapper.Parse(json);
+			Assert.Equal("Alpha", (string)sample["a"]);
+		}
+
         [Fact]
         public void TestParseJson()
         {

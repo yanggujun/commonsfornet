@@ -14,21 +14,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Linq.Expressions;
-using System.Reflection;
+using System;
 
-namespace Commons.Json.Mapper
+namespace Commons.Json
 {
-	internal class JsonObjectMapper<T> : IJsonObjectMapper<T>
+	internal static class Extensions
 	{
-		public IJsonObjectMapper<T> MapProperty(string jsonPath, Expression<System.Func<T, object>> propertyExp)
+		public static void Verify<T>(this T x, Predicate<T> check)
+        {
+            if (!check(x))
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+        }
+
+		public static bool Is<T>(this object obj) where T : class
 		{
-			return this;
+			var target = obj as T;
+			return target != null;
 		}
 
-		public string FromProperty(PropertyInfo property)
+		public static bool Is<T>(this object obj, out T target) where T : class
 		{
-			return property.Name;
+			target = obj as T;
+			return target != null;
 		}
+
+		public static bool IsEmpty(this char ch)
+		{
+			return ch == JsonTokens.Space || ch == JsonTokens.TabChar || ch == JsonTokens.LineSeparator;
+		}
+
 	}
 }

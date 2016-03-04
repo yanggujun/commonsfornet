@@ -360,16 +360,17 @@ namespace Test.Commons.Json
 		{
 			var engine = new JsonParseEngine();
 			var json4 = TestHelper.ReadFrom(@".\Json\JsonSample4.txt");
-			Assert.DoesNotThrow(() => engine.Parse(json4));
+			engine.Parse(json4);
 			var json5 = TestHelper.ReadFrom(@".\Json\JsonSample5.txt");
-			Assert.DoesNotThrow(() => engine.Parse(json5));
+			engine.Parse(json5);
 			var json6 = TestHelper.ReadFrom(@".\Json\JsonSample6.txt");
-			Assert.DoesNotThrow(() => engine.Parse(json6));
+			engine.Parse(json6);
 			var json7 = TestHelper.ReadFrom(@".\Json\JsonSample7.txt");
-			Assert.DoesNotThrow(() => engine.Parse(json7));
+			engine.Parse(json7);
 			var json8 = TestHelper.ReadFrom(@".\Json\JsonSample8.txt");
-			Assert.DoesNotThrow(() => engine.Parse(json8));
-
+			engine.Parse(json8);
+			var json9 = TestHelper.ReadFrom(@".\Json\JsonSample10.txt");
+			engine.Parse(json9);
 		}
 
 		[Fact]
@@ -467,28 +468,83 @@ namespace Test.Commons.Json
             Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
         }
 
+		[Fact]
+		public void TestParseEngine40()
+		{
+			var engine = new JsonParseEngine();
+			var json = "{\"a\",,}";
+			Assert.Throws(typeof (ArgumentException), () => engine.Parse(json));
+		}
+
+		[Fact]
+		public void TestParseEngine41()
+		{
+			var engine = new JsonParseEngine();
+			var json = "[[[[[[null]]]]]]]]]]";
+			Assert.Throws(typeof (ArgumentException), () => engine.Parse(json));
+		}
+
+		[Fact]
+		public void TestParseEngine42()
+		{
+			var engine = new JsonParseEngine();
+			var json = "[{}, {},{}}]";
+			Assert.Throws(typeof (ArgumentException), () => engine.Parse(json));
+		}
+
+		[Fact]
+		public void TestParseEngine43()
+		{
+			var engine = new JsonParseEngine();
+			var json = ",";
+			Assert.Throws(typeof (ArgumentException), () => engine.Parse(json));
+		}
+
+		[Fact]
+		public void TestParseEngine44()
+		{
+			var engine = new JsonParseEngine();
+			var json = "{,\"a\" : \"b\",}";
+			Assert.Throws(typeof (ArgumentException), () => engine.Parse(json));
+		}
+
+		[Fact]
+		public void TestParseEngine45()
+		{
+			var engine = new JsonParseEngine();
+			var json = "[,\"a\", ]";
+			Assert.Throws(typeof (ArgumentException), () => engine.Parse(json));
+		}
+
+		[Fact]
+		public void TestParseEngine46()
+		{
+			var engine = new JsonParseEngine();
+			var json = "{\"a\": \"b\", \"c\"}";
+			Assert.Throws(typeof (ArgumentException), () => engine.Parse(json));
+		}
+
 		public void TestPerformance()
 		{
 			var engine = new JsonParseEngine();
-			var json7 = TestHelper.ReadFrom(@".\Json\JsonSample7.txt");
+			var json7 = TestHelper.ReadFrom(@".\Json\JsonSample10.txt");
+			engine.Parse(json7);
 			var sw = new Stopwatch();
 			sw.Start();
 			for (var i = 0; i < 10000; i++)
 			{
 				var obj = engine.Parse(json7) as JObject;
-				var webapp = obj["web-app"] as JObject;
-				var servlet = webapp["servlet"] as JArray;
-				var value1 = servlet[0] as JObject;
-				Assert.Equal("cofaxCDS", value1["servlet-name"] as JString);
+				Assert.Equal("Alpha", obj["a"] as JString);
 			}
 			sw.Stop();
 			Console.WriteLine("Parse Engine: " + sw.ElapsedMilliseconds);
 			sw.Reset();
+			JsonMapper.Parse(json7);
 			sw.Start();
 			for (var i = 0; i < 10000; i++)
 			{
 				dynamic obj = JsonMapper.Parse(json7);
-				Assert.NotNull(obj["web-app"].servlet[0]);
+				Assert.Equal("Alpha", (string)obj["a"]);
 			}
 			sw.Stop();
 			Console.WriteLine("Dynamic Object: " + sw.ElapsedMilliseconds);

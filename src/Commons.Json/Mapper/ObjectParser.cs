@@ -19,7 +19,7 @@ using System.Text;
 
 namespace Commons.Json.Mapper
 {
-	public class ObjectParser : IParseEngine
+	internal class ObjectParser : IParseEngine
 	{
 		private IParseEngine jsonParser;
 		private IParseEngine stringParser;

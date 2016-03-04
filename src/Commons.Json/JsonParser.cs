@@ -32,7 +32,7 @@ namespace Commons.Json
 			var objectStack = new Stack<object>();
 			var currentFragment = new StringBuilder();
 			var currentIsQuoted = false;
-            var commaEncounted = false;
+            var hasComma = false;
 			var text = json.Trim();
 			foreach (var ch in text)
 			{
@@ -42,11 +42,11 @@ namespace Commons.Json
 					continue;
 				}
 
-                if (commaEncounted && !IsEmpty(ch))
+                if (hasComma && !ch.IsEmpty())
                 {
                     if (ch != JsonTokens.RightBracket && ch != JsonTokens.RightBrace && ch != JsonTokens.Comma)
                     {
-                        commaEncounted = false;
+                        hasComma = false;
                     }
                     else
                     {
@@ -70,7 +70,7 @@ namespace Commons.Json
 						break;
 					case JsonTokens.Comma:
 						OnComma(charStack, currentFragment, objectStack);
-                        commaEncounted = true;
+                        hasComma = true;
 						break;
 					case JsonTokens.Colon:
 						OnColon(charStack, currentFragment, objectStack);
@@ -83,7 +83,7 @@ namespace Commons.Json
 						break;
 				}
 				if (charStack.Count > 0 && charStack.Peek() == JsonTokens.LeftBracket 
-										&& ch != JsonTokens.LeftBracket && !IsEmpty(ch))
+										&& ch != JsonTokens.LeftBracket && !ch.IsEmpty())
 				{
 					charStack.Push(JsonTokens.NonEmptyArrayMark);
 				}
@@ -103,11 +103,6 @@ namespace Commons.Json
                 jsonValue = objectStack.Pop() as JsonValue;
             }
             return jsonValue;
-        }
-
-        private static bool IsEmpty(char ch)
-        {
-            return ch == JsonTokens.Space || ch == JsonTokens.TabChar || ch == JsonTokens.LineSeparator;
         }
 
 	    private static void OnLeftBrace(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
@@ -297,14 +292,6 @@ namespace Commons.Json
             currentFragment.Clear();
 
 	        return jsonValue;
-        }
-
-        private static void Verify<T>(this T x, Predicate<T> check)
-        {
-            if (!check(x))
-            {
-                throw new ArgumentException(Messages.InvalidFormat);
-            }
         }
     }
 }

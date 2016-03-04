@@ -16,6 +16,7 @@
 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Commons.Json.Mapper
 {
@@ -23,5 +24,6 @@ namespace Commons.Json.Mapper
 	public interface IJsonObjectMapper<T>
 	{
 		IJsonObjectMapper<T> MapProperty(string jsonPath, Expression<Func<T, object>> propertyExp);
+		string FromProperty(PropertyInfo property);
 	}
 }

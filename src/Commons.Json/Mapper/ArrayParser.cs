@@ -19,7 +19,7 @@ using System.Text;
 
 namespace Commons.Json.Mapper
 {
-	public class ArrayParser : IParseEngine
+	internal class ArrayParser : IParseEngine
 	{
 		private JsonParseEngine jsonParseEngine;
 
@@ -35,6 +35,7 @@ namespace Commons.Json.Mapper
 			var quoted = false;
 			var bracketMatch = 0;
 			var braceMatch = 0;
+			var hasComma = false;
 			var array = new JArray();
 
 			for (var i = 0; i < text.Length; i++)
@@ -52,6 +53,20 @@ namespace Commons.Json.Mapper
 				{
 					fragment.Append(ch);
 					continue;
+				}
+
+				if (hasComma && !ch.IsEmpty())
+				{
+					if (ch != JsonTokens.RightBracket 
+						&& ch != JsonTokens.RightBrace 
+						&& ch != JsonTokens.Comma)
+					{
+						hasComma = false;
+					}
+					else
+					{
+						throw new ArgumentException(Messages.InvalidFormat);
+					}
 				}
 
 				if (ch.Equals(JsonTokens.LeftBracket))
@@ -79,6 +94,7 @@ namespace Commons.Json.Mapper
                         throw new ArgumentException(Messages.InvalidFormat);
                     }
 					AppendValue(array, fragment);
+					hasComma = true;
 				}
 				else if (ch.Equals(JsonTokens.RightBracket))
 				{

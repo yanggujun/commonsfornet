@@ -31,7 +31,6 @@ namespace Commons.Json.Mapper
 			throw new NotImplementedException();
 		}
 
-
 		public JValue Map(T target)
 		{
 			throw new NotImplementedException();

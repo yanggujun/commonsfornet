@@ -18,7 +18,7 @@ using System;
 
 namespace Commons.Json.Mapper
 {
-	public class StringParser : IParseEngine
+	internal class StringParser : IParseEngine
 	{
 		public JValue Parse(string json)
 		{

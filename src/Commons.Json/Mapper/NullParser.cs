@@ -18,7 +18,7 @@ using System;
 
 namespace Commons.Json.Mapper
 {
-	public class NullParser : IParseEngine
+	internal class NullParser : IParseEngine
 	{
 		private static JNull jnull = new JNull();
 		public JValue Parse(string json)
