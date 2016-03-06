@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -21,7 +22,7 @@ namespace Commons.Json.Mapper
 {
 	internal class JsonObjectMapper<T> : IJsonObjectMapper<T>
 	{
-		public IJsonObjectMapper<T> MapProperty(string jsonPath, Expression<System.Func<T, object>> propertyExp)
+		public IJsonObjectMapper<T> MapProperty(string jsonPath, Expression<Func<T, object>> propertyExp)
 		{
 			return this;
 		}
