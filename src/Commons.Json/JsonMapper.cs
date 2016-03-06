@@ -15,6 +15,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Commons.Json.Mapper;
 
 namespace Commons.Json
@@ -23,6 +25,7 @@ namespace Commons.Json
 	public static class JsonMapper
 	{
 		private static MapperContainer mapperContainer = new MapperContainer();
+        private static TypeCache typeCache = new TypeCache();
 
 		public static IJsonObjectMapper<T> For<T>()
 		{
@@ -43,11 +46,14 @@ namespace Commons.Json
 		{
 			var parseEngine = new JsonParseEngine();
 			var jsonValue = parseEngine.Parse(json);
-			var mapEngine = new MapEngine<T>(For<T>());
+
+            var target = (T)typeCache.Instantiate<T>();
+
+			var mapEngine = new MapEngine<T>(target, For<T>(), typeCache);
 			return mapEngine.Map(jsonValue);
 		}
 
-		public static void FillWith<T>(string json, ref T obj)
+		public static void FillWith<T>(string json, T obj) where T : class
 		{
 		}
 

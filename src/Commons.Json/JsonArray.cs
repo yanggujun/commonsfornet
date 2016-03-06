@@ -22,6 +22,7 @@ using System.Text;
 
 namespace Commons.Json
 {
+    [CLSCompliant(true)]
     public class JsonArray : JsonValue
     {
         private readonly List<JsonValue> values;

@@ -29,5 +29,9 @@ namespace Commons.Json
 	    public const string IndexerCannotApply = "The indexer type cannot be applied to the JSON array.";
 
 	    public const string CannotConvertToArray = "Cannot convert the JSON array to the specified object.";
+
+        public const string NoDefaultConstructor = "The type does not contain a default constructor so it cannot be instantiated.";
+
+        public const string JsonValueTypeNotMatch = "The type of the JSON value does not match the type of the object property.";
     }
 }

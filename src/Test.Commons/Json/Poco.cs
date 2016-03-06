@@ -16,8 +16,14 @@
 
 namespace Test.Commons.Json
 {
-	public class ComplexPoco
+	public class Simple
 	{
 		public string FieldA { get; set; }
+
+        public int FieldB { get; set; }
+
+        public double FieldC { get; set; }
+
+        public bool FieldD { get; set; }
 	}
 }

@@ -27,8 +27,11 @@ namespace Test.Commons.Json
 		[Fact]
 		public void TestJsonObjectMapper()
 		{
-			var obj = JsonMapper.ToObject<ComplexPoco>(@"{fieldA : 'valueA'}");
+			var obj = JsonMapper.ToObject<Simple>("{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}");
 			Assert.Equal(obj.FieldA, "valueA");
+            Assert.Equal(obj.FieldB, 10);
+            Assert.Equal(obj.FieldC, 2.3, 2);
+            Assert.True(obj.FieldD);
 		}
 
 		[Fact]

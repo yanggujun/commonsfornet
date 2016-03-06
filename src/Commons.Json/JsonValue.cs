@@ -14,12 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 
 namespace Commons.Json
 {
+    [CLSCompliant(true)]
     public abstract class JsonValue : DynamicObject
     {
         public static JsonValue From(object value)

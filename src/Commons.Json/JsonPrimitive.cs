@@ -20,6 +20,7 @@ using System.Text;
 
 namespace Commons.Json
 {
+    [CLSCompliant(true)]
     public class JsonPrimitive : JsonValue
     {
         private object primitive;

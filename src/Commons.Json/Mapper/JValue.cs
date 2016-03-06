@@ -195,6 +195,11 @@ namespace Commons.Json.Mapper
 		{
 			return Value;
 		}
+
+        public byte AsByte()
+        {
+            return (byte)Value;
+        }
 	}
 
 	public class JDecimal : JPrimitive<decimal>
@@ -208,6 +213,11 @@ namespace Commons.Json.Mapper
 		{
 			return Convert.ToDouble(Value);
 		}
+
+        public decimal AsDecimal()
+        {
+            return Convert.ToDecimal(Value);
+        }
 
 		public override string ToString()
 		{

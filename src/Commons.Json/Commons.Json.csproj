@@ -75,7 +75,9 @@
     <Compile Include="Mapper\NullParser.cs" />
     <Compile Include="Mapper\NumberParser.cs" />
     <Compile Include="Mapper\ObjectParser.cs" />
+    <Compile Include="Mapper\TypeManager.cs" />
     <Compile Include="Mapper\StringParser.cs" />
+    <Compile Include="Mapper\TypeCache.cs" />
     <Compile Include="Messages.cs" />
   </ItemGroup>
   <ItemGroup>
