@@ -19,15 +19,7 @@ namespace Commons.Json.Mapper
 	{
 		public IMapEngine<T> CreateMapEngine<T>(T target, MapperContainer mappers, TypeCache typeCache)
 		{
-			var type = typeof (T);
-			if (type.IsJsonArray())
-			{
-				return new ArrayMapEngine<T>(mappers, typeCache);
-			}
-			else
-			{
-				return new ObjectMapEngine<T>(target, mappers, typeCache);
-			}
+			return new MapEngine<T>(target, mappers, typeCache);
 		}
 	}
 }

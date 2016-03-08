@@ -33,5 +33,9 @@ namespace Commons.Json
         public const string NoDefaultConstructor = "The type does not contain a default constructor so it cannot be instantiated.";
 
         public const string JsonValueTypeNotMatch = "The type of the JSON value does not match the type of the object property.";
+
+        public const string AddMethod = "Add";
+
+        public const string TypeNotSupported = "The type mapped is not supported by the JsonMapper.";
     }
 }

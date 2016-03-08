@@ -33,6 +33,7 @@ namespace Commons.Json.Mapper
             properties = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(x => x.CanRead && x.CanWrite)
                 .Where(y => y.GetGetMethod(false) != null && y.GetSetMethod(false) != null)
+                .Where(z => z.PropertyType.IsSupported())
                 .ToList();
             Constructor = type.GetConstructor(Type.EmptyTypes);
         }

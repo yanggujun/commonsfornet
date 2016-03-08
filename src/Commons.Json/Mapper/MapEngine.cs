@@ -20,13 +20,13 @@ using System.Reflection;
 
 namespace Commons.Json.Mapper
 {
-	internal class ObjectMapEngine<T> : IMapEngine<T>
+	internal class MapEngine<T> : IMapEngine<T>
 	{
 		private MapperContainer mappers;
         private T target;
         private TypeCache typeCache;
 
-		public ObjectMapEngine(T target, MapperContainer mappers, TypeCache typeCache)
+		public MapEngine(T target, MapperContainer mappers, TypeCache typeCache)
 		{
 			this.mappers = mappers;
             this.target = target;
@@ -35,16 +35,7 @@ namespace Commons.Json.Mapper
 
 		public T Map(JValue jsonValue)
 		{
-			var type = typeof (T);
-			if (type.IsArray)
-			{
-				var list = new List<object>();
-				Populate(list, jsonValue);
-			}
-			else
-			{
-				Populate(target, jsonValue);
-			}
+			Populate(target, jsonValue);
 
             return target;
 		}
@@ -70,11 +61,12 @@ namespace Commons.Json.Mapper
 				{
 					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
 				}
+                var add = type.GetMethod(Messages.AddMethod);
 				foreach (var value in jsonArray)
 				{
 					var arrayValue = typeCache.Instantiate(itemType);
 					Populate(arrayValue, value);
-					var castedValue = Convert.ChangeType(arrayValue, itemType);
+                    add.Invoke(target, new [] {arrayValue});
 				}
 			}
         }

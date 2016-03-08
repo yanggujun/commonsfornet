@@ -62,7 +62,6 @@
     <Compile Include="JsonTokens.cs" />
     <Compile Include="JsonUtils.cs" />
     <Compile Include="JsonValue.cs" />
-    <Compile Include="Mapper\ArrayMapEngine.cs" />
     <Compile Include="Mapper\ArrayParser.cs" />
     <Compile Include="Mapper\BoolParser.cs" />
     <Compile Include="Mapper\IMapEngine.cs" />
@@ -73,7 +72,7 @@
     <Compile Include="Mapper\IJsonObjectMapper.cs" />
     <Compile Include="Mapper\JsonObjectMapper.cs" />
     <Compile Include="Mapper\MapEngineFactory.cs" />
-    <Compile Include="Mapper\ObjectMapEngine.cs" />
+    <Compile Include="Mapper\MapEngine.cs" />
     <Compile Include="Mapper\MapperContainer.cs" />
     <Compile Include="Mapper\NullParser.cs" />
     <Compile Include="Mapper\NumberParser.cs" />

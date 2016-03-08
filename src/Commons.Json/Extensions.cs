@@ -91,5 +91,25 @@ namespace Commons.Json
 
 			return isList;
 		}
+
+        public static bool IsSupported(this Type type)
+        {
+            var isSupported = false;
+            if (type.IsList())
+            {
+                isSupported = true;
+            }
+            else if (!type.InstanceOf(typeof(IEnumerable)) && !type.IsArray)
+            {
+                isSupported = true;
+            }
+
+            return isSupported;
+        }
+
+        public static bool InstanceOf(this Type subType, Type baseType)
+        {
+            return subType.IsSubclassOf(baseType) || subType == baseType;
+        }
 	}
 }

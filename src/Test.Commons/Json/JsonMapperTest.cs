@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Commons.Json;
 using Commons.Json.Mapper;
@@ -144,6 +145,34 @@ namespace Test.Commons.Json
 			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
 			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<Nested>(json));
 		}
+
+        [Fact]
+        public void TestJsonObjectMapper10()
+        {
+            var json = "[{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}, " 
+                        + "{\"FieldA\": \"valueA1\", \"FieldB\" : 11, \"FieldC\": 3.3, \"FieldD\": false}]";
+            var list = JsonMapper.ToObject<List<Simple>>(json);
+            Assert.Equal(2, list.Count);
+            Assert.Equal("valueA", list[0].FieldA);
+            Assert.Equal(10, list[0].FieldB);
+            Assert.Equal(2.3, list[0].FieldC, 2);
+            Assert.True(list[0].FieldD);
+            Assert.Equal("valueA1", list[1].FieldA);
+            Assert.Equal(11, list[1].FieldB);
+            Assert.Equal(3.3, list[1].FieldC, 2);
+            Assert.False(list[1].FieldD);
+        }
+
+        [Fact]
+        public void TestJsonObjectMapper11()
+        {
+            var json = "[1, 2, 3, 4, 5, 6, 7, 8]";
+            var list = JsonMapper.ToObject<List<int>>(json);
+            for (var i = 0; i < list.Count; i++)
+            {
+                Assert.Equal(i + 1, list[i]);
+            }
+        }
 
 		[Fact]
 		public void TestToJsonNormalObject()

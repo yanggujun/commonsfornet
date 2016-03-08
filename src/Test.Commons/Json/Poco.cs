@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 namespace Test.Commons.Json
 {
 	public class Simple
@@ -39,4 +40,11 @@ namespace Test.Commons.Json
 
 		public bool FieldH { get; set; }
 	}
+
+    public class ArrayNested
+    {
+        public string FieldI { get; set; }
+
+        public List<Nested> NestedItems { get; set; }
+    }
 }
