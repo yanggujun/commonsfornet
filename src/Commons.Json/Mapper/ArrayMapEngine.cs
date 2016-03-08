@@ -1,5 +1,4 @@
-﻿// Copyright CommonsForNET.
-// Licensed to the Apache Software Foundation (ASF) under one or more
+﻿// Copyright CommonsForNET.  // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
 // The ASF licenses this file to You under the Apache License, Version 2.0
@@ -14,29 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Test.Commons.Json
+namespace Commons.Json.Mapper
 {
-	public class Simple
+	internal class ArrayMapEngine<T> : IMapEngine<T>
 	{
-		public string FieldA { get; set; }
+		private MapperContainer mappers;
+		private TypeCache typeCache;
 
-        public int FieldB { get; set; }
+		public ArrayMapEngine(MapperContainer mappers, TypeCache typeCache)
+		{
+			this.mappers = mappers;
+			this.typeCache = typeCache;
+		}
 
-        public double FieldC { get; set; }
+		public T Map(JValue jsonValue)
+		{
+			throw new System.NotImplementedException();
+		}
 
-        public bool FieldD { get; set; }
-	}
-
-	public class Nested
-	{
-		public string FieldE { get; set; }
-
-		public Simple Simple { get; set; }
-
-		public int FieldF { get; set; }
-
-		public double FieldG { get; set; }
-
-		public bool FieldH { get; set; }
+		public JValue Map(T target)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

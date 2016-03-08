@@ -26,6 +26,7 @@ namespace Commons.Json
 	{
 		private static MapperContainer mapperContainer = new MapperContainer();
         private static TypeCache typeCache = new TypeCache();
+		private static IMapEngineFactory mapEngineFactory = new MapEngineFactory();
 
 		public static IJsonObjectMapper<T> For<T>()
 		{
@@ -47,9 +48,9 @@ namespace Commons.Json
 			var parseEngine = new JsonParseEngine();
 			var jsonValue = parseEngine.Parse(json);
 
-            var target = (T)typeCache.Instantiate<T>();
+            var target = typeCache.Instantiate<T>();
 
-			var mapEngine = new MapEngine<T>(target, For<T>(), typeCache);
+			var mapEngine = mapEngineFactory.CreateMapEngine(target, mapperContainer, typeCache);
 			return mapEngine.Map(jsonValue);
 		}
 

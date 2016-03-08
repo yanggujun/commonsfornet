@@ -15,8 +15,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Commons.Collections.Map;
 
 namespace Commons.Json.Mapper
@@ -28,19 +26,18 @@ namespace Commons.Json.Mapper
         public T Instantiate<T>()
         {
             var type = typeof(T);
+	        return (T) Instantiate(type);
+        }
 
+	    public object Instantiate(Type type)
+	    {
             CacheTypeProperties(type);
             var manager = typeManagers[type];
-            var constructor = manager.Constructor;
 
-            var value = (T)constructor.Invoke(null);
-            if (value == null)
-            {
-                throw new InvalidOperationException(Messages.NoDefaultConstructor);
-            }
+	        var value = Initialize(manager);
 
             return value;
-        }
+	    }
 
         public TypeManager this[Type type]
         {
@@ -50,27 +47,38 @@ namespace Commons.Json.Mapper
             }
         }
 
+	    private object Initialize(TypeManager manager)
+	    {
+		    var value = manager.Constructor.Invoke(null);
+		    var properties = manager.Properties;
+		    foreach (var prop in properties)
+		    {
+			    if (!prop.PropertyType.IsJsonPrimitive() && !prop.PropertyType.IsJsonArray())
+			    {
+					prop.SetValue(value, Initialize(typeManagers[prop.PropertyType]));
+			    }
+		    }
+
+		    return value;
+	    }
+
         private void CacheTypeProperties(Type type)
         {
             TypeManager manager;
-            if (typeManagers.ContainsKey(type))
-            {
-                manager = typeManagers[type];
-            }
-            else
+            if (!typeManagers.ContainsKey(type))
             {
                 manager = new TypeManager(type);
                 typeManagers[type] = manager;
-            }
 
-            var properties = manager.Properties;
-            foreach (var property in properties)
-            {
-                var propertyType = property.PropertyType;
-                if (!propertyType.IsPrimitive && propertyType != typeof(string))
-                {
-                    CacheTypeProperties(propertyType);
-                }
+				var properties = manager.Properties;
+				foreach (var property in properties)
+				{
+					var propertyType = property.PropertyType;
+					if (!propertyType.IsPrimitive && propertyType != typeof(string))
+					{
+						CacheTypeProperties(propertyType);
+					}
+				}
             }
         }
     }

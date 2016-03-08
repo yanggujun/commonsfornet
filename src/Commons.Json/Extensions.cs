@@ -15,6 +15,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Commons.Json
 {
@@ -42,8 +44,52 @@ namespace Commons.Json
 
 		public static bool IsEmpty(this char ch)
 		{
-			return ch == JsonTokens.Space || ch == JsonTokens.TabChar || ch == JsonTokens.LineSeparator;
+			return ch == JsonTokens.Space || ch == JsonTokens.TabChar
+			       || ch == JsonTokens.LineSeparator;
 		}
 
+		public static bool IsJsonPrimitive(this Type type)
+		{
+			return type.IsPrimitive || type == typeof (string);
+		}
+
+		public static bool IsJsonNumber(this Type type)
+		{
+			return type == typeof (int) || type == typeof (long)
+				   || type == typeof(short)
+			       || type == typeof (byte) || type == typeof (uint)
+			       || type == typeof (ulong) || type == typeof (ushort)
+			       || type == typeof (double) || type == typeof (float)
+			       || type == typeof (decimal);
+		}
+
+		public static bool IsJsonArray(this Type type)
+		{
+			return type.IsArray || type == typeof (IList<>) || type == typeof (ArrayList);
+		}
+
+		public static bool IsList(this Type type)
+		{
+			Type itemType;
+			return type.IsList(out itemType);
+		}
+
+		public static bool IsList(this Type type, out Type itemType)
+		{
+			var isList = false;
+			itemType = null;
+
+			foreach (var interfaceType in type.GetInterfaces())
+			{
+				if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof (IList<>))
+				{
+					itemType = type.GetGenericArguments()[0];
+					isList = true;
+					break;
+				}
+			}
+
+			return isList;
+		}
 	}
 }

@@ -1,5 +1,4 @@
-﻿// Copyright CommonsForNET.
-// Licensed to the Apache Software Foundation (ASF) under one or more
+﻿// Copyright CommonsForNET.  // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
 // The ASF licenses this file to You under the Apache License, Version 2.0
@@ -14,29 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Test.Commons.Json
+namespace Commons.Json.Mapper
 {
-	public class Simple
+	internal interface IMapEngineFactory
 	{
-		public string FieldA { get; set; }
-
-        public int FieldB { get; set; }
-
-        public double FieldC { get; set; }
-
-        public bool FieldD { get; set; }
-	}
-
-	public class Nested
-	{
-		public string FieldE { get; set; }
-
-		public Simple Simple { get; set; }
-
-		public int FieldF { get; set; }
-
-		public double FieldG { get; set; }
-
-		public bool FieldH { get; set; }
+		IMapEngine<T> CreateMapEngine<T>(T target, MapperContainer mappers, TypeCache typeCahce);
 	}
 }

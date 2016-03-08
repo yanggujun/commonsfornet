@@ -25,13 +25,124 @@ namespace Test.Commons.Json
 	public class JsonMapperTest
 	{
 		[Fact]
-		public void TestJsonObjectMapper()
+		public void TestJsonObjectMapper01()
 		{
 			var obj = JsonMapper.ToObject<Simple>("{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}");
 			Assert.Equal(obj.FieldA, "valueA");
             Assert.Equal(obj.FieldB, 10);
             Assert.Equal(obj.FieldC, 2.3, 2);
             Assert.True(obj.FieldD);
+		}
+
+		[Fact]
+		public void TestJsonObjectMapper02()
+		{
+			var json = "{\"fieldE\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+			           + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true}";
+			var nested = JsonMapper.ToObject<Nested>(json);
+			Assert.Equal(nested.FieldE, "valueE");
+			Assert.Equal(nested.FieldF, 20);
+			Assert.Equal(nested.FieldG, 3.459, 4);
+			Assert.True(nested.FieldH);
+			Assert.NotNull(nested.Simple);
+			Assert.Equal(nested.Simple.FieldA, "valueA");
+			Assert.Equal(nested.Simple.FieldB, 10);
+			Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
+			Assert.False(nested.Simple.FieldD);
+		}
+
+		[Fact]
+		public void TestJsonObjectMapper03()
+		{
+			var json = "{\"fieldE\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+			           + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			var nested = JsonMapper.ToObject<Nested>(json);
+			Assert.Equal(nested.FieldE, "valueE");
+			Assert.Equal(nested.FieldF, 20);
+			Assert.Equal(nested.FieldG, 3.459, 4);
+			Assert.True(nested.FieldH);
+			Assert.NotNull(nested.Simple);
+			Assert.Equal(nested.Simple.FieldA, "valueA");
+			Assert.Equal(nested.Simple.FieldB, 10);
+			Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
+			Assert.False(nested.Simple.FieldD);
+		}
+
+		[Fact]
+		public void TestJsonObjectMapper04()
+		{
+			var json = "{\"fielde\": null, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+			           + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			var nested = JsonMapper.ToObject<Nested>(json);
+			Assert.Null(nested.FieldE);
+			Assert.Equal(nested.FieldF, 20);
+			Assert.Equal(nested.FieldG, 3.459, 4);
+			Assert.True(nested.FieldH);
+			Assert.NotNull(nested.Simple);
+			Assert.Equal(nested.Simple.FieldA, "valueA");
+			Assert.Equal(nested.Simple.FieldB, 10);
+			Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
+			Assert.False(nested.Simple.FieldD);
+			
+		}
+
+		[Fact]
+		public void TestJsonObjectMapper05()
+		{
+			var json = "{\"fielde\": null, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			var nested = JsonMapper.ToObject<Nested>(json);
+			Assert.Null(nested.FieldE);
+			Assert.Equal(nested.FieldF, 20);
+			Assert.Equal(nested.FieldG, 3.459, 4);
+			Assert.True(nested.FieldH);
+			Assert.NotNull(nested.Simple);
+			Assert.Equal(nested.Simple.FieldA, "valueA");
+			Assert.Equal(nested.Simple.FieldB, 0);
+			Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
+			Assert.False(nested.Simple.FieldD);
+		}
+
+		[Fact]
+		public void TestJsonObjectMapper06()
+		{
+			var json = "{\"fielde\": 33, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<Nested>(json));
+		}
+
+		[Fact]
+		public void TestJsonObjectMapper07()
+		{
+			var json = "{\"fielde\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3, \"Simple\": {\"FieldA\": "
+			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			var nested = JsonMapper.ToObject<Nested>(json);
+			Assert.Equal(3, nested.FieldG, 1);
+		}
+
+		[Fact]
+		public void TestJsonObjectMapper08()
+		{
+			var json = "{\"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			var nested = JsonMapper.ToObject<Nested>(json);
+			Assert.Null(nested.FieldE);
+			Assert.Equal(nested.FieldF, 20);
+			Assert.Equal(nested.FieldG, 3.459, 4);
+			Assert.True(nested.FieldH);
+			Assert.NotNull(nested.Simple);
+			Assert.Equal(nested.Simple.FieldA, "valueA");
+			Assert.Equal(nested.Simple.FieldB, 0);
+			Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
+			Assert.False(nested.Simple.FieldD);
+		}
+
+		[Fact]
+		public void TestJsonObjectMapper09()
+		{
+			var json = "{\"fieldF\": 20.543, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<Nested>(json));
 		}
 
 		[Fact]

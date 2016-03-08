@@ -78,7 +78,10 @@ namespace Commons.Json.Mapper
 
 	public class JObject : JValue, IEnumerable<KeyValuePair<string, JValue>>
 	{
-		private HashedMap<string, JValue> values = new HashedMap<string, JValue>();
+		private HashedMap<string, JValue> values =
+			new HashedMap<string, JValue>(
+				(x1, x2) => x1 != null ? x1.Equals(x2, StringComparison.InvariantCultureIgnoreCase) : x1 == x2);
+
 		private string lastKey;
 		public void PutKey(JString key)
 		{
@@ -114,6 +117,11 @@ namespace Commons.Json.Mapper
 		{
 			get { return values[key]; }
 			set { values[key] = value; }
+		}
+
+		public bool ContainsKey(string key)
+		{
+			return values.ContainsKey(key);
 		}
 
 		public IEnumerator<KeyValuePair<string, JValue>> GetEnumerator()
@@ -188,18 +196,53 @@ namespace Commons.Json.Mapper
 	{
 		public int AsInt()
 		{
-			return (int) Value;
+			return Convert.ToInt32(Value);
 		}
 
 		public long AsLong()
 		{
-			return Value;
+			return Convert.ToInt64(Value);
+		}
+
+		public short AsShort()
+		{
+			return Convert.ToInt16(Value);
 		}
 
         public byte AsByte()
         {
-            return (byte)Value;
+            return Convert.ToByte(Value);
         }
+
+		public ulong AsULong()
+		{
+			return Convert.ToUInt64(Value);
+		}
+
+		public uint AsUInt()
+		{
+			return Convert.ToUInt32(Value);
+		}
+
+		public ushort AsUShort()
+		{
+			return Convert.ToUInt16(Value);
+		}
+
+		public double AsDouble()
+		{
+			return Convert.ToDouble(Value);
+		}
+
+		public float AsFloat()
+		{
+			return Convert.ToSingle(Value);
+		}
+
+		public decimal AsDecimal()
+		{
+			return Convert.ToDecimal(Value);
+		}
 	}
 
 	public class JDecimal : JPrimitive<decimal>
