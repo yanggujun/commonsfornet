@@ -304,7 +304,7 @@ namespace Test.Commons.Json
 		}
 
 		[Fact]
-		public void TestMapjsonToObject25()
+		public void TestMapJsonToObject25()
 		{
 			var json = "800000";
 			var number = JsonMapper.ToObject<long>(json);
@@ -312,12 +312,58 @@ namespace Test.Commons.Json
 		}
 
 		[Fact]
-		public void TestMapjsonToObject26()
+		public void TestMapJsonToObject26()
 		{
 			var json = "800000";
 			var number = JsonMapper.ToObject<ulong>(json);
 			Assert.Equal((ulong)800000, number);
 		}
+
+        [Fact]
+        public void TestMapObjectToJson01()
+        {
+            var simple = new Simple();
+            simple.FieldA = "valueA";
+            simple.FieldB = 10;
+            simple.FieldC = 1.783;
+            simple.FieldD = true;
+            var json = JsonMapper.ToJson(simple);
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("valueA", (string)jsonObj.FieldA);
+            Assert.Equal(10, (int)jsonObj.FieldB);
+            Assert.Equal(1.783, (double)jsonObj.FieldC);
+            Assert.True((bool)jsonObj.FieldD);
+        }
+
+        [Fact]
+        public void TestMapObjectToJson02()
+        {
+            var simple = new Simple
+            {
+                FieldA = "valueA",
+                FieldB = 10,
+                FieldC = 1.783,
+                FieldD = true
+            };
+            var nested = new Nested
+            {
+                FieldE = "valueE",
+                FieldF = 20,
+                FieldG = 34.0034,
+                FieldH = false,
+                Simple = simple
+            };
+            var json = JsonMapper.ToJson(nested);
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("valueA", (string)jsonObj.Simple.FieldA);
+            Assert.Equal(10, (int)jsonObj.Simple.FieldB);
+            Assert.Equal(1.783, (double)jsonObj.Simple.FieldC);
+            Assert.True((bool)jsonObj.Simple.FieldD);
+            Assert.Equal("valueE", (string)jsonObj.FieldE);
+            Assert.Equal(20, (int)jsonObj.FieldF);
+            Assert.Equal(34.0034, (double)jsonObj.FieldG);
+            Assert.False((bool)jsonObj.FieldH);
+        }
 
 		[Fact]
 		public void TestToJsonNormalObject()
@@ -333,7 +379,7 @@ namespace Test.Commons.Json
 		{
 			var json = JsonMapper.ToJson(new[] {1, 2, 3, 4, 5, 6});
 			dynamic jsonObject = JsonMapper.Parse(json);
-			Assert.Equal(1, jsonObject[0]);
+			Assert.Equal(1, (int)jsonObject[0]);
 		}
 
 		[Fact]

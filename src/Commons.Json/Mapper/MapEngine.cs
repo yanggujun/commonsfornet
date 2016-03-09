@@ -15,8 +15,10 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 
 namespace Commons.Json.Mapper
 {
@@ -51,10 +53,57 @@ namespace Commons.Json.Mapper
             return target;
 		}
 
-		public JValue Map(T target)
+		public string Map(T target)
 		{
-			throw new NotImplementedException();
+            return Jsonize(target);
 		}
+
+        private string Jsonize(object target)
+        {
+            if (target == null)
+            {
+                return JsonTokens.Null;
+            }
+            var type = target.GetType();
+            var json = string.Empty;
+            if (type.IsJsonNumber() || type == typeof(bool))
+            {
+                json = target.ToString();
+            }
+            else if (type == typeof(string) || type == typeof(DateTime))
+            {
+                var sb = new StringBuilder();
+                sb.Append(JsonTokens.Quoter).Append(target).Append(JsonTokens.Quoter);
+                json = sb.ToString();
+            }
+            else if (type.IsDictionary())
+            {
+            }
+            else if (type.InstanceOf(typeof(IEnumerable)))
+            {
+            }
+            else
+            {
+                var manager = typeCache[type];
+                var sb = new StringBuilder();
+                sb.Append(JsonTokens.LeftBrace);
+                foreach (var prop in manager.Properties)
+                {
+                    var propValue = prop.GetValue(target);
+                    sb.Append(JsonTokens.Quoter);
+                    sb.Append(prop.Name);
+                    sb.Append(JsonTokens.Quoter);
+                    sb.Append(JsonTokens.Colon);
+                    sb.Append(Jsonize(propValue));
+                    sb.Append(JsonTokens.Comma);
+                }
+                sb.Remove(sb.Length - 1, 1);
+                sb.Append(JsonTokens.RightBrace);
+                json = sb.ToString();
+            }
+
+            return json;
+        }
 
         private void Populate(object target, JValue jsonValue)
         {

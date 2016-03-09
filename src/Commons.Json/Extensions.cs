@@ -50,7 +50,7 @@ namespace Commons.Json
 
 		public static bool IsJsonPrimitive(this Type type)
 		{
-			return type.IsPrimitive || type == typeof (string);
+			return type.IsPrimitive || type == typeof (string) || type == typeof(DateTime);
 		}
 
 		public static bool IsJsonNumber(this Type type)
@@ -62,6 +62,18 @@ namespace Commons.Json
 			       || type == typeof (double) || type == typeof (float)
 			       || type == typeof (decimal);
 		}
+
+        public static bool IsJsonInteger(this Type type)
+        {
+            return type == typeof(int) || type == typeof(long) 
+                || type == typeof(short) || type == typeof(byte) 
+                || type == typeof(uint) || type == typeof(ulong);
+        }
+
+        public static bool IsJsonDecimal(this Type type)
+        {
+            return type == typeof(double) || type == typeof(float) || type == typeof(decimal);
+        }
 
 		public static bool IsJsonArray(this Type type)
 		{
@@ -91,6 +103,21 @@ namespace Commons.Json
 
 			return isList;
 		}
+
+        public static bool IsDictionary(this Type type)
+        {
+            var isDict = false;
+            foreach (var interfaceType in type.GetInterfaces())
+            {
+                if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                {
+                    isDict = true;
+                    break;
+                }
+            }
+
+            return isDict;
+        }
 
         public static bool IsSupported(this Type type)
         {

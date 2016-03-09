@@ -55,7 +55,21 @@ namespace Commons.Json.Mapper
         {
             get
             {
-                return typeManagers[type];
+                if (type.IsJsonPrimitive() || !type.IsSupported())
+                {
+                    throw new InvalidOperationException(Messages.TypeNotSupported);
+                }
+                TypeManager manager;
+                if (typeManagers.ContainsKey(type))
+                {
+                    manager = typeManagers[type];
+                }
+                else
+                {
+                    CacheTypeProperties(type);
+                    manager = typeManagers[type];
+                }
+                return manager;
             }
         }
 

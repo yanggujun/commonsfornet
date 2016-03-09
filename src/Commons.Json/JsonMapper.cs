@@ -64,7 +64,8 @@ namespace Commons.Json
 
 		public static string ToJson<T>(T target)
 		{
-			return null;
+            var mapEngine = mapEngineFactory.CreateMapEngine(target, mapperContainer, typeCache);
+            return mapEngine.Map(target);
 		}
 
 		public static dynamic Parse(string json)
