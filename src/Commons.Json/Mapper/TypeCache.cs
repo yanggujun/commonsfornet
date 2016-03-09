@@ -65,9 +65,17 @@ namespace Commons.Json.Mapper
 		    var properties = manager.Properties;
 		    foreach (var prop in properties)
 		    {
-			    if (!prop.PropertyType.IsJsonPrimitive() && prop.PropertyType.IsSupported())
+			    var propType = prop.PropertyType;
+			    if (!propType.IsJsonPrimitive() && propType.IsSupported())
 			    {
-					prop.SetValue(value, Initialize(typeManagers[prop.PropertyType]));
+				    if (propType.IsList())
+				    {
+					    prop.SetValue(value, Activator.CreateInstance(propType));
+				    }
+				    else
+				    {
+					    prop.SetValue(value, Initialize(typeManagers[propType]));
+				    }
 			    }
 		    }
 

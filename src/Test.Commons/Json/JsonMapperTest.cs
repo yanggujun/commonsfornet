@@ -26,7 +26,7 @@ namespace Test.Commons.Json
 	public class JsonMapperTest
 	{
 		[Fact]
-		public void TestJsonObjectMapper01()
+		public void TestMapJsonToObject01()
 		{
 			var obj = JsonMapper.ToObject<Simple>("{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}");
 			Assert.Equal(obj.FieldA, "valueA");
@@ -36,7 +36,7 @@ namespace Test.Commons.Json
 		}
 
 		[Fact]
-		public void TestJsonObjectMapper02()
+		public void TestMapJsonToObject02()
 		{
 			var json = "{\"fieldE\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true}";
@@ -53,7 +53,7 @@ namespace Test.Commons.Json
 		}
 
 		[Fact]
-		public void TestJsonObjectMapper03()
+		public void TestMapJsonToObject03()
 		{
 			var json = "{\"fieldE\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
@@ -70,7 +70,7 @@ namespace Test.Commons.Json
 		}
 
 		[Fact]
-		public void TestJsonObjectMapper04()
+		public void TestMapJsonToObject04()
 		{
 			var json = "{\"fielde\": null, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
@@ -88,7 +88,7 @@ namespace Test.Commons.Json
 		}
 
 		[Fact]
-		public void TestJsonObjectMapper05()
+		public void TestMapJsonToObject05()
 		{
 			var json = "{\"fielde\": null, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
@@ -105,7 +105,7 @@ namespace Test.Commons.Json
 		}
 
 		[Fact]
-		public void TestJsonObjectMapper06()
+		public void TestMapJsonToObject06()
 		{
 			var json = "{\"fielde\": 33, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
@@ -113,7 +113,7 @@ namespace Test.Commons.Json
 		}
 
 		[Fact]
-		public void TestJsonObjectMapper07()
+		public void TestMapJsonToObject07()
 		{
 			var json = "{\"fielde\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
@@ -122,7 +122,7 @@ namespace Test.Commons.Json
 		}
 
 		[Fact]
-		public void TestJsonObjectMapper08()
+		public void TestMapJsonToObject08()
 		{
 			var json = "{\"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
@@ -139,7 +139,7 @@ namespace Test.Commons.Json
 		}
 
 		[Fact]
-		public void TestJsonObjectMapper09()
+		public void TestMapJsonToObject09()
 		{
 			var json = "{\"fieldF\": 20.543, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
@@ -147,7 +147,7 @@ namespace Test.Commons.Json
 		}
 
         [Fact]
-        public void TestJsonObjectMapper10()
+        public void TestMapJsonToObject10()
         {
             var json = "[{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}, " 
                         + "{\"FieldA\": \"valueA1\", \"FieldB\" : 11, \"FieldC\": 3.3, \"FieldD\": false}]";
@@ -164,7 +164,7 @@ namespace Test.Commons.Json
         }
 
         [Fact]
-        public void TestJsonObjectMapper11()
+        public void TestMapJsonToObject11()
         {
             var json = "[1, 2, 3, 4, 5, 6, 7, 8]";
             var list = JsonMapper.ToObject<List<int>>(json);
@@ -173,6 +173,151 @@ namespace Test.Commons.Json
                 Assert.Equal(i + 1, list[i]);
             }
         }
+
+		[Fact]
+		public void TestMapJsonToObject12()
+		{
+			var json = "{\"fieldj\": \"valueJ\", \"fieldk\": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]}";
+			var primitiveList = JsonMapper.ToObject<PrimitiveList>(json);
+			Assert.Equal("valueJ", primitiveList.FieldJ);
+			for (var i = 0; i < primitiveList.FieldK.Count; i++)
+			{
+				Assert.Equal(i + 10, primitiveList.FieldK[i]);
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject13()
+		{
+			var json = TestHelper.ReadFrom(@".\Json\JsonSample11.txt");
+			var arrayNested = JsonMapper.ToObject<ArrayNested>(json);
+			Assert.Equal("valueI", arrayNested.FieldI);
+			Assert.NotNull(arrayNested.NestedItems);
+			Assert.Equal(2, arrayNested.NestedItems.Count);
+			Assert.Equal("valueE1", arrayNested.NestedItems[0].FieldE);
+			Assert.Equal(100, arrayNested.NestedItems[0].FieldF);
+			Assert.Equal(1000.2345, arrayNested.NestedItems[0].FieldG);
+			Assert.True(arrayNested.NestedItems[0].FieldH);
+			Assert.NotNull(arrayNested.NestedItems[0].Simple);
+			Assert.Equal("valueA1", arrayNested.NestedItems[0].Simple.FieldA);
+			Assert.Equal(200, arrayNested.NestedItems[0].Simple.FieldB);
+			Assert.Equal(10000.35985, arrayNested.NestedItems[0].Simple.FieldC);
+			Assert.False(arrayNested.NestedItems[0].Simple.FieldD);
+
+			Assert.Equal("valueE2", arrayNested.NestedItems[1].FieldE);
+			Assert.Equal(300, arrayNested.NestedItems[1].FieldF);
+			Assert.Equal(2000.2345, arrayNested.NestedItems[1].FieldG);
+			Assert.False(arrayNested.NestedItems[1].FieldH);
+			Assert.NotNull(arrayNested.NestedItems[1].Simple);
+			Assert.Equal("valueA2", arrayNested.NestedItems[1].Simple.FieldA);
+			Assert.Equal(400, arrayNested.NestedItems[1].Simple.FieldB);
+			Assert.Equal(20000.35985, arrayNested.NestedItems[1].Simple.FieldC);
+			Assert.True(arrayNested.NestedItems[1].Simple.FieldD);
+
+		}
+
+		[Fact]
+		public void TestMapJsonToObject14()
+		{
+			var json = "\"astring\"";
+			var str = JsonMapper.ToObject<string>(json);
+			Assert.Equal("astring", str);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject15()
+		{
+			var json = "10";
+			var integer = JsonMapper.ToObject<int>(json);
+			Assert.Equal(10, integer);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject16()
+		{
+			var json = "10.44323";
+			var floating = JsonMapper.ToObject<double>(json);
+			Assert.Equal(10.44323, floating);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject17()
+		{
+			var json = "true";
+			var boolean = JsonMapper.ToObject<bool>(json);
+			Assert.True(boolean);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject18()
+		{
+			var json = "null";
+			var simple = JsonMapper.ToObject<Simple>(json);
+			Assert.Null(simple);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject19()
+		{
+			var json = "daddaaadaa";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.ToObject<bool>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject20()
+		{
+			var json = "1.4";
+			var number = JsonMapper.ToObject<float>(json);
+			Assert.Equal(1.4, number, 2);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject21()
+		{
+			var json = "5";
+			var number = JsonMapper.ToObject<short>(json);
+			Assert.Equal(5, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject22()
+		{
+			var json = "6";
+			var number = JsonMapper.ToObject<uint>(json);
+			Assert.Equal((uint)6, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject23()
+		{
+			var json = "-1000";
+			var number = JsonMapper.ToObject<int>(json);
+			Assert.Equal(-1000, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject24()
+		{
+			var json = "7";
+			var number = JsonMapper.ToObject<ushort>(json);
+			Assert.Equal((ushort)7, number);
+		}
+
+		[Fact]
+		public void TestMapjsonToObject25()
+		{
+			var json = "800000";
+			var number = JsonMapper.ToObject<long>(json);
+			Assert.Equal(800000, number);
+		}
+
+		[Fact]
+		public void TestMapjsonToObject26()
+		{
+			var json = "800000";
+			var number = JsonMapper.ToObject<ulong>(json);
+			Assert.Equal((ulong)800000, number);
+		}
 
 		[Fact]
 		public void TestToJsonNormalObject()

@@ -48,7 +48,11 @@ namespace Commons.Json
 			var parseEngine = new JsonParseEngine();
 			var jsonValue = parseEngine.Parse(json);
 
-            var target = typeCache.Instantiate<T>();
+			T target = default(T);
+			if (!typeof (T).IsJsonPrimitive())
+			{
+				target = typeCache.Instantiate<T>();
+			}
 
 			var mapEngine = mapEngineFactory.CreateMapEngine(target, mapperContainer, typeCache);
 			return mapEngine.Map(jsonValue);

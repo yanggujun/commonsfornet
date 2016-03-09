@@ -47,4 +47,10 @@ namespace Test.Commons.Json
 
         public List<Nested> NestedItems { get; set; }
     }
+
+	public class PrimitiveList
+	{
+		public string FieldJ { get; set; }
+		public List<int> FieldK { get; set; } 
+	}
 }

@@ -35,6 +35,17 @@ namespace Commons.Json.Mapper
 
 		public T Map(JValue jsonValue)
 		{
+			if (jsonValue.Is<JString>() || jsonValue.Is<JBoolean>()
+			    || jsonValue.Is<JInteger>() || jsonValue.Is<JDecimal>())
+			{
+				return (T)ExtractPrimitiveValue(jsonValue, typeof (T));
+			}
+
+			if (jsonValue.Is<JNull>())
+			{
+				return default(T);
+			}
+
 			Populate(target, jsonValue);
 
             return target;
@@ -64,12 +75,25 @@ namespace Commons.Json.Mapper
                 var add = type.GetMethod(Messages.AddMethod);
 				foreach (var value in jsonArray)
 				{
-					var arrayValue = typeCache.Instantiate(itemType);
-					Populate(arrayValue, value);
-                    add.Invoke(target, new [] {arrayValue});
+					var arrayItemValue = GetValueFromJsonArrayItem(value, itemType);
+                    add.Invoke(target, new [] {arrayItemValue});
 				}
 			}
         }
+
+		private object GetValueFromJsonArrayItem(JValue jsonValue, Type itemType)
+		{
+			if (itemType.IsJsonPrimitive())
+			{
+				return ExtractPrimitiveValue(jsonValue, itemType);
+			}
+			else
+			{
+				var itemValue = typeCache.Instantiate(itemType);
+				Populate(itemValue, jsonValue);
+				return itemValue;
+			}
+		}
 
 		private void PopulateJsonObject(object target, JObject jsonObj)
 		{
@@ -105,22 +129,30 @@ namespace Commons.Json.Mapper
 				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
 			}
 
+			var propertyValue = ExtractPrimitiveValue(value, propertyType);
+
+			prop.SetValue(target, propertyValue);
+		}
+
+		private static object ExtractPrimitiveValue(JValue value, Type type)
+		{
 			JString str;
 			JInteger integer;
 			JBoolean boolean;
 			JDecimal floating;
+			object propertyValue;
 			if (value.Is<JString>(out str))
 			{
-				if (propertyType != typeof (string) && propertyType != typeof(DateTime))
+				if (type != typeof (string) && type != typeof (DateTime))
 				{
 					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
 				}
-				if (propertyType == typeof (DateTime))
+				if (type == typeof (DateTime))
 				{
 					DateTime dt;
 					if (DateTime.TryParse(str, out dt))
 					{
-						prop.SetValue(target, dt);
+						propertyValue = dt;
 					}
 					else
 					{
@@ -130,98 +162,102 @@ namespace Commons.Json.Mapper
 				else
 				{
 					string v = str;
-					prop.SetValue(target, v);
+					propertyValue = v;
 				}
 			}
 			else if (value.Is<JInteger>(out integer))
 			{
-				if (!propertyType.IsJsonNumber())
+				if (!type.IsJsonNumber())
 				{
 					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
 				}
-				PopulateInteger(target, prop, propertyType, integer);
+				propertyValue = GetIntegerPropertyValue(type, integer);
 			}
 			else if (value.Is<JBoolean>(out boolean))
 			{
-				if (propertyType != typeof (bool))
+				if (type != typeof (bool))
 				{
 					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
 				}
 				bool v = boolean;
-				prop.SetValue(target, v);
+				propertyValue = v;
 			}
 			else if (value.Is<JDecimal>(out floating))
 			{
-				if (propertyType != typeof (float) && propertyType != typeof (double) && propertyType != typeof (decimal))
+				if (type != typeof (float) && type != typeof (double) && type != typeof (decimal))
 				{
 					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
 				}
-				if (propertyType == typeof (float))
+				if (type == typeof (float))
 				{
-					prop.SetValue(target, floating.AsFloat());
+					propertyValue = floating.AsFloat();
 				}
-				else if (propertyType == typeof (double))
+				else if (type == typeof (double))
 				{
-					prop.SetValue(target, floating.AsDouble());
+					propertyValue = floating.AsDouble();
 				}
 				else
 				{
-					prop.SetValue(target, floating.AsDecimal());
+					propertyValue = floating.AsDecimal();
 				}
 			}
 			else if (value.Is<JNull>())
 			{
-				prop.SetValue(target, null);
+				propertyValue = null;
 			}
 			else
 			{
 				// Unlikely to happen.
 				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
 			}
+			return propertyValue;
 		}
 
-		private static void PopulateInteger(object target, PropertyInfo prop, Type propertyType, JInteger integer)
+		private static object GetIntegerPropertyValue(Type propertyType, JInteger integer)
 		{
+			object integerObj = null;
 			if (propertyType == typeof (long))
 			{
-				prop.SetValue(target, integer.AsLong());
+				integerObj = integer.AsLong();
 			}
 			else if (propertyType == typeof (int))
 			{
-				prop.SetValue(target, integer.AsInt());
+				integerObj = integer.AsInt();
 			}
 			else if (propertyType == typeof (byte))
 			{
-				prop.SetValue(target, integer.AsByte());
+				integerObj = integer.AsByte();
 			}
 			else if (propertyType == typeof (short))
 			{
-				prop.SetValue(target, integer.AsShort());
+				integerObj = integer.AsShort();
 			}
 			else if (propertyType == typeof (double))
 			{
-				prop.SetValue(target, integer.AsDouble());
+				integerObj = integer.AsDouble();
 			}
 			else if (propertyType == typeof (float))
 			{
-				prop.SetValue(target, integer.AsFloat());
+				integerObj = integer.AsFloat();
 			}
 			else if (propertyType == typeof (decimal))
 			{
-				prop.SetValue(target, integer.AsDecimal());
+				integerObj = integer.AsDecimal();
 			}
 			else if (propertyType == typeof (ulong))
 			{
-				prop.SetValue(target, integer.AsULong());
+				integerObj = integer.AsULong();
 			}
 			else if (propertyType == typeof (uint))
 			{
-				prop.SetValue(target, integer.AsUInt());
+				integerObj = integer.AsUInt();
 			}
 			else if (propertyType == typeof (ushort))
 			{
-				prop.SetValue(target, integer.AsUShort());
+				integerObj = integer.AsUShort();
 			}
+
+			return integerObj;
 		}
 	}
 }

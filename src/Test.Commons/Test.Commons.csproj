@@ -103,6 +103,9 @@
     <Content Include="Json\JsonSample10.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Json\JsonSample11.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Json\JsonSample9.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
