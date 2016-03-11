@@ -106,17 +106,26 @@ namespace Commons.Json
 
         public static bool IsDictionary(this Type type)
         {
+            Type keyType;
+            return IsDictionary(type, out keyType);
+        }
+
+        public static bool IsDictionary(this Type type, out Type keyType)
+        {
             var isDict = false;
+            keyType = null;
             foreach (var interfaceType in type.GetInterfaces())
             {
                 if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
                 {
                     isDict = true;
+                    keyType = interfaceType.GetGenericArguments()[0];
                     break;
                 }
             }
 
             return isDict;
+
         }
 
         public static bool IsSupported(this Type type)

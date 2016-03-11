@@ -320,6 +320,28 @@ namespace Test.Commons.Json
 		}
 
         [Fact]
+        public void TestMapJsonToObject27()
+        {
+            var json = "{\"fieldb\": 10}";
+            var simple = JsonMapper.ToObject<Simple>(json);
+            Assert.Equal(10, simple.FieldB);
+            Assert.Null(simple.FieldA);
+            Assert.Equal(0, simple.FieldC);
+            Assert.False(simple.FieldD);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject28()
+        {
+            var json = "{\"fieldb\": 10, \"NotExistInObject\": \"aaaa\"}";
+            var simple = JsonMapper.ToObject<Simple>(json);
+            Assert.Equal(10, simple.FieldB);
+            Assert.Null(simple.FieldA);
+            Assert.Equal(0, simple.FieldC);
+            Assert.False(simple.FieldD);
+        }
+
+        [Fact]
         public void TestMapObjectToJson01()
         {
             var simple = new Simple();
@@ -365,21 +387,95 @@ namespace Test.Commons.Json
             Assert.False((bool)jsonObj.FieldH);
         }
 
+        [Fact]
+        public void TestMapObjectToJson03()
+        {
+            var dict = new Dictionary<string, int>
+            {
+                {"value1", 1},
+                {"value2", 2},
+                {"value3", 3}
+            };
+            var json = JsonMapper.ToJson(dict);
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.Equal(1, (int)jsonObj.value1);
+            Assert.Equal(2, (int)jsonObj.value2);
+            Assert.Equal(3, (int)jsonObj.value3);
+        }
+
+        [Fact]
+        public void TestMapObjectToJson04()
+        {
+            var dict = new Dictionary<int, object>
+            {
+                {1, new object()},
+                {2, new object()},
+                {3, new object()}
+            };
+            var json = JsonMapper.ToJson(dict);
+            Assert.True(json.StartsWith("{"));
+            Assert.True(json.EndsWith("}"));
+            Assert.True(string.IsNullOrWhiteSpace(json.Trim('{').Trim('}')));
+        }
+
+        [Fact]
+        public void TestMapObjectToJson05()
+        {
+            var dict = new Dictionary<string, Simple>
+            {
+                {"Simple1", new Simple {FieldA = "f1", FieldB = 1, FieldC = 10.1, FieldD = true}},
+                {"Simple2", new Simple {FieldA = "f2", FieldB = 2, FieldC = 20.5, FieldD = false}},
+                {"Simple3", new Simple {FieldA = "f3", FieldB = 3, FieldC = 30.7, FieldD = true }},
+                {"Simple4", new Simple {FieldA = "f4", FieldB = 4, FieldC = 40.9, FieldD = false }}
+            };
+            var json = JsonMapper.ToJson(dict);
+            var jsonObj = JsonMapper.Parse(json);
+            var s1 = jsonObj.Simple1;
+            var s2 = jsonObj.Simple2;
+            var s3 = jsonObj.Simple3;
+            var s4 = jsonObj.Simple4;
+            Assert.Equal("f1", (string)s1.FieldA);
+            Assert.Equal("f2", (string)s2.FieldA);
+            Assert.Equal("f3", (string)s3.FieldA);
+            Assert.Equal("f4", (string)s4.FieldA);
+
+            Assert.Equal(1, (int)s1.FieldB);
+            Assert.Equal(2, (int)s2.FieldB);
+            Assert.Equal(3, (int)s3.FieldB);
+            Assert.Equal(4, (int)s4.FieldB);
+
+            Assert.Equal(10.1, (double)s1.FieldC);
+            Assert.Equal(20.5, (double)s2.FieldC);
+            Assert.Equal(30.7, (double)s3.FieldC);
+            Assert.Equal(40.9, (double)s4.FieldC);
+
+            Assert.True((bool)s1.FieldD);
+            Assert.False((bool)s2.FieldD);
+            Assert.True((bool)s3.FieldD);
+            Assert.False((bool)s4.FieldD);
+        }
+
 		[Fact]
-		public void TestToJsonNormalObject()
+		public void TestMapObjectToJson06()
 		{
 			var json = JsonMapper.ToJson(new {FieldA = "AValue", FieldB = "BValue"});
 			dynamic jsonObject = JsonMapper.Parse(json);
-			Assert.Equal("AValue", jsonObject.FieldA);
-			Assert.Equal("BValue", jsonObject.FieldB);
+			Assert.Equal("AValue", (string)jsonObject.FieldA);
+			Assert.Equal("BValue", (string)jsonObject.FieldB);
 		}
 
 		[Fact]
-		public void TestToJsonSimpleArray()
+		public void TestMapObjectToJson07()
 		{
 			var json = JsonMapper.ToJson(new[] {1, 2, 3, 4, 5, 6});
 			dynamic jsonObject = JsonMapper.Parse(json);
 			Assert.Equal(1, (int)jsonObject[0]);
+            var list = JsonMapper.ToObject<List<int>>(json);
+            Assert.Equal(6, list.Count);
+            for (var i = 0; i < list.Count; i++)
+            {
+                Assert.Equal(i + 1, list[i]);
+            }
 		}
 
 		[Fact]

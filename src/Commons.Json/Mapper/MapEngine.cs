@@ -66,6 +66,7 @@ namespace Commons.Json.Mapper
             }
             var type = target.GetType();
             var json = string.Empty;
+            Type keyType;
             if (type.IsJsonNumber() || type == typeof(bool))
             {
                 json = target.ToString();
@@ -76,8 +77,48 @@ namespace Commons.Json.Mapper
                 sb.Append(JsonTokens.Quoter).Append(target).Append(JsonTokens.Quoter);
                 json = sb.ToString();
             }
-            else if (type.IsDictionary())
+            else if (type.IsDictionary(out keyType))
             {
+                var sb = new StringBuilder();
+                sb.Append(JsonTokens.LeftBrace);
+                if (keyType == typeof(string))
+                {
+                    var dict = (IEnumerable)target;
+                    var hasValue = false;
+                    foreach (var element in dict)
+                    {
+                        var key = element.GetType().GetProperty("Key").GetValue(element) as string;
+                        var value = element.GetType().GetProperty("Value").GetValue(element);
+                        sb.Append(JsonTokens.Quoter).Append(key).Append(JsonTokens.Quoter)
+                            .Append(JsonTokens.Colon).Append(Jsonize(value)).Append(JsonTokens.Comma);
+                        hasValue = true;
+                    }
+                    if (hasValue)
+                    {
+                        sb.Remove(sb.Length - 1, 1);
+                    }
+                }
+                sb.Append(JsonTokens.RightBrace);
+                json = sb.ToString();
+            }
+            else if (type.IsArray)
+            {
+                var array = (Array)target;
+                var sb = new StringBuilder();
+                sb.Append(JsonTokens.LeftBracket);
+                var hasValue = false;
+                foreach(var item in array)
+                {
+                    sb.Append(Jsonize(item));
+                    sb.Append(JsonTokens.Comma);
+                    hasValue = true;
+                }
+                if (hasValue)
+                {
+                    sb.Remove(sb.Length - 1, 1);
+                }
+                sb.Append(JsonTokens.RightBracket);
+                json = sb.ToString();
             }
             else if (type.InstanceOf(typeof(IEnumerable)))
             {
