@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Commons.Collections.Map;
+using Commons.Collections.Set;
 using Commons.Json;
 using Commons.Json.Mapper;
 using Xunit;
@@ -477,6 +479,56 @@ namespace Test.Commons.Json
                 Assert.Equal(i + 1, list[i]);
             }
 		}
+
+        [Fact]
+        public void TestMapObjectToJson08()
+        {
+            var json = JsonMapper.ToJson(new List<int>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            dynamic jsonArray = JsonMapper.Parse(json);
+            Assert.Equal(10, jsonArray.Length);
+
+            var list = JsonMapper.ToObject<List<int>>(json);
+            Assert.Equal(10, list.Count);
+            for (var i = 0; i < list.Count; i++)
+            {
+                Assert.Equal(i + 1, list[i]);
+            }
+        }
+
+        [Fact]
+        public void TestMapObjectToJson09()
+        {
+            var hashedMap = new HashedMap<string, string>
+            {
+                {"field1", "value1"},
+                {"field2", "value2"},
+                {"field3", "value3"},
+                {"field4", "value4"}
+            };
+            var json = JsonMapper.ToJson(hashedMap);
+            dynamic jsonObject = JsonMapper.Parse(json);
+            Assert.Equal("value1", (string)jsonObject.field1);
+            Assert.Equal("value2", (string)jsonObject.field2);
+            Assert.Equal("value3", (string)jsonObject.field3);
+            Assert.Equal("value4", (string)jsonObject.field4);
+        }
+
+        [Fact]
+        public void TestMapObjectToJson10()
+        {
+            var set = new HashedSet<string>
+            {
+                "field1", "field2", "field3", "field4"
+            };
+            var json = JsonMapper.ToJson(set);
+            var list = JsonMapper.ToObject<List<string>>(json);
+            Assert.Equal(4, list.Count);
+            Assert.True(list.Contains("field1"));
+            Assert.True(list.Contains("field2"));
+            Assert.True(list.Contains("field3"));
+            Assert.True(list.Contains("field4"));
+            Assert.False(list.Contains("field5"));
+        }
 
 		[Fact]
 		public void TestToJsonComplexArray()

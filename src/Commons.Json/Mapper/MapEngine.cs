@@ -109,8 +109,7 @@ namespace Commons.Json.Mapper
                 var hasValue = false;
                 foreach(var item in array)
                 {
-                    sb.Append(Jsonize(item));
-                    sb.Append(JsonTokens.Comma);
+                    sb.Append(Jsonize(item)).Append(JsonTokens.Comma);
                     hasValue = true;
                 }
                 if (hasValue)
@@ -120,8 +119,22 @@ namespace Commons.Json.Mapper
                 sb.Append(JsonTokens.RightBracket);
                 json = sb.ToString();
             }
-            else if (type.InstanceOf(typeof(IEnumerable)))
+            else if (typeof(IEnumerable).IsInstanceOfType(target))
             {
+                var sb = new StringBuilder();
+                sb.Append(JsonTokens.LeftBracket);
+                var hasValue = false;
+                foreach (var item in ((IEnumerable)target))
+                {
+                    sb.Append(Jsonize(item)).Append(JsonTokens.Comma);
+                    hasValue = true;
+                }
+                if (hasValue)
+                {
+                    sb.Remove(sb.Length - 1, 1);
+                }
+                sb.Append(JsonTokens.RightBracket);
+                json = sb.ToString();
             }
             else
             {
