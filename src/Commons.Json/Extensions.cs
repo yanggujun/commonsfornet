@@ -128,7 +128,12 @@ namespace Commons.Json
 
         }
 
-        public static bool IsSupported(this Type type)
+        public static bool Serializable(this Type type)
+        {
+            return true;
+        }
+
+        public static bool Deserializable(this Type type)
         {
             var isSupported = false;
             if (type.IsList())

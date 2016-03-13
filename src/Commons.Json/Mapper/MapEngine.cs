@@ -141,7 +141,7 @@ namespace Commons.Json.Mapper
                 var manager = typeCache[type];
                 var sb = new StringBuilder();
                 sb.Append(JsonTokens.LeftBrace);
-                foreach (var prop in manager.Properties)
+                foreach (var prop in manager.Getters)
                 {
                     var propValue = prop.GetValue(target);
                     sb.Append(JsonTokens.Quoter);
@@ -201,7 +201,7 @@ namespace Commons.Json.Mapper
 		private void PopulateJsonObject(object target, JObject jsonObj)
 		{
 			var type = target.GetType();
-			var properties = typeCache[type].Properties;
+			var properties = typeCache[type].Setters;
 			foreach (var prop in properties)
 			{
 				if (jsonObj.ContainsKey(prop.Name))

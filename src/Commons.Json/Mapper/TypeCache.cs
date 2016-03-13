@@ -15,6 +15,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Commons.Collections.Map;
 
 namespace Commons.Json.Mapper
@@ -26,7 +28,7 @@ namespace Commons.Json.Mapper
         public T Instantiate<T>()
         {
             var type = typeof(T);
-            if (!type.IsSupported())
+            if (!type.Deserializable())
             {
                 throw new InvalidOperationException(Messages.TypeNotSupported);
             }
@@ -55,7 +57,7 @@ namespace Commons.Json.Mapper
         {
             get
             {
-                if (type.IsJsonPrimitive() || !type.IsSupported())
+                if (type.IsJsonPrimitive() || !type.Deserializable())
                 {
                     throw new InvalidOperationException(Messages.TypeNotSupported);
                 }
@@ -76,11 +78,11 @@ namespace Commons.Json.Mapper
 	    private object Initialize(TypeManager manager)
 	    {
 		    var value = manager.Constructor.Invoke(null);
-		    var properties = manager.Properties;
+		    var properties = manager.Setters;
 		    foreach (var prop in properties)
 		    {
 			    var propType = prop.PropertyType;
-			    if (!propType.IsJsonPrimitive() && propType.IsSupported())
+			    if (!propType.IsJsonPrimitive() && propType.Deserializable())
 			    {
 				    if (propType.IsList())
 				    {
@@ -114,7 +116,9 @@ namespace Commons.Json.Mapper
                 manager = new TypeManager(cacheType);
                 typeManagers[cacheType] = manager;
 
-				var properties = manager.Properties;
+                var properties = new List<PropertyInfo>();
+                properties.AddRange(manager.Setters);
+                properties.AddRange(manager.Getters);
 				foreach (var property in properties)
 				{
 					var propertyType = property.PropertyType;

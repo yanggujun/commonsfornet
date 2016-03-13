@@ -535,11 +535,12 @@ namespace Test.Commons.Json
 		{
 			var json = JsonMapper.ToJson(new object[] {1, "a string", 6.04, new {FieldA = "ValueA", FieldB = "ValueB"}});
 			dynamic jsonObject = JsonMapper.Parse(json);
-			Assert.Equal(1, jsonObject[1]);
-			Assert.Equal("a string", jsonObject[1]);
-			Assert.Equal(6.04, jsonObject[2], 0.0001);
-			Assert.Equal("ValueA", jsonObject[3].FieldA);
-			Assert.Equal("ValueB", jsonObject[3].FieldB);
+			Assert.Equal(1, (int)jsonObject[0]);
+			Assert.Equal("a string", (string)jsonObject[1]);
+			Assert.Equal(6.04, (double)jsonObject[2]);
+			Assert.Equal("ValueA", (string)jsonObject[3].FieldA);
+			Assert.Equal("ValueB", (string)jsonObject[3].FieldB);
+            //TODO: in previous version, no cast is needed for dynamic object.
 		}
 
 		[Fact]

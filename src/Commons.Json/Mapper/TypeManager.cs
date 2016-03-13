@@ -24,17 +24,25 @@ namespace Commons.Json.Mapper
 {
     internal class TypeManager
     {
-        private List<PropertyInfo> properties = new List<PropertyInfo>();
+        private List<PropertyInfo> getters = new List<PropertyInfo>();
+        private List<PropertyInfo> setters = new List<PropertyInfo>();
 
         public TypeManager(Type type)
         {
             Type = type;
 
-            properties = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => x.CanRead && x.CanWrite)
-                .Where(y => y.GetGetMethod(false) != null && y.GetSetMethod(false) != null)
-                .Where(z => z.PropertyType.IsSupported())
+            getters = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => x.CanRead)
+                .Where(y => y.GetGetMethod(false) != null)
+                .Where(z => z.PropertyType.Serializable())
                 .ToList();
+
+            setters = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => x.CanWrite)
+                .Where(y => y.GetSetMethod(false) != null)
+                .Where(z => z.PropertyType.Deserializable())
+                .ToList();
+
             Constructor = type.GetConstructor(Type.EmptyTypes);
         }
 
@@ -50,11 +58,19 @@ namespace Commons.Json.Mapper
             set;
         }
 
-        public IReadOnlyList<PropertyInfo> Properties
+        public IReadOnlyList<PropertyInfo> Getters
         {
             get
             {
-                return properties;
+                return getters;
+            }
+        }
+
+        public IReadOnlyList<PropertyInfo> Setters
+        {
+            get
+            {
+                return setters;
             }
         }
     }
