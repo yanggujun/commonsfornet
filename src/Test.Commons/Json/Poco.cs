@@ -14,7 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
+using Commons.Collections.Set;
 namespace Test.Commons.Json
 {
 	public class Simple
@@ -53,4 +55,23 @@ namespace Test.Commons.Json
 		public string FieldJ { get; set; }
 		public List<int> FieldK { get; set; } 
 	}
+
+    public class SetNested
+    {
+        public string FieldL { get; set; }
+        public HashedSet<int> FieldM { get; set; }
+    }
+
+    public class HasDate
+    {
+        public DateTime Birthday { get; set; }
+
+        public string Name { get; set; }
+    }
+
+    public class IListNested
+    {
+        public string Name { get; set; }
+        public IList<int> Numbers { get; set; }
+    }
 }

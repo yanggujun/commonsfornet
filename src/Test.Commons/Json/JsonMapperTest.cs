@@ -242,6 +242,37 @@ namespace Test.Commons.Json
 			Assert.Equal(10.44323, floating);
 		}
 
+        [Fact]
+        public void TestMapJsonToObject161()
+        {
+			var json = "10.44323";
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<int>(json));
+        }
+
+        [Fact]
+        public void TestMapJsonToObject162()
+        {
+            var json = "10";
+            var number = JsonMapper.ToObject<double>(json);
+            Assert.Equal(10, number);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject163()
+        {
+            var json = "10";
+            var number = JsonMapper.ToObject<decimal>(json);
+            Assert.Equal(10, number);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject164()
+        {
+            var json = "11";
+            var number = JsonMapper.ToObject<float>(json);
+            Assert.Equal(11, number);
+        }
+
 		[Fact]
 		public void TestMapJsonToObject17()
 		{
@@ -341,6 +372,48 @@ namespace Test.Commons.Json
             Assert.Null(simple.FieldA);
             Assert.Equal(0, simple.FieldC);
             Assert.False(simple.FieldD);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject29()
+        {
+            var json = "{\"fieldl\":\"valuel\", \"fieldm\": [1, 2, 3, 4 ,5 ,6]}";
+            var setNested = JsonMapper.ToObject<SetNested>(json);
+            Assert.Equal("valuel", setNested.FieldL);
+            Assert.NotNull(setNested.FieldM);
+            Assert.Equal(0, setNested.FieldM.Count);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject30()
+        {
+            var json = "{\"fieldl\": 10, \"fieldm\": [1, 2, 3, 4 ,5 ,6]}";
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<SetNested>(json));
+        }
+
+        [Fact]
+        public void TestMapJsonToObject31()
+        {
+            var json = "{\"fieldl\": {}, \"fieldm\": [1, 2, 3, 4 ,5 ,6]}";
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<SetNested>(json));
+        }
+
+        [Fact]
+        public void TestMapJsonToObject32()
+        {
+            var json = "{\"Birthday\": \"1990/1/18\", \"name\": \"alan\"}";
+            var hasDate = JsonMapper.ToObject<HasDate>(json);
+            Assert.Equal("alan", hasDate.Name);
+            Assert.Equal(1990, hasDate.Birthday.Year);
+            Assert.Equal(1, hasDate.Birthday.Month);
+            Assert.Equal(18, hasDate.Birthday.Day);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject33()
+        {
+            var json = "{\"Birthday\": \"1990/1/18/22\", \"name\": \"alan\"}";
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<HasDate>(json));
         }
 
         [Fact]
@@ -528,6 +601,19 @@ namespace Test.Commons.Json
             Assert.True(list.Contains("field3"));
             Assert.True(list.Contains("field4"));
             Assert.False(list.Contains("field5"));
+        }
+
+        [Fact]
+        public void TestMapObjectToJson11()
+        {
+            var hasDate = new HasDate { Birthday = new DateTime(1990, 10, 21), Name = "Jane" };
+            var json = JsonMapper.ToJson(hasDate);
+            var jsonObject = JsonMapper.Parse(json);
+            Assert.Equal("Jane", (string)jsonObject.Name);
+            var date = DateTime.Parse((string)jsonObject.Birthday);
+            Assert.Equal(1990, date.Year);
+            Assert.Equal(10, date.Month);
+            Assert.Equal(21, date.Day);
         }
 
 		[Fact]

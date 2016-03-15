@@ -171,16 +171,15 @@ namespace Commons.Json.Mapper
 			{
 				var type = target.GetType();
 				Type itemType;
-				if (!type.IsList(out itemType))
-				{
-					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-				}
-                var add = type.GetMethod(Messages.AddMethod);
-				foreach (var value in jsonArray)
-				{
-					var arrayItemValue = GetValueFromJsonArrayItem(value, itemType);
-                    add.Invoke(target, new [] {arrayItemValue});
-				}
+                if (type.IsList(out itemType))
+                {
+                    var add = type.GetMethod(Messages.AddMethod);
+                    foreach (var value in jsonArray)
+                    {
+                        var arrayItemValue = GetValueFromJsonArrayItem(value, itemType);
+                        add.Invoke(target, new[] { arrayItemValue });
+                    }
+                }
 			}
         }
 
