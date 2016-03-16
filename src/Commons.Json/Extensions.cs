@@ -136,16 +136,19 @@ namespace Commons.Json
         public static bool Deserializable(this Type type)
         {
             var isSupported = false;
-            if (type.IsList())
-            {
-                isSupported = true;
-            }
-            else if (!type.IsSubclassOf(typeof(IEnumerable)) && !type.IsArray)
-            {
-                isSupported = true;
-            }
+	        if (!type.IsInterface)
+	        {
+		        if (type.IsList())
+		        {
+			        isSupported = true;
+		        }
+		        else if (!type.IsSubclassOf(typeof (IEnumerable)) && !type.IsArray)
+		        {
+			        isSupported = true;
+		        }
+	        }
 
-            return isSupported;
+	        return isSupported;
         }
 	}
 }

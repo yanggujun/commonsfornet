@@ -256,7 +256,7 @@ namespace Commons.Json
             }
             else if (value.ToLower(CultureInfo.InvariantCulture) == JsonTokens.Null)
             {
-	            jsonValue = new JsonPrimitive(null);
+	            jsonValue = null;
             }
             else
             {

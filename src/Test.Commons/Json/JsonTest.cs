@@ -396,7 +396,7 @@ namespace Test.Commons.Json
 	    {
 		    var json = "null";
 		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal("null", jsonObj.ToString());
+			Assert.Null(jsonObj);
 	    }
 
 		[Fact]
@@ -404,7 +404,7 @@ namespace Test.Commons.Json
 	    {
 		    var json = "nULL";
 		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal("null", jsonObj.ToString());
+			Assert.Null(jsonObj);
 	    }
 
 		[Fact]

@@ -15,6 +15,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -23,7 +25,10 @@ namespace Commons.Json.Mapper
 	[CLSCompliant(true)]
 	public interface IJsonObjectMapper<T>
 	{
-		IJsonObjectMapper<T> MapProperty(string jsonPath, Expression<Func<T, object>> propertyExp);
-		string FromProperty(PropertyInfo property);
+		IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, object>> propertyExp);
+		IJsonObjectMapper<T> ConstructWith(Func<T> creator);
+		IJsonObjectMapper<T> MapCollection(Func<List<T>, IEnumerable<T>> converter);
+		IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter);
+		IJsonObjectMapper<T> MapWith(Func<JValue, T> converter);
 	}
 }

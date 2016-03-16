@@ -416,6 +416,15 @@ namespace Test.Commons.Json
             Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<HasDate>(json));
         }
 
+		[Fact]
+		public void TestMapJsonToObject34()
+		{
+			var json = "{\"Name\": \"Ben\", \"Numbers\": [0, 1, 2, 4, 5]}";
+			var ilistNested = JsonMapper.ToObject<IListNested>(json);
+			Assert.Equal("Ben", ilistNested.Name);
+			Assert.Null(ilistNested.Numbers);
+		}
+
         [Fact]
         public void TestMapObjectToJson01()
         {
@@ -617,7 +626,7 @@ namespace Test.Commons.Json
         }
 
 		[Fact]
-		public void TestToJsonComplexArray()
+		public void TestMapObjectToJson12()
 		{
 			var json = JsonMapper.ToJson(new object[] {1, "a string", 6.04, new {FieldA = "ValueA", FieldB = "ValueB"}});
 			dynamic jsonObject = JsonMapper.Parse(json);
@@ -627,6 +636,80 @@ namespace Test.Commons.Json
 			Assert.Equal("ValueA", (string)jsonObject[3].FieldA);
 			Assert.Equal("ValueB", (string)jsonObject[3].FieldB);
             //TODO: in previous version, no cast is needed for dynamic object.
+		}
+
+		[Fact]
+		public void TestMapObjectToJson13()
+		{
+			object obj = null;
+			var json = JsonMapper.ToJson(obj);
+			Assert.Equal("null", json);
+		}
+
+		[Fact]
+		public void TestMapObjectToJson14()
+		{
+			var n = 1000;
+			var json = JsonMapper.ToJson(n);
+			Assert.Equal("1000", json);
+		}
+
+		[Fact]
+		public void TestMapObjectToJson15()
+		{
+			var n = "1000";
+			var json = JsonMapper.ToJson(n);
+			Assert.Equal("\"1000\"", json);
+		}
+
+		[Fact]
+		public void TestMapObjectToJson16()
+		{
+			var n = 1.4435;
+			var json = JsonMapper.ToJson(n);
+			Assert.Equal("1.4435", json);
+		}
+
+		[Fact]
+		public void TestMapObjectToJson17()
+		{
+			var n = 1.2f;
+			var json = JsonMapper.ToJson(n);
+			Assert.Equal("1.2", json);
+		}
+
+		[Fact]
+		public void TestMapObjectToJson18()
+		{
+			var t = true;
+			var json = JsonMapper.ToJson(t);
+			Assert.Equal("True", json);
+		}
+
+		[Fact]
+		public void TestMapObjectToJson19()
+		{
+			var f = false;
+			var json = JsonMapper.ToJson(f);
+			Assert.Equal("False", json);
+		}
+
+		[Fact]
+		public void TestMapObjectToJson20()
+		{
+			uint i = 12012312;
+			var json = JsonMapper.ToJson(i);
+			Assert.Equal("12012312", json);
+		}
+
+		[Fact]
+		public void TestMapObjectToJson21()
+		{
+			var obj = new IListNested {Name = "Joe"};
+			var json = JsonMapper.ToJson(obj);
+			dynamic nested = JsonMapper.Parse(json);
+			Assert.Equal("Joe", (string)nested.Name);
+			Assert.Null(nested.Numbers);
 		}
 
 		[Fact]
