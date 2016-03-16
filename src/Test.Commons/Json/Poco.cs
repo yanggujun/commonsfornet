@@ -74,4 +74,36 @@ namespace Test.Commons.Json
         public string Name { get; set; }
         public IList<int> Numbers { get; set; }
     }
+
+    public struct SimpleStruct
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public double Score { get; set; }
+        public DateTime ExamDate { get; set; }
+        public bool Pass { get; set; }
+    }
+
+    public class PrivateSetter
+    {
+        public string Name { get; set; }
+        public int Age { get; private set; }
+    }
+
+    public class PrivateGetter
+    {
+        public string Name { get; set; }
+        public int Age { private get; set; }
+    }
+
+    public class NoDefaultConstructor
+    {
+        public NoDefaultConstructor(string name, int age)
+        {
+            Name = name;
+            Age = age;
+        }
+        public string Name { get; set; }
+        public int Age { get; set; }
+    }
 }

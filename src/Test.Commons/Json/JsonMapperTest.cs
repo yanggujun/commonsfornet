@@ -426,6 +426,31 @@ namespace Test.Commons.Json
 		}
 
         [Fact]
+        public void TestMapJsonToObject35()
+        {
+            var json = "{\"Name\": \"Catherine\", \"Gender\": \"F\", \"Country\": \"UK\", \"Office\": \"London\"}";
+            var dict = JsonMapper.ToObject<Dictionary<string, string>>(json);
+            Assert.Equal("Catherine", dict["Name"]);
+            Assert.Equal("F", dict["Gender"]);
+            Assert.Equal("UK", dict["Country"]);
+            Assert.Equal("London", dict["Office"]);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject36()
+        {
+            var json = "{\"Name\": \"Alan\", \"Age\": 25, \"Score\": \"90.5\", \"ExamDate\": \"2016/3/1\", \"Pass\": true}";
+            var simple = JsonMapper.ToObject<SimpleStruct>(json);
+            Assert.Equal("Alan", simple.Name);
+            Assert.Equal(25, simple.Age);
+            Assert.Equal(90.5, simple.Score);
+            Assert.Equal(2016, simple.ExamDate.Year);
+            Assert.Equal(3, simple.ExamDate.Month);
+            Assert.Equal(1, simple.ExamDate.Day);
+            Assert.True(simple.Pass);
+        }
+
+        [Fact]
         public void TestMapObjectToJson01()
         {
             var simple = new Simple();
@@ -711,6 +736,35 @@ namespace Test.Commons.Json
 			Assert.Equal("Joe", (string)nested.Name);
 			Assert.Null(nested.Numbers);
 		}
+
+        [Fact]
+        public void TestMapObjectToJson22()
+        {
+            var nested = new IListNested { Name = "Joe", Numbers = new List<int> { 1, 2, 3, 4, 5 } };
+            var json = JsonMapper.ToJson(nested);
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("Joe", (string)jsonObj.Name);
+            for (var i = 0; i < 5; i++)
+            {
+                Assert.Equal(i + 1, (int)jsonObj.Numbers[i]);
+            }
+        }
+
+        [Fact]
+        public void TestMapObjectToJson23()
+        {
+            var alan = new SimpleStruct { Name = "Alan", Age = 30, Pass = true, ExamDate = DateTime.Parse("2016/3/1"), Score = 90.5 };
+            var json = JsonMapper.ToJson(alan);
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("Alan", (string)jsonObj.Name);
+            Assert.Equal(30, (int)jsonObj.Age);
+            Assert.True((bool)jsonObj.Pass);
+            Assert.Equal(90.5, (double)jsonObj.Score);
+            var date = DateTime.Parse((string)jsonObj.ExamDate);
+            Assert.Equal(2016, date.Year);
+            Assert.Equal(3, date.Month);
+            Assert.Equal(1, date.Day);
+        }
 
 		[Fact]
 		public void TestParseEngine01()

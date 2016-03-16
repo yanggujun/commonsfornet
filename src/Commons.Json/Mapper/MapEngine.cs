@@ -37,20 +37,25 @@ namespace Commons.Json.Mapper
 
 		public T Map(JValue jsonValue)
 		{
+            return (T)InternalMap(jsonValue, target, typeof(T));
+        }
+
+        public object InternalMap(JValue jsonValue, object obj, Type type)
+        {
 			if (jsonValue.Is<JString>() || jsonValue.Is<JBoolean>()
 			    || jsonValue.Is<JInteger>() || jsonValue.Is<JDecimal>())
 			{
-				return (T)ExtractPrimitiveValue(jsonValue, typeof (T));
+                return ExtractPrimitiveValue(jsonValue, type);
 			}
 
 			if (jsonValue.Is<JNull>())
 			{
-				return default(T);
+                return null;
 			}
 
-			Populate(target, jsonValue);
+			Populate(obj, jsonValue);
 
-            return target;
+            return obj;
 		}
 
 		public string Map(T target)
@@ -200,23 +205,47 @@ namespace Commons.Json.Mapper
 		private void PopulateJsonObject(object target, JObject jsonObj)
 		{
 			var type = target.GetType();
-			var properties = typeCache[type].Setters;
-			foreach (var prop in properties)
-			{
-				if (jsonObj.ContainsKey(prop.Name))
-				{
-					var propertyType = prop.PropertyType;
-					if (propertyType.IsJsonPrimitive())
-					{
-						PopulateJsonPrimitive(target, jsonObj, prop);
-					}
-					else
-					{
-						var propValue = prop.GetValue(target);
-						Populate(propValue, jsonObj[prop.Name]);
-					}
-				}
-			}
+            Type keyType;
+            Type valueType;
+            if (type.IsDictionary(out keyType, out valueType))
+            {
+                if (keyType != typeof(string))
+                {
+                    throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                }
+                var method = type.GetMethod(Messages.AddMethod);
+                foreach (var kvp in jsonObj)
+                {
+                    var key = kvp.Key;
+                    object value = null;
+                    if (!valueType.IsJsonPrimitive())
+                    {
+                        value = Activator.CreateInstance(valueType);
+                    }
+                    value = InternalMap(kvp.Value, value, valueType);
+                    method.Invoke(target, new[] { key, value });
+                }
+            }
+            else
+            {
+                var properties = typeCache[type].Setters;
+                foreach (var prop in properties)
+                {
+                    if (jsonObj.ContainsKey(prop.Name))
+                    {
+                        var propertyType = prop.PropertyType;
+                        if (propertyType.IsJsonPrimitive())
+                        {
+                            PopulateJsonPrimitive(target, jsonObj, prop);
+                        }
+                        else
+                        {
+                            var propValue = prop.GetValue(target);
+                            Populate(propValue, jsonObj[prop.Name]);
+                        }
+                    }
+                }
+            }
 		}
 
 		private static void PopulateJsonPrimitive(object target, JObject jsonObj, PropertyInfo prop)
