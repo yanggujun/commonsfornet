@@ -39,8 +39,7 @@ namespace Commons.Json.Mapper
 	    {
             CacheTypeProperties(type);
             object value;
-            Type itemType;
-            if (!type.IsList(out itemType))
+            if (!type.IsList() && !type.IsDictionary())
             {
                 var manager = typeManagers[type];
                 value = Initialize(manager);
@@ -77,7 +76,7 @@ namespace Commons.Json.Mapper
 
 	    private object Initialize(TypeManager manager)
 	    {
-		    var value = manager.Constructor.Invoke(null);
+		    var value = Activator.CreateInstance(manager.Type);
 		    var properties = manager.Setters;
 		    foreach (var prop in properties)
 		    {

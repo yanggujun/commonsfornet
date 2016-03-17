@@ -27,6 +27,9 @@ namespace Test.Commons.Json
 {
 	public class JsonMapperTest
 	{
+		/// <summary>
+		/// plain object
+		/// </summary>
 		[Fact]
 		public void TestMapJsonToObject01()
 		{
@@ -37,6 +40,9 @@ namespace Test.Commons.Json
             Assert.True(obj.FieldD);
 		}
 
+		/// <summary>
+		/// complex object.
+		/// </summary>
 		[Fact]
 		public void TestMapJsonToObject02()
 		{
@@ -439,7 +445,7 @@ namespace Test.Commons.Json
         [Fact]
         public void TestMapJsonToObject36()
         {
-            var json = "{\"Name\": \"Alan\", \"Age\": 25, \"Score\": \"90.5\", \"ExamDate\": \"2016/3/1\", \"Pass\": true}";
+            var json = "{\"Name\": \"Alan\", \"Age\": 25, \"Score\": 90.5, \"ExamDate\": \"2016/3/1\", \"Pass\": true}";
             var simple = JsonMapper.ToObject<SimpleStruct>(json);
             Assert.Equal("Alan", simple.Name);
             Assert.Equal(25, simple.Age);
@@ -449,6 +455,24 @@ namespace Test.Commons.Json
             Assert.Equal(1, simple.ExamDate.Day);
             Assert.True(simple.Pass);
         }
+
+		[Fact]
+		public void TestMapJsonToObject37()
+		{
+			var json = "{\"Name\": \"John\", \"Age\": 10}";
+			var obj = JsonMapper.ToObject<PrivateSetter>(json);
+			Assert.Equal("John", obj.Name);
+			Assert.Equal(23, obj.Age);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject38()
+		{
+			var json = "{\"Name\": \"Kevin\", \"Age\": 21}";
+			var obj = JsonMapper.ToObject<PrivateGetter>(json);
+			Assert.Equal("Kevin", obj.Name);
+			Assert.Equal(21, obj.ActualAge());
+		}
 
         [Fact]
         public void TestMapObjectToJson01()
@@ -765,6 +789,90 @@ namespace Test.Commons.Json
             Assert.Equal(3, date.Month);
             Assert.Equal(1, date.Day);
         }
+
+		[Fact]
+		public void TestMapObjectToJson24()
+		{
+			var obj = new PrivateSetter { Name = "John" };
+			var json = JsonMapper.ToJson(obj);
+			dynamic jsonObj = JsonMapper.Parse(json);
+			Assert.Equal("John", (string)jsonObj.Name);
+			Assert.Equal(23, (int)jsonObj.Age);
+		}
+
+		/// <summary>
+		/// object has private getter.
+		/// </summary>
+		[Fact]
+		public void TestMapObjectToJson25()
+		{
+			var obj = new PrivateGetter {Name = "Kevin", Age = 21};
+			var json = JsonMapper.ToJson(obj);
+			dynamic jsonObj = JsonMapper.Parse(json);
+			Assert.Equal("Kevin", (string)jsonObj.Name);
+			Assert.False(jsonObj.HasValue("Age"));
+		}
+
+		/// <summary>
+		/// Dict to json and json to dict.
+		/// </summary>
+		[Fact]
+		public void TestMapObjectToJson27()
+		{
+			var map = new HashedMap<string, Simple>();
+			for (var i = 0; i < 10; i++)
+			{
+				var simple = new Simple
+				{
+					FieldA = "value" + i,
+					FieldB = i,
+					FieldC = i + ((double) i)/10,
+					FieldD = i%2 == 0
+				};
+				map.Add("simple" + i, simple);
+			}
+			var json = JsonMapper.ToJson(map);
+			var dict = JsonMapper.ToObject<Dictionary<string, Simple>>(json);
+			for (var i = 0; i < 10; i++)
+			{
+				var key = "simple" + i;
+				var simple = dict[key];
+				Assert.Equal("value" + i, simple.FieldA);
+				Assert.Equal(i, simple.FieldB);
+				Assert.Equal(i + ((double)i)/10, simple.FieldC);
+				Assert.Equal(i % 2 == 0, simple.FieldD);
+			}
+
+			Assert.Throws(typeof (InvalidOperationException), () => JsonMapper.ToObject<IDictionary<string, Simple>>(json));
+		}
+
+		[Fact]
+		public void TestMapObjectToJson28()
+		{
+			var map = new Dictionary<string, Simple>();
+			for (var i = 0; i < 10; i++)
+			{
+				var simple = new Simple
+				{
+					FieldA = "value" + i,
+					FieldB = i,
+					FieldC = i + ((double) i)/10,
+					FieldD = i%2 == 0
+				};
+				map.Add("simple" + i, simple);
+			}
+			var json = JsonMapper.ToJson(map);
+			var dict = JsonMapper.ToObject<HashedMap<string, Simple>>(json);
+			for (var i = 0; i < 10; i++)
+			{
+				var key = "simple" + i;
+				var simple = dict[key];
+				Assert.Equal("value" + i, simple.FieldA);
+				Assert.Equal(i, simple.FieldB);
+				Assert.Equal(i + ((double)i)/10, simple.FieldC);
+				Assert.Equal(i % 2 == 0, simple.FieldD);
+			}
+		}
 
 		[Fact]
 		public void TestParseEngine01()

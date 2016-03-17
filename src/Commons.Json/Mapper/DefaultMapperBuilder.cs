@@ -15,36 +15,16 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace Commons.Json.Mapper
 {
-	internal class JsonObjectMapper<T> : IJsonObjectMapper<T>
+	internal class DefaultMapperBuilder
 	{
-		public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, object>> propertyExp)
+		public IJsonObjectMapper<T> Build<T>()
 		{
-			return this;
-		}
-
-		public IJsonObjectMapper<T> ConstructWith(Func<T> creator)
-		{
-			return this;
-		}
-
-		public IJsonObjectMapper<T> MapCollection(Func<List<T>, IEnumerable<T>> converter)
-		{
-			return this;
-		}
-
-		public IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter)
-		{
-			return this;
-		}
-
-		public IJsonObjectMapper<T> MapWith(Func<JValue, T> converter)
-		{
-			return this;
+			var mapper = new JsonObjectMapper<T>();
+			mapper.ConstructWith(() => Activator.CreateInstance<T>());
+			return mapper;
 		}
 	}
 }

@@ -150,6 +150,11 @@ namespace Commons.Json
             return JsonUtils.FormatJsonObject(valueMap);
         }
 
+	    public bool HasValue(string key)
+	    {
+		    return valueMap.ContainsKey(key);
+	    }
+
 	    public JsonValue this[string key]
 	    {
 		    get { return valueMap[key]; }

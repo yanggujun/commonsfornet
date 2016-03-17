@@ -58,10 +58,6 @@ namespace Commons.Json
 			return mapEngine.Map(jsonValue);
 		}
 
-		public static void FillWith<T>(string json, T obj) where T : class
-		{
-		}
-
 		public static string ToJson<T>(T target)
 		{
             var mapEngine = mapEngineFactory.CreateMapEngine(target, mapperContainer, typeCache);

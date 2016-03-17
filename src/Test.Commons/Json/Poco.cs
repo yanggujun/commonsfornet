@@ -86,14 +86,25 @@ namespace Test.Commons.Json
 
     public class PrivateSetter
     {
+	    private int age = 23;
         public string Name { get; set; }
-        public int Age { get; private set; }
+
+	    public int Age
+	    {
+		    get { return age; }
+			private set { age = value; }
+	    }
     }
 
     public class PrivateGetter
     {
         public string Name { get; set; }
         public int Age { private get; set; }
+
+	    public int ActualAge()
+	    {
+		    return Age;
+	    }
     }
 
     public class NoDefaultConstructor

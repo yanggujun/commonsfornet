@@ -233,7 +233,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public void Add(KeyValuePair<K, V> item)
+        void ICollection<KeyValuePair<K,V>>.Add(KeyValuePair<K, V> item)
         {
             Add(item.Key, item.Value);
         }

@@ -24,8 +24,8 @@ namespace Commons.Json.Mapper
 {
     internal class TypeManager
     {
-        private List<PropertyInfo> getters = new List<PropertyInfo>();
-        private List<PropertyInfo> setters = new List<PropertyInfo>();
+        private readonly List<PropertyInfo> getters = new List<PropertyInfo>();
+        private readonly List<PropertyInfo> setters = new List<PropertyInfo>();
 
         public TypeManager(Type type)
         {
