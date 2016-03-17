@@ -76,6 +76,10 @@ namespace Commons.Json.Mapper
 
 	    private object Initialize(TypeManager manager)
 	    {
+            if (manager.Type.IsClass && manager.Constructor == null)
+            {
+                throw new InvalidOperationException(Messages.NoDefaultConstructor);
+            }
 		    var value = Activator.CreateInstance(manager.Type);
 		    var properties = manager.Setters;
 		    foreach (var prop in properties)

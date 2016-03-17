@@ -17,13 +17,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
+using Commons.Collections.Map;
 
 namespace Commons.Json.Mapper
 {
 	internal class JsonObjectMapper<T> : IJsonObjectMapper<T>
 	{
+        private readonly HashedBimap<string, string> keyPropMap = new HashedBimap<string, string>();
+
 		public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, object>> propertyExp)
 		{
+            var member = propertyExp.Body as MemberExpression;
+            if (member == null)
+            {
+                throw new ArgumentException(Messages.InvalidProperty);
+            }
+            var property = member.Member as PropertyInfo;
+            if (property == null)
+            {
+                throw new ArgumentException(Messages.FieldNotProperty);
+            }
+            keyPropMap[jsonKey] = property.Name;
 			return this;
 		}
 
@@ -46,5 +61,30 @@ namespace Commons.Json.Mapper
 		{
 			return this;
 		}
-	}
+
+        public string GetKey(string propertyName)
+        {
+            return keyPropMap.KeyOf(propertyName);
+        }
+
+        public string GetProperty(string key)
+        {
+            return keyPropMap.ValueOf(key);
+        }
+
+        public Func<T> Create
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public Func<List<T>, IEnumerable<T>> CollectionConverter
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public IObjectConverter<T> ObjectConverter
+        {
+            get { throw new NotImplementedException(); }
+        }
+    }
 }

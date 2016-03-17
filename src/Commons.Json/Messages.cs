@@ -37,5 +37,9 @@ namespace Commons.Json
         public const string AddMethod = "Add";
 
         public const string TypeNotSupported = "The type mapped is not supported by the JsonMapper.";
+
+        public const string InvalidProperty = "The expression does not contain a valid property.";
+
+        public const string FieldNotProperty = "The expression only contains a field not a property.";
     }
 }

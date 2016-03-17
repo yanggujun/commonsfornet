@@ -475,6 +475,13 @@ namespace Test.Commons.Json
 		}
 
         [Fact]
+        public void TestMapJsonToObject39()
+        {
+            var json = "{\"Name\": \"Kevin\", \"Age\": 23}";
+            Assert.Throws(typeof(InvalidOperationException), () => JsonMapper.ToObject<NoDefaultConstructor>(json));
+        }
+
+        [Fact]
         public void TestMapObjectToJson01()
         {
             var simple = new Simple();

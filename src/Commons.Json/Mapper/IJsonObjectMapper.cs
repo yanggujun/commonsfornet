@@ -30,5 +30,11 @@ namespace Commons.Json.Mapper
 		IJsonObjectMapper<T> MapCollection(Func<List<T>, IEnumerable<T>> converter);
 		IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter);
 		IJsonObjectMapper<T> MapWith(Func<JValue, T> converter);
+
+        string GetKey(string propertyName);
+        string GetProperty(string key);
+        Func<T> Create { get; }
+        Func<List<T>, IEnumerable<T>> CollectionConverter { get; }
+        IObjectConverter<T> ObjectConverter { get; }
 	}
 }

@@ -64,7 +64,6 @@
     <Compile Include="JsonValue.cs" />
     <Compile Include="Mapper\ArrayParser.cs" />
     <Compile Include="Mapper\BoolParser.cs" />
-    <Compile Include="Mapper\DefaultMapperBuilder.cs" />
     <Compile Include="Mapper\IMapEngine.cs" />
     <Compile Include="Mapper\IMapEngineFactory.cs" />
     <Compile Include="Mapper\IObjectConverter.cs" />
