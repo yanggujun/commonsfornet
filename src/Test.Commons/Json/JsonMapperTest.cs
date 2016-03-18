@@ -33,7 +33,7 @@ namespace Test.Commons.Json
 		[Fact]
 		public void TestMapJsonToObject01()
 		{
-			var obj = JsonMapper.ToObject<Simple>("{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}");
+			var obj = JsonMapper.To<Simple>("{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}");
 			Assert.Equal(obj.FieldA, "valueA");
             Assert.Equal(obj.FieldB, 10);
             Assert.Equal(obj.FieldC, 2.3, 2);
@@ -48,7 +48,7 @@ namespace Test.Commons.Json
 		{
 			var json = "{\"fieldE\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true}";
-			var nested = JsonMapper.ToObject<Nested>(json);
+			var nested = JsonMapper.To<Nested>(json);
 			Assert.Equal(nested.FieldE, "valueE");
 			Assert.Equal(nested.FieldF, 20);
 			Assert.Equal(nested.FieldG, 3.459, 4);
@@ -65,7 +65,7 @@ namespace Test.Commons.Json
 		{
 			var json = "{\"fieldE\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-			var nested = JsonMapper.ToObject<Nested>(json);
+			var nested = JsonMapper.To<Nested>(json);
 			Assert.Equal(nested.FieldE, "valueE");
 			Assert.Equal(nested.FieldF, 20);
 			Assert.Equal(nested.FieldG, 3.459, 4);
@@ -82,7 +82,7 @@ namespace Test.Commons.Json
 		{
 			var json = "{\"fielde\": null, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-			var nested = JsonMapper.ToObject<Nested>(json);
+			var nested = JsonMapper.To<Nested>(json);
 			Assert.Null(nested.FieldE);
 			Assert.Equal(nested.FieldF, 20);
 			Assert.Equal(nested.FieldG, 3.459, 4);
@@ -100,7 +100,7 @@ namespace Test.Commons.Json
 		{
 			var json = "{\"fielde\": null, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-			var nested = JsonMapper.ToObject<Nested>(json);
+			var nested = JsonMapper.To<Nested>(json);
 			Assert.Null(nested.FieldE);
 			Assert.Equal(nested.FieldF, 20);
 			Assert.Equal(nested.FieldG, 3.459, 4);
@@ -117,7 +117,7 @@ namespace Test.Commons.Json
 		{
 			var json = "{\"fielde\": 33, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<Nested>(json));
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<Nested>(json));
 		}
 
 		[Fact]
@@ -125,7 +125,7 @@ namespace Test.Commons.Json
 		{
 			var json = "{\"fielde\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-			var nested = JsonMapper.ToObject<Nested>(json);
+			var nested = JsonMapper.To<Nested>(json);
 			Assert.Equal(3, nested.FieldG, 1);
 		}
 
@@ -134,7 +134,7 @@ namespace Test.Commons.Json
 		{
 			var json = "{\"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-			var nested = JsonMapper.ToObject<Nested>(json);
+			var nested = JsonMapper.To<Nested>(json);
 			Assert.Null(nested.FieldE);
 			Assert.Equal(nested.FieldF, 20);
 			Assert.Equal(nested.FieldG, 3.459, 4);
@@ -151,7 +151,7 @@ namespace Test.Commons.Json
 		{
 			var json = "{\"fieldF\": 20.543, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
 			           + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<Nested>(json));
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<Nested>(json));
 		}
 
         [Fact]
@@ -159,7 +159,7 @@ namespace Test.Commons.Json
         {
             var json = "[{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}, " 
                         + "{\"FieldA\": \"valueA1\", \"FieldB\" : 11, \"FieldC\": 3.3, \"FieldD\": false}]";
-            var list = JsonMapper.ToObject<List<Simple>>(json);
+            var list = JsonMapper.To<List<Simple>>(json);
             Assert.Equal(2, list.Count);
             Assert.Equal("valueA", list[0].FieldA);
             Assert.Equal(10, list[0].FieldB);
@@ -175,7 +175,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject11()
         {
             var json = "[1, 2, 3, 4, 5, 6, 7, 8]";
-            var list = JsonMapper.ToObject<List<int>>(json);
+            var list = JsonMapper.To<List<int>>(json);
             for (var i = 0; i < list.Count; i++)
             {
                 Assert.Equal(i + 1, list[i]);
@@ -186,7 +186,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject12()
 		{
 			var json = "{\"fieldj\": \"valueJ\", \"fieldk\": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]}";
-			var primitiveList = JsonMapper.ToObject<PrimitiveList>(json);
+			var primitiveList = JsonMapper.To<PrimitiveList>(json);
 			Assert.Equal("valueJ", primitiveList.FieldJ);
 			for (var i = 0; i < primitiveList.FieldK.Count; i++)
 			{
@@ -198,7 +198,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject13()
 		{
 			var json = TestHelper.ReadFrom(@".\Json\JsonSample11.txt");
-			var arrayNested = JsonMapper.ToObject<ArrayNested>(json);
+			var arrayNested = JsonMapper.To<ArrayNested>(json);
 			Assert.Equal("valueI", arrayNested.FieldI);
 			Assert.NotNull(arrayNested.NestedItems);
 			Assert.Equal(2, arrayNested.NestedItems.Count);
@@ -228,7 +228,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject14()
 		{
 			var json = "\"astring\"";
-			var str = JsonMapper.ToObject<string>(json);
+			var str = JsonMapper.To<string>(json);
 			Assert.Equal("astring", str);
 		}
 
@@ -236,7 +236,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject15()
 		{
 			var json = "10";
-			var integer = JsonMapper.ToObject<int>(json);
+			var integer = JsonMapper.To<int>(json);
 			Assert.Equal(10, integer);
 		}
 
@@ -244,7 +244,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject16()
 		{
 			var json = "10.44323";
-			var floating = JsonMapper.ToObject<double>(json);
+			var floating = JsonMapper.To<double>(json);
 			Assert.Equal(10.44323, floating);
 		}
 
@@ -252,14 +252,14 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject161()
         {
 			var json = "10.44323";
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<int>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
         }
 
         [Fact]
         public void TestMapJsonToObject162()
         {
             var json = "10";
-            var number = JsonMapper.ToObject<double>(json);
+            var number = JsonMapper.To<double>(json);
             Assert.Equal(10, number);
         }
 
@@ -267,7 +267,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject163()
         {
             var json = "10";
-            var number = JsonMapper.ToObject<decimal>(json);
+            var number = JsonMapper.To<decimal>(json);
             Assert.Equal(10, number);
         }
 
@@ -275,7 +275,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject164()
         {
             var json = "11";
-            var number = JsonMapper.ToObject<float>(json);
+            var number = JsonMapper.To<float>(json);
             Assert.Equal(11, number);
         }
 
@@ -283,7 +283,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject17()
 		{
 			var json = "true";
-			var boolean = JsonMapper.ToObject<bool>(json);
+			var boolean = JsonMapper.To<bool>(json);
 			Assert.True(boolean);
 		}
 
@@ -291,7 +291,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject18()
 		{
 			var json = "null";
-			var simple = JsonMapper.ToObject<Simple>(json);
+			var simple = JsonMapper.To<Simple>(json);
 			Assert.Null(simple);
 		}
 
@@ -299,14 +299,14 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject19()
 		{
 			var json = "daddaaadaa";
-			Assert.Throws(typeof(ArgumentException), () => JsonMapper.ToObject<bool>(json));
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<bool>(json));
 		}
 
 		[Fact]
 		public void TestMapJsonToObject20()
 		{
 			var json = "1.4";
-			var number = JsonMapper.ToObject<float>(json);
+			var number = JsonMapper.To<float>(json);
 			Assert.Equal(1.4, number, 2);
 		}
 
@@ -314,7 +314,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject21()
 		{
 			var json = "5";
-			var number = JsonMapper.ToObject<short>(json);
+			var number = JsonMapper.To<short>(json);
 			Assert.Equal(5, number);
 		}
 
@@ -322,7 +322,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject22()
 		{
 			var json = "6";
-			var number = JsonMapper.ToObject<uint>(json);
+			var number = JsonMapper.To<uint>(json);
 			Assert.Equal((uint)6, number);
 		}
 
@@ -330,7 +330,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject23()
 		{
 			var json = "-1000";
-			var number = JsonMapper.ToObject<int>(json);
+			var number = JsonMapper.To<int>(json);
 			Assert.Equal(-1000, number);
 		}
 
@@ -338,7 +338,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject24()
 		{
 			var json = "7";
-			var number = JsonMapper.ToObject<ushort>(json);
+			var number = JsonMapper.To<ushort>(json);
 			Assert.Equal((ushort)7, number);
 		}
 
@@ -346,7 +346,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject25()
 		{
 			var json = "800000";
-			var number = JsonMapper.ToObject<long>(json);
+			var number = JsonMapper.To<long>(json);
 			Assert.Equal(800000, number);
 		}
 
@@ -354,7 +354,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject26()
 		{
 			var json = "800000";
-			var number = JsonMapper.ToObject<ulong>(json);
+			var number = JsonMapper.To<ulong>(json);
 			Assert.Equal((ulong)800000, number);
 		}
 
@@ -362,7 +362,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject27()
         {
             var json = "{\"fieldb\": 10}";
-            var simple = JsonMapper.ToObject<Simple>(json);
+            var simple = JsonMapper.To<Simple>(json);
             Assert.Equal(10, simple.FieldB);
             Assert.Null(simple.FieldA);
             Assert.Equal(0, simple.FieldC);
@@ -373,7 +373,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject28()
         {
             var json = "{\"fieldb\": 10, \"NotExistInObject\": \"aaaa\"}";
-            var simple = JsonMapper.ToObject<Simple>(json);
+            var simple = JsonMapper.To<Simple>(json);
             Assert.Equal(10, simple.FieldB);
             Assert.Null(simple.FieldA);
             Assert.Equal(0, simple.FieldC);
@@ -384,7 +384,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject29()
         {
             var json = "{\"fieldl\":\"valuel\", \"fieldm\": [1, 2, 3, 4 ,5 ,6]}";
-            var setNested = JsonMapper.ToObject<SetNested>(json);
+            var setNested = JsonMapper.To<SetNested>(json);
             Assert.Equal("valuel", setNested.FieldL);
             Assert.NotNull(setNested.FieldM);
             Assert.Equal(0, setNested.FieldM.Count);
@@ -394,21 +394,21 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject30()
         {
             var json = "{\"fieldl\": 10, \"fieldm\": [1, 2, 3, 4 ,5 ,6]}";
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<SetNested>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SetNested>(json));
         }
 
         [Fact]
         public void TestMapJsonToObject31()
         {
             var json = "{\"fieldl\": {}, \"fieldm\": [1, 2, 3, 4 ,5 ,6]}";
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<SetNested>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SetNested>(json));
         }
 
         [Fact]
         public void TestMapJsonToObject32()
         {
             var json = "{\"Birthday\": \"1990/1/18\", \"name\": \"alan\"}";
-            var hasDate = JsonMapper.ToObject<HasDate>(json);
+            var hasDate = JsonMapper.To<HasDate>(json);
             Assert.Equal("alan", hasDate.Name);
             Assert.Equal(1990, hasDate.Birthday.Year);
             Assert.Equal(1, hasDate.Birthday.Month);
@@ -419,14 +419,14 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject33()
         {
             var json = "{\"Birthday\": \"1990/1/18/22\", \"name\": \"alan\"}";
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.ToObject<HasDate>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<HasDate>(json));
         }
 
 		[Fact]
 		public void TestMapJsonToObject34()
 		{
 			var json = "{\"Name\": \"Ben\", \"Numbers\": [0, 1, 2, 4, 5]}";
-			var ilistNested = JsonMapper.ToObject<IListNested>(json);
+			var ilistNested = JsonMapper.To<IListNested>(json);
 			Assert.Equal("Ben", ilistNested.Name);
 			Assert.Null(ilistNested.Numbers);
 		}
@@ -435,7 +435,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject35()
         {
             var json = "{\"Name\": \"Catherine\", \"Gender\": \"F\", \"Country\": \"UK\", \"Office\": \"London\"}";
-            var dict = JsonMapper.ToObject<Dictionary<string, string>>(json);
+            var dict = JsonMapper.To<Dictionary<string, string>>(json);
             Assert.Equal("Catherine", dict["Name"]);
             Assert.Equal("F", dict["Gender"]);
             Assert.Equal("UK", dict["Country"]);
@@ -446,7 +446,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject36()
         {
             var json = "{\"Name\": \"Alan\", \"Age\": 25, \"Score\": 90.5, \"ExamDate\": \"2016/3/1\", \"Pass\": true}";
-            var simple = JsonMapper.ToObject<SimpleStruct>(json);
+            var simple = JsonMapper.To<SimpleStruct>(json);
             Assert.Equal("Alan", simple.Name);
             Assert.Equal(25, simple.Age);
             Assert.Equal(90.5, simple.Score);
@@ -460,7 +460,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject37()
 		{
 			var json = "{\"Name\": \"John\", \"Age\": 10}";
-			var obj = JsonMapper.ToObject<PrivateSetter>(json);
+			var obj = JsonMapper.To<PrivateSetter>(json);
 			Assert.Equal("John", obj.Name);
 			Assert.Equal(23, obj.Age);
 		}
@@ -469,7 +469,7 @@ namespace Test.Commons.Json
 		public void TestMapJsonToObject38()
 		{
 			var json = "{\"Name\": \"Kevin\", \"Age\": 21}";
-			var obj = JsonMapper.ToObject<PrivateGetter>(json);
+			var obj = JsonMapper.To<PrivateGetter>(json);
 			Assert.Equal("Kevin", obj.Name);
 			Assert.Equal(21, obj.ActualAge());
 		}
@@ -478,7 +478,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject39()
         {
             var json = "{\"Name\": \"Kevin\", \"Age\": 23}";
-            Assert.Throws(typeof(InvalidOperationException), () => JsonMapper.ToObject<NoDefaultConstructor>(json));
+            Assert.Throws(typeof(InvalidOperationException), () => JsonMapper.To<NoDefaultConstructor>(json));
         }
 
         [Fact]
@@ -610,7 +610,7 @@ namespace Test.Commons.Json
 			var json = JsonMapper.ToJson(new[] {1, 2, 3, 4, 5, 6});
 			dynamic jsonObject = JsonMapper.Parse(json);
 			Assert.Equal(1, (int)jsonObject[0]);
-            var list = JsonMapper.ToObject<List<int>>(json);
+            var list = JsonMapper.To<List<int>>(json);
             Assert.Equal(6, list.Count);
             for (var i = 0; i < list.Count; i++)
             {
@@ -625,7 +625,7 @@ namespace Test.Commons.Json
             dynamic jsonArray = JsonMapper.Parse(json);
             Assert.Equal(10, jsonArray.Length);
 
-            var list = JsonMapper.ToObject<List<int>>(json);
+            var list = JsonMapper.To<List<int>>(json);
             Assert.Equal(10, list.Count);
             for (var i = 0; i < list.Count; i++)
             {
@@ -659,7 +659,7 @@ namespace Test.Commons.Json
                 "field1", "field2", "field3", "field4"
             };
             var json = JsonMapper.ToJson(set);
-            var list = JsonMapper.ToObject<List<string>>(json);
+            var list = JsonMapper.To<List<string>>(json);
             Assert.Equal(4, list.Count);
             Assert.True(list.Contains("field1"));
             Assert.True(list.Contains("field2"));
@@ -839,7 +839,7 @@ namespace Test.Commons.Json
 				map.Add("simple" + i, simple);
 			}
 			var json = JsonMapper.ToJson(map);
-			var dict = JsonMapper.ToObject<Dictionary<string, Simple>>(json);
+			var dict = JsonMapper.To<Dictionary<string, Simple>>(json);
 			for (var i = 0; i < 10; i++)
 			{
 				var key = "simple" + i;
@@ -850,7 +850,7 @@ namespace Test.Commons.Json
 				Assert.Equal(i % 2 == 0, simple.FieldD);
 			}
 
-			Assert.Throws(typeof (InvalidOperationException), () => JsonMapper.ToObject<IDictionary<string, Simple>>(json));
+			Assert.Throws(typeof (InvalidOperationException), () => JsonMapper.To<IDictionary<string, Simple>>(json));
 		}
 
 		[Fact]
@@ -869,7 +869,7 @@ namespace Test.Commons.Json
 				map.Add("simple" + i, simple);
 			}
 			var json = JsonMapper.ToJson(map);
-			var dict = JsonMapper.ToObject<HashedMap<string, Simple>>(json);
+			var dict = JsonMapper.To<HashedMap<string, Simple>>(json);
 			for (var i = 0; i < 10; i++)
 			{
 				var key = "simple" + i;

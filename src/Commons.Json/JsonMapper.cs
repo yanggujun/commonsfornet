@@ -43,7 +43,7 @@ namespace Commons.Json
 			return mapper;
 		}
 
-		public static T ToObject<T>(string json)
+		public static T To<T>(string json)
 		{
 			var parseEngine = new JsonParseEngine();
 			var jsonValue = parseEngine.Parse(json);
