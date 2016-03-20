@@ -144,13 +144,18 @@ namespace Commons.Json.Mapper
             else
             {
                 var manager = typeCache[type];
+                MapperImpl mapper = null;
+                if (mappers.ContainsMapper(type))
+                {
+                    mapper = mappers.GetMapper(type);
+                }
                 var sb = new StringBuilder();
                 sb.Append(JsonTokens.LeftBrace);
                 foreach (var prop in manager.Getters)
                 {
                     var propValue = prop.GetValue(target);
                     sb.Append(JsonTokens.Quoter);
-                    sb.Append(prop.Name);
+                    sb.Append(GetJsonKeyFromProperty(prop, mapper));
                     sb.Append(JsonTokens.Quoter);
                     sb.Append(JsonTokens.Colon);
                     sb.Append(Jsonize(propValue));
@@ -162,6 +167,36 @@ namespace Commons.Json.Mapper
             }
 
             return json;
+        }
+
+        private string GetJsonKeyFromProperty(PropertyInfo prop, MapperImpl mapper)
+        {
+            var key = prop.Name;
+            if (mapper != null)
+            {
+                string k;
+                if (mapper.TryGetKey(key, out k))
+                {
+                    key = k;
+                }
+            }
+
+            return key;
+        }
+
+        private string GetPropNameFromJsonKey(string key, MapperImpl mapper)
+        {
+            var prop = key;
+            if (mapper != null)
+            {
+                string p;
+                if (mapper.TryGetProperty(key, out p))
+                {
+                    prop = p;
+                }
+            }
+
+            return prop;
         }
 
         private void Populate(object target, JValue jsonValue)
@@ -229,14 +264,19 @@ namespace Commons.Json.Mapper
             else
             {
                 var properties = typeCache[type].Setters;
+                MapperImpl mapper = null;
+                if (mappers.ContainsMapper(type))
+                {
+                    mapper = mappers.GetMapper(type);
+                }
                 foreach (var prop in properties)
                 {
-                    if (jsonObj.ContainsKey(prop.Name))
+                    if (jsonObj.ContainsKey(GetJsonKeyFromProperty(prop, mapper)))
                     {
                         var propertyType = prop.PropertyType;
                         if (propertyType.IsJsonPrimitive())
                         {
-                            PopulateJsonPrimitive(target, jsonObj, prop);
+                            PopulateJsonPrimitive(target, jsonObj, prop, mapper);
                         }
                         else
                         {
@@ -248,10 +288,10 @@ namespace Commons.Json.Mapper
             }
 		}
 
-		private static void PopulateJsonPrimitive(object target, JObject jsonObj, PropertyInfo prop)
+		private void PopulateJsonPrimitive(object target, JObject jsonObj, PropertyInfo prop, MapperImpl mapper)
 		{
 			var propertyType = prop.PropertyType;
-			var name = prop.Name;
+            var name = GetJsonKeyFromProperty(prop, mapper);
 
 			var value = jsonObj[name];
 			var valueType = value.GetType();

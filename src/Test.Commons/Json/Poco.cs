@@ -117,4 +117,14 @@ namespace Test.Commons.Json
         public string Name { get; set; }
         public int Age { get; set; }
     }
+
+    public class ToySet
+    {
+        public string Name { get; set; }
+        public int SetNo { get; set; }
+        public double Price { get; set; }
+        public int ReleaseYear { get; set; }
+        public string Category { get; set; }
+        public bool Producing { get; set; }
+    }
 }

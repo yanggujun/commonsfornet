@@ -22,19 +22,25 @@ using System.Reflection;
 
 namespace Commons.Json.Mapper
 {
+    //TODO: Dictionary key map
 	[CLSCompliant(true)]
 	public interface IJsonObjectMapper<T>
 	{
 		IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, object>> propertyExp);
+        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, int>> propertyExp);
+        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, double>> propertyExp);
+        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, float>> propertyExp);
+        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, short>> propertyExp);
+        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, bool>> propertyExp);
+        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, long>> propertyExp);
+        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, byte>> propertyExp);
+        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, uint>> propertyExp);
+        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, ulong>> propertyExp);
+        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, ushort>> propertyExp);
+        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, decimal>> propertyExp);
 		IJsonObjectMapper<T> ConstructWith(Func<T> creator);
 		IJsonObjectMapper<T> MapCollection(Func<List<T>, IEnumerable<T>> converter);
 		IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter);
 		IJsonObjectMapper<T> MapWith(Func<JValue, T> converter);
-
-        string GetKey(string propertyName);
-        string GetProperty(string key);
-        Func<T> Create { get; }
-        Func<List<T>, IEnumerable<T>> CollectionConverter { get; }
-        IObjectConverter<T> ObjectConverter { get; }
 	}
 }

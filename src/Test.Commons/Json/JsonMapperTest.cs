@@ -881,6 +881,51 @@ namespace Test.Commons.Json
 			}
 		}
 
+        [Fact]
+        public void TestMapProperty01()
+        {
+            JsonMapper.For<ToySet>().MapProperty("ToyName", x => x.Name)
+                                    .MapProperty("Year", x => x.ReleaseYear)
+                                    .MapProperty("SellPrice", x => x.Price)
+                                    .MapProperty("SetNumber", x => x.SetNo);
+            var toy = new ToySet
+            {
+                Name = "Lego",
+                ReleaseYear = 2015,
+                SetNo = 42023,
+                Price = 60.5,
+                Category = "Technic",
+                Producing = false
+            };
+            var json = JsonMapper.ToJson(toy);
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.True(jsonObj.HasValue("ToyName"));
+            Assert.False(jsonObj.HasValue("Name"));
+            Assert.True(jsonObj.HasValue("Year"));
+            Assert.False(jsonObj.HasValue("ReleaseYear"));
+            Assert.True(jsonObj.HasValue("SellPrice"));
+            Assert.False(jsonObj.HasValue("Price"));
+            Assert.True(jsonObj.HasValue("SetNumber"));
+            Assert.False(jsonObj.HasValue("SetNo"));
+
+            Assert.Equal("Lego", (string)jsonObj.ToyName);
+            Assert.Equal("Technic", (string)jsonObj.Category);
+            Assert.Equal(2015, (int)jsonObj.Year);
+            Assert.Equal(60.5, (double)jsonObj.SellPrice);
+            Assert.Equal(42023, (int)jsonObj.SetNumber);
+            Assert.False((bool)jsonObj.Producing);
+            jsonObj.MadeIn = "Denmark";
+
+            string newJson = jsonObj.ToString();
+            var newToy = JsonMapper.To<ToySet>(newJson);
+            Assert.Equal("Lego", newToy.Name);
+            Assert.Equal(2015, newToy.ReleaseYear);
+            Assert.Equal(60.5, newToy.Price);
+            Assert.False(newToy.Producing);
+            Assert.Equal("Technic", newToy.Category);
+            Assert.Equal(42023, newToy.SetNo);
+        }
+
 		[Fact]
 		public void TestParseEngine01()
 		{

@@ -75,6 +75,7 @@
     <Compile Include="Mapper\MapEngineFactory.cs" />
     <Compile Include="Mapper\MapEngine.cs" />
     <Compile Include="Mapper\MapperContainer.cs" />
+    <Compile Include="Mapper\MapperImpl.cs" />
     <Compile Include="Mapper\NullParser.cs" />
     <Compile Include="Mapper\NumberParser.cs" />
     <Compile Include="Mapper\ObjectParser.cs" />

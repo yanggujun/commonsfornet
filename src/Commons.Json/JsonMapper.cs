@@ -30,17 +30,14 @@ namespace Commons.Json
 
 		public static IJsonObjectMapper<T> For<T>()
 		{
-			IJsonObjectMapper<T> mapper;
-			if (mapperContainer.ContainsMapper<T>())
+            var type = typeof(T);
+			if (!mapperContainer.ContainsMapper(type))
 			{
-				mapper = mapperContainer.GetMapper<T>();
+                mapperContainer.PushMapper(type);
 			}
-			else
-			{
-				mapper = new JsonObjectMapper<T>();
-				mapperContainer.PushMapper(mapper);
-			}
-			return mapper;
+            var mapper = mapperContainer.GetMapper(type);
+            var jsonObjMapper = new JsonObjectMapper<T>(mapper);
+            return jsonObjMapper;
 		}
 
 		public static T To<T>(string json)

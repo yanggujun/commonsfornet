@@ -21,26 +21,24 @@ namespace Commons.Json.Mapper
 {
 	internal class MapperContainer
 	{
-		private ReferenceMap<Type, object> mappers = new ReferenceMap<Type, object>();
+		private ReferenceMap<Type, MapperImpl> mappers = new ReferenceMap<Type, MapperImpl>();
 
-		public bool ContainsMapper<T>()
+		public bool ContainsMapper(Type type)
 		{
-			var type = typeof (T);
 			return mappers.ContainsKey(type);
 		}
 
-		public void PushMapper<T>(IJsonObjectMapper<T> mapper)
+		public void PushMapper(Type type)
 		{
-			var type = typeof (T);
+            var mapper = new MapperImpl(type);
 			mappers[type] = mapper;
 		}
 
-		public IJsonObjectMapper<T> GetMapper<T>()
+		public MapperImpl GetMapper(Type type)
 		{
-			var type = typeof (T);
 			if (mappers.ContainsKey(type))
 			{
-				return (IJsonObjectMapper<T>) mappers[type];
+				return mappers[type];
 			}
 			return null;
 		}

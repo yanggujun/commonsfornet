@@ -24,26 +24,88 @@ namespace Commons.Json.Mapper
 {
 	internal class JsonObjectMapper<T> : IJsonObjectMapper<T>
 	{
-        private readonly HashedBimap<string, string> keyPropMap = new HashedBimap<string, string>();
+        private readonly MapperImpl mapper;
+
+        public JsonObjectMapper(MapperImpl mapper)
+        {
+            this.mapper = mapper;
+        }
+
+        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, int>> propertyExp)
+        {
+            Map(jsonKey, propertyExp.Body);
+            return this;
+        }
+
+        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, double>> propertyExp)
+        {
+            Map(jsonKey, propertyExp.Body);
+            return this;
+        }
 
 		public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, object>> propertyExp)
 		{
-            var member = propertyExp.Body as MemberExpression;
-            if (member == null)
-            {
-                throw new ArgumentException(Messages.InvalidProperty);
-            }
-            var property = member.Member as PropertyInfo;
-            if (property == null)
-            {
-                throw new ArgumentException(Messages.FieldNotProperty);
-            }
-            keyPropMap[jsonKey] = property.Name;
+            Map(jsonKey, propertyExp.Body);
 			return this;
 		}
 
+        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, float>> propertyExp)
+        {
+            Map(jsonKey, propertyExp.Body);
+            return this;
+        }
+
+        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, short>> propertyExp)
+        {
+            Map(jsonKey, propertyExp.Body);
+            return this;
+        }
+
+        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, bool>> propertyExp)
+        {
+            Map(jsonKey, propertyExp.Body);
+            return this;
+        }
+
+        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, long>> propertyExp)
+        {
+            Map(jsonKey, propertyExp.Body);
+            return this;
+        }
+
+        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, byte>> propertyExp)
+        {
+            Map(jsonKey, propertyExp.Body);
+            return this;
+        }
+
+        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, uint>> propertyExp)
+        {
+            Map(jsonKey, propertyExp.Body);
+            return this;
+        }
+
+        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, ulong>> propertyExp)
+        {
+            Map(jsonKey, propertyExp.Body);
+            return this;
+        }
+
+        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, ushort>> propertyExp)
+        {
+            Map(jsonKey, propertyExp.Body);
+            return this;
+        }
+
+        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, decimal>> propertyExp)
+        {
+            Map(jsonKey, propertyExp.Body);
+            return this;
+        }
+
 		public IJsonObjectMapper<T> ConstructWith(Func<T> creator)
 		{
+            mapper.Create = () => { return creator(); };
 			return this;
 		}
 
@@ -62,29 +124,19 @@ namespace Commons.Json.Mapper
 			return this;
 		}
 
-        public string GetKey(string propertyName)
+        private void Map(string jsonKey, Expression exp)
         {
-            return keyPropMap.KeyOf(propertyName);
-        }
-
-        public string GetProperty(string key)
-        {
-            return keyPropMap.ValueOf(key);
-        }
-
-        public Func<T> Create
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public Func<List<T>, IEnumerable<T>> CollectionConverter
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public IObjectConverter<T> ObjectConverter
-        {
-            get { throw new NotImplementedException(); }
+            var member = exp as MemberExpression;
+            if (member == null)
+            {
+                throw new ArgumentException(Messages.InvalidProperty);
+            }
+            var property = member.Member as PropertyInfo;
+            if (property == null)
+            {
+                throw new ArgumentException(Messages.FieldNotProperty);
+            }
+            mapper.Map(jsonKey, property.Name);
         }
     }
 }
