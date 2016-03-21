@@ -24,23 +24,43 @@ namespace Commons.Json.Mapper
 {
     //TODO: Dictionary key map
 	[CLSCompliant(true)]
-	public interface IJsonObjectMapper<T>
+	public interface IJsonObjectMapper<T> : IPropertyMapper<T>, IJsonKeyMapper<T>, INotMapper<T>, IJsonArrayMapper<T>
 	{
-		IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, object>> propertyExp);
-        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, int>> propertyExp);
-        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, double>> propertyExp);
-        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, float>> propertyExp);
-        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, short>> propertyExp);
-        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, bool>> propertyExp);
-        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, long>> propertyExp);
-        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, byte>> propertyExp);
-        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, uint>> propertyExp);
-        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, ulong>> propertyExp);
-        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, ushort>> propertyExp);
-        IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, decimal>> propertyExp);
 		IJsonObjectMapper<T> ConstructWith(Func<T> creator);
-		IJsonObjectMapper<T> MapCollection(Func<List<T>, IEnumerable<T>> converter);
 		IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter);
 		IJsonObjectMapper<T> MapWith(Func<JValue, T> converter);
+	}
+
+	public interface IPropertyMapper<T>
+	{
+		IJsonKeyMapper<T> MapProperty(Expression<Func<T, object>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, int>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, double>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, float>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, short>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, bool>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, long>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, byte>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, sbyte>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, uint>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, ulong>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, ushort>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, decimal>> propertyExp);
+		IJsonKeyMapper<T> MapProperty(Expression<Func<T, char>> propertyExp);
+	}
+
+	public interface IJsonKeyMapper<T>
+	{
+		IJsonObjectMapper<T> With(string jsonKey);
+	}
+
+	public interface INotMapper<T>
+	{
+		IPropertyMapper<T> Not { get; } 
+	}
+
+	public interface IJsonArrayMapper<T>
+	{
+		IJsonObjectMapper<T> MapCollection(Func<List<T>, IEnumerable<T>> converter);
 	}
 }

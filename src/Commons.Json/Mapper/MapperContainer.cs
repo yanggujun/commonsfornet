@@ -30,7 +30,7 @@ namespace Commons.Json.Mapper
 
 		public void PushMapper(Type type)
 		{
-            var mapper = new MapperImpl(type);
+            var mapper = new MapperImpl();
 			mappers[type] = mapper;
 		}
 

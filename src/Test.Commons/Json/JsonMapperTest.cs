@@ -884,10 +884,10 @@ namespace Test.Commons.Json
         [Fact]
         public void TestMapProperty01()
         {
-            JsonMapper.For<ToySet>().MapProperty("ToyName", x => x.Name)
-                                    .MapProperty("Year", x => x.ReleaseYear)
-                                    .MapProperty("SellPrice", x => x.Price)
-                                    .MapProperty("SetNumber", x => x.SetNo);
+	        JsonMapper.For<ToySet>().MapProperty(x => x.Name).With("ToyName")
+									.MapProperty(x => x.ReleaseYear).With("Year")
+									.MapProperty(x => x.Price).With("SellPrice")
+									.MapProperty(x => x.SetNo).With("SetNumber");
             var toy = new ToySet
             {
                 Name = "Lego",
@@ -925,6 +925,44 @@ namespace Test.Commons.Json
             Assert.Equal("Technic", newToy.Category);
             Assert.Equal(42023, newToy.SetNo);
         }
+
+		[Fact]
+		public void TestMapProperty02()
+		{
+			JsonMapper.For<Photo>().MapProperty(x => x.Location).With("Place").Not.MapProperty(x => x.Model);
+			var photo = new Photo
+			{
+				Author = "Owen",
+				Location = "Canada",
+				Model = "EOS 5D Mark II",
+				Time = new DateTime(2011, 5, 20)
+			};
+			var json = JsonMapper.ToJson(photo);
+			var p = JsonMapper.Parse(json);
+			Assert.False(p.HasValue("Model"));
+			Assert.True(p.HasValue("Place"));
+			Assert.False(p.HasValue("Location"));
+			Assert.Equal("Owen", (string)p.Author);
+			Assert.Equal("Canada", (string)p.Place);
+			var shotTime = DateTime.Parse((string) p.Time);
+			Assert.Equal(2011, shotTime.Year);
+			Assert.Equal(5, shotTime.Month);
+			Assert.Equal(20, shotTime.Day);
+		}
+
+		[Fact]
+		public void TestMapProperty03()
+		{
+			JsonMapper.For<Photo>().MapProperty(x => x.Location).With("Place").Not.MapProperty(x => x.Model);
+			var json = "{\"Author\": \"Owen\", \"Place\": \"France\", \"Model\": \"EOS 5D Mark II\", \"Time\": \"2011/5/30\"}";
+			var photo = JsonMapper.To<Photo>(json);
+			Assert.Equal("Owen", photo.Author);
+			Assert.Equal("France", photo.Location);
+			Assert.Equal(2011, photo.Time.Year);
+			Assert.Equal(5, photo.Time.Month);
+			Assert.Equal(30, photo.Time.Day);
+			Assert.True(string.IsNullOrWhiteSpace(photo.Model));
+		}
 
 		[Fact]
 		public void TestParseEngine01()

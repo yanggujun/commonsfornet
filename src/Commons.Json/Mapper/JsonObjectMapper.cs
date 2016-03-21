@@ -16,96 +16,112 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Commons.Collections.Map;
+using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
 	internal class JsonObjectMapper<T> : IJsonObjectMapper<T>
 	{
         private readonly MapperImpl mapper;
+		private LambdaExpression lastExp;
+		private bool not;
 
         public JsonObjectMapper(MapperImpl mapper)
         {
             this.mapper = mapper;
         }
 
-        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, int>> propertyExp)
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, int>> propertyExp)
         {
-            Map(jsonKey, propertyExp.Body);
+			Put(propertyExp);
             return this;
         }
 
-        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, double>> propertyExp)
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, double>> propertyExp)
         {
-            Map(jsonKey, propertyExp.Body);
-            return this;
+			Put(propertyExp);
+	        return this;
         }
 
-		public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, object>> propertyExp)
+		public IJsonKeyMapper<T> MapProperty(Expression<Func<T, object>> propertyExp)
 		{
-            Map(jsonKey, propertyExp.Body);
+			Put(propertyExp);
 			return this;
 		}
 
-        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, float>> propertyExp)
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, float>> propertyExp)
         {
-            Map(jsonKey, propertyExp.Body);
+			Put(propertyExp);
             return this;
         }
 
-        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, short>> propertyExp)
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, short>> propertyExp)
         {
-            Map(jsonKey, propertyExp.Body);
+			Put(propertyExp);
             return this;
         }
 
-        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, bool>> propertyExp)
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, bool>> propertyExp)
         {
-            Map(jsonKey, propertyExp.Body);
+			Put(propertyExp);
             return this;
         }
 
-        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, long>> propertyExp)
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, long>> propertyExp)
         {
-            Map(jsonKey, propertyExp.Body);
+			Put(propertyExp);
             return this;
         }
 
-        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, byte>> propertyExp)
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, byte>> propertyExp)
         {
-            Map(jsonKey, propertyExp.Body);
+			Put(propertyExp);
             return this;
         }
 
-        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, uint>> propertyExp)
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, sbyte>> propertyExp)
         {
-            Map(jsonKey, propertyExp.Body);
+			Put(propertyExp);
             return this;
         }
 
-        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, ulong>> propertyExp)
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, uint>> propertyExp)
         {
-            Map(jsonKey, propertyExp.Body);
+			Put(propertyExp);
             return this;
         }
 
-        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, ushort>> propertyExp)
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, ulong>> propertyExp)
         {
-            Map(jsonKey, propertyExp.Body);
+			Put(propertyExp);
             return this;
         }
 
-        public IJsonObjectMapper<T> MapProperty(string jsonKey, Expression<Func<T, decimal>> propertyExp)
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, ushort>> propertyExp)
         {
-            Map(jsonKey, propertyExp.Body);
+			Put(propertyExp);
             return this;
         }
+
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, decimal>> propertyExp)
+        {
+			Put(propertyExp);
+            return this;
+        }
+
+		public IJsonKeyMapper<T> MapProperty(Expression<Func<T, char>> propertyExp)
+		{
+			Put(propertyExp);
+			return this;
+		}
 
 		public IJsonObjectMapper<T> ConstructWith(Func<T> creator)
 		{
-            mapper.Create = () => { return creator(); };
+            mapper.Create = () => creator();
 			return this;
 		}
 
@@ -124,9 +140,35 @@ namespace Commons.Json.Mapper
 			return this;
 		}
 
-        private void Map(string jsonKey, Expression exp)
+		public IJsonObjectMapper<T> With(string jsonKey)
+		{
+			Guarder.CheckNull(jsonKey, "jsonKey");
+			if (lastExp == null)
+			{
+				throw new InvalidOperationException(Messages.NoPropertyToMap);
+			}
+			Map(jsonKey, lastExp);
+			lastExp = null;
+			return this;
+		}
+
+		public IPropertyMapper<T> Not
+		{
+			get
+			{
+				not = !not;
+				return this;
+			}
+		}
+
+        private void Map(string jsonKey, LambdaExpression exp)
         {
-            var member = exp as MemberExpression;
+	        mapper.Map(jsonKey, GetPropertyName(exp));
+        }
+
+		private string GetPropertyName(LambdaExpression exp)
+		{
+            var member = exp.Body as MemberExpression;
             if (member == null)
             {
                 throw new ArgumentException(Messages.InvalidProperty);
@@ -136,7 +178,25 @@ namespace Commons.Json.Mapper
             {
                 throw new ArgumentException(Messages.FieldNotProperty);
             }
-            mapper.Map(jsonKey, property.Name);
-        }
-    }
+
+			return property.Name;
+		}
+
+		private void Put(LambdaExpression exp)
+		{
+	        if (not)
+	        {
+		        var propName = GetPropertyName(exp);
+		        if (!mapper.IgnoredProperties.Contains(propName))
+		        {
+			        mapper.IgnoreProperty(GetPropertyName(exp));
+		        }
+		        lastExp = null;
+	        }
+	        else
+	        {
+		        lastExp = exp;
+	        }
+		}
+	}
 }

@@ -127,4 +127,12 @@ namespace Test.Commons.Json
         public string Category { get; set; }
         public bool Producing { get; set; }
     }
+
+	public class Photo
+	{
+		public string Location { get; set; }
+		public string Author { get; set; }
+		public DateTime Time { get; set; }
+		public string Model { get; set; }
+	}
 }

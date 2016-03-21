@@ -41,5 +41,7 @@ namespace Commons.Json
         public const string InvalidProperty = "The expression does not contain a valid property.";
 
         public const string FieldNotProperty = "The expression only contains a field not a property.";
+
+	    public const string NoPropertyToMap = "No property is not defined yet.";
     }
 }

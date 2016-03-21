@@ -229,6 +229,11 @@ namespace Commons.Json.Mapper
 			return Convert.ToUInt16(Value);
 		}
 
+		public sbyte AsSbyte()
+		{
+			return Convert.ToSByte(Value);
+		}
+
 		public double AsDouble()
 		{
 			return Convert.ToDouble(Value);

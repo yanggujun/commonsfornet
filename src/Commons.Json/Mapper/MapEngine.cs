@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -153,6 +154,13 @@ namespace Commons.Json.Mapper
                 sb.Append(JsonTokens.LeftBrace);
                 foreach (var prop in manager.Getters)
                 {
+	                if (mapper != null)
+	                {
+		                if (mapper.IgnoredProperties.Contains(prop.Name))
+		                {
+			                continue;
+		                }
+	                }
                     var propValue = prop.GetValue(target);
                     sb.Append(JsonTokens.Quoter);
                     sb.Append(GetJsonKeyFromProperty(prop, mapper));
@@ -271,6 +279,13 @@ namespace Commons.Json.Mapper
                 }
                 foreach (var prop in properties)
                 {
+	                if (mapper != null)
+	                {
+		                if (mapper.IgnoredProperties.Contains(prop.Name))
+		                {
+			                continue;
+		                }
+	                }
                     if (jsonObj.ContainsKey(GetJsonKeyFromProperty(prop, mapper)))
                     {
                         var propertyType = prop.PropertyType;
@@ -398,6 +413,10 @@ namespace Commons.Json.Mapper
 			else if (propertyType == typeof (byte))
 			{
 				integerObj = integer.AsByte();
+			}
+			else if (propertyType == typeof (sbyte))
+			{
+				integerObj = integer.AsSbyte();
 			}
 			else if (propertyType == typeof (short))
 			{

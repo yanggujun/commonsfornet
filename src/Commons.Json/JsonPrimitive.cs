@@ -67,6 +67,15 @@ namespace Commons.Json
             {
                 result = Convert.ToInt16(primitive);
             }
+			else if (binder.Type == typeof (byte))
+			{
+				result = Convert.ToByte(primitive);
+			}
+			else
+		    if (binder.Type == typeof (sbyte))
+		    {
+			    result = Convert.ToSByte(primitive);
+		    }
 			else
 			{
 				result = primitive;
