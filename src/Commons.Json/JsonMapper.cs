@@ -48,7 +48,7 @@ namespace Commons.Json
 			T target = default(T);
 			if (!typeof (T).IsJsonPrimitive())
 			{
-				target = typeCache.Instantiate<T>();
+				target = typeCache.Instantiate<T>(mapperContainer);
 			}
 
 			var mapEngine = mapEngineFactory.CreateMapEngine(target, mapperContainer, typeCache);

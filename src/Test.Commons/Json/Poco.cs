@@ -135,4 +135,17 @@ namespace Test.Commons.Json
 		public DateTime Time { get; set; }
 		public string Model { get; set; }
 	}
+
+    public class Person
+    {
+        public Person(string nation, string gender)
+        {
+            this.Nationality = nation;
+            this.Gender = gender;
+        }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public string Nationality { get; private set; }
+        public string Gender { get; private set; }
+    }
 }

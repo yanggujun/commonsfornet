@@ -964,6 +964,26 @@ namespace Test.Commons.Json
 			Assert.True(string.IsNullOrWhiteSpace(photo.Model));
 		}
 
+        [Fact]
+        public void TestMapProperty04()
+        {
+            JsonMapper.For<Person>().ConstructWith(() => new Person("UK", "Male")).MapProperty(x => x.Name).With("Person Name");
+            var json = "{\"Person Name\": \"John\", \"Age\": 24}";
+            var person = JsonMapper.To<Person>(json);
+            Assert.Equal("John", person.Name);
+            Assert.Equal(24, person.Age);
+            Assert.Equal("UK", person.Nationality);
+            Assert.Equal("Male", person.Gender);
+
+            JsonMapper.For<Person>().ConstructWith(() => new Person("USA", "Female"));
+            json = "{\"Person Name\": \"Rose\", \"Age\": 24}";
+            person = JsonMapper.To<Person>(json);
+            Assert.Equal("Rose", person.Name);
+            Assert.Equal(24, person.Age);
+            Assert.Equal("USA", person.Nationality);
+            Assert.Equal("Female", person.Gender);
+        }
+
 		[Fact]
 		public void TestParseEngine01()
 		{

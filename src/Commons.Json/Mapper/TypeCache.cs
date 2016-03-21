@@ -25,24 +25,24 @@ namespace Commons.Json.Mapper
     {
         private HashedMap<Type, TypeManager> typeManagers = new HashedMap<Type, TypeManager>();
 
-        public T Instantiate<T>()
+        public T Instantiate<T>(MapperContainer mappers)
         {
             var type = typeof(T);
             if (!type.Deserializable())
             {
                 throw new InvalidOperationException(Messages.TypeNotSupported);
             }
-	        return (T) Instantiate(type);
+	        return (T) Instantiate(type, mappers);
         }
 
-	    public object Instantiate(Type type)
+	    public object Instantiate(Type type, MapperContainer mappers)
 	    {
             CacheTypeProperties(type);
             object value;
             if (!type.IsList() && !type.IsDictionary())
             {
                 var manager = typeManagers[type];
-                value = Initialize(manager);
+                value = Initialize(manager, mappers);
             }
             else
             {
@@ -74,13 +74,13 @@ namespace Commons.Json.Mapper
             }
         }
 
-	    private object Initialize(TypeManager manager)
+	    private object Initialize(TypeManager manager, MapperContainer mappers)
 	    {
-            if (manager.Type.IsClass && manager.Constructor == null)
+            if (!CanBeInstantiated(manager, mappers))
             {
                 throw new InvalidOperationException(Messages.NoDefaultConstructor);
             }
-		    var value = Activator.CreateInstance(manager.Type);
+		    var value = CreateInstance(manager.Type, mappers);
 		    var properties = manager.Setters;
 		    foreach (var prop in properties)
 		    {
@@ -93,7 +93,7 @@ namespace Commons.Json.Mapper
 				    }
 				    else
 				    {
-					    prop.SetValue(value, Initialize(typeManagers[propType]));
+					    prop.SetValue(value, Initialize(typeManagers[propType], mappers));
 				    }
 			    }
 		    }
@@ -131,6 +131,45 @@ namespace Commons.Json.Mapper
 					}
 				}
             }
+        }
+
+        private object CreateInstance(Type type, MapperContainer mappers)
+        {
+            if (mappers.ContainsMapper(type))
+            {
+                var mapper = mappers.GetMapper(type);
+                var create = mapper.Create;
+                if (create != null)
+                {
+                    return create();
+                }
+            }
+            return Activator.CreateInstance(type);
+        }
+
+        private bool CanBeInstantiated(TypeManager manager, MapperContainer mappers)
+        {
+            var type = manager.Type;
+            var init = false;
+            if (type.IsClass)
+            {
+                if (manager.Constructor != null)
+                {
+                    init = true;
+                }
+                else if (mappers.ContainsMapper(type))
+                {
+                    var mapper = mappers.GetMapper(type);
+                    var create = mapper.Create;
+                    init = create != null;
+                }
+            }
+            else
+            {
+                init = true;
+            }
+
+            return init;
         }
     }
 }

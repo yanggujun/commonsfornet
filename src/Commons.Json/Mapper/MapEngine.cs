@@ -239,7 +239,7 @@ namespace Commons.Json.Mapper
 			}
 			else
 			{
-				var itemValue = typeCache.Instantiate(itemType);
+				var itemValue = typeCache.Instantiate(itemType, mappers);
 				Populate(itemValue, jsonValue);
 				return itemValue;
 			}
@@ -263,7 +263,7 @@ namespace Commons.Json.Mapper
                     object value = null;
                     if (!valueType.IsJsonPrimitive())
                     {
-                        value = Activator.CreateInstance(valueType);
+                        value = typeCache.Instantiate(valueType, mappers);
                     }
                     value = InternalMap(kvp.Value, value, valueType);
                     method.Invoke(target, new[] { key, value });
