@@ -117,12 +117,12 @@ namespace Commons.Collections.Map
             {
                 foreach (var item in bimap)
                 {
-                    Add(item);
+                    Add(item.Key, item.Value);
                 }
             }
         }
 
-        public override bool Contains(KeyValuePair<K, V> item)
+        protected override bool HasItem(KeyValuePair<K, V> item)
         {
             return KeyValue.ContainsKey(item.Key) && valueEquator(item.Value, ValueOf(item.Key)) 
                 && ContainsValue(item.Value) && keyEquator(item.Key, KeyOf(item.Value));
@@ -133,7 +133,7 @@ namespace Commons.Collections.Map
             var bimap = new HashedBimap<V, K>(valueEquator, keyEquator);
             foreach (var item in ValueKey)
             {
-                bimap.Add(item);
+                bimap.Add(item.Key, item.Value);
             }
 
             return bimap;

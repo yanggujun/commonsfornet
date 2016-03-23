@@ -75,7 +75,7 @@ namespace Commons.Collections.Map
             {
                 foreach (var item in items)
                 {
-                    Add(item);
+                    Add(item.Key, item.Value);
                 }
             }
         }

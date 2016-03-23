@@ -183,7 +183,7 @@ namespace Commons.Collections.Map
             }
         }
 
-        public void Add(KeyValuePair<K, V> item)
+        void ICollection<KeyValuePair<K, V>>.Add(KeyValuePair<K, V> item)
         {
             Add(item.Key, item.Value);
         }
@@ -193,7 +193,7 @@ namespace Commons.Collections.Map
             Map.Clear();
         }
 
-        public bool Contains(KeyValuePair<K, V> item)
+        bool ICollection<KeyValuePair<K, V>>.Contains(KeyValuePair<K, V> item)
         {
             return ContainsValue(item.Key, item.Value);
         }
@@ -234,7 +234,7 @@ namespace Commons.Collections.Map
             get { return false; }
         }
 
-        public bool Remove(KeyValuePair<K, V> item)
+        bool ICollection<KeyValuePair<K, V>>.Remove(KeyValuePair<K, V> item)
         {
             return RemoveValue(item.Key, item.Value);
         }

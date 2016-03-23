@@ -244,7 +244,7 @@ namespace Commons.Collections.Map
             Count = 0;
         }
 
-        public bool Contains(KeyValuePair<K, V> item)
+        bool ICollection<KeyValuePair<K, V>>.Contains(KeyValuePair<K, V> item)
         {
             var contains = false;
             if (ContainsKey(item.Key))
@@ -283,10 +283,11 @@ namespace Commons.Collections.Map
             get { return false; }
         }
 
-        public bool Remove(KeyValuePair<K, V> item)
+        bool ICollection<KeyValuePair<K, V>>.Remove(KeyValuePair<K, V> item)
         {
             var removed = false;
-            if (Contains(item))
+	        ICollection<KeyValuePair<K, V>> col = this;
+            if (col.Contains(item))
             {
                 removed = Remove(item.Key);
             }

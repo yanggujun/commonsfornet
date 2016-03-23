@@ -188,7 +188,7 @@ namespace Commons.Collections.Map
         /// Adds a key value pair to the map.
         /// </summary>
         /// <param name="item">The key value pair.</param>
-        public void Add(KeyValuePair<K, V> item)
+        void ICollection<KeyValuePair<K, V>>.Add(KeyValuePair<K, V> item)
         {
             llrbTree.Add(item.Key, item.Value);
         }
@@ -206,7 +206,7 @@ namespace Commons.Collections.Map
         /// </summary>
         /// <param name="item">The key value paire to search.</param>
         /// <returns>True if key and value exist. Otherwise false.</returns>
-        public bool Contains(KeyValuePair<K, V> item)
+        bool ICollection<KeyValuePair<K, V>>.Contains(KeyValuePair<K, V> item)
         {
             var contains = false;
             if (llrbTree.Contains(item.Key))
@@ -236,7 +236,7 @@ namespace Commons.Collections.Map
             get { return false; }
         }
 
-        public bool Remove(KeyValuePair<K, V> item)
+        bool ICollection<KeyValuePair<K, V>>.Remove(KeyValuePair<K, V> item)
         {
             var removed = false;
             if (llrbTree.Contains(item.Key))

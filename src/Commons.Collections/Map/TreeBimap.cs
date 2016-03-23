@@ -76,12 +76,12 @@ namespace Commons.Collections.Map
             {
                 foreach (var item in bimap)
                 {
-                    Add(item);
+                    Add(item.Key, item.Value);
                 }
             }
         }
 
-        public override bool Contains(KeyValuePair<K, V> item)
+        protected override bool HasItem(KeyValuePair<K, V> item)
         {
             return KeyValue.ContainsKey(item.Key) && (valueComparer(item.Value, ValueOf(item.Key)) == 0) 
                 && ValueKey.ContainsKey(item.Value) && (keyComparer(item.Key, KeyOf(item.Value)) == 0);
@@ -92,7 +92,7 @@ namespace Commons.Collections.Map
             var bimap = new TreeBimap<V, K>(valueComparer, keyComparer);
             foreach (var item in ValueKey)
             {
-                bimap.Add(item);
+                bimap.Add(item.Key, item.Value);
             }
 
             return bimap;
