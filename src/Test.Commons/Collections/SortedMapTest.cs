@@ -1133,7 +1133,7 @@ namespace Test.Commons.Collections
             var newMap = new TreeMap<Order, Bill>(new OrderComparer());
             foreach (var kvp in orderMap)
             {
-                newMap.Add(kvp);
+                newMap.Add(kvp.Key, kvp.Value);
             }
             Assert.Equal(orderMap.Count, newMap.Count);
 
@@ -1142,7 +1142,8 @@ namespace Test.Commons.Collections
             {
                 if (count++ < 500)
                 {
-                    Assert.True(newMap.Remove(kvp));
+	                ICollection<KeyValuePair<Order, Bill>> col = newMap;
+                    Assert.True(col.Remove(kvp));
                 }
             }
 
@@ -1151,7 +1152,7 @@ namespace Test.Commons.Collections
             newMap.CopyTo(kvps, 0);
             var item = new KeyValuePair<Order, Bill>(kvps[250].Key, new Bill());
             Assert.True(newMap.ContainsKey(item.Key));
-            Assert.False(newMap.Remove(item));
+            Assert.False(((ICollection<KeyValuePair<Order, Bill>>)newMap).Remove(item));
         }
 
         [Fact]

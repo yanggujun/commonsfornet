@@ -407,8 +407,8 @@ namespace Test.Commons.Json
         [Fact]
         public void TestMapJsonToObject32()
         {
-            var json = "{\"Birthday\": \"1990/1/18\", \"name\": \"alan\"}";
-            var hasDate = JsonMapper.To<HasDate>(json);
+            var json = "{\"Birthday\": \"1990/01/18\", \"name\": \"alan\"}";
+            var hasDate = JsonMapper.UseDateFormat("yyyy/MM/dd").To<HasDate>(json);
             Assert.Equal("alan", hasDate.Name);
             Assert.Equal(1990, hasDate.Birthday.Year);
             Assert.Equal(1, hasDate.Birthday.Month);
@@ -418,7 +418,7 @@ namespace Test.Commons.Json
         [Fact]
         public void TestMapJsonToObject33()
         {
-            var json = "{\"Birthday\": \"1990/1/18/22\", \"name\": \"alan\"}";
+            var json = "{\"Birthday\": \"1990-1-18-22\", \"name\": \"alan\"}";
             Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<HasDate>(json));
         }
 
@@ -445,8 +445,8 @@ namespace Test.Commons.Json
         [Fact]
         public void TestMapJsonToObject36()
         {
-            var json = "{\"Name\": \"Alan\", \"Age\": 25, \"Score\": 90.5, \"ExamDate\": \"2016/3/1\", \"Pass\": true}";
-            var simple = JsonMapper.To<SimpleStruct>(json);
+            var json = "{\"Name\": \"Alan\", \"Age\": 25, \"Score\": 90.5, \"ExamDate\": \"2016/03/01\", \"Pass\": true}";
+            var simple = JsonMapper.UseDateFormat("yyyy/MM/dd").To<SimpleStruct>(json);
             Assert.Equal("Alan", simple.Name);
             Assert.Equal(25, simple.Age);
             Assert.Equal(90.5, simple.Score);
@@ -954,8 +954,8 @@ namespace Test.Commons.Json
 		public void TestMapProperty03()
 		{
 			JsonMapper.For<Photo>().MapProperty(x => x.Location).With("Place").Not.MapProperty(x => x.Model);
-			var json = "{\"Author\": \"Owen\", \"Place\": \"France\", \"Model\": \"EOS 5D Mark II\", \"Time\": \"2011/5/30\"}";
-			var photo = JsonMapper.To<Photo>(json);
+			var json = "{\"Author\": \"Owen\", \"Place\": \"France\", \"Model\": \"EOS 5D Mark II\", \"Time\": \"2011/05/30\"}";
+			var photo = JsonMapper.UseDateFormat("yyyy/MM/dd").To<Photo>(json);
 			Assert.Equal("Owen", photo.Author);
 			Assert.Equal("France", photo.Location);
 			Assert.Equal(2011, photo.Time.Year);

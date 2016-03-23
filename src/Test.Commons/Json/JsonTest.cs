@@ -414,12 +414,6 @@ namespace Test.Commons.Json
 		    Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
 	    }
 
-		[Fact]
-	    public void TestParseJsonControlCharacter()
-	    {
-			Assert.Equal(0, 1);
-	    }
-
         [Fact]
         public void TestParseJsonEmptyArray()
         {

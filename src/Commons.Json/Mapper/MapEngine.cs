@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -28,12 +29,14 @@ namespace Commons.Json.Mapper
 		private MapperContainer mappers;
         private T target;
         private TypeCache typeCache;
+		private string dateFormat;
 
-		public MapEngine(T target, MapperContainer mappers, TypeCache typeCache)
+		public MapEngine(T target, MapperContainer mappers, TypeCache typeCache, string dateFormat)
 		{
 			this.mappers = mappers;
             this.target = target;
             this.typeCache = typeCache;
+			this.dateFormat = dateFormat;
 		}
 
 		public T Map(JValue jsonValue)
@@ -77,12 +80,19 @@ namespace Commons.Json.Mapper
             {
                 json = target.ToString();
             }
-            else if (type == typeof(string) || type == typeof(DateTime))
+            else if (type == typeof(string))
             {
                 var sb = new StringBuilder();
                 sb.Append(JsonTokens.Quoter).Append(target).Append(JsonTokens.Quoter);
                 json = sb.ToString();
             }
+			else if (type == typeof (DateTime))
+			{
+				var sb = new StringBuilder();
+				var dt = (DateTime) target;
+				sb.Append(JsonTokens.Quoter).Append(dt.ToString(dateFormat)).Append(JsonTokens.Quoter);
+				json = sb.ToString();
+			}
             else if (type.IsDictionary(out keyType))
             {
                 var sb = new StringBuilder();
@@ -192,32 +202,17 @@ namespace Commons.Json.Mapper
             return key;
         }
 
-        private string GetPropNameFromJsonKey(string key, MapperImpl mapper)
-        {
-            var prop = key;
-            if (mapper != null)
-            {
-                string p;
-                if (mapper.TryGetProperty(key, out p))
-                {
-                    prop = p;
-                }
-            }
-
-            return prop;
-        }
-
-        private void Populate(object target, JValue jsonValue)
+        private void Populate(object obj, JValue jsonValue)
         {
             JObject jsonObj;
             JArray jsonArray;
             if (jsonValue.Is<JObject>(out jsonObj))
             {
-	            PopulateJsonObject(target, jsonObj);
+	            PopulateJsonObject(obj, jsonObj);
             }
 			else if (jsonValue.Is<JArray>(out jsonArray))
 			{
-				var type = target.GetType();
+				var type = obj.GetType();
 				Type itemType;
                 if (type.IsList(out itemType))
                 {
@@ -225,7 +220,7 @@ namespace Commons.Json.Mapper
                     foreach (var value in jsonArray)
                     {
                         var arrayItemValue = GetValueFromJsonArrayItem(value, itemType);
-                        add.Invoke(target, new[] { arrayItemValue });
+                        add.Invoke(obj, new[] { arrayItemValue });
                     }
                 }
 			}
@@ -320,7 +315,7 @@ namespace Commons.Json.Mapper
 			prop.SetValue(target, propertyValue);
 		}
 
-		private static object ExtractPrimitiveValue(JValue value, Type type)
+		private object ExtractPrimitiveValue(JValue value, Type type)
 		{
 			JString str;
 			JInteger integer;
@@ -336,7 +331,7 @@ namespace Commons.Json.Mapper
 				if (type == typeof (DateTime))
 				{
 					DateTime dt;
-					if (DateTime.TryParse(str, out dt))
+					if (DateTime.TryParseExact(str, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
 					{
 						propertyValue = dt;
 					}

@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -24,11 +25,11 @@ namespace Commons.Json.Mapper
 {
     //TODO: Dictionary key map
 	[CLSCompliant(true)]
-	public interface IJsonObjectMapper<T> : IPropertyMapper<T>, IJsonKeyMapper<T>, INotMapper<T>, IJsonArrayMapper<T>
+	public interface IJsonObjectMapper<T> : IPropertyMapper<T>, IJsonKeyMapper<T>, INotMapper<T>, IFormatMapper
 	{
 		IJsonObjectMapper<T> ConstructWith(Func<T> creator);
-		IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter);
-		IJsonObjectMapper<T> MapWith(Func<JValue, T> converter);
+		//IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter);
+		//IJsonObjectMapper<T> MapWith(Func<JValue, T> converter);
 	}
 
 	public interface IPropertyMapper<T>
@@ -59,8 +60,14 @@ namespace Commons.Json.Mapper
 		IPropertyMapper<T> Not { get; } 
 	}
 
+	public interface IFormatMapper
+	{
+		IFormatMapper UseDateFormat(string format);
+		//IFormatMapper UseCulture(CultureInfo culture);
+	}
+
 	public interface IJsonArrayMapper<T>
 	{
-		IJsonObjectMapper<T> MapCollection(Func<List<T>, IEnumerable<T>> converter);
+		//IJsonObjectMapper<T> MapCollection(Func<List<T>, IEnumerable<T>> converter);
 	}
 }

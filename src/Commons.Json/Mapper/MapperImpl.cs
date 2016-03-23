@@ -13,7 +13,7 @@ namespace Commons.Json.Mapper
     internal class MapperImpl
     {
         private readonly HashedBimap<string, string> keyPropMap = new HashedBimap<string, string>();
-		private readonly HashedSet<string> ignoredProps = new HashedSet<string>(); 
+		private readonly HashedSet<string> ignoredProps = new HashedSet<string>();
 
         public void Map(string key, string prop)
         {
@@ -53,5 +53,7 @@ namespace Commons.Json.Mapper
         public Func<object> Create {get;set;}
 
         public Func<List<object>, IEnumerable<object>> ArrayConverter { get; set; }
+
+		public string DateFormat { get; set; }
     }
 }

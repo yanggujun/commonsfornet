@@ -92,7 +92,7 @@ namespace Test.Commons.Collections
             {
                 Assert.True(treeBimap.ContainsKey(new Order { Id = i }));
                 Assert.True(treeBimap.ContainsValue(new Bill { Id = i }));
-                Assert.True(treeBimap.Contains(new KeyValuePair<Order, Bill>(new Order { Id = i }, new Bill { Id = i })));
+                Assert.True(((ICollection<KeyValuePair<Order, Bill>>)treeBimap).Contains(new KeyValuePair<Order, Bill>(new Order { Id = i }, new Bill { Id = i })));
             }
 
             var bimap2 = new HashedBimap<int, int>();
@@ -106,7 +106,7 @@ namespace Test.Commons.Collections
             {
                 Assert.True(treeBimap2.ContainsKey(i));
                 Assert.True(treeBimap2.ContainsValue(i + 1));
-                Assert.True(treeBimap2.Contains(new KeyValuePair<int, int>(i, i + 1)));
+                Assert.True(((ICollection<KeyValuePair<int, int>>)treeBimap2).Contains(new KeyValuePair<int, int>(i, i + 1)));
             }
         }
 
@@ -124,7 +124,7 @@ namespace Test.Commons.Collections
             {
                 Assert.True(hashBimap.ContainsKey(new Order { Id = i }));
                 Assert.True(hashBimap.ContainsValue(new Bill { Id = i }));
-                Assert.True(hashBimap.Contains(new KeyValuePair<Order, Bill>(new Order { Id = i }, new Bill { Id = i })));
+                Assert.True(((ICollection<KeyValuePair<Order, Bill>>)hashBimap).Contains(new KeyValuePair<Order, Bill>(new Order { Id = i }, new Bill { Id = i })));
             }
 
             var bimap2 = new TreeBimap<int, int>();
@@ -137,7 +137,7 @@ namespace Test.Commons.Collections
             {
                 Assert.True(hashBimap2.ContainsKey(i));
                 Assert.True(hashBimap2.ContainsValue(i + 1));
-                Assert.True(hashBimap2.Contains(new KeyValuePair<int, int>(i, i + 1)));
+                Assert.True(((ICollection<KeyValuePair<int, int>>)hashBimap2).Contains(new KeyValuePair<int, int>(i, i + 1)));
             }
         }
 

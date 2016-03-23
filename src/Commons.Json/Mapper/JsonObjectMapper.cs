@@ -198,5 +198,11 @@ namespace Commons.Json.Mapper
 		        lastExp = exp;
 	        }
 		}
+
+		IFormatMapper IFormatMapper.UseDateFormat(string format)
+		{
+			mapper.DateFormat = format;
+			return this;
+		}
 	}
 }

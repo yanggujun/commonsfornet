@@ -16,54 +16,68 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Contexts;
+using Commons.Collections.Map;
 using Commons.Json.Mapper;
 
 namespace Commons.Json
 {
+	// TODO: 1. control characters
+	//       2. large numbers.
+	//       3. array converter
+	//       4. object converter
+	//       5. date format
+	//       6. culture
+	//       7. dictionary key 
+	//       8. multi context
 	[CLSCompliant(true)]
 	public static class JsonMapper
 	{
-		private static MapperContainer mapperContainer = new MapperContainer();
-        private static TypeCache typeCache = new TypeCache();
-		private static IMapEngineFactory mapEngineFactory = new MapEngineFactory();
+		private const string DefaultContext = "default";
+		private static HashedMap<string, MapContext> contexts = new HashedMap<string, MapContext>();
+
+		public static IMapContext UseDateFormat(string format)
+		{
+			var context = GetContext(DefaultContext);
+			context.DateFormat = format;
+			return context;
+		}
 
 		public static IJsonObjectMapper<T> For<T>()
 		{
-            var type = typeof(T);
-			if (!mapperContainer.ContainsMapper(type))
-			{
-                mapperContainer.PushMapper(type);
-			}
-            var mapper = mapperContainer.GetMapper(type);
-            var jsonObjMapper = new JsonObjectMapper<T>(mapper);
-            return jsonObjMapper;
+			var context = GetContext(DefaultContext);
+			return context.For<T>();
 		}
 
 		public static T To<T>(string json)
 		{
-			var parseEngine = new JsonParseEngine();
-			var jsonValue = parseEngine.Parse(json);
-
-			T target = default(T);
-			if (!typeof (T).IsJsonPrimitive())
-			{
-				target = typeCache.Instantiate<T>(mapperContainer);
-			}
-
-			var mapEngine = mapEngineFactory.CreateMapEngine(target, mapperContainer, typeCache);
-			return mapEngine.Map(jsonValue);
+			var context = GetContext(DefaultContext);
+			return context.To<T>(json);
 		}
 
 		public static string ToJson<T>(T target)
 		{
-            var mapEngine = mapEngineFactory.CreateMapEngine(target, mapperContainer, typeCache);
-            return mapEngine.Map(target);
+			var context = GetContext(DefaultContext);
+			return context.ToJson<T>(target);
 		}
 
 		public static dynamic Parse(string json)
 		{
 			return JsonParser.Parse(json);
+		}
+
+		private static MapContext GetContext(string contextName)
+		{
+			if (!contexts.ContainsKey(contextName))
+			{
+				var ctx = new MapContext(contextName);
+				contexts.Add(DefaultContext, ctx);
+			}
+			var context = contexts[contextName];
+
+			return context;
 		}
 	}
 }
