@@ -89,11 +89,11 @@ namespace Commons.Json.Mapper
 			    {
 				    if (propType.IsList())
 				    {
-					    prop.SetValue(value, Activator.CreateInstance(propType));
+					    prop.SetValue(value, Activator.CreateInstance(propType), null);
 				    }
 				    else
 				    {
-					    prop.SetValue(value, Initialize(typeManagers[propType], mappers));
+					    prop.SetValue(value, Initialize(typeManagers[propType], mappers), null);
 				    }
 			    }
 		    }

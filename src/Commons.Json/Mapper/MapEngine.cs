@@ -104,8 +104,8 @@ namespace Commons.Json.Mapper
                     var hasValue = false;
                     foreach (var element in dict)
                     {
-                        var key = element.GetType().GetProperty("Key").GetValue(element) as string;
-                        var value = element.GetType().GetProperty("Value").GetValue(element);
+                        var key = element.GetType().GetProperty("Key").GetValue(element, null) as string;
+                        var value = element.GetType().GetProperty("Value").GetValue(element, null);
                         sb.Append(JsonTokens.Quoter).Append(key).Append(JsonTokens.Quoter)
                             .Append(JsonTokens.Colon).Append(Jsonize(value)).Append(JsonTokens.Comma);
                         hasValue = true;
@@ -172,7 +172,7 @@ namespace Commons.Json.Mapper
 			                continue;
 		                }
 	                }
-                    var propValue = prop.GetValue(target);
+                    var propValue = prop.GetValue(target, null);
                     sb.Append(JsonTokens.Quoter);
                     sb.Append(GetJsonKeyFromProperty(prop, mapper));
                     sb.Append(JsonTokens.Quoter);
@@ -292,7 +292,7 @@ namespace Commons.Json.Mapper
                         }
                         else
                         {
-                            var propValue = prop.GetValue(target);
+                            var propValue = prop.GetValue(target, null);
                             Populate(propValue, jsonObj[key]);
                         }
                     }
@@ -314,7 +314,7 @@ namespace Commons.Json.Mapper
 
 			var propertyValue = ExtractPrimitiveValue(value, propertyType);
 
-			prop.SetValue(target, propertyValue);
+			prop.SetValue(target, propertyValue, null);
 		}
 
 		private object ExtractPrimitiveValue(JValue value, Type type)
@@ -455,7 +455,7 @@ namespace Commons.Json.Mapper
 			}
 			else
 			{
-				return DateTime.TryParseExact(str, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
+				return DateTime.TryParseExact(str, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dt);
 			}
 		}
 	}

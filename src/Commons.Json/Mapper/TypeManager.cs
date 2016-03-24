@@ -57,8 +57,11 @@ namespace Commons.Json.Mapper
             get;
             set;
         }
-
+#if NET45
         public IReadOnlyList<PropertyInfo> Getters
+#else
+        public IList<PropertyInfo> Getters
+#endif
         {
             get
             {
@@ -66,7 +69,11 @@ namespace Commons.Json.Mapper
             }
         }
 
+#if NET45
         public IReadOnlyList<PropertyInfo> Setters
+#else
+        public IList<PropertyInfo> Setters
+#endif
         {
             get
             {
