@@ -24,6 +24,7 @@ using System.Runtime.Remoting;
 using System.Threading;
 using System.Threading.Tasks;
 using Commons.Collections.Concurrent;
+using Commons.Collections.Set;
 using Commons.Utils;
 using Xunit;
 
@@ -455,13 +456,25 @@ namespace Test.Commons.Collections
             var idList = new List<int>();
             var newList = new List<int>();
             var rand = new Random((int) (0x0000ffff & DateTime.Now.Ticks));
+	        var set = new HashedSet<int>();
             for (var i = 0; i < 10000; i++)
             {
-                idList.Add(rand.Next());
+	            var n = rand.Next();
+				if (!set.Contains(n))
+	            {
+					idList.Add(rand.Next());
+		            set.Add(n);
+	            }
             }
+			set.Clear();
             for (var i = 0; i < 5000; i++)
             {
-                newList.Add(rand.Next());
+	            var n = rand.Next();
+	            if (!set.Contains(n))
+	            {
+					newList.Add(n);
+					set.Add(n);
+	            }
             }
             Parallel.ForEach(idList, x => Assert.True(map.TryAdd(x, x)));
             var remove = new Task(() =>
@@ -650,6 +663,7 @@ namespace Test.Commons.Collections
             {
                 idList.Add(rand.Next());
             }
+			// TODO: problem
             Parallel.ForEach(idList, x => map.TryAdd(x, x));
             Assert.Equal(5000, map.Count);
             map.Clear();

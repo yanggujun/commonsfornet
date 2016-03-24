@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using Commons.Collections.Collection;
 using Commons.Utils;
 
 namespace Commons.Collections.Map
@@ -49,12 +50,12 @@ namespace Commons.Collections.Map
         }
 
         public LinkedHashedMap(int capacity, Equator<K> equator)
-            : base(capacity, equator)
+            : this(capacity, new EquatorComparer<K>(equator))
         {
         }
 
         public LinkedHashedMap(int capacity, IEqualityComparer<K> comparer) 
-            : this(capacity, comparer.Equals)
+            : base(capacity, comparer)
         {
         }
 
@@ -108,7 +109,7 @@ namespace Commons.Collections.Map
             {
                 throw new ArgumentException("The key does not exist.");
             }
-            if (IsEqual(entry.Key, Header.Before.Key))
+            if (Equator.Equals(entry.Key, Header.Before.Key))
             {
                 throw new ArgumentException("There is no more items after the searched key.");
             }
@@ -125,7 +126,7 @@ namespace Commons.Collections.Map
             {
                 throw new ArgumentException("The key does not exist.");
             }
-            if (IsEqual(entry.Key, Header.Key))
+            if (Equator.Equals(entry.Key, Header.Key))
             {
                 throw new ArgumentException("There is no item before the searched key.");
             }

@@ -16,7 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-
+using Commons.Collections.Collection;
 using Commons.Utils;
 
 namespace Commons.Collections.Map
@@ -45,8 +45,9 @@ namespace Commons.Collections.Map
         }
 
         public MultiValueHashedMap(int keyCapacity, IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer) 
-            : this(keyCapacity, keyComparer.Equals, valueComparer.Equals)
+            : base(valueComparer)
         {
+			map = new HashedMap<K, ICollection<V>>(keyCapacity, keyComparer);
         }
 
         public MultiValueHashedMap(Equator<K> keyEquator, Equator<V> valueEquator) 
@@ -55,19 +56,23 @@ namespace Commons.Collections.Map
         }
 
         public MultiValueHashedMap(int keyCapacity, Equator<K> keyEquator, Equator<V> valueEquator)
-            : base(valueEquator)
+            : this(keyCapacity, new EquatorComparer<K>(keyEquator), new EquatorComparer<V>(valueEquator))
         {
-            map = new HashedMap<K,ICollection<V>>(keyCapacity, keyEquator);
         }
 
-        public MultiValueHashedMap(IMultiValueMap<K, V> items) : this(items, EqualityComparer<K>.Default.Equals, EqualityComparer<V>.Default.Equals)
-        {
-        }
+	    public MultiValueHashedMap(IMultiValueMap<K, V> items) : this(items, EqualityComparer<K>.Default, EqualityComparer<V>.Default)
+	    {
+	    }
 
         public MultiValueHashedMap(IMultiValueMap<K, V> items, Equator<K> keyEquator, Equator<V> valueEquator) 
-            : base(valueEquator)
+			: this(items, new EquatorComparer<K>(keyEquator), new EquatorComparer<V>(valueEquator)) 
         {
-            map = new HashedMap<K,ICollection<V>>(items == null ? DefaultCapacity : items.KeyCount, keyEquator);
+        }
+
+        public MultiValueHashedMap(IMultiValueMap<K, V> items, IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer) : base(valueComparer)
+        {
+	        map = new HashedMap<K, ICollection<V>>(
+				items == null ? DefaultCapacity : items.KeyCount, keyComparer);
 
             if (items != null)
             {

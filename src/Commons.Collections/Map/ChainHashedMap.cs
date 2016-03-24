@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using Commons.Collections.Collection;
 using Commons.Utils;
 
 namespace Commons.Collections.Map
@@ -49,7 +50,7 @@ namespace Commons.Collections.Map
         {
         }
 
-        public ChainHashedMap(int capacity, Equator<K> equator) : base(capacity, equator)
+        public ChainHashedMap(int capacity, Equator<K> equator) : base(capacity, new EquatorComparer<K>(equator))
         {
         }
 
@@ -62,7 +63,7 @@ namespace Commons.Collections.Map
         }
 
         public ChainHashedMap(IDictionary<K, V> items, Equator<K> equator)
-            : base(items == null ? DefaultCapacity : items.Count, equator)
+            : base(items == null ? DefaultCapacity : items.Count, new EquatorComparer<K>(equator))
         {
             if (null != items)
             {

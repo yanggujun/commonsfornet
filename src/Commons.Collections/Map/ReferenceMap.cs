@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Commons.Collections.Collection;
 using Commons.Utils;
 
 namespace Commons.Collections.Map
@@ -30,11 +31,11 @@ namespace Commons.Collections.Map
     {
         private const int DefaultCapacity = 16;
         private static readonly Equator<K> referenceEquator = (x1, x2) => ReferenceEquals(x1, x2);
-        public ReferenceMap() : base(DefaultCapacity, referenceEquator)
+        public ReferenceMap() : base(DefaultCapacity, new EquatorComparer<K>(referenceEquator))
         {
         }
 
-        public ReferenceMap(int capacity) : base(capacity, referenceEquator)
+        public ReferenceMap(int capacity) : base(capacity, new EquatorComparer<K>(referenceEquator))
         {
         }
 

@@ -30,11 +30,11 @@ namespace Commons.Collections.Map
         IEnumerable<KeyValuePair<K, V>>, 
         IEnumerable<KeyValuePair<K, ICollection<V>>>, IEnumerable
     {
-        private readonly Equator<V> valueEquator;
+        private readonly IEqualityComparer<V> valueEquator;
 
         protected abstract IDictionary<K, ICollection<V>> Map { get; }
 
-        protected AbstractMultiValueMap(Equator<V> valueEquator)
+        protected AbstractMultiValueMap(IEqualityComparer<V> valueEquator)
         {
             this.valueEquator = valueEquator;
         }
@@ -81,7 +81,7 @@ namespace Commons.Collections.Map
             {
                 foreach (var v in Map[key])
                 {
-                    if (valueEquator(v, value))
+                    if (valueEquator.Equals(v, value))
                     {
                         removed = true;
                         toRemove = v;
@@ -145,7 +145,7 @@ namespace Commons.Collections.Map
             {
                 foreach(var v in Map[key])
                 {
-                    if (valueEquator(v, value))
+                    if (valueEquator.Equals(v, value))
                     {
                         found = true;
                     }

@@ -42,15 +42,15 @@ namespace Commons.Collections.Map
         protected int Capacity { get; set; }
         protected int Threshold { get; set; }
         protected HashEntry[] Entries { get; set; }
-        protected readonly Equator<K> IsEqual;
+        protected readonly IEqualityComparer<K> Equator;
 
-        protected AbstractHashedMap(int capacity, Equator<K> isEqual)
+        protected AbstractHashedMap(int capacity, IEqualityComparer<K> equator)
         {
             capacity.Validate(x => x > 0, new ArgumentException("Capacity must be larger than 0."));
-            Guarder.CheckNull(isEqual);
+            Guarder.CheckNull(equator);
             Count = 0;
-            this.Capacity = CalculateCapacity(capacity);
-            this.IsEqual = isEqual;
+            Capacity = CalculateCapacity(capacity);
+            Equator = equator;
             Entries = new HashEntry[this.Capacity];
         }
 
@@ -106,7 +106,7 @@ namespace Commons.Collections.Map
             var entry = Entries[index];
             if (null != entry)
             {
-                if (IsEqual(entry.Key, key))
+                if (Equator.Equals(entry.Key, key))
                 {
                     Entries[index] = entry.Next;
                     removed = true;
@@ -116,7 +116,7 @@ namespace Commons.Collections.Map
                     while (null != entry.Next)
                     {
                         var item = entry.Next;
-                        if (IsEqual(item.Key, key))
+                        if (Equator.Equals(item.Key, key))
                         {
                             entry.Next = item.Next;
                             removed = true;
@@ -319,7 +319,7 @@ namespace Commons.Collections.Map
             HashEntry target = null;
             while (null != entry)
             {
-                if (IsEqual(entry.Key, key))
+                if (Equator.Equals(entry.Key, key))
                 {
                     target = entry;
                     break;
@@ -344,7 +344,7 @@ namespace Commons.Collections.Map
                 HashEntry cursor = null;
                 while (null != item)
                 {
-                    if (IsEqual(item.Key, key))
+                    if (Equator.Equals(item.Key, key))
                     {
                         throw new ArgumentException("The key already exists in the map.");
                     }

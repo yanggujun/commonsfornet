@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using System;
 using System.Text;
+using Commons.Collections.Collection;
 using Commons.Utils;
 
 namespace Commons.Collections.Map
@@ -48,8 +49,9 @@ namespace Commons.Collections.Map
         }
 
         public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer) 
-            : this(capacity, transformer, comparer.Equals)
+            : this(capacity, new MurmurHash32(), transformer, comparer.Equals)
         {
+	        transform = transformer;
         }
 
         public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer, Equator<K> isEqual)
@@ -58,7 +60,7 @@ namespace Commons.Collections.Map
         }
 
         public Customized32HashedMap(int capacity, IHashStrategy hasher, Transformer<K, byte[]> transformer, Equator<K> isEqual)
-            : base(capacity, isEqual)
+            : base(capacity, new EquatorComparer<K>(isEqual))
         {
             transform = transformer;
             this.hasher = hasher;

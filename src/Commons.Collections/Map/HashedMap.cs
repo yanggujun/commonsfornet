@@ -96,7 +96,7 @@ namespace Commons.Collections.Map
 
         private int HashIndex(K key)
         {
-            var hash = key.GetHashCode();
+	        var hash = comparer.GetHashCode(key);
             return hash & (capacity - 1);
         }
 

@@ -40,13 +40,13 @@ namespace Commons.Collections.Map
         {
         }
 
-        public LruMap(int fullSize, IEqualityComparer<K> comparer) : this(fullSize, comparer.Equals)
-        {
-        }
-
-        public LruMap(int fullSize, Equator<K> equator) : base(fullSize, equator)
+        public LruMap(int fullSize, IEqualityComparer<K> comparer) : base(fullSize, comparer)
         {
             MaxSize = fullSize;
+        }
+
+        public LruMap(int fullSize, Equator<K> equator) : this(fullSize, new EquatorComparer<K>(equator))
+        {
         }
 
         public override void Add(K key, V value)

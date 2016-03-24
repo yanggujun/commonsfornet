@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using Commons.Collections.Collection;
 using Commons.Utils;
 namespace Commons.Collections.Map
 {
@@ -56,7 +57,7 @@ namespace Commons.Collections.Map
         }
 
         private MultiValueTreeMap(IMultiValueMap<K, V> items, TreeMap<K, ICollection<V>> map, Equator<V> valueEquator) 
-            : base(valueEquator)
+            : base(new EquatorComparer<V>(valueEquator))
         {
             this.map = map;
 

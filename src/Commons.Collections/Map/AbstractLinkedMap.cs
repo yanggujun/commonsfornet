@@ -25,8 +25,8 @@ namespace Commons.Collections.Map
     {
         protected LinkedHashEntry Header { get; set; }
 
-        public AbstractLinkedMap(int capacity, Equator<K> isEqual)
-            : base(capacity, isEqual)
+        public AbstractLinkedMap(int capacity, IEqualityComparer<K> equator)
+            : base(capacity, equator)
         {
         }
 
