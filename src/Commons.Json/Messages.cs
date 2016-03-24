@@ -43,5 +43,7 @@ namespace Commons.Json
         public const string FieldNotProperty = "The expression only contains a field not a property.";
 
 	    public const string NoPropertyToMap = "No property is not defined yet.";
+
+	    public const string InvalidDateFormat = "The date time format is invalid.";
     }
 }

@@ -78,9 +78,7 @@ namespace Commons.Json.Mapper
 
 	public class JObject : JValue, IEnumerable<KeyValuePair<string, JValue>>
 	{
-		private HashedMap<string, JValue> values =
-			new HashedMap<string, JValue>(
-				(x1, x2) => x1 != null ? x1.Equals(x2, StringComparison.InvariantCultureIgnoreCase) : x1 == x2);
+		private HashedMap<string, JValue> values = new HashedMap<string, JValue>(new IgnoreCaseStringEquator());
 
 		private string lastKey;
 		public void PutKey(JString key)

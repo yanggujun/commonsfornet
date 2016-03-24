@@ -119,6 +119,12 @@ namespace Commons.Json.Mapper
 			return this;
 		}
 
+		public IJsonKeyMapper<T> MapProperty(Expression<Func<T, DateTime>> propertyExp)
+		{
+			Put(propertyExp);
+			return this;
+		}
+
 		public IJsonObjectMapper<T> ConstructWith(Func<T> creator)
 		{
             mapper.Create = () => creator();
@@ -204,5 +210,6 @@ namespace Commons.Json.Mapper
 			mapper.DateFormat = format;
 			return this;
 		}
+
 	}
 }

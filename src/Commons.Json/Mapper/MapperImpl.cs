@@ -12,7 +12,7 @@ namespace Commons.Json.Mapper
 {
     internal class MapperImpl
     {
-        private readonly HashedBimap<string, string> keyPropMap = new HashedBimap<string, string>();
+	    private readonly HashedBimap<string, string> keyPropMap = new HashedBimap<string, string>(new IgnoreCaseStringEquator(), new IgnoreCaseStringEquator());
 		private readonly HashedSet<string> ignoredProps = new HashedSet<string>();
 
         public void Map(string key, string prop)

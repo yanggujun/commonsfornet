@@ -90,7 +90,8 @@ namespace Commons.Json.Mapper
 			{
 				var sb = new StringBuilder();
 				var dt = (DateTime) target;
-				sb.Append(JsonTokens.Quoter).Append(dt.ToString(dateFormat)).Append(JsonTokens.Quoter);
+				var time = string.IsNullOrEmpty(dateFormat) ? dt.ToString() : dt.ToString(dateFormat);
+				sb.Append(JsonTokens.Quoter).Append(time).Append(JsonTokens.Quoter);
 				json = sb.ToString();
 			}
             else if (type.IsDictionary(out keyType))
@@ -281,7 +282,8 @@ namespace Commons.Json.Mapper
 			                continue;
 		                }
 	                }
-                    if (jsonObj.ContainsKey(GetJsonKeyFromProperty(prop, mapper)))
+	                var key = GetJsonKeyFromProperty(prop, mapper);
+                    if (jsonObj.ContainsKey(key))
                     {
                         var propertyType = prop.PropertyType;
                         if (propertyType.IsJsonPrimitive())
@@ -291,7 +293,7 @@ namespace Commons.Json.Mapper
                         else
                         {
                             var propValue = prop.GetValue(target);
-                            Populate(propValue, jsonObj[prop.Name]);
+                            Populate(propValue, jsonObj[key]);
                         }
                     }
                 }
@@ -331,13 +333,13 @@ namespace Commons.Json.Mapper
 				if (type == typeof (DateTime))
 				{
 					DateTime dt;
-					if (DateTime.TryParseExact(str, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
+					if (TryParseDate(str, out dt))
 					{
 						propertyValue = dt;
 					}
 					else
 					{
-						throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+						throw new InvalidCastException(Messages.InvalidDateFormat);
 					}
 				}
 				else
@@ -443,6 +445,18 @@ namespace Commons.Json.Mapper
 			}
 
 			return integerObj;
+		}
+
+		private bool TryParseDate(string str, out DateTime dt)
+		{
+			if (string.IsNullOrEmpty(dateFormat))
+			{
+				return DateTime.TryParse(str, out dt);
+			}
+			else
+			{
+				return DateTime.TryParseExact(str, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
+			}
 		}
 	}
 }

@@ -48,6 +48,7 @@ namespace Commons.Json.Mapper
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, ushort>> propertyExp);
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, decimal>> propertyExp);
 		IJsonKeyMapper<T> MapProperty(Expression<Func<T, char>> propertyExp);
+		IJsonKeyMapper<T> MapProperty(Expression<Func<T, DateTime>> propertyExp);
 	}
 
 	public interface IJsonKeyMapper<T>

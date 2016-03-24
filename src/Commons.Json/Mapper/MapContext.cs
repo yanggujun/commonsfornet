@@ -14,14 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Deployment.Internal;
-
 namespace Commons.Json.Mapper
 {
 	internal class MapContext : IMapContext
 	{
-		private const string DefaultDateFormat = "d";
-		private string dateFormat = DefaultDateFormat;
+		private string dateFormat = string.Empty;
 		public MapContext(string name)
 		{
 			Name = name;

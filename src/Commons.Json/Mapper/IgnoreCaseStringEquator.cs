@@ -14,14 +14,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+
 namespace Commons.Json.Mapper
 {
-	public interface IMapContext
+	internal class IgnoreCaseStringEquator : IEqualityComparer<string>
 	{
-		string Name { get; }
-		string DateFormat { get; }
-		IJsonObjectMapper<T> For<T>();
-		string ToJson<T>(T target);
-		T To<T>(string json);
+		public bool Equals(string x, string y)
+		{
+			return x == null ? y == null : x.Equals(y, StringComparison.InvariantCultureIgnoreCase);
+		}
+
+		public int GetHashCode(string obj)
+		{
+			// no one use.
+			return obj.ToLowerInvariant().GetHashCode();
+		}
 	}
 }

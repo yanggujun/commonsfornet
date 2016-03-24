@@ -148,4 +148,11 @@ namespace Test.Commons.Json
         public string Nationality { get; private set; }
         public string Gender { get; private set; }
     }
+
+	public class Student
+	{
+		public Person Person { get; set; }
+		public string Major { get; set; }
+		public int Grade { get; set; }
+	}
 }
