@@ -24,14 +24,6 @@ using Commons.Json.Mapper;
 
 namespace Commons.Json
 {
-	// TODO: 1. control characters
-	//       2. large numbers.
-	//       3. array converter
-	//       4. object converter
-	//       5. date format
-	//       6. culture
-	//       7. dictionary key 
-	//       8. multi context
 	[CLSCompliant(true)]
 	public static class JsonMapper
 	{

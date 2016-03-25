@@ -409,7 +409,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject32()
         {
             var json = "{\"Birthday\": \"1990/01/18\", \"name\": \"alan\"}";
-            var hasDate = JsonMapper.To<HasDate>(json);
+            var hasDate = JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json);
             Assert.Equal("alan", hasDate.Name);
             Assert.Equal(1990, hasDate.Birthday.Year);
             Assert.Equal(1, hasDate.Birthday.Month);
@@ -420,7 +420,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject33()
         {
             var json = "{\"Birthday\": \"1990/1/5/88\", \"name\": \"alan\"}";
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<HasDate>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json));
         }
 
 		[Fact]
@@ -447,7 +447,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject36()
         {
             var json = "{\"Name\": \"Alan\", \"Age\": 25, \"Score\": 90.5, \"ExamDate\": \"2016/03/01\", \"Pass\": true}";
-            var simple = JsonMapper.To<SimpleStruct>(json);
+            var simple = JsonMapper.UseDateFormat(string.Empty).To<SimpleStruct>(json);
             Assert.Equal("Alan", simple.Name);
             Assert.Equal(25, simple.Age);
             Assert.Equal(90.5, simple.Score);
@@ -481,6 +481,13 @@ namespace Test.Commons.Json
             var json = "{\"Name\": \"Kevin\", \"Age\": 23}";
             Assert.Throws(typeof(InvalidOperationException), () => JsonMapper.To<NoDefaultConstructor>(json));
         }
+
+		[Fact]
+		public void TestMapJsonToObject40()
+		{
+			var json = "{\"fieldj\": \"valuej\", \"fieldk\": [1, 2, 4a5, 6]}";
+			Assert.Throws(typeof (ArgumentException), () => JsonMapper.To<PrimitiveList>(json));
+		}
 
         [Fact]
         public void TestMapObjectToJson01()
@@ -673,7 +680,7 @@ namespace Test.Commons.Json
         public void TestMapObjectToJson11()
         {
             var hasDate = new HasDate { Birthday = new DateTime(1990, 10, 21), Name = "Jane" };
-            var json = JsonMapper.ToJson(hasDate);
+            var json = JsonMapper.UseDateFormat(string.Empty).ToJson(hasDate);
             var jsonObject = JsonMapper.Parse(json);
             Assert.Equal("Jane", (string)jsonObject.Name);
             var date = DateTime.Parse((string)jsonObject.Birthday);
@@ -954,7 +961,7 @@ namespace Test.Commons.Json
 		[Fact]
 		public void TestMapProperty03()
 		{
-			JsonMapper.For<Photo>().MapProperty(x => x.Location).With("Place").Not.MapProperty(x => x.Model);
+			JsonMapper.UseDateFormat(string.Empty).For<Photo>().MapProperty(x => x.Location).With("Place").Not.MapProperty(x => x.Model);
 			var json = "{\"Author\": \"Owen\", \"Place\": \"France\", \"Model\": \"EOS 5D Mark II\", \"Time\": \"2011/05/30\"}";
 			var photo = JsonMapper.To<Photo>(json);
 			Assert.Equal("Owen", photo.Author);
@@ -991,13 +998,13 @@ namespace Test.Commons.Json
 			JsonMapper.For<Person>().ConstructWith(() => new Person("FR", "Female")).MapProperty(x => x.Name).With("Person Name");
 			JsonMapper.For<Student>().MapProperty(x => x.Person).With("Personal Information");
 			var json =
-				"{\"personal information\": {\"person NAme\": \"Emily\", \"Age\": 21}, \"Major\": \"computer science\", \"grade\": 3}";
+				"{\"personal information\": {\"person NAme\": \"Emily\", \"Age\": 21}, \"Major\": \"CS\", \"grade\": 3}";
 			var student = JsonMapper.To<Student>(json);
 			Assert.Equal("Emily", student.Person.Name);
 			Assert.Equal("FR", student.Person.Nationality);
 			Assert.Equal("Female", student.Person.Gender);
 			Assert.Equal(21, student.Person.Age);
-			Assert.Equal("computer science", student.Major);
+			Assert.Equal(Major.CS, student.Major);
 			Assert.Equal(3, student.Grade);
 		}
 
@@ -1005,11 +1012,84 @@ namespace Test.Commons.Json
 		public void TestMapProperty06()
 		{
 			var json = "{\"Birthday\": \"1995-10-05\", \"Name\": \"Joe\"}";
-			var hasDate = JsonMapper.To<HasDate>(json);
+			var hasDate = JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json);
 			Assert.Equal("Joe", hasDate.Name);
 			Assert.Equal(1995, hasDate.Birthday.Year);
 			Assert.Equal(10, hasDate.Birthday.Month);
 			Assert.Equal(5, hasDate.Birthday.Day);
+		}
+
+		[Fact]
+		public void TestMapProperty07()
+		{
+			var person = new Person("CN", "Male") {Age = 19, Name = "Yang"};
+			var student = new Student
+			{
+				Grade = 2, 
+				Major = Major.Art, 
+				Person = person, 
+				ReportDate = new DateTime(2000, 9, 10)
+			};
+			JsonMapper.For<Person>().ConstructWith(() => new Person("JP", "Male")).MapProperty(x => x.Name).With("person name");
+			JsonMapper.For<Student>().MapProperty(x => x.Person).With("personal information");
+			var json = JsonMapper.ToJson(student);
+			var jsonObj = JsonMapper.Parse(json);
+			Assert.Equal("Yang", (string)jsonObj["personal information"]["person name"]);
+			Assert.Equal(19, (int)jsonObj["personal information"]["Age"]);
+			Assert.Equal("CN", (string)jsonObj["personal information"]["Nationality"]);
+			Assert.Equal("Male", (string)jsonObj["personal information"]["Gender"]);
+			Assert.Equal("Art", (string)jsonObj["Major"]);
+			Assert.Equal(2, (int)jsonObj["Grade"]);
+			var dt = DateTime.Parse((string) jsonObj["ReportDate"]);
+			Assert.Equal(2000, dt.Year);
+			Assert.Equal(9, dt.Month);
+			Assert.Equal(10, dt.Day);
+			var newStudent = JsonMapper.To<Student>(json);
+			Assert.Equal("Yang", newStudent.Person.Name);
+			Assert.Equal(19, newStudent.Person.Age);
+			Assert.Equal("JP", newStudent.Person.Nationality);
+			Assert.Equal("Male", newStudent.Person.Gender);
+			Assert.Equal(Major.Art, newStudent.Major);
+			Assert.Equal(2, newStudent.Grade);
+			Assert.Equal(2000, newStudent.ReportDate.Year);
+			Assert.Equal(9, newStudent.ReportDate.Month);
+			Assert.Equal(10, newStudent.ReportDate.Day);
+		}
+
+        [Fact]
+		public void TestMapProperty08()
+		{
+			var json = "{\"Birthday\": \"10/05/1995\", \"Name\": \"Joe\"}";
+			var hasDate = JsonMapper.UseDateFormat("MM/dd/yyyy").To<HasDate>(json);
+			Assert.Equal("Joe", hasDate.Name);
+			Assert.Equal(1995, hasDate.Birthday.Year);
+			Assert.Equal(10, hasDate.Birthday.Month);
+			Assert.Equal(5, hasDate.Birthday.Day);
+		}
+
+		[Fact]
+		public void TestMapProperty09()
+		{
+			JsonMapper.For<Person>()
+				.ConstructWith(() => new Person("US", "Male"))
+				.MapProperty(x => x.Name).With("Person Name");
+			var json =
+				"[{\"person name\": \"Jackson\", \"Age\": 22}, {\"person name\": \"Johnson\", \"Age\": 21}, {\"person name\": \"Hugo\", \"Age\": 23}]";
+			var people = JsonMapper.To<List<Person>>(json);
+			Assert.Equal(3, people.Count);
+			Assert.Equal("Jackson", people[0].Name);
+			Assert.Equal(22, people[0].Age);
+			Assert.Equal("US", people[0].Nationality);
+			Assert.Equal("Male", people[0].Gender);
+			Assert.Equal("Johnson", people[1].Name);
+			Assert.Equal(21, people[1].Age);
+			Assert.Equal("US", people[1].Nationality);
+			Assert.Equal("Male", people[1].Gender);
+			Assert.Equal("Hugo", people[2].Name);
+			Assert.Equal(23, people[2].Age);
+			Assert.Equal("US", people[2].Nationality);
+			Assert.Equal("Male", people[2].Gender);
+
 		}
 
 		[Fact]

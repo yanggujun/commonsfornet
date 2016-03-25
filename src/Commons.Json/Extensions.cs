@@ -50,7 +50,7 @@ namespace Commons.Json
 
 		public static bool IsJsonPrimitive(this Type type)
 		{
-			return type.IsPrimitive || type == typeof(decimal) || type == typeof (string) || type == typeof(DateTime);
+			return type.IsPrimitive || type == typeof(decimal) || type == typeof (string) || type == typeof(DateTime) || type.IsEnum;
 		}
 
 		public static bool IsJsonNumber(this Type type)

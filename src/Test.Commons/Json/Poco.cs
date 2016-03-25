@@ -152,7 +152,18 @@ namespace Test.Commons.Json
 	public class Student
 	{
 		public Person Person { get; set; }
-		public string Major { get; set; }
+		public Major Major { get; set; }
 		public int Grade { get; set; }
+		public DateTime ReportDate { get; set; }
+	}
+
+	public enum Major
+	{
+		CS,
+		Art,
+		Politics,
+		Economics,
+		Physics,
+		Chemistry
 	}
 }
