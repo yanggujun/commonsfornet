@@ -441,10 +441,18 @@ namespace Test.Commons.Collections
             var map = new ConcurrentListBasedMap<int, int>();
             var rand = new Random((int) (0x0000ffff & DateTime.Now.Ticks));
             var idList = new List<int>();
-            for (var i = 0; i < 10000; i++)
-            {
-                idList.Add(rand.Next());
-            }
+	        var set = new HashedSet<int>();
+	        var n = 0;
+			while (n < 10000)
+			{
+				var v = rand.Next();
+				if (!set.Contains(v))
+				{
+					idList.Add(v);
+					set.Add(v);
+					n++;
+				}
+			}
             Parallel.ForEach(idList, x => Assert.True((map.TryAdd(x, x))));
             AssertListBasedMapOrder(map);
         }
@@ -457,23 +465,27 @@ namespace Test.Commons.Collections
             var newList = new List<int>();
             var rand = new Random((int) (0x0000ffff & DateTime.Now.Ticks));
 	        var set = new HashedSet<int>();
-            for (var i = 0; i < 10000; i++)
+	        var items = 0;
+			while (items < 10000)
             {
 	            var n = rand.Next();
 				if (!set.Contains(n))
 	            {
 					idList.Add(rand.Next());
 		            set.Add(n);
+		            items++;
 	            }
             }
 			set.Clear();
-            for (var i = 0; i < 5000; i++)
+	        items = 0;
+			while (items < 5000)
             {
 	            var n = rand.Next();
 	            if (!set.Contains(n))
 	            {
 					newList.Add(n);
 					set.Add(n);
+		            items++;
 	            }
             }
             Parallel.ForEach(idList, x => Assert.True(map.TryAdd(x, x)));
