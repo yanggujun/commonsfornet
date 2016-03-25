@@ -26,7 +26,7 @@ namespace Commons.Json.Mapper
 			bool result;
 			if (!bool.TryParse(text, out result))
 			{
-				throw new ArgumentException();
+				throw new ArgumentException(Messages.InvalidFormat);
 			}
 			return new JBoolean().As(result);
 		}

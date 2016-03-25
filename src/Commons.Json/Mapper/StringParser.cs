@@ -25,7 +25,7 @@ namespace Commons.Json.Mapper
 			var value = json.Trim();
 			if (string.IsNullOrWhiteSpace(value) || value.Length < 2 || !value[0].Equals(JsonTokens.Quoter) || !value[value.Length - 1].Equals(JsonTokens.Quoter))
 			{
-				throw new ArgumentException();
+				throw new ArgumentException(Messages.InvalidFormat);
 			}
 			var str = value.Trim(JsonTokens.Quoter);
 			return new JString(str);

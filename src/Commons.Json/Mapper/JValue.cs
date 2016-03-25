@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using Commons.Collections.Map;
 
 namespace Commons.Json.Mapper
@@ -85,7 +86,7 @@ namespace Commons.Json.Mapper
 		{
 			if (key == null)
 			{
-				throw new ArgumentException();
+				throw new ArgumentNullException("key");
 			}
 			lastKey = key;
 		}
@@ -122,6 +123,23 @@ namespace Commons.Json.Mapper
 			return values.ContainsKey(key);
 		}
 
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.Append(JsonTokens.LeftBrace);
+			foreach (var item in values)
+			{
+				sb.Append(JsonTokens.Quoter)
+					.Append(item.Value)
+					.Append(JsonTokens.Quoter)
+					.Append(JsonTokens.Colon)
+					.Append(item.Value).Append(JsonTokens.Comma);
+			}
+			sb.Remove(sb.Length - 1, 1);
+			sb.Append(JsonTokens.RightBrace);
+			return sb.ToString();
+		}
+
 		public IEnumerator<KeyValuePair<string, JValue>> GetEnumerator()
 		{
 			return values.GetEnumerator();
@@ -138,6 +156,25 @@ namespace Commons.Json.Mapper
 		public JString(string value)
 		{
 			As(value);
+		}
+
+		public override string ToString()
+		{
+			return new StringBuilder()
+					.Append(JsonTokens.Quoter)
+					.Append(Value)
+					.Append(JsonTokens.Quoter).ToString();
+		}
+
+		public override bool Equals(object obj)
+		{
+			var theOther = obj as JString;
+			return theOther != null && Value.Equals(theOther.Value);
+		}
+
+		public override int GetHashCode()
+		{
+			return Value == null ? 0 : Value.GetHashCode();
 		}
 	}
 
@@ -176,10 +213,37 @@ namespace Commons.Json.Mapper
 		{
 			return GetEnumerator();
 		}
+
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.Append(JsonTokens.LeftBracket);
+			foreach (var item in values)
+			{
+				sb.Append(item).Append(JsonTokens.Comma);
+			}
+			sb.Remove(sb.Length - 1, 1);
+			sb.Append(JsonTokens.RightBracket);
+			return sb.ToString();
+		}
 	}
 
 	public class JBoolean : JPrimitive<bool>
 	{
+		public override bool Equals(object obj)
+		{
+			return Value.Equals(obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return Value.GetHashCode();
+		}
+
+		public override string ToString()
+		{
+			return Value.ToString();
+		}
 	}
 
 	public class JNull : JValue
@@ -246,6 +310,21 @@ namespace Commons.Json.Mapper
 		{
 			return Convert.ToDecimal(Value);
 		}
+
+		public override string ToString()
+		{
+			return Value.ToString(Culture);
+		}
+
+		public override bool Equals(object obj)
+		{
+			return Value.Equals(obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return Value.GetHashCode();
+		}
 	}
 
 	public class JDecimal : JPrimitive<decimal>
@@ -268,6 +347,16 @@ namespace Commons.Json.Mapper
 		public override string ToString()
 		{
 			return Value.ToString(Culture);
+		}
+
+		public override bool Equals(object obj)
+		{
+			return Value.Equals(obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return Value.GetHashCode();
 		}
 	}
 }

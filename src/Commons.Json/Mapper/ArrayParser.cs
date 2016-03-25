@@ -120,7 +120,7 @@ namespace Commons.Json.Mapper
 
 			if (quoted || bracketMatch != 0)
 			{
-				throw new ArgumentException();
+				throw new ArgumentException(Messages.InvalidFormat);
 			}
 
 			return array;

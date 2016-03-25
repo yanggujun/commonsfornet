@@ -27,21 +27,21 @@ namespace Commons.Json.Mapper
 	internal class MapEngine<T> : IMapEngine<T>
 	{
 		private MapperContainer mappers;
-        private T target;
+        private T targetObj;
         private TypeCache typeCache;
 		private string dateFormat;
 
 		public MapEngine(T target, MapperContainer mappers, TypeCache typeCache, string dateFormat)
 		{
 			this.mappers = mappers;
-            this.target = target;
+            this.targetObj = target;
             this.typeCache = typeCache;
 			this.dateFormat = dateFormat;
 		}
 
 		public T Map(JValue jsonValue)
 		{
-            return (T)InternalMap(jsonValue, target, typeof(T));
+            return (T)InternalMap(jsonValue, targetObj, typeof(T));
         }
 
         public object InternalMap(JValue jsonValue, object obj, Type type)
@@ -80,7 +80,7 @@ namespace Commons.Json.Mapper
             {
                 json = target.ToString();
             }
-            else if (type == typeof(string))
+            else if (type == typeof(string) || type.IsEnum)
             {
                 var sb = new StringBuilder();
                 sb.Append(JsonTokens.Quoter).Append(target).Append(JsonTokens.Quoter);
@@ -326,7 +326,7 @@ namespace Commons.Json.Mapper
 			object propertyValue;
 			if (value.Is<JString>(out str))
 			{
-				if (type != typeof (string) && type != typeof (DateTime))
+				if (type != typeof (string) && type != typeof (DateTime) && !type.IsEnum)
 				{
 					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
 				}
@@ -341,6 +341,10 @@ namespace Commons.Json.Mapper
 					{
 						throw new InvalidCastException(Messages.InvalidDateFormat);
 					}
+				}
+				else if (type.IsEnum)
+				{
+					propertyValue = Enum.Parse(type, str);
 				}
 				else
 				{

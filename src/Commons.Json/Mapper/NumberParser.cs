@@ -27,7 +27,7 @@ namespace Commons.Json.Mapper
 			var dotIndex = number.IndexOf(JsonTokens.Dot);
 			if (dotIndex == number.Length - 1 || dotIndex == 0)
 			{
-				throw new ArgumentException();
+				throw new ArgumentException(Messages.InvalidFormat);
 			}
 			if (dotIndex < 0)
 			{
@@ -36,7 +36,7 @@ namespace Commons.Json.Mapper
 				var success = long.TryParse(number, out result);
 				if (!success)
 				{
-					throw new ArgumentException();
+					throw new ArgumentException(Messages.InvalidFormat);
 				}
 				integer.As(result);
 				value = integer;
@@ -48,7 +48,7 @@ namespace Commons.Json.Mapper
 				var success = decimal.TryParse(number, out result);
 				if (!success)
 				{
-					throw new ArgumentException();
+					throw new ArgumentException(Messages.InvalidFormat);
 				}
 				dec.As(result);
 				value = dec;

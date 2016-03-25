@@ -43,7 +43,7 @@ namespace Commons.Json.Mapper
 			{
 				if (braceMatch < 0)
 				{
-					throw new ArgumentException();
+					throw new ArgumentException(Messages.InvalidFormat);
 				}
 				var ch = json[pos];
 				if (ch.Equals(JsonTokens.Quoter))
@@ -101,7 +101,7 @@ namespace Commons.Json.Mapper
 							jsonObject.PutObject(v);
 							if (pos < json.Length - 1)
 							{
-								throw new ArgumentException();
+								throw new ArgumentException(Messages.InvalidFormat);
 							}
 						}
 					}
@@ -117,7 +117,7 @@ namespace Commons.Json.Mapper
 			}
 			if (quoted || braceMatch != 0)
 			{
-				throw new ArgumentException();
+				throw new ArgumentException(Messages.InvalidFormat);
 			}
 			if (!jsonObject.Validate())
 			{

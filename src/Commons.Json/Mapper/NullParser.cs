@@ -26,7 +26,7 @@ namespace Commons.Json.Mapper
 			var text = json.Trim();
 			if (!text.Equals(JsonTokens.Null, StringComparison.OrdinalIgnoreCase))
 			{
-				throw new ArgumentException();
+				throw new ArgumentException(Messages.InvalidFormat);
 			}
 			return jnull;
 		}
