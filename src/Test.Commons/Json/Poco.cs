@@ -166,4 +166,24 @@ namespace Test.Commons.Json
 		Physics,
 		Chemistry
 	}
+
+    public class Employee
+    {
+        public string Name { get; set; }
+        public Site Site { get; set; }
+        public string Department { get; set; }
+        public string Position { get; set; }
+        public DateTime Dob { get; set; }
+        public bool Married { get; set; }
+        public int Age { get; set; }
+    }
+
+    public enum Site
+    {
+        LA,
+        NY,
+        SH,
+        Paris,
+        London
+    }
 }

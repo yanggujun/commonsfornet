@@ -417,7 +417,7 @@ namespace Commons.Json.Mapper
 			}
 			else if (propertyType == typeof (sbyte))
 			{
-				integerObj = integer.AsSbyte();
+				integerObj = integer.AsSByte();
 			}
 			else if (propertyType == typeof (short))
 			{

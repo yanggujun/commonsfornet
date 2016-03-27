@@ -70,6 +70,8 @@
     <Compile Include="Mapper\IMapEngineFactory.cs" />
     <Compile Include="Mapper\IObjectConverter.cs" />
     <Compile Include="Mapper\IParseEngine.cs" />
+    <Compile Include="Mapper\JArray.cs" />
+    <Compile Include="Mapper\JObject.cs" />
     <Compile Include="Mapper\JsonParseEngine.cs" />
     <Compile Include="Mapper\JValue.cs" />
     <Compile Include="Mapper\IJsonObjectMapper.cs" />

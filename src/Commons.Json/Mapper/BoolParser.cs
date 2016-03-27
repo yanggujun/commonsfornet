@@ -28,7 +28,7 @@ namespace Commons.Json.Mapper
 			{
 				throw new ArgumentException(Messages.InvalidFormat);
 			}
-			return new JBoolean().As(result);
+            return new JBoolean(result);
 		}
 	}
 }

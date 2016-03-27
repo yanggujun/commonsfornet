@@ -20,7 +20,6 @@ namespace Commons.Json.Mapper
 {
 	internal class NullParser : IParseEngine
 	{
-		private static JNull jnull = new JNull();
 		public JValue Parse(string json)
 		{
 			var text = json.Trim();
@@ -28,7 +27,7 @@ namespace Commons.Json.Mapper
 			{
 				throw new ArgumentException(Messages.InvalidFormat);
 			}
-			return jnull;
+			return JNull.Value;
 		}
 	}
 }

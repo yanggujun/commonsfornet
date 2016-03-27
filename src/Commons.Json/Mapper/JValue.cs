@@ -77,80 +77,6 @@ namespace Commons.Json.Mapper
 		}
 	}
 
-	public class JObject : JValue, IEnumerable<KeyValuePair<string, JValue>>
-	{
-		private HashedMap<string, JValue> values = new HashedMap<string, JValue>(new IgnoreCaseStringEquator());
-
-		private string lastKey;
-		public void PutKey(JString key)
-		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
-			lastKey = key;
-		}
-
-		public void PutObject(JValue value)
-		{
-			if (lastKey == null)
-			{
-				throw new ArgumentException(Messages.InvalidFormat);
-			}
-			values.Add(lastKey, value);
-			lastKey = null;
-		}
-
-		public bool Validate()
-		{
-			return lastKey == null;
-		}
-
-		public JValue this[JString key]
-		{
-			get { return values[key]; }
-			set { values[key] = value; }
-		}
-
-		public JValue this[string key]
-		{
-			get { return values[key]; }
-			set { values[key] = value; }
-		}
-
-		public bool ContainsKey(string key)
-		{
-			return values.ContainsKey(key);
-		}
-
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-			sb.Append(JsonTokens.LeftBrace);
-			foreach (var item in values)
-			{
-				sb.Append(JsonTokens.Quoter)
-					.Append(item.Value)
-					.Append(JsonTokens.Quoter)
-					.Append(JsonTokens.Colon)
-					.Append(item.Value).Append(JsonTokens.Comma);
-			}
-			sb.Remove(sb.Length - 1, 1);
-			sb.Append(JsonTokens.RightBrace);
-			return sb.ToString();
-		}
-
-		public IEnumerator<KeyValuePair<string, JValue>> GetEnumerator()
-		{
-			return values.GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-	}
-
 	public class JString : JPrimitive<string>
 	{
 		public JString(string value)
@@ -178,58 +104,14 @@ namespace Commons.Json.Mapper
 		}
 	}
 
-	public class JArray : JValue, IEnumerable
-	{
-		private List<JValue> values = new List<JValue>();
-
-		public void Add(JValue value)
-		{
-			values.Add(value);
-		}
-
-		public JValue this[int index]
-		{
-			get
-			{
-				if (index < values.Count)
-				{
-					return values[index];
-				}
-				return null;
-			}
-		}
-
-		public int Length
-		{
-			get { return values.Count; }
-		}
-
-		public IEnumerator<JValue> GetEnumerator()
-		{
-			return values.GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-			sb.Append(JsonTokens.LeftBracket);
-			foreach (var item in values)
-			{
-				sb.Append(item).Append(JsonTokens.Comma);
-			}
-			sb.Remove(sb.Length - 1, 1);
-			sb.Append(JsonTokens.RightBracket);
-			return sb.ToString();
-		}
-	}
 
 	public class JBoolean : JPrimitive<bool>
 	{
+        public JBoolean(bool b)
+        {
+            As(b);
+        }
+
 		public override bool Equals(object obj)
 		{
 			return Value.Equals(obj);
@@ -248,6 +130,14 @@ namespace Commons.Json.Mapper
 
 	public class JNull : JValue
 	{
+        private static JNull value = new JNull();
+
+        private JNull()
+        {
+        }
+
+        public static JNull Value { get { return value; } }
+
 		public override string ToString()
 		{
 			return "null";
@@ -256,6 +146,10 @@ namespace Commons.Json.Mapper
 
 	public class JInteger : JPrimitive<long>
 	{
+        public JInteger(long integer)
+        {
+            As(integer);
+        }
 		public int AsInt()
 		{
 			return Convert.ToInt32(Value);
@@ -276,22 +170,26 @@ namespace Commons.Json.Mapper
             return Convert.ToByte(Value);
         }
 
+        [CLSCompliant(false)]
 		public ulong AsULong()
 		{
 			return Convert.ToUInt64(Value);
 		}
 
+        [CLSCompliant(false)]
 		public uint AsUInt()
 		{
 			return Convert.ToUInt32(Value);
 		}
 
+        [CLSCompliant(false)]
 		public ushort AsUShort()
 		{
 			return Convert.ToUInt16(Value);
 		}
 
-		public sbyte AsSbyte()
+        [CLSCompliant(false)]
+		public sbyte AsSByte()
 		{
 			return Convert.ToSByte(Value);
 		}
@@ -329,6 +227,11 @@ namespace Commons.Json.Mapper
 
 	public class JDecimal : JPrimitive<decimal>
 	{
+        public JDecimal(decimal dec)
+        {
+            As(dec);
+        }
+
 		public float AsFloat()
 		{
 			return Convert.ToSingle(Value);

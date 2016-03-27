@@ -45,5 +45,7 @@ namespace Commons.Json
 	    public const string NoPropertyToMap = "No property is not defined yet.";
 
 	    public const string InvalidDateFormat = "The date time format is invalid.";
+
+        public const string NotEnum = "The type is not an Enum.";
     }
 }

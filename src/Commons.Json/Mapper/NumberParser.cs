@@ -31,26 +31,24 @@ namespace Commons.Json.Mapper
 			}
 			if (dotIndex < 0)
 			{
-				var integer = new JInteger();
 				long result;
 				var success = long.TryParse(number, out result);
 				if (!success)
 				{
 					throw new ArgumentException(Messages.InvalidFormat);
 				}
-				integer.As(result);
+				var integer = new JInteger(result);
 				value = integer;
 			}
 			else
 			{
-				var dec = new JDecimal();
 				decimal result;
 				var success = decimal.TryParse(number, out result);
 				if (!success)
 				{
 					throw new ArgumentException(Messages.InvalidFormat);
 				}
-				dec.As(result);
+				var dec = new JDecimal(result);
 				value = dec;
 			}
 			return value;
