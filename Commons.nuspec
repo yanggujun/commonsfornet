@@ -8,7 +8,11 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>The library provides extensive collections other than the ones in .NET framework (corefx). For more information about .NET Commons project please visit: https://github.com/yanggujun/commonsfornet
+    <description>
+        The library provides extensive collections other than the ones in .NET framework (corefx). For more information about .NET Commons project please visit: https://github.com/yanggujun/commonsfornet.
+        Update on 0.2.2.x
+        1. Implicitly implement some of the ICollection interface on collections.
+        2. Separate Commons.Json into a new package "Commons.Json".
     </description>
     <summary>Atomic Primitives, Hash Functions, Collections</summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>

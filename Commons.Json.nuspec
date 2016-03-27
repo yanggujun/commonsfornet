@@ -8,9 +8,21 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>The libarry provides: 1. A extremely flexible dynamic JSON manipulator. 2. JSON to object and object to JSON mapper with code configuration (without attributes needed, so you can map JSON string with POCOs in third party library.) For more information about .NET Commons project, please visit: https://github.com/yanggujun/commonsfornet
+    <description>
+        The library provides
+        1. Dynamic JSON manipulator: 
+           dynamic jsonObject = JsonMapper.Parse(jsonString);
+           ...
+           Note: The old interface: JsonObject.Parse(...) is obsoleted. 
+        2. JsonMapper
+           var employee = JsonMapper.To(jsonString);
+           ...
+
+           var jsonString = JsonMapper.ToJson(employee);
+           ...
+        For more information about .NET Commons project, please visit: https://github.com/yanggujun/commonsfornet
     </description>
-    <summary>Work with JSON fluently.
+    <summary>Work with JSON fluently and dynamically.
     </summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
     <tags>JSON</tags>
