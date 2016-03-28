@@ -186,4 +186,13 @@ namespace Test.Commons.Json
         Paris,
         London
     }
+
+	public class Company
+	{
+		public string Name { get; set; }
+		public string Country { get; set; }
+		public List<Employee> Employees { get; set; }
+		public int StaffCount { get; set; }
+		public long Revenue { get; set; }
+	}
 }

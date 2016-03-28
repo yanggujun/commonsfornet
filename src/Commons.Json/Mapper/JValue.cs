@@ -14,11 +14,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using Commons.Collections.Map;
 
 namespace Commons.Json.Mapper
 {
@@ -150,17 +147,17 @@ namespace Commons.Json.Mapper
         {
             As(integer);
         }
-		public int AsInt()
+		public int AsInt32()
 		{
 			return Convert.ToInt32(Value);
 		}
 
-		public long AsLong()
+		public long AsInt64()
 		{
 			return Convert.ToInt64(Value);
 		}
 
-		public short AsShort()
+		public short AsInt16()
 		{
 			return Convert.ToInt16(Value);
 		}
@@ -171,19 +168,19 @@ namespace Commons.Json.Mapper
         }
 
         [CLSCompliant(false)]
-		public ulong AsULong()
+		public ulong AsUInt64()
 		{
 			return Convert.ToUInt64(Value);
 		}
 
         [CLSCompliant(false)]
-		public uint AsUInt()
+		public uint AsUInt32()
 		{
 			return Convert.ToUInt32(Value);
 		}
 
         [CLSCompliant(false)]
-		public ushort AsUShort()
+		public ushort AsUInt16()
 		{
 			return Convert.ToUInt16(Value);
 		}
@@ -199,7 +196,7 @@ namespace Commons.Json.Mapper
 			return Convert.ToDouble(Value);
 		}
 
-		public float AsFloat()
+		public float AsSingle()
 		{
 			return Convert.ToSingle(Value);
 		}
@@ -232,7 +229,7 @@ namespace Commons.Json.Mapper
             As(dec);
         }
 
-		public float AsFloat()
+		public float AsSingle()
 		{
 			return Convert.ToSingle(Value);
 		}

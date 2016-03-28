@@ -59,20 +59,31 @@ namespace Commons.Json
             {
                 result = Convert.ToInt64(primitive);
             }
+			else if (binder.Type == typeof (UInt64))
+			{
+				result = Convert.ToUInt64(primitive);
+			}
             else if (binder.Type == typeof (Int32))
             {
                 result = Convert.ToInt32(primitive);
             }
+			else if (binder.Type == typeof (UInt32))
+			{
+				result = Convert.ToUInt32(primitive);
+			}
             else if (binder.Type == typeof (Int16))
             {
                 result = Convert.ToInt16(primitive);
             }
+			else if (binder.Type == typeof (UInt16))
+			{
+				result = Convert.ToUInt16(primitive);
+			}
 			else if (binder.Type == typeof (byte))
 			{
 				result = Convert.ToByte(primitive);
 			}
-			else
-		    if (binder.Type == typeof (sbyte))
+			else if (binder.Type == typeof (sbyte))
 		    {
 			    result = Convert.ToSByte(primitive);
 		    }

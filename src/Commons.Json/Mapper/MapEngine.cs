@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -377,7 +376,7 @@ namespace Commons.Json.Mapper
 				}
 				if (type == typeof (float))
 				{
-					propertyValue = floating.AsFloat();
+					propertyValue = floating.AsSingle();
 				}
 				else if (type == typeof (double))
 				{
@@ -405,11 +404,11 @@ namespace Commons.Json.Mapper
 			object integerObj = null;
 			if (propertyType == typeof (long))
 			{
-				integerObj = integer.AsLong();
+				integerObj = integer.AsInt64();
 			}
 			else if (propertyType == typeof (int))
 			{
-				integerObj = integer.AsInt();
+				integerObj = integer.AsInt32();
 			}
 			else if (propertyType == typeof (byte))
 			{
@@ -421,7 +420,7 @@ namespace Commons.Json.Mapper
 			}
 			else if (propertyType == typeof (short))
 			{
-				integerObj = integer.AsShort();
+				integerObj = integer.AsInt16();
 			}
 			else if (propertyType == typeof (double))
 			{
@@ -429,7 +428,7 @@ namespace Commons.Json.Mapper
 			}
 			else if (propertyType == typeof (float))
 			{
-				integerObj = integer.AsFloat();
+				integerObj = integer.AsSingle();
 			}
 			else if (propertyType == typeof (decimal))
 			{
@@ -437,15 +436,15 @@ namespace Commons.Json.Mapper
 			}
 			else if (propertyType == typeof (ulong))
 			{
-				integerObj = integer.AsULong();
+				integerObj = integer.AsUInt64();
 			}
 			else if (propertyType == typeof (uint))
 			{
-				integerObj = integer.AsUInt();
+				integerObj = integer.AsUInt32();
 			}
 			else if (propertyType == typeof (ushort))
 			{
-				integerObj = integer.AsUShort();
+				integerObj = integer.AsUInt16();
 			}
 
 			return integerObj;

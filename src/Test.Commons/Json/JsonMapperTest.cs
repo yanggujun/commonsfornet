@@ -1287,7 +1287,7 @@ namespace Test.Commons.Json
 		{
 			var json = "20";
 			var parseEngine = new JsonParseEngine();
-			Assert.Equal(20, (parseEngine.Parse(json) as JInteger).AsInt());
+			Assert.Equal(20, (parseEngine.Parse(json) as JInteger).AsInt32());
 		}
 
 		[Fact]
@@ -1353,11 +1353,11 @@ namespace Test.Commons.Json
 			Assert.NotNull(value);
 			var jack = (value[0] as JObject)["Jack"] as JObject;
 			Assert.NotNull(jack);
-			Assert.Equal(27, (jack["age"] as JInteger).AsInt());
+			Assert.Equal(27, (jack["age"] as JInteger).AsInt32());
 			Assert.Equal("usa", jack["country"] as JString);
 			var jon = (value[1] as JObject)["Jon"] as JObject;
 			Assert.NotNull(jon);
-			Assert.Equal(21, (jon["age"] as JInteger).AsInt());
+			Assert.Equal(21, (jon["age"] as JInteger).AsInt32());
 			Assert.Equal("canada", jon["country"] as JString);
 		}
 

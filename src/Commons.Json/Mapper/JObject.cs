@@ -70,7 +70,7 @@ namespace Commons.Json.Mapper
 
         public int GetInt32(string key)
         {
-            return GetInteger(values[key]).AsInt();
+            return GetInteger(values[key]).AsInt32();
         }
 
         public void SetInt32(string key, int integer)
@@ -81,7 +81,7 @@ namespace Commons.Json.Mapper
         [CLSCompliant(false)]
         public uint GetUInt32(string key)
         {
-            return GetInteger(values[key]).AsUInt();
+            return GetInteger(values[key]).AsUInt32();
         }
 
         [CLSCompliant(false)]
@@ -92,7 +92,7 @@ namespace Commons.Json.Mapper
 
         public short GetInt16(string key)
         {
-            return GetInteger(values[key]).AsShort();
+            return GetInteger(values[key]).AsInt16();
         }
 
         public void SetInt16(string key, short integer)
@@ -103,7 +103,7 @@ namespace Commons.Json.Mapper
         [CLSCompliant(false)]
         public ushort GetUInt16(string key)
         {
-            return GetInteger(values[key]).AsUShort();
+            return GetInteger(values[key]).AsUInt16();
         }
 
         [CLSCompliant(false)]
@@ -136,7 +136,7 @@ namespace Commons.Json.Mapper
 
         public long GetInt64(string key)
         {
-            return GetInteger(values[key]).AsLong();
+            return GetInteger(values[key]).AsInt64();
         }
 
         public void SetInt64(string key, long integer)
@@ -146,7 +146,7 @@ namespace Commons.Json.Mapper
 
         public float GetSingle(string key)
         {
-            return GetDecimal(values[key]).AsFloat();
+            return GetDecimal(values[key]).AsSingle();
         }
 
         public void SetSingle(string key, float dec)
@@ -232,6 +232,26 @@ namespace Commons.Json.Mapper
         {
             values[key] = new JBoolean(b);
         }
+
+		public JArray GetArray(string key)
+		{
+			var array = values[key] as JArray;
+			if (array == null)
+			{
+				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+			}
+			return array;
+		}
+
+		public void SetArray(string key, JArray array)
+		{
+			values[key] = array;
+		}
+
+		public bool IsNull(string key)
+		{
+			return (values[key] as JNull) == null;
+		}
 
 		public override string ToString()
 		{
