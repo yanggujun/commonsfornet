@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using Commons.Collections.Set;
 using Commons.Json;
 using Commons.Json.Mapper;
 using Xunit;
@@ -180,5 +181,115 @@ namespace Test.Commons.Json
 				Assert.Equal(i, (short)jsonObj.a14[i]);
 			}
 	    }
+
+        [Fact]
+        public void TestJObject05()
+        {
+            var obj = new JObject();
+            obj["key1"] = JNull.Value;
+            obj.SetBool("key2", false);
+
+            var json = obj.ToString();
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.Null(jsonObj.key1);
+            Assert.False((bool)jsonObj.key2);
+        }
+
+        [Fact]
+        public void TestJArray01()
+        {
+            var json = "[0, 1, 2, 3, 4, 5, 6, \"value1\", true, 10.5386, 2.12453, 4.3]";
+            var engine = new JsonParseEngine();
+            var array = engine.Parse(json) as JArray;
+            var a0 = array[0] as JInteger;
+            Assert.NotNull(a0);
+            Assert.Equal(0, a0.AsByte());
+            var a1 = array[1] as JInteger;
+            Assert.NotNull(a1);
+            Assert.Equal(1, a1.AsSByte());
+            var a2 = array[2] as JInteger;
+            Assert.NotNull(a2);
+            Assert.Equal(2, a2.AsInt16());
+            var a3 = array[3] as JInteger;
+            Assert.NotNull(a3);
+            Assert.Equal(3, a3.AsUInt16());
+            var a4 = array[4] as JInteger;
+            Assert.NotNull(a4);
+            Assert.Equal(4, a4.AsInt32());
+            var a5 = array[5] as JInteger;
+            Assert.NotNull(a5);
+            Assert.Equal((uint)5, a5.AsUInt32());
+            var a6 = array[6] as JInteger;
+            Assert.NotNull(a6);
+            Assert.Equal(6, a6.AsInt64());
+            Assert.Equal("value1", array[7] as JString);
+            Assert.True(array[8] as JBoolean);
+            var a9 = array[9] as JDecimal;
+            Assert.NotNull(a9);
+            Assert.Equal(10.5386, a9.AsDouble());
+            var a10 = array[10] as JDecimal;
+            Assert.NotNull(a10);
+            Assert.Equal(2.12453m, a10.AsDecimal());
+            var a11 = array[11] as JDecimal;
+            Assert.NotNull(a11);
+            Assert.Equal(4.3f, a11.AsSingle());
+        }
+
+        [Fact]
+        public void TestJArray02()
+        {
+            var json = "{\"key1\": [ 0, 1, 2, 3, 4, 5, 6], \"key2\": null}";
+            var engine = new JsonParseEngine();
+            var obj = engine.Parse(json) as JObject;
+            Assert.NotNull(obj);
+            var array = obj.GetArray("key1");
+            for (var i = 0; i < 7; i++)
+            {
+                var integer = array[i] as JInteger;
+                Assert.Equal(i, integer.AsInt32());
+            }
+            var jnull = obj["key2"] as JNull;
+            Assert.NotNull(jnull);
+            Assert.True(ReferenceEquals(jnull, JNull.Value));
+        }
+
+        [Fact]
+        public void TestJString()
+        {
+            var str1 = new JString("jsonstring");
+            var str2 = new JString("jsonstring");
+
+            Assert.True(str1.Equals(str2));
+            var set = new HashedSet<JString>();
+            set.Add(str1);
+            Assert.True(set.Contains(str2));
+        }
+
+        [Fact]
+        public void TestJInteger()
+        {
+            var integer1 = new JInteger(1000);
+            var integer2 = new JInteger(1000);
+            Assert.True(integer1.Equals(integer2));
+            var set = new HashedSet<JInteger>();
+            set.Add(integer1);
+            Assert.True(set.Contains(integer2));
+        }
+
+        [Fact]
+        public void TestJDecimal()
+        {
+            var dec1 = new JDecimal(10.45976m);
+            var dec2 = new JDecimal(10.45976m);
+            Assert.True(dec1.Equals(dec2));
+        }
+
+        [Fact]
+        public void TestJBoolean()
+        {
+            var b1 = new JBoolean(false);
+            var b2 = new JBoolean(false);
+            Assert.True(b1.Equals(b2));
+        }
     }
 }

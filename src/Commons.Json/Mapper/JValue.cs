@@ -111,7 +111,8 @@ namespace Commons.Json.Mapper
 
 		public override bool Equals(object obj)
 		{
-			return Value.Equals(obj);
+            var b = obj as JBoolean;
+            return b != null && Value.Equals(b.Value);
 		}
 
 		public override int GetHashCode()
@@ -213,7 +214,8 @@ namespace Commons.Json.Mapper
 
 		public override bool Equals(object obj)
 		{
-			return Value.Equals(obj);
+            var integer = obj as JInteger;
+            return integer != null && Value.Equals(integer.Value);
 		}
 
 		public override int GetHashCode()
@@ -251,7 +253,8 @@ namespace Commons.Json.Mapper
 
 		public override bool Equals(object obj)
 		{
-			return Value.Equals(obj);
+            var dec = obj as JDecimal;
+            return dec != null && Value.Equals(dec.Value);
 		}
 
 		public override int GetHashCode()

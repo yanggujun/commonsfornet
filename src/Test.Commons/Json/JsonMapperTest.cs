@@ -319,6 +319,22 @@ namespace Test.Commons.Json
 			Assert.Equal(5, number);
 		}
 
+        [Fact]
+        public void TestMapJsonToObject211()
+        {
+            var json = "10";
+            var number = JsonMapper.To<byte>(json);
+            Assert.Equal(10, number);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject212()
+        {
+            var json = "10";
+            var number = JsonMapper.To<sbyte>(json);
+            Assert.Equal(10, number);
+        }
+
 		[Fact]
 		public void TestMapJsonToObject22()
 		{
