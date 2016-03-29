@@ -17,6 +17,7 @@
 using System;
 using Commons.Collections.Map;
 using Commons.Json.Mapper;
+using Commons.Utils;
 
 namespace Commons.Json
 {
@@ -55,6 +56,38 @@ namespace Commons.Json
 		{
 			return JsonParser.Parse(json);
 		}
+
+        public static T ConvertTo<T>(Transformer<JValue, T> transform, string json)
+        {
+            Guarder.CheckNull(transform, "transform");
+            var engine = new JsonParseEngine();
+            var value = engine.Parse(json);
+            return transform(value);
+        }
+
+        public static T ConvertTo<T>(IJsonConverter<T> converter, string json)
+        {
+            Guarder.CheckNull(converter, "converter");
+            var engine = new JsonParseEngine();
+            var value = engine.Parse(json);
+            return converter.Convert(value);
+        }
+
+        public static string Convert<T>(Transformer<T, JValue> transform, T target)
+        {
+            Guarder.CheckNull(transform, "transform");
+            Guarder.CheckNull(target, "target");
+            var value = transform(target);
+            return value.ToString();
+        }
+
+        public static string Convert<T>(IJsonConverter<T> converter, T target)
+        {
+            Guarder.CheckNull(converter, "converter");
+            Guarder.CheckNull(target, "target");
+            var value = converter.ToJson(target);
+            return value.ToString();
+        }
 
 		private static MapContext GetContext(string contextName)
 		{
