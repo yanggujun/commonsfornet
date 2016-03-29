@@ -28,7 +28,6 @@ namespace Commons.Json.Mapper
 
 		public int GetHashCode(string obj)
 		{
-			// no one use.
 			return obj.ToLowerInvariant().GetHashCode();
 		}
 	}

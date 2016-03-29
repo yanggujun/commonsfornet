@@ -253,6 +253,24 @@ namespace Test.Commons.Json
             Assert.True(ReferenceEquals(jnull, JNull.Value));
         }
 
+		[Fact]
+	    public void TestJArray03()
+		{
+			var json = "[\"value1\", \"value2\", \"value3\", \"value4\", true, 4, 2.5]";
+			var engine = new JsonParseEngine();
+			var array = engine.Parse(json) as JArray;
+			Assert.NotNull(array);
+			var str = "value";
+			for (var i = 0; i < 4; i++)
+			{
+				Assert.Equal(str + (i + 1), (JString)array[i]);
+				
+			}
+			Assert.True((JBoolean)array[4]);
+			Assert.Equal(4, ((JInteger)array[5]).AsInt32());
+			Assert.Equal(2.5, ((JDecimal)array[6]).AsDouble());
+		}
+
         [Fact]
         public void TestJString()
         {
