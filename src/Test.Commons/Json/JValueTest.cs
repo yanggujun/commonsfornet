@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Commons.Collections.Set;
 using Commons.Json;
 using Commons.Json.Mapper;
@@ -309,5 +310,168 @@ namespace Test.Commons.Json
             var b2 = new JBoolean(false);
             Assert.True(b1.Equals(b2));
         }
+
+		[Fact]
+	    public void TestJsonConverter01()
+		{
+			var json =
+				"{\"Name\": \"Ben\", \"Position\": \"Director\", \"Married\": True, \"Dob\": \"1970/4/3\", \"Department\": \"Sales\", \"Age\": 46, \"Site\": \"NY\"}";
+			var employee = JsonMapper.ConvertTo<Employee>(json, new EmployeeJsonConverter());
+			Assert.Equal(46, employee.Age);
+			Assert.Equal("Sales", employee.Department);
+			Assert.Equal(1970, employee.Dob.Year);
+			Assert.Equal(4, employee.Dob.Month);
+			Assert.Equal(3, employee.Dob.Day);
+			Assert.Equal("Ben", employee.Name);
+			Assert.Equal("Director", employee.Position);
+			Assert.True(employee.Married);
+		}
+
+		[Fact]
+	    public void TestJsonConverter02()
+	    {
+			var jsonStr =
+				"{\"Name\": \"Ben\", \"Position\": \"Director\", \"Married\": True, \"Dob\": \"1970/4/3\", \"Department\": \"Sales\", \"Age\": 46, \"Site\": \"NY\"}";
+		    var employee = JsonMapper.ConvertTo<Employee>(jsonStr, x =>
+		    {
+				var json = x as JObject;
+				var emp = new Employee();
+				emp.Age = json.GetInt32("age");
+				emp.Department = json.GetString("Department");
+				emp.Dob = DateTime.Parse(json.GetString("dob"));
+				emp.Married = json.GetBool("Married");
+				emp.Name = json.GetString("name");
+				emp.Position = json.GetString("Position");
+				emp.Site = json.GetEnum<Site>("site");
+				return emp;
+		    });
+			Assert.Equal(46, employee.Age);
+			Assert.Equal("Sales", employee.Department);
+			Assert.Equal(1970, employee.Dob.Year);
+			Assert.Equal(4, employee.Dob.Month);
+			Assert.Equal(3, employee.Dob.Day);
+			Assert.Equal("Ben", employee.Name);
+			Assert.Equal("Director", employee.Position);
+			Assert.True(employee.Married);
+	    }
+
+		[Fact]
+	    public void TestJsonConverter03()
+		{
+			var json = "[\"value1\", \"value2\", \"value3\", \"value4\"]";
+			var collection = JsonMapper.ConvertTo(json, value =>
+			{
+				var set = new HashedSet<string>();
+				var array = value as JArray;
+				foreach (var item in array)
+				{
+					set.Add(item as JString);
+				}
+				return set;
+			});
+
+			collection.Contains("value1");
+			collection.Contains("value2");
+			collection.Contains("value3");
+			collection.Contains("value4");
+		}
+
+		[Fact]
+	    public void TestObjectConverter01()
+	    {
+		    var employee = new Employee
+		    {
+			    Age = 46,
+			    Department = "Sales",
+			    Dob = new DateTime(1970, 4, 3),
+			    Married = true,
+			    Name = "Ben",
+			    Position = "Director",
+			    Site = Site.NY
+		    };
+		    var json = JsonMapper.ConvertToJson(employee, new EmployeeObjectConverter());
+		    var jsonObj = JsonMapper.Parse(json);
+		    Assert.Equal("Ben", (string) jsonObj.Name);
+			Assert.Equal("Sales", (string) jsonObj.Department);
+			Assert.Equal("Director", (string) jsonObj.Position);
+			Assert.Equal(46, (int) jsonObj.Age);
+			Assert.Equal("NY", (string)jsonObj.Site);
+			Assert.True((bool)jsonObj.Married);
+		    var dob = DateTime.Parse((string) jsonObj.Dob);
+			Assert.Equal(1970, dob.Year);
+			Assert.Equal(4, dob.Month);
+			Assert.Equal(3, dob.Day);
+	    }
+
+		[Fact]
+	    public void TestObjectConverter02()
+	    {
+		    var employee = new Employee
+		    {
+			    Age = 46,
+			    Department = "Sales",
+			    Dob = new DateTime(1970, 4, 3),
+			    Married = true,
+			    Name = "Ben",
+			    Position = "Director",
+			    Site = Site.NY
+		    };
+		    var json = JsonMapper.ConvertToJson(employee, emp =>
+		    {
+				var obj = new JObject();
+				obj.SetString("Name", emp.Name);
+				obj.SetString("Position", emp.Position);
+				obj.SetString("Department", emp.Department);
+				obj.SetString("Site", emp.Site.ToString());
+				obj.SetInt32("Age", emp.Age);
+				obj.SetBool("Married", emp.Married);
+				obj.SetString("Dob",emp.Dob.ToString());
+				return obj;
+		    });
+		    var jsonObj = JsonMapper.Parse(json);
+		    Assert.Equal("Ben", (string) jsonObj.Name);
+			Assert.Equal("Sales", (string) jsonObj.Department);
+			Assert.Equal("Director", (string) jsonObj.Position);
+			Assert.Equal(46, (int) jsonObj.Age);
+			Assert.Equal("NY", (string)jsonObj.Site);
+			Assert.True((bool)jsonObj.Married);
+		    var dob = DateTime.Parse((string) jsonObj.Dob);
+			Assert.Equal(1970, dob.Year);
+			Assert.Equal(4, dob.Month);
+			Assert.Equal(3, dob.Day);
+	    }
     }
+
+	public class EmployeeObjectConverter : IObjectConverter<Employee>
+	{
+		public JValue Convert(Employee target)
+		{
+			var obj = new JObject();
+			obj.SetString("Name", target.Name);
+			obj.SetString("Position", target.Position);
+			obj.SetString("Department", target.Department);
+			obj.SetString("Site", target.Site.ToString());
+			obj.SetInt32("Age", target.Age);
+			obj.SetBool("Married", target.Married);
+			obj.SetString("Dob", target.Dob.ToString());
+			return obj;
+		}
+	}
+
+	public class EmployeeJsonConverter : IJsonConverter<Employee>
+	{
+		public Employee Convert(JValue jsonValue)
+		{
+			var json = jsonValue as JObject;
+			var employee = new Employee();
+			employee.Age = json.GetInt32("age");
+			employee.Department = json.GetString("Department");
+			employee.Dob = DateTime.Parse(json.GetString("dob"));
+			employee.Married = json.GetBool("Married");
+			employee.Name = json.GetString("name");
+			employee.Position = json.GetString("Position");
+			employee.Site = json.GetEnum<Site>("site");
+			return employee;
+		}
+	}
 }

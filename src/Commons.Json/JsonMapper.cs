@@ -57,7 +57,7 @@ namespace Commons.Json
 			return JsonParser.Parse(json);
 		}
 
-        public static T ConvertTo<T>(Transformer<JValue, T> transform, string json)
+		public static T ConvertTo<T>(string json, Transformer<JValue, T> transform)
         {
             Guarder.CheckNull(transform, "transform");
             var engine = new JsonParseEngine();
@@ -65,7 +65,7 @@ namespace Commons.Json
             return transform(value);
         }
 
-        public static T ConvertTo<T>(IJsonConverter<T> converter, string json)
+        public static T ConvertTo<T>(string json, IJsonConverter<T> converter)
         {
             Guarder.CheckNull(converter, "converter");
             var engine = new JsonParseEngine();
@@ -73,7 +73,7 @@ namespace Commons.Json
             return converter.Convert(value);
         }
 
-        public static string Convert<T>(Transformer<T, JValue> transform, T target)
+        public static string ConvertToJson<T>(T target, Transformer<T, JValue> transform)
         {
             Guarder.CheckNull(transform, "transform");
             Guarder.CheckNull(target, "target");
@@ -81,11 +81,11 @@ namespace Commons.Json
             return value.ToString();
         }
 
-        public static string Convert<T>(IJsonConverter<T> converter, T target)
+        public static string ConvertToJson<T>(T target, IObjectConverter<T> converter)
         {
             Guarder.CheckNull(converter, "converter");
             Guarder.CheckNull(target, "target");
-            var value = converter.ToJson(target);
+            var value = converter.Convert(target);
             return value.ToString();
         }
 
