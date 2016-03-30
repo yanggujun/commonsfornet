@@ -8,7 +8,15 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>The library provides: 1. A generic object pool. 2. A pool manager manages the object pools in the application. For more information about .NET Commons project, please visit: https://github.com/yanggujun/commonsfornet    </description>
+    <description>
+        The library provides: 
+
+        1. A generic object pool. 
+
+        2. A pool manager manages the object pools in the application. 
+
+        For more information about .NET Commons project, please visit: https://github.com/yanggujun/commonsfornet    
+    </description>
     <summary>A lightweight and thread safe generic object pool.
     </summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>

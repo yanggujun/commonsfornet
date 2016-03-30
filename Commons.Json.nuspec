@@ -14,11 +14,15 @@
            dynamic jsonObject = JsonMapper.Parse(jsonString);
            ...
            Note: The old interface: JsonObject.Parse(...) is obsoleted. 
-        2. JsonMapper
-           var employee = JsonMapper.To(jsonString);
+
+        2. JsonMapper, enables to map JSON string to objects fluently and vice versa.
+           var employee = JsonMapper.To&lt;Employee&gt;(jsonString);
+
+           // use employee...
            ...
 
            var jsonString = JsonMapper.ToJson(employee);
+           // manipulate JSON...
            ...
         For more information about .NET Commons project, please visit: https://github.com/yanggujun/commonsfornet
     </description>
