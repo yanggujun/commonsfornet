@@ -22,7 +22,7 @@
     </description>
     <summary>Atomic Primitives, Hash Functions, Collections</summary>
     <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
-    <tags>Atomics Hashes Collections JSON</tags>
+    <tags>Atomics Hashes Collections</tags>
   </metadata>
   <files>
       <file src="src\bin\NET45\Commons.Utils.dll" target="lib\net45\" />
