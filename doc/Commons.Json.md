@@ -2,7 +2,7 @@
 
 A lightweight library for JSON manipulation.
 
-  *Map the class to a JSON string
+  __Map the class to a JSON string__
 
   ```csharp
     public class Person
@@ -23,27 +23,27 @@ A lightweight library for JSON manipulation.
     var json = JsonMapper.ToJson(person); // {"Name":"Joe","Age":25,"Nationality":"US","Gender":"Male"}
   ```
   
-  *Map a JSON string to a .NET object
+  __Map a JSON string to a .NET object__
 
   ```csharp
     // json = {"Name":"Joe","Age":25, "Nationality":"US","Gender":"Male"}
     var person = JsonMapper.To<Person>(json);
   ```
 
-  *The mapper ignores the case
+  __The mapper ignores the case__
   ```csharp
     // json = {"name":"Joe","AGE":25, "nationality":"US","gender":"Male"}
     var person = JsonMapper.To<Person>(json); // still get the same object with the person object defined priviously
   ```
 
-  *Map a JSON array to list. Note: only List<T> and T[] are supported for now.
+  __Map a JSON array to list. Note: only List<T> and T[] are supported for now.__
 
   ```csharp
     // json = [{"Name":"Joe","Age":25, "Nationality":"US","Gender":"Male"}, {"Name":"John", "Age":27, "Nationality":"FR", "Gender":"Male"}, {"Name":"Jane","Age":23, "Nationality":"EN","Gender":"Female"}]
     var list = JsonMapper.To<List<Person>>(json);
   ```
 
-  *Map a collection to JSON array. You can map most of collection into a JSON array or a JSON object (for dictionary<string, string>)
+  __Map a collection to JSON array. You can map most of collection into a JSON array or a JSON object (for dictionary<string, string>)__
 
   ```csharp
     var jane = new Person{...};
@@ -53,7 +53,7 @@ A lightweight library for JSON manipulation.
     var json = JsonMapper.ToJson(list);
   ```
 
-  *Map JSON primitives to .NET primtives and string
+  __Map JSON primitives to .NET primtives and string__
 
   ```csharp
     // json = 5
@@ -74,9 +74,9 @@ A lightweight library for JSON manipulation.
     var b = JsonMapper.To<bool>(json); // b = true
   ```
 
-  *Map .NET primitives and string to JSON
+  __Map .NET primitives and string to JSON__
 
-  *Map an enum
+  __Map an enum__
 
   ```csharp
 	public enum Major
@@ -98,20 +98,22 @@ A lightweight library for JSON manipulation.
     var json = JsonMapper.ToJson(Major.Physics); // json = "Physics"
   ```
 
-  *Combine those things together...
+  __Combine those things together...__
 
-  *Only property with public getters are mapped from object to JSON
+  __Only property with public getters are mapped from object to JSON__
 
-  *Only property with public setters are mapped from JSON to object
+  __Only property with public setters are mapped from JSON to object__
 
-  *When no corresponding property is found on the object, it is ignored.
+  __When no corresponding property is found on the object, it is ignored.__
 
-  *You can tell the mapper to map an object property into a JSON key
+  __You can tell the mapper to map an object property into a JSON key__
 
-  *And not to map the property
+  __And not to map the property__
 
-  *Use a specific date time format
+  __Use a specific date time format__
 
-  *And use the default date time format
+  __And use the default date time format__
 
-  *Write your own JSON-Object converter
+  __Write your own JSON-Object converter__
+
+  __Work with dynamic JSON object, array and primitives__
