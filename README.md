@@ -2,7 +2,19 @@
 
 ###About
 
-.NET Commons is originally inspired by the "apache commons project" for java applications. It is intended to provide the common components and basic application facilities for .NET applications.
+Welcome to .NET Commons home.
+
+.NET Commons is originally inspired by the "Apache Commons Project" for java applications. It is intended to provide the common components, basic facilities and low level infrastructure for .NET applications.
+
+Currently .NET Commons consist of four major components:
+
+  * Commons.Utils
+
+  * Commons.Collections
+
+  * Commons.Json
+
+  * Commons.Pool
 
 ###License
 
@@ -158,7 +170,7 @@ Initial release for .NET Commons Library. Support .NET framework 4.0 and 4.5.
 
 ####Commons.Pool
 
-  * A light weight generic object pool.
+  * A light weight and thread safe generic object pool.
   
   ```csharp
       // When initializing the IOC container...

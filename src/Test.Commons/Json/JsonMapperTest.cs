@@ -505,6 +505,14 @@ namespace Test.Commons.Json
 			Assert.Throws(typeof (ArgumentException), () => JsonMapper.To<PrimitiveList>(json));
 		}
 
+		[Fact]
+		public void TestMapJsonToObject41()
+		{
+			var json = "\"Art\"";
+			var major = JsonMapper.To<Major>(json);
+			Assert.Equal(Major.Art, major);
+		}
+
         [Fact]
         public void TestMapObjectToJson01()
         {
@@ -903,6 +911,13 @@ namespace Test.Commons.Json
 				Assert.Equal(i + ((double)i)/10, simple.FieldC);
 				Assert.Equal(i % 2 == 0, simple.FieldD);
 			}
+		}
+
+		[Fact]
+		public void TestMapObjectToJson29()
+		{
+			var json = JsonMapper.ToJson(Major.Physics);
+			Assert.Equal("\"Physics\"", json);
 		}
 
         [Fact]
