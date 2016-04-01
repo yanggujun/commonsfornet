@@ -53,7 +53,8 @@ namespace Commons.Json.Mapper
 			var jsonValue = parseEngine.Parse(json);
 
 			T target = default(T);
-			if (!typeof (T).IsJsonPrimitive())
+			var targetType = typeof (T);
+			if (!targetType.IsJsonPrimitive() && !targetType.IsArray)
 			{
 				target = Types.Instantiate<T>(Mappers);
 			}

@@ -95,7 +95,7 @@ namespace Commons.Json
 			{
 				if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof (IList<>))
 				{
-					itemType = type.GetGenericArguments()[0];
+					itemType = interfaceType.GetGenericArguments()[0];
 					isList = true;
 					break;
 				}

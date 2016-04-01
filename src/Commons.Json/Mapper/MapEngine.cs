@@ -56,14 +56,37 @@ namespace Commons.Json.Mapper
                 return null;
 			}
 
-			Populate(obj, jsonValue);
+	        if (type.IsArray)
+	        {
+		        JArray array;
+		        if (!jsonValue.Is<JArray>(out array))
+		        {
+			        throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+		        }
+		        return ExtractJsonArray(array, type);
+	        }
 
-            return obj;
+		    Populate(obj, jsonValue);
+
+	        return obj;
 		}
 
 		public string Map(T target)
 		{
             return Jsonize(target);
+		}
+
+		private object ExtractJsonArray(JArray jsonArray, Type arrayType)
+		{
+			var itemType = arrayType.GetElementType();
+			var array = Array.CreateInstance(itemType, jsonArray.Length);
+			for (var i = 0; i < jsonArray.Length; i++)
+			{
+				var jsonValue = GetValueFromJsonArrayItem(jsonArray[i], itemType);
+				array.SetValue(jsonValue, i);
+			}
+
+			return array;
 		}
 
         private string Jsonize(object target)
@@ -232,6 +255,15 @@ namespace Commons.Json.Mapper
 			{
 				return ExtractPrimitiveValue(jsonValue, itemType);
 			}
+			else if (itemType.IsArray)
+			{
+				JArray array;
+				if (!jsonValue.Is<JArray>(out array))
+				{
+					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+				}
+				return ExtractJsonArray(array, itemType);
+			}
 			else
 			{
 				var itemValue = typeCache.Instantiate(itemType, mappers);
@@ -289,6 +321,16 @@ namespace Commons.Json.Mapper
                         {
                             PopulateJsonPrimitive(target, jsonObj, prop, mapper);
                         }
+						else if (propertyType.IsArray)
+						{
+							JArray array;
+							if (!jsonObj[key].Is<JArray>(out array))
+							{
+								throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+							}
+							var value = ExtractJsonArray(array, propertyType);
+							prop.SetValue(target, value, null);
+						}
                         else
                         {
                             var propValue = prop.GetValue(target, null);

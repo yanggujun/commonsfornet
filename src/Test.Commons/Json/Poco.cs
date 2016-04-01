@@ -195,4 +195,22 @@ namespace Test.Commons.Json
 		public int StaffCount { get; set; }
 		public long Revenue { get; set; }
 	}
+
+	public class IntArray
+	{
+		public string Name { get; set; }
+		public int[] Array { get; set; }
+	}
+
+	public class PersonArray
+	{
+		public string Name { get; set; }
+		public string[] Children { get; set; }
+	}
+
+	public class MatrixArray
+	{
+		public string Name { get; set; }
+		public int[][] Matrix { get; set; }
+	}
 }

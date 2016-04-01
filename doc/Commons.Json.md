@@ -1,8 +1,8 @@
 ###Commons.Json
 
-A lightweight library for JSON manipulation.
+A lightweight library to map between .NET objects and JSON fluently and dynamically.
 
-  __Map the class to a JSON string__
+  __Map the object to a JSON string__
 
   ```csharp
     public class Person
@@ -26,24 +26,36 @@ A lightweight library for JSON manipulation.
   __Map a JSON string to a .NET object__
 
   ```csharp
-    // json = {"Name":"Joe","Age":25, "Nationality":"US","Gender":"Male"}
+    // json string: {"Name":"Joe","Age":25, "Nationality":"US","Gender":"Male"}
     var person = JsonMapper.To<Person>(json);
   ```
 
   __The mapper ignores the case__
   ```csharp
-    // json = {"name":"Joe","AGE":25, "nationality":"US","gender":"Male"}
+    // json string: {"name":"Joe","AGE":25, "nationality":"US","gender":"Male"}
     var person = JsonMapper.To<Person>(json); // still get the same object with the person object defined priviously
   ```
 
-  __Map a JSON array to list. Note: only List<T> and T[] are supported for now.__
+  __Map a JSON array to list__
 
   ```csharp
-    // json = [{"Name":"Joe","Age":25, "Nationality":"US","Gender":"Male"}, {"Name":"John", "Age":27, "Nationality":"FR", "Gender":"Male"}, {"Name":"Jane","Age":23, "Nationality":"EN","Gender":"Female"}]
+    // json string: [{"Name":"Joe","Age":25, "Nationality":"US","Gender":"Male"}, {"Name":"John", "Age":27, "Nationality":"FR", "Gender":"Male"}, {"Name":"Jane","Age":23, "Nationality":"EN","Gender":"Female"}]
     var list = JsonMapper.To<List<Person>>(json);
   ```
 
-  __Map a collection to JSON array. You can map most of collection into a JSON array or a JSON object (for dictionary<string, string>)__
+  Note: only List<T> and T[] are supported for now.
+
+  __Map a JSON array to .NET array__
+
+  ```csharp
+    // json string : [0, 1, 3, 4, 5, 6]
+    var array = JsonMapper.To<int[]>(json); // get an int array with value [0, 1, 2, 3, 4, 5, 6]
+
+    // json string :[[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+    var matrix = JsonMapper.To<int[][]>(json); // get an int matrix object.
+  ```
+
+  __Map a collection to JSON array. You can map most of collection into a JSON array or a JSON object (for dictionary<string, T>)__
 
   ```csharp
     var jane = new Person{...};
@@ -56,25 +68,36 @@ A lightweight library for JSON manipulation.
   __Map JSON primitives to .NET primtives and string__
 
   ```csharp
-    // json = 5
+    // json string: 5
     var number = JsonMapper.To<int>(json); // number = 5
 
     var anotherNumber = JsonMapper.To<long>(json); // anotherNumber = 5
 
-    // json = 5.6
+    // json string: 5.6
     var floatingNumber = JsonMapper.To<double>(json); // floatingNumber = 5.6
 
-    // note: this will fail when json = 5.6
+    // note: this will fail when json string is 5.6
     var wrongNumber = JsonMapper.To<int>(json);
 
-    // json = "a plain string"
-    var str = JsonMapper.To<string>(json); // str = "a plain string"
+    // json string: "a plain string"
+    var str = JsonMapper.To<string>(json); // str : "a plain string"
 
     // json = true
-    var b = JsonMapper.To<bool>(json); // b = true
+    var b = JsonMapper.To<bool>(json); // b : true
   ```
 
   __Map .NET primitives and string to JSON__
+
+  ```csharp
+    var number = 100;
+    var json = JsonMapper.ToJson(number); // json string: 100
+
+    var floatingNumbe = 5.1274;
+    var json = JsonMapper.ToJson(floatingNumber); // json string: 5.1274
+
+    var str = "the demo string";
+    var json = JsonMapper.ToJson(str); // json string: "the demo string"
+  ```
 
   __Map an enum__
 
@@ -91,7 +114,7 @@ A lightweight library for JSON manipulation.
 
     //...
 
-    // json = "Art"
+    // json string: "Art"
     var major = JsonMapper.To<Major>(json); // major = Major.Art
 
     // Map the enum to JSON
@@ -106,13 +129,15 @@ A lightweight library for JSON manipulation.
 
   __When no corresponding property is found on the object, it is ignored.__
 
-  __You can tell the mapper to map an object property into a JSON key__
+  __You can tell the mapper to map an object property into a different name__ 
 
   __And not to map the property__
 
   __Use a specific date time format__
 
   __And use the default date time format__
+
+  Now the date time format is univernal. In case you need to switch the date time format for some objects.
 
   __Write your own JSON-Object converter__
 

@@ -513,6 +513,71 @@ namespace Test.Commons.Json
 			Assert.Equal(Major.Art, major);
 		}
 
+		[Fact]
+		public void TestMapJsonToObject42()
+		{
+			var json = "[0, 1, 2, 3, 4, 5, 6]";
+			var array = JsonMapper.To<int[]>(json);
+			for (var i = 0; i < 7; i++)
+			{
+				Assert.Equal(i, array[i]);
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject43()
+		{
+			var json = "{\"Name\":\"Ken\", \"Array\":[0, 1, 2, 3, 4, 5, 6]}";
+			var obj = JsonMapper.To<IntArray>(json);
+			Assert.Equal("Ken", obj.Name);
+			Assert.NotNull(obj.Array);
+			for (var i = 0; i < 7; i++)
+			{
+				Assert.Equal(i, obj.Array[i]);
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject44()
+		{
+			var json = "[[0, 1, 2], [3, 4, 5], [6, 7, 8]]";
+			var matrix = JsonMapper.To<int[][]>(json);
+			Assert.NotNull(matrix);
+			for (var i = 0; i < 3; i++)
+			{
+				Assert.Equal(i, matrix[0][i]);
+				Assert.Equal(i + 3, matrix[1][i]);
+				Assert.Equal(i + 6, matrix[2][i]);
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject45()
+		{
+			var json = "{\"Name\":\"Sean\", \"Children\": [\"Lynn\", \"Daisy\", \"John\"]}";
+			var sean = JsonMapper.To<PersonArray>(json);
+			Assert.Equal("Sean", sean.Name);
+			Assert.NotNull(sean.Children);
+			Assert.Equal("Lynn", sean.Children[0]);
+			Assert.Equal("Daisy", sean.Children[1]);
+			Assert.Equal("John", sean.Children[2]);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject46()
+		{
+			var json = "{\"Name\":\"Alan\", \"Matrix\": [[0, 1, 2], [3, 4, 5], [6, 7, 8]]}";
+			var alan = JsonMapper.To<MatrixArray>(json);
+			Assert.Equal("Alan", alan.Name);
+			Assert.NotNull(alan.Matrix);
+			for (var i = 0; i < 3; i++)
+			{
+				Assert.Equal(i, alan.Matrix[0][i]);
+				Assert.Equal(i + 3, alan.Matrix[1][i]);
+				Assert.Equal(i + 6, alan.Matrix[2][i]);
+			}
+		}
+
         [Fact]
         public void TestMapObjectToJson01()
         {

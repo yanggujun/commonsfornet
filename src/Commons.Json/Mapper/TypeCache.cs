@@ -46,7 +46,7 @@ namespace Commons.Json.Mapper
             }
             else
             {
-                value = Activator.CreateInstance(type);
+		        value = Activator.CreateInstance(type);
             }
 
             return value;
@@ -85,7 +85,7 @@ namespace Commons.Json.Mapper
 		    foreach (var prop in properties)
 		    {
 			    var propType = prop.PropertyType;
-			    if (!propType.IsJsonPrimitive() && propType.Deserializable())
+			    if (!propType.IsJsonPrimitive() && propType.Deserializable() && !propType.IsArray)
 			    {
 				    if (propType.IsList())
 				    {
