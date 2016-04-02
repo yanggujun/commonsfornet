@@ -986,6 +986,31 @@ namespace Test.Commons.Json
 		}
 
         [Fact]
+        public void TestMapObjectToJson30()
+        {
+            var company = new Company
+            {
+                Country = "EN",
+                Revenue = 1000000,
+                StaffCount = 1000
+            };
+
+            JsonMapper.For<Company>().MapProperty(x => x.StaffCount).With("Staff Count");
+
+            var json = JsonMapper.ToJson(company);
+            var jsonObject = JsonMapper.Parse(json);
+            Assert.Null(jsonObject.Employees);
+            Assert.Null(jsonObject.Name);
+
+            var newCompany = JsonMapper.To<Company>(json);
+            Assert.Null(newCompany.Name);
+            Assert.Equal(0, newCompany.Employees.Count);
+            Assert.Equal("EN", newCompany.Country);
+            Assert.Equal(1000000, newCompany.Revenue);
+            Assert.Equal(1000, newCompany.StaffCount);
+        }
+
+        [Fact]
         public void TestMapProperty01()
         {
 	        JsonMapper.For<ToySet>().MapProperty(x => x.Name).With("ToyName")

@@ -38,7 +38,7 @@ namespace Commons.Pool
     public class PoolManager : IPoolManager
     {
         private ConcurrentBag<IDisposable> genericPools = new ConcurrentBag<IDisposable>();
-        private ConcurrentListBasedMap<string, object> keyedPools = new ConcurrentListBasedMap<string, object>();
+        private ConcurrentDictionary<string, object> keyedPools = new ConcurrentDictionary<string, object>();
 
         public void Destroy(string key)
         {
@@ -50,7 +50,7 @@ namespace Commons.Pool
             object poolObj;
             if (keyedPools.TryGetValue(key, out poolObj))
             {
-                if (keyedPools.TryRemove(key))
+                if (keyedPools.TryRemove(key, out poolObj))
                 {
                     // if remove does not succeed, it could be removed by another thread.
                     ((IDisposable) poolObj).Dispose();
