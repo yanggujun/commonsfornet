@@ -656,5 +656,27 @@ namespace Test.Commons.Json
             var json8 = TestHelper.ReadFrom(@".\Json\JsonSample8.txt");
             Assert.DoesNotThrow(() => JsonMapper.Parse(json8));
         }
+
+		[Fact]
+	    public void TestSample01()
+	    {
+			var json  = "[{\"Name\":\"A Clash of Kings\", \"Series\":\"A Song of Ice and Fire\", \"Author\": \"G.R.R.Martin\", \"Language\": \"English\"}, {\"Name\":\"A Storm of Swords\", \"Series\":\"A Song of Ice and Fire\", \"Author\": \"G.R.R.Martin\", \"Language\": \"English\"}]";
+			var novels = JsonMapper.Parse(json);
+			string clash = novels[0].Name;
+			Assert.Equal("A Clash of Kings", clash);
+			string storm = novels[1].Name;
+			Assert.Equal("A Storm of Swords", storm);
+	    }
+
+		[Fact]
+	    public void TestSmaple02()
+		{
+			var json =
+				"{\"Name\":\"A Clash of Kings\", \"Series\":\"A Song of Ice and Fire\", \"Author\": \"G.R.R.Martin\", \"Language\": \"English\"}";
+
+			var novel = JsonMapper.Parse(json);
+			string name = novel.Name;
+			Assert.Equal("A Clash of Kings", name);
+		}
     }
 }
