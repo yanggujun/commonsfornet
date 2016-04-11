@@ -15,16 +15,11 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Commons.Json.Mapper
 {
     //TODO: Dictionary key map
-	[CLSCompliant(true)]
 	public interface IJsonObjectMapper<T> : IPropertyMapper<T>, IJsonKeyMapper<T>, INotMapper<T>, IFormatMapper
 	{
 		IJsonObjectMapper<T> ConstructWith(Func<T> creator);
@@ -42,10 +37,12 @@ namespace Commons.Json.Mapper
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, bool>> propertyExp);
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, long>> propertyExp);
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, byte>> propertyExp);
+#pragma warning disable 3001
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, sbyte>> propertyExp);
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, uint>> propertyExp);
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, ulong>> propertyExp);
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, ushort>> propertyExp);
+#pragma warning restore 3001
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, decimal>> propertyExp);
 		IJsonKeyMapper<T> MapProperty(Expression<Func<T, char>> propertyExp);
 		IJsonKeyMapper<T> MapProperty(Expression<Func<T, DateTime>> propertyExp);
@@ -65,10 +62,5 @@ namespace Commons.Json.Mapper
 	{
 		IFormatMapper UseDateFormat(string format);
 		//IFormatMapper UseCulture(CultureInfo culture);
-	}
-
-	public interface IJsonArrayMapper<T>
-	{
-		//IJsonObjectMapper<T> MapCollection(Func<List<T>, IEnumerable<T>> converter);
 	}
 }

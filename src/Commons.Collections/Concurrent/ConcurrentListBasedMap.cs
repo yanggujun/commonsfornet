@@ -28,7 +28,7 @@ namespace Commons.Collections.Concurrent
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    [CLSCompliant(true)]
+    //[CLSCompliant(true)]
     internal class ConcurrentListBasedMap<K, V> : IEnumerable<KeyValuePair<K, V>>, IEnumerable
     {
         private LockableNode head;

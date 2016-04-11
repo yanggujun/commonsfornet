@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Commons.Pool</id>
-    <version>0.2.1.354</version>
+    <version>0.2.2.421</version>
     <authors>yanggujun</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -23,7 +23,7 @@
     <releaseNotes>Minor fix on the underlying concurrent data strcuture used in the pool</releaseNotes>
     <tags>Object Pool</tags>
     <dependencies>
-        <dependency id="Commons" version="0.2.1.354"/>
+        <dependency id="Commons" version="0.2.2.421"/>
     </dependencies>
   </metadata>
   <files>
