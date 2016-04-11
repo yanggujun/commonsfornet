@@ -1,5 +1,6 @@
 set PATH=%PATH%;.\src\.nuget
 call "%VS120COMNTOOLS%\vsvars32.bat"
+call "%VS140COMNTOOLS%\vsvars32.bat"
 call rmdir /S /Q ".\src\bin"
 
 call msbuild src\Commons.sln /t:Rebuild /p:Configuration=Release;Platform="Any CPU";Framework=NET45
