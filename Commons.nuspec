@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-        The library provides extensive collections as the complemnt of the ones in .NET framework (corefx). 
+        The library provides extensive collections as the complemnt of the ones in .NET framework
 
         Update on 0.2.2.x
         1. Implicitly implement some of the ICollection&lt;T&gt; interfaces on collections.
@@ -18,10 +18,11 @@
 
         3. Correct an issue in map and set for how to get hash code.
 
-        For more information about .NET Commons project please visit: https://github.com/yanggujun/commonsfornet.
+        For more information about .NET Commons project 
+        please visit: https://github.com/yanggujun/commonsfornet/wiki/Commons.Collections.
     </description>
     <summary>Atomic Primitives, Hash Functions, Collections</summary>
-    <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
+    <releaseNotes></releaseNotes>
     <tags>Atomics Hashes Collections</tags>
   </metadata>
   <files>

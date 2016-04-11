@@ -15,11 +15,12 @@
 
         2. A pool manager manages the object pools in the application. 
 
-        For more information about .NET Commons project, please visit: https://github.com/yanggujun/commonsfornet    
+        For more information about .NET Commons project, 
+        please visit: https://github.com/yanggujun/commonsfornet/wiki/Commons.Pool
     </description>
     <summary>A lightweight and thread safe generic object pool.
     </summary>
-    <releaseNotes>https://github.com/yanggujun/commonsfornet/blob/master/README.md</releaseNotes>
+    <releaseNotes>Minor fix on the underlying concurrent data strcuture used in the pool</releaseNotes>
     <tags>Object Pool</tags>
     <dependencies>
         <dependency id="Commons" version="0.2.1.354"/>
