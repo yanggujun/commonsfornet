@@ -33,88 +33,88 @@ namespace Commons.Json
                 {
                     throw new ArgumentException(Messages.InvalidValue);
                 }
-	            primitive = value;
+                primitive = value;
             }
         }
 
-	    public override bool TryConvert(ConvertBinder binder, out object result)
-	    {
-		    if (primitive == null)
-		    {
-			    result = null;
-		    }
-			else if (binder.Type == typeof (double))
-		    {
-			    result = Convert.ToDouble(primitive);
-		    }
-			else if (binder.Type == typeof (float))
-			{
-				result = Convert.ToSingle(primitive);
-			}
-			else if (binder.Type == typeof (decimal))
-			{
-				result = Convert.ToDecimal(primitive);
-			}
+        public override bool TryConvert(ConvertBinder binder, out object result)
+        {
+            if (primitive == null)
+            {
+                result = null;
+            }
+            else if (binder.Type == typeof (double))
+            {
+                result = Convert.ToDouble(primitive);
+            }
+            else if (binder.Type == typeof (float))
+            {
+                result = Convert.ToSingle(primitive);
+            }
+            else if (binder.Type == typeof (decimal))
+            {
+                result = Convert.ToDecimal(primitive);
+            }
             else if (binder.Type == typeof (Int64))
             {
                 result = Convert.ToInt64(primitive);
             }
-			else if (binder.Type == typeof (UInt64))
-			{
-				result = Convert.ToUInt64(primitive);
-			}
+            else if (binder.Type == typeof (UInt64))
+            {
+                result = Convert.ToUInt64(primitive);
+            }
             else if (binder.Type == typeof (Int32))
             {
                 result = Convert.ToInt32(primitive);
             }
-			else if (binder.Type == typeof (UInt32))
-			{
-				result = Convert.ToUInt32(primitive);
-			}
+            else if (binder.Type == typeof (UInt32))
+            {
+                result = Convert.ToUInt32(primitive);
+            }
             else if (binder.Type == typeof (Int16))
             {
                 result = Convert.ToInt16(primitive);
             }
-			else if (binder.Type == typeof (UInt16))
-			{
-				result = Convert.ToUInt16(primitive);
-			}
-			else if (binder.Type == typeof (byte))
-			{
-				result = Convert.ToByte(primitive);
-			}
-			else if (binder.Type == typeof (sbyte))
-		    {
-			    result = Convert.ToSByte(primitive);
-		    }
-			else
-			{
-				result = primitive;
-			}
-		    return true;
-	    }
+            else if (binder.Type == typeof (UInt16))
+            {
+                result = Convert.ToUInt16(primitive);
+            }
+            else if (binder.Type == typeof (byte))
+            {
+                result = Convert.ToByte(primitive);
+            }
+            else if (binder.Type == typeof (sbyte))
+            {
+                result = Convert.ToSByte(primitive);
+            }
+            else
+            {
+                result = primitive;
+            }
+            return true;
+        }
 
-		public override string ToString()
-		{
-			var result = string.Empty;
-			if (primitive == null)
-			{
-				result = JsonTokens.Null;
-			}
-			else if (primitive is string || primitive is DateTime)
-			{
-				var sb = new StringBuilder();
-				sb.Append(JsonTokens.Quoter);
-				sb.Append(primitive.ToString());
-				sb.Append(JsonTokens.Quoter);
-				result = sb.ToString();
-			}
-			else
-			{
-				result = primitive.ToString();
-			}
+        public override string ToString()
+        {
+            var result = string.Empty;
+            if (primitive == null)
+            {
+                result = JsonTokens.Null;
+            }
+            else if (primitive is string || primitive is DateTime)
+            {
+                var sb = new StringBuilder();
+                sb.Append(JsonTokens.Quoter);
+                sb.Append(primitive.ToString());
+                sb.Append(JsonTokens.Quoter);
+                result = sb.ToString();
+            }
+            else
+            {
+                result = primitive.ToString();
+            }
 
-			return result;
-		}
+            return result;
+        }
     }
 }

@@ -19,29 +19,29 @@ using System.Collections.Generic;
 using Commons.Collections.Set;
 namespace Test.Commons.Json
 {
-	public class Simple
-	{
-		public string FieldA { get; set; }
+    public class Simple
+    {
+        public string FieldA { get; set; }
 
         public int FieldB { get; set; }
 
         public double FieldC { get; set; }
 
         public bool FieldD { get; set; }
-	}
+    }
 
-	public class Nested
-	{
-		public string FieldE { get; set; }
+    public class Nested
+    {
+        public string FieldE { get; set; }
 
-		public Simple Simple { get; set; }
+        public Simple Simple { get; set; }
 
-		public int FieldF { get; set; }
+        public int FieldF { get; set; }
 
-		public double FieldG { get; set; }
+        public double FieldG { get; set; }
 
-		public bool FieldH { get; set; }
-	}
+        public bool FieldH { get; set; }
+    }
 
     public class ArrayNested
     {
@@ -50,11 +50,11 @@ namespace Test.Commons.Json
         public List<Nested> NestedItems { get; set; }
     }
 
-	public class PrimitiveList
-	{
-		public string FieldJ { get; set; }
-		public List<int> FieldK { get; set; } 
-	}
+    public class PrimitiveList
+    {
+        public string FieldJ { get; set; }
+        public List<int> FieldK { get; set; } 
+    }
 
     public class SetNested
     {
@@ -86,14 +86,14 @@ namespace Test.Commons.Json
 
     public class PrivateSetter
     {
-	    private int age = 23;
+        private int age = 23;
         public string Name { get; set; }
 
-	    public int Age
-	    {
-		    get { return age; }
-			private set { age = value; }
-	    }
+        public int Age
+        {
+            get { return age; }
+            private set { age = value; }
+        }
     }
 
     public class PrivateGetter
@@ -101,10 +101,10 @@ namespace Test.Commons.Json
         public string Name { get; set; }
         public int Age { private get; set; }
 
-	    public int ActualAge()
-	    {
-		    return Age;
-	    }
+        public int ActualAge()
+        {
+            return Age;
+        }
     }
 
     public class NoDefaultConstructor
@@ -128,13 +128,13 @@ namespace Test.Commons.Json
         public bool Producing { get; set; }
     }
 
-	public class Photo
-	{
-		public string Location { get; set; }
-		public string Author { get; set; }
-		public DateTime Time { get; set; }
-		public string Model { get; set; }
-	}
+    public class Photo
+    {
+        public string Location { get; set; }
+        public string Author { get; set; }
+        public DateTime Time { get; set; }
+        public string Model { get; set; }
+    }
 
     public class Person
     {
@@ -149,23 +149,23 @@ namespace Test.Commons.Json
         public string Gender { get; private set; }
     }
 
-	public class Student
-	{
-		public Person Person { get; set; }
-		public Major Major { get; set; }
-		public int Grade { get; set; }
-		public DateTime ReportDate { get; set; }
-	}
+    public class Student
+    {
+        public Person Person { get; set; }
+        public Major Major { get; set; }
+        public int Grade { get; set; }
+        public DateTime ReportDate { get; set; }
+    }
 
-	public enum Major
-	{
-		CS,
-		Art,
-		Politics,
-		Economics,
-		Physics,
-		Chemistry
-	}
+    public enum Major
+    {
+        CS,
+        Art,
+        Politics,
+        Economics,
+        Physics,
+        Chemistry
+    }
 
     public class Employee
     {
@@ -187,30 +187,30 @@ namespace Test.Commons.Json
         London
     }
 
-	public class Company
-	{
-		public string Name { get; set; }
-		public string Country { get; set; }
-		public List<Employee> Employees { get; set; }
-		public int StaffCount { get; set; }
-		public long Revenue { get; set; }
-	}
+    public class Company
+    {
+        public string Name { get; set; }
+        public string Country { get; set; }
+        public List<Employee> Employees { get; set; }
+        public int StaffCount { get; set; }
+        public long Revenue { get; set; }
+    }
 
-	public class IntArray
-	{
-		public string Name { get; set; }
-		public int[] Array { get; set; }
-	}
+    public class IntArray
+    {
+        public string Name { get; set; }
+        public int[] Array { get; set; }
+    }
 
-	public class PersonArray
-	{
-		public string Name { get; set; }
-		public string[] Children { get; set; }
-	}
+    public class PersonArray
+    {
+        public string Name { get; set; }
+        public string[] Children { get; set; }
+    }
 
-	public class MatrixArray
-	{
-		public string Name { get; set; }
-		public int[][] Matrix { get; set; }
-	}
+    public class MatrixArray
+    {
+        public string Name { get; set; }
+        public int[][] Matrix { get; set; }
+    }
 }

@@ -46,90 +46,90 @@ namespace Test.Commons.Json
             Assert.DoesNotThrow(() => JsonMapper.Parse(worldCup.ToString()));
         }
 
-		[Fact]
-	    public void TestJsonArray()
-		{
-			dynamic men = new JsonArray();
-			men[0] = "Jack";
-			men[1] = "Tom";
-			men[2] = "Joe";
-			men[3] = "Mark";
-			men[4] = "Roy";
+        [Fact]
+        public void TestJsonArray()
+        {
+            dynamic men = new JsonArray();
+            men[0] = "Jack";
+            men[1] = "Tom";
+            men[2] = "Joe";
+            men[3] = "Mark";
+            men[4] = "Roy";
 
-			var json = men.ToString();
-			var array = JsonMapper.Parse(json);
-			Assert.Equal("Jack", (string)array[0]);
-			Assert.Equal("Tom", (string)array[1]);
-			Assert.Equal("Joe", (string)array[2]);
-			Assert.Equal("Mark", (string)array[3]);
-			Assert.Equal("Roy", (string)array[4]);
-		}
+            var json = men.ToString();
+            var array = JsonMapper.Parse(json);
+            Assert.Equal("Jack", (string)array[0]);
+            Assert.Equal("Tom", (string)array[1]);
+            Assert.Equal("Joe", (string)array[2]);
+            Assert.Equal("Mark", (string)array[3]);
+            Assert.Equal("Roy", (string)array[4]);
+        }
 
-		[Fact]
-	    public void TestJsonPrimitiveDouble()
-	    {
-		    dynamic number = new JsonPrimitive(5.4756903);
-		    var json = number.ToString();
-		    var prim = JsonMapper.Parse(json);
-			Assert.Equal(5.4756903, (double)prim, 8);
-	    }
+        [Fact]
+        public void TestJsonPrimitiveDouble()
+        {
+            dynamic number = new JsonPrimitive(5.4756903);
+            var json = number.ToString();
+            var prim = JsonMapper.Parse(json);
+            Assert.Equal(5.4756903, (double)prim, 8);
+        }
 
-		[Fact]
-	    public void TestJsonPrimitiveFloat()
-		{
+        [Fact]
+        public void TestJsonPrimitiveFloat()
+        {
             dynamic number = new JsonPrimitive(45.2f);
-			var json = number.ToString();
-			var prim = JsonMapper.Parse(json);
-			Assert.Equal(45.2f, (float)prim, 3);
-		}
+            var json = number.ToString();
+            var prim = JsonMapper.Parse(json);
+            Assert.Equal(45.2f, (float)prim, 3);
+        }
 
-		[Fact]
-	    public void TestJsonPrimitiveInteger()
-		{
-			dynamic number = new JsonPrimitive(1200);
-			var json = number.ToString();
-			var prim = JsonMapper.Parse(json);
-			Assert.Equal(1200, (int)prim);
-		}
+        [Fact]
+        public void TestJsonPrimitiveInteger()
+        {
+            dynamic number = new JsonPrimitive(1200);
+            var json = number.ToString();
+            var prim = JsonMapper.Parse(json);
+            Assert.Equal(1200, (int)prim);
+        }
 
-		[Fact]
-	    public void TestJsonPrimitiveLong()
-	    {
-		    dynamic number = new JsonPrimitive((long)1200000000000);
-		    var json = number.ToString();
-		    var prim = JsonMapper.Parse(json);
-			Assert.Equal(1200000000000, (long)prim);
-	    }
+        [Fact]
+        public void TestJsonPrimitiveLong()
+        {
+            dynamic number = new JsonPrimitive((long)1200000000000);
+            var json = number.ToString();
+            var prim = JsonMapper.Parse(json);
+            Assert.Equal(1200000000000, (long)prim);
+        }
 
-		[Fact]
-	    public void TestJsonPrimitiveIntToLong()
-		{
-			dynamic number = new JsonPrimitive(1200);
-			var json = number.ToString();
-			var prim = JsonMapper.Parse(json);
-			Assert.Equal(1200, (long)prim);
-		}
+        [Fact]
+        public void TestJsonPrimitiveIntToLong()
+        {
+            dynamic number = new JsonPrimitive(1200);
+            var json = number.ToString();
+            var prim = JsonMapper.Parse(json);
+            Assert.Equal(1200, (long)prim);
+        }
 
-		[Fact]
-	    public void TestJsonPrimitiveBool()
-	    {
-		    dynamic boolean = new JsonPrimitive(true);
-		    var json = boolean.ToString();
-		    var prim = JsonMapper.Parse(json);
-			Assert.True((bool)prim);
-	    }
+        [Fact]
+        public void TestJsonPrimitiveBool()
+        {
+            dynamic boolean = new JsonPrimitive(true);
+            var json = boolean.ToString();
+            var prim = JsonMapper.Parse(json);
+            Assert.True((bool)prim);
+        }
 
-		[Fact]
-	    public void TestJsonPrimitiveNull()
-	    {
-		    dynamic nill = new JsonPrimitive(null);
-			var json = nill.ToString();
-			var prim = JsonMapper.Parse(json);
-			var obj = (object) prim;
-			Assert.Null(obj);
-	    }
+        [Fact]
+        public void TestJsonPrimitiveNull()
+        {
+            dynamic nill = new JsonPrimitive(null);
+            var json = nill.ToString();
+            var prim = JsonMapper.Parse(json);
+            var obj = (object) prim;
+            Assert.Null(obj);
+        }
 
-	    [Fact]
+        [Fact]
         public void TestJsonFromRealWorld()
         {
             string json = TestHelper.ReadFrom(@".\Json\JsonSample9.txt");
@@ -138,13 +138,13 @@ namespace Test.Commons.Json
             Assert.Equal("USA", (string)person.More.Country);
         }
 
-		[Fact]
-	    public void TestJsonFromRealWorld1()
-		{
-			var json = TestHelper.ReadFrom(@".\Json\JsonSample10.txt");
-			dynamic sample = JsonMapper.Parse(json);
-			Assert.Equal("Alpha", (string)sample["a"]);
-		}
+        [Fact]
+        public void TestJsonFromRealWorld1()
+        {
+            var json = TestHelper.ReadFrom(@".\Json\JsonSample10.txt");
+            dynamic sample = JsonMapper.Parse(json);
+            Assert.Equal("Alpha", (string)sample["a"]);
+        }
 
         [Fact]
         public void TestParseJson()
@@ -182,39 +182,39 @@ namespace Test.Commons.Json
             Assert.Equal("~1.8", (string)package.devDependencies.chai);
         }
 
-		[Fact]
-	    public void TestJson1()
-		{
-			var json = "{\"name\": \"Jack\"}";
-			dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal("Jack", (string)jsonObj["name"]);
-		}
+        [Fact]
+        public void TestJson1()
+        {
+            var json = "{\"name\": \"Jack\"}";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("Jack", (string)jsonObj["name"]);
+        }
 
-		[Fact]
-	    public void TestJson2()
-	    {
-			var json = "{\"name\": \"Jack\", \"age\": 30}";
-		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal(30, (int)jsonObj["age"]);
-	    }
+        [Fact]
+        public void TestJson2()
+        {
+            var json = "{\"name\": \"Jack\", \"age\": 30}";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal(30, (int)jsonObj["age"]);
+        }
 
-		[Fact]
-	    public void TestJson3()
-	    {
-		    var json = "{\"name\": \"Jack\", \"age\": 30, \"children\": [\"Jason\", \"Ann\"]}";
-		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal("Jason", (string)jsonObj["children"][0]);
-			Assert.Equal("Ann", (string)jsonObj["children"][1]);
-	    }
+        [Fact]
+        public void TestJson3()
+        {
+            var json = "{\"name\": \"Jack\", \"age\": 30, \"children\": [\"Jason\", \"Ann\"]}";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("Jason", (string)jsonObj["children"][0]);
+            Assert.Equal("Ann", (string)jsonObj["children"][1]);
+        }
 
-		[Fact]
-	    public void TestJson4()
-	    {
-		    var json = "{\"name\": \"Jack\", \"age\": 30, \"children\": [\"Jason\", \"Ann\"], \"edu\": {\"college\": \"nyu\", \"graduate\": \"mit\"}}";
-		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal("nyu", (string)jsonObj["edu"]["college"]);
-			Assert.Equal("mit", (string)jsonObj["edu"]["graduate"]);
-	    }
+        [Fact]
+        public void TestJson4()
+        {
+            var json = "{\"name\": \"Jack\", \"age\": 30, \"children\": [\"Jason\", \"Ann\"], \"edu\": {\"college\": \"nyu\", \"graduate\": \"mit\"}}";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("nyu", (string)jsonObj["edu"]["college"]);
+            Assert.Equal("mit", (string)jsonObj["edu"]["graduate"]);
+        }
 
         [Fact]
         public void TestJson5()
@@ -224,23 +224,23 @@ namespace Test.Commons.Json
             Assert.Equal(0, jsonObj.Length);
         }
 
-		[Fact]
-	    public void TestJsonEmptyArrayInArray()
-		{
-			var json = "[[]]";
-			var jsonobj = JsonMapper.Parse(json);
-			Assert.Equal(0, jsonobj[0].Length);
-		}
+        [Fact]
+        public void TestJsonEmptyArrayInArray()
+        {
+            var json = "[[]]";
+            var jsonobj = JsonMapper.Parse(json);
+            Assert.Equal(0, jsonobj[0].Length);
+        }
 
-		[Fact]
-	    public void TestJsonEmptyObjectInArray()
-		{
-			var json = "[{}]";
-			dynamic jsonArray = JsonMapper.Parse(json);
-			var value = (string)jsonArray[0].ToString();
-			value = value.Trim('{', '}');
-			Assert.True(string.IsNullOrWhiteSpace(value));
-		}
+        [Fact]
+        public void TestJsonEmptyObjectInArray()
+        {
+            var json = "[{}]";
+            dynamic jsonArray = JsonMapper.Parse(json);
+            var value = (string)jsonArray[0].ToString();
+            value = value.Trim('{', '}');
+            Assert.True(string.IsNullOrWhiteSpace(value));
+        }
 
         [Fact]
         public void TestParseJsonIllEmptyHalfObject()
@@ -253,7 +253,7 @@ namespace Test.Commons.Json
         public void TestParseJsonEmptyObject()
         {
             var json = @"{}";
-	        dynamic jobj = JsonMapper.Parse(json);
+            dynamic jobj = JsonMapper.Parse(json);
             Assert.Equal(string.Empty, jobj.ToString().Trim('{', '}').Trim());
         }
 
@@ -273,146 +273,146 @@ namespace Test.Commons.Json
             Assert.Equal(string.Empty, jobj.test[0].ToString().Trim('{', '}').Trim());
         }
 
-		[Fact]
-	    public void TestParseJsonSimpleArray()
-	    {
-		    var json = @"[0, 1, 2, 3, 4, 5, 6]";
-		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal(0, (int)jsonObj[0]);
-			Assert.Equal(1, (int)jsonObj[1]);
-	    }
+        [Fact]
+        public void TestParseJsonSimpleArray()
+        {
+            var json = @"[0, 1, 2, 3, 4, 5, 6]";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal(0, (int)jsonObj[0]);
+            Assert.Equal(1, (int)jsonObj[1]);
+        }
 
-		[Fact]
-	    public void TestParseJsonComplexArray()
-	    {
-		    var json = "[0, {\"Test\": [true, false, 20, \"testvalue1\"]}, true, 1.0004, 200000, \"testvalue2\"]";
-		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal(0, (int)jsonObj[0]);
-			Assert.True((bool)jsonObj[1].Test[0]);
-			Assert.False((bool)jsonObj[1].Test[1]);
-			Assert.Equal(20, (int)jsonObj[1].Test[2]);
-			Assert.Equal("testvalue1", (string)jsonObj[1].Test[3]);
-			Assert.True((bool)jsonObj[2]);
-			Assert.Equal(1.0004, (double) jsonObj[3], 6);
-			Assert.Equal(200000, (int)jsonObj[4]);
-			Assert.Equal("testvalue2", (string)jsonObj[5]);
-	    }
+        [Fact]
+        public void TestParseJsonComplexArray()
+        {
+            var json = "[0, {\"Test\": [true, false, 20, \"testvalue1\"]}, true, 1.0004, 200000, \"testvalue2\"]";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal(0, (int)jsonObj[0]);
+            Assert.True((bool)jsonObj[1].Test[0]);
+            Assert.False((bool)jsonObj[1].Test[1]);
+            Assert.Equal(20, (int)jsonObj[1].Test[2]);
+            Assert.Equal("testvalue1", (string)jsonObj[1].Test[3]);
+            Assert.True((bool)jsonObj[2]);
+            Assert.Equal(1.0004, (double) jsonObj[3], 6);
+            Assert.Equal(200000, (int)jsonObj[4]);
+            Assert.Equal("testvalue2", (string)jsonObj[5]);
+        }
 
-		[Fact]
-	    public void TestParseJsonSingleString()
-		{
-			var json = "\"simple\"";
-			dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal("simple", (string)jsonObj);
-		}
+        [Fact]
+        public void TestParseJsonSingleString()
+        {
+            var json = "\"simple\"";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("simple", (string)jsonObj);
+        }
 
-		[Fact]
-	    public void TestParseJsonSingleNumber()
-	    {
-		    var json = "1000";
-			dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal(1000, (int)jsonObj);
-	    }
+        [Fact]
+        public void TestParseJsonSingleNumber()
+        {
+            var json = "1000";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal(1000, (int)jsonObj);
+        }
 
-		[Fact]
-	    public void TestParseJsonSingleNegtiveNumber()
-	    {
-		    var json = "-5";
-		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal(-5, (int)jsonObj);
-	    }
+        [Fact]
+        public void TestParseJsonSingleNegtiveNumber()
+        {
+            var json = "-5";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal(-5, (int)jsonObj);
+        }
 
-	    [Fact]
-	    public void TestParseJsonSingleNegtiveDecimal()
-	    {
-		    var json = "-0.334";
-		    dynamic jsonObj = JsonMapper.Parse(json);
-		    Assert.Equal(-0.334, (double) jsonObj, 4);
-	    }
+        [Fact]
+        public void TestParseJsonSingleNegtiveDecimal()
+        {
+            var json = "-0.334";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal(-0.334, (double) jsonObj, 4);
+        }
 
-		[Fact]
-	    public void TestParseJsonSingleDecimal()
-		{
-			var json = "200.01234";
-			dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Equal(200.01234, (double)jsonObj, 7);
-		}
+        [Fact]
+        public void TestParseJsonSingleDecimal()
+        {
+            var json = "200.01234";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Equal(200.01234, (double)jsonObj, 7);
+        }
 
-		[Fact]
-	    public void TestParseJsonSingleTrue()
-	    {
-		    var json = "true";
-		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.True((bool)jsonObj);
-	    }
+        [Fact]
+        public void TestParseJsonSingleTrue()
+        {
+            var json = "true";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.True((bool)jsonObj);
+        }
 
-		[Fact]
-	    public void TestParseJsonSingleTrueIgnoreCase()
-	    {
-		    var json = "TruE";
-			dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.True((bool)jsonObj);
-	    }
+        [Fact]
+        public void TestParseJsonSingleTrueIgnoreCase()
+        {
+            var json = "TruE";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.True((bool)jsonObj);
+        }
 
-		[Fact]
-	    public void TestParseJsonSingleFalse()
-	    {
-		    var json = "false";
-		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.False((bool)jsonObj);
-	    }
+        [Fact]
+        public void TestParseJsonSingleFalse()
+        {
+            var json = "false";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.False((bool)jsonObj);
+        }
 
-		[Fact]
-	    public void TestParseJsonSingleFalseIgnoreCase()
-	    {
-		    var json = "falSe";
-			dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.False((bool)jsonObj);
-	    }
+        [Fact]
+        public void TestParseJsonSingleFalseIgnoreCase()
+        {
+            var json = "falSe";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.False((bool)jsonObj);
+        }
 
-		[Fact]
-	    public void TestParseJsonIllString()
-	    {
-		    var json = "\"i\"ll\"";
-		    Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
-	    }
+        [Fact]
+        public void TestParseJsonIllString()
+        {
+            var json = "\"i\"ll\"";
+            Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
+        }
 
-		[Fact]
-	    public void TestParseJsonIllString2()
-		{
-			var json = @"'i\ll'";
-			Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
-		}
+        [Fact]
+        public void TestParseJsonIllString2()
+        {
+            var json = @"'i\ll'";
+            Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
+        }
 
-		[Fact]
-	    public void TestParseJsonIllBool()
-		{
-			var json = @"truee";
-			Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
-		}
+        [Fact]
+        public void TestParseJsonIllBool()
+        {
+            var json = @"truee";
+            Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
+        }
 
-		[Fact]
-	    public void TestParseJsonSingleNull()
-	    {
-		    var json = "null";
-		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Null(jsonObj);
-	    }
+        [Fact]
+        public void TestParseJsonSingleNull()
+        {
+            var json = "null";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Null(jsonObj);
+        }
 
-		[Fact]
-	    public void TestParseJsonSingleNullIgnoreCase()
-	    {
-		    var json = "nULL";
-		    dynamic jsonObj = JsonMapper.Parse(json);
-			Assert.Null(jsonObj);
-	    }
+        [Fact]
+        public void TestParseJsonSingleNullIgnoreCase()
+        {
+            var json = "nULL";
+            dynamic jsonObj = JsonMapper.Parse(json);
+            Assert.Null(jsonObj);
+        }
 
-		[Fact]
-	    public void TestParseJsonIllSingleNumber()
-	    {
-		    var json = "4r565";
-		    Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
-	    }
+        [Fact]
+        public void TestParseJsonIllSingleNumber()
+        {
+            var json = "4r565";
+            Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
+        }
 
         [Fact]
         public void TestParseJsonEmptyArray()
@@ -465,19 +465,19 @@ namespace Test.Commons.Json
             Assert.Throws(typeof(ArgumentException), () => JsonMapper.Parse(json));
         }
 
-		[Fact]
-	    public void TestJsonBadObjectFormat()
-	    {
-		    var json = "{\"test\": { \"nest\": null}}}";
-		    Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
-	    }
+        [Fact]
+        public void TestJsonBadObjectFormat()
+        {
+            var json = "{\"test\": { \"nest\": null}}}";
+            Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
+        }
 
-		[Fact]
-	    public void TestJsonBadObjectFormat2()
-		{
-			var json = "{\"a\"}";
-			Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
-		}
+        [Fact]
+        public void TestJsonBadObjectFormat2()
+        {
+            var json = "{\"a\"}";
+            Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
+        }
 
         [Fact]
         public void TestJsonBadObjectFormat3()
@@ -514,33 +514,33 @@ namespace Test.Commons.Json
             Assert.Throws(typeof(ArgumentException), () => JsonMapper.Parse(json));
         }
 
-		[Fact]
-	    public void TestJsonBadArrayFormat()
-	    {
-		    var json = "[\"a\", \"b\",]";
-		    Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
-	    }
+        [Fact]
+        public void TestJsonBadArrayFormat()
+        {
+            var json = "[\"a\", \"b\",]";
+            Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
+        }
 
-		[Fact]
-	    public void TestJsonBadArrayFormat2()
-	    {
-		    var json = "[\"a\", \"b\",]]";
-		    Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
-	    }
+        [Fact]
+        public void TestJsonBadArrayFormat2()
+        {
+            var json = "[\"a\", \"b\",]]";
+            Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
+        }
 
-		[Fact]
-	    public void TestJsonBadArrayFormat3()
-	    {
-		    var json = "[[\"a\", \"b\",]]";
-		    Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
-	    }
+        [Fact]
+        public void TestJsonBadArrayFormat3()
+        {
+            var json = "[[\"a\", \"b\",]]";
+            Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
+        }
 
-		[Fact]
-	    public void TestJsonBadArrayFormat4()
-		{
-			var json = "{\"a\": [], }";
-		    Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
-	    }
+        [Fact]
+        public void TestJsonBadArrayFormat4()
+        {
+            var json = "{\"a\": [], }";
+            Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
+        }
 
         [Fact]
         public void TestJsonBadArrayFormat5()
@@ -556,12 +556,12 @@ namespace Test.Commons.Json
             Assert.Throws(typeof(ArgumentException), () => JsonMapper.Parse(json));
         }
 
-		[Fact]
-	    public void TestParseJsonIllFormat2()
-	    {
-		    var json = "{\"nam\"e\": \"Jack\"}";
-		    Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
-	    }
+        [Fact]
+        public void TestParseJsonIllFormat2()
+        {
+            var json = "{\"nam\"e\": \"Jack\"}";
+            Assert.Throws(typeof (ArgumentException), () => JsonMapper.Parse(json));
+        }
 
         [Fact]
         public void TestParseJsonNumberArray()
@@ -657,26 +657,26 @@ namespace Test.Commons.Json
             Assert.DoesNotThrow(() => JsonMapper.Parse(json8));
         }
 
-		[Fact]
-	    public void TestSample01()
-	    {
-			var json  = "[{\"Name\":\"A Clash of Kings\", \"Series\":\"A Song of Ice and Fire\", \"Author\": \"G.R.R.Martin\", \"Language\": \"English\"}, {\"Name\":\"A Storm of Swords\", \"Series\":\"A Song of Ice and Fire\", \"Author\": \"G.R.R.Martin\", \"Language\": \"English\"}]";
-			var novels = JsonMapper.Parse(json);
-			string clash = novels[0].Name;
-			Assert.Equal("A Clash of Kings", clash);
-			string storm = novels[1].Name;
-			Assert.Equal("A Storm of Swords", storm);
-	    }
+        [Fact]
+        public void TestSample01()
+        {
+            var json  = "[{\"Name\":\"A Clash of Kings\", \"Series\":\"A Song of Ice and Fire\", \"Author\": \"G.R.R.Martin\", \"Language\": \"English\"}, {\"Name\":\"A Storm of Swords\", \"Series\":\"A Song of Ice and Fire\", \"Author\": \"G.R.R.Martin\", \"Language\": \"English\"}]";
+            var novels = JsonMapper.Parse(json);
+            string clash = novels[0].Name;
+            Assert.Equal("A Clash of Kings", clash);
+            string storm = novels[1].Name;
+            Assert.Equal("A Storm of Swords", storm);
+        }
 
-		[Fact]
-	    public void TestSmaple02()
-		{
-			var json =
-				"{\"Name\":\"A Clash of Kings\", \"Series\":\"A Song of Ice and Fire\", \"Author\": \"G.R.R.Martin\", \"Language\": \"English\"}";
+        [Fact]
+        public void TestSmaple02()
+        {
+            var json =
+                "{\"Name\":\"A Clash of Kings\", \"Series\":\"A Song of Ice and Fire\", \"Author\": \"G.R.R.Martin\", \"Language\": \"English\"}";
 
-			var novel = JsonMapper.Parse(json);
-			string name = novel.Name;
-			Assert.Equal("A Clash of Kings", name);
-		}
+            var novel = JsonMapper.Parse(json);
+            string name = novel.Name;
+            Assert.Equal("A Clash of Kings", name);
+        }
     }
 }

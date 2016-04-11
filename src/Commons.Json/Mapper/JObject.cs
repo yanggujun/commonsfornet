@@ -22,51 +22,51 @@ using Commons.Collections.Map;
 
 namespace Commons.Json.Mapper
 {
-	public class JObject : JValue, IEnumerable<KeyValuePair<string, JValue>>
-	{
-		private HashedMap<string, JValue> values = new HashedMap<string, JValue>(new IgnoreCaseStringEquator());
+    public class JObject : JValue, IEnumerable<KeyValuePair<string, JValue>>
+    {
+        private HashedMap<string, JValue> values = new HashedMap<string, JValue>(new IgnoreCaseStringEquator());
 
-		private string lastKey;
-		public void PutKey(JString key)
-		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
-			lastKey = key;
-		}
+        private string lastKey;
+        public void PutKey(JString key)
+        {
+            if (key == null)
+            {
+                throw new ArgumentNullException("key");
+            }
+            lastKey = key;
+        }
 
-		public void PutObject(JValue value)
-		{
-			if (lastKey == null)
-			{
-				throw new ArgumentException(Messages.InvalidFormat);
-			}
-			values.Add(lastKey, value);
-			lastKey = null;
-		}
+        public void PutObject(JValue value)
+        {
+            if (lastKey == null)
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+            values.Add(lastKey, value);
+            lastKey = null;
+        }
 
-		public bool Validate()
-		{
-			return lastKey == null;
-		}
+        public bool Validate()
+        {
+            return lastKey == null;
+        }
 
-		public JValue this[JString key]
-		{
-			get { return values[key]; }
-			set { values[key] = value; }
-		}
+        public JValue this[JString key]
+        {
+            get { return values[key]; }
+            set { values[key] = value; }
+        }
 
-		public JValue this[string key]
-		{
-			get { return values[key]; }
-			set { values[key] = value; }
-		}
+        public JValue this[string key]
+        {
+            get { return values[key]; }
+            set { values[key] = value; }
+        }
 
-		public bool ContainsKey(string key)
-		{
-			return values.ContainsKey(key);
-		}
+        public bool ContainsKey(string key)
+        {
+            return values.ContainsKey(key);
+        }
 
         public int GetInt32(string key)
         {
@@ -233,52 +233,52 @@ namespace Commons.Json.Mapper
             values[key] = new JBoolean(b);
         }
 
-		public JArray GetArray(string key)
-		{
-			var array = values[key] as JArray;
-			if (array == null)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-			}
-			return array;
-		}
+        public JArray GetArray(string key)
+        {
+            var array = values[key] as JArray;
+            if (array == null)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+            }
+            return array;
+        }
 
-		public void SetArray(string key, JArray array)
-		{
-			values[key] = array;
-		}
+        public void SetArray(string key, JArray array)
+        {
+            values[key] = array;
+        }
 
-		public bool IsNull(string key)
-		{
-			return (values[key] as JNull) == null;
-		}
+        public bool IsNull(string key)
+        {
+            return (values[key] as JNull) == null;
+        }
 
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-			sb.Append(JsonTokens.LeftBrace);
-			foreach (var item in values)
-			{
-				sb.Append(JsonTokens.Quoter)
-					.Append(item.Key)
-					.Append(JsonTokens.Quoter)
-					.Append(JsonTokens.Colon)
-					.Append(item.Value).Append(JsonTokens.Comma);
-			}
-			sb.Remove(sb.Length - 1, 1);
-			sb.Append(JsonTokens.RightBrace);
-			return sb.ToString();
-		}
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append(JsonTokens.LeftBrace);
+            foreach (var item in values)
+            {
+                sb.Append(JsonTokens.Quoter)
+                    .Append(item.Key)
+                    .Append(JsonTokens.Quoter)
+                    .Append(JsonTokens.Colon)
+                    .Append(item.Value).Append(JsonTokens.Comma);
+            }
+            sb.Remove(sb.Length - 1, 1);
+            sb.Append(JsonTokens.RightBrace);
+            return sb.ToString();
+        }
 
-		public IEnumerator<KeyValuePair<string, JValue>> GetEnumerator()
-		{
-			return values.GetEnumerator();
-		}
+        public IEnumerator<KeyValuePair<string, JValue>> GetEnumerator()
+        {
+            return values.GetEnumerator();
+        }
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
         
         private JInteger GetInteger(JValue value)
         {
@@ -301,5 +301,5 @@ namespace Commons.Json.Mapper
 
             return dec;
         }
-	}
+    }
 }

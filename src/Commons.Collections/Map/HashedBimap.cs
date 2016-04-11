@@ -60,10 +60,10 @@ namespace Commons.Collections.Map
         }
 
         public HashedBimap(IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer) 
-			: base(new HashedMap<K, V>(keyComparer), new HashedMap<V, K>(valueComparer))
+            : base(new HashedMap<K, V>(keyComparer), new HashedMap<V, K>(valueComparer))
         {
-	        keyEquator = keyComparer;
-	        valueEquator = valueComparer;
+            keyEquator = keyComparer;
+            valueEquator = valueComparer;
         }
 
         /// <summary>
@@ -94,14 +94,14 @@ namespace Commons.Collections.Map
         }
 
         public HashedBimap(int capacity, IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer)
-			: base(new HashedMap<K, V>(capacity, keyComparer), new HashedMap<V, K>(capacity, valueComparer))
+            : base(new HashedMap<K, V>(capacity, keyComparer), new HashedMap<V, K>(capacity, valueComparer))
         {
-	        keyEquator = keyComparer;
-	        valueEquator = valueComparer;
+            keyEquator = keyComparer;
+            valueEquator = valueComparer;
         }
 
         public HashedBimap(int capacity, Equator<K> keyEquator, Equator<V> valueEquator)
-			: this(capacity, new EquatorComparer<K>(keyEquator), new EquatorComparer<V>(valueEquator))
+            : this(capacity, new EquatorComparer<K>(keyEquator), new EquatorComparer<V>(valueEquator))
         {
         }
 

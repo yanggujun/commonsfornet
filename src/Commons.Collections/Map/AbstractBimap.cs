@@ -177,16 +177,16 @@ namespace Commons.Collections.Map
             ValueKey.Clear();
         }
 
-	    /// <summary>
-	    /// 
-	    /// </summary>
-	    /// <param name="item"></param>
-	    /// <returns></returns>
-	    /// <remarks>The method returns true only when key and value of the <paramref name="item"/> exist as a pair in the bimap.</remarks>
-	    bool ICollection<KeyValuePair<K, V>>.Contains(KeyValuePair<K, V> item)
-	    {
-		    return HasItem(item);
-	    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        /// <remarks>The method returns true only when key and value of the <paramref name="item"/> exist as a pair in the bimap.</remarks>
+        bool ICollection<KeyValuePair<K, V>>.Contains(KeyValuePair<K, V> item)
+        {
+            return HasItem(item);
+        }
 
         public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
         {
@@ -206,7 +206,7 @@ namespace Commons.Collections.Map
         bool ICollection<KeyValuePair<K, V>>.Remove(KeyValuePair<K, V> item)
         {
             var removed = false;
-	        ICollection<KeyValuePair<K, V>> col = this;
+            ICollection<KeyValuePair<K, V>> col = this;
             if (col.Contains(item))
             {
                 removed = RemoveKey(item.Key);
@@ -344,6 +344,6 @@ namespace Commons.Collections.Map
             }
         }
 
-	    protected abstract bool HasItem(KeyValuePair<K, V> item);
+        protected abstract bool HasItem(KeyValuePair<K, V> item);
     }
 }

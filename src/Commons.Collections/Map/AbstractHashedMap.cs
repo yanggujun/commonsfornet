@@ -224,7 +224,7 @@ namespace Commons.Collections.Map
         bool ICollection<KeyValuePair<K, V>>.Remove(KeyValuePair<K, V> item)
         {
             var removed = false;
-	        ICollection<KeyValuePair<K, V>> col = this;
+            ICollection<KeyValuePair<K, V>> col = this;
             if (col.Contains(item))
             {
                 removed = Remove(item.Key);

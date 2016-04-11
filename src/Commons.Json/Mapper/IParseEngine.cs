@@ -16,8 +16,8 @@
 
 namespace Commons.Json.Mapper
 {
-	public interface IParseEngine
-	{
-		JValue Parse(string json);
-	}
+    public interface IParseEngine
+    {
+        JValue Parse(string json);
+    }
 }

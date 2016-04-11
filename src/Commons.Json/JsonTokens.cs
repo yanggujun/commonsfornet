@@ -16,27 +16,27 @@
 
 namespace Commons.Json
 {
-	internal static class JsonTokens
-	{
-		public const char LeftBrace = '{';
-		public const char RightBrace = '}';
-		public const char LeftBracket = '[';
-		public const char RightBracket = ']';
-		public const char Comma = ',';
-		public const char Colon = ':';
-		public const char Quoter = '"';
-		public const char SingleQuoter = '\'';
-		public const char Dot = '.';
-		public const char Space = ' ';
-		public const char Slash = '\\';
-		public const char Negtive = '-';
-		public const char NonEmptyArrayMark = 'a';
+    internal static class JsonTokens
+    {
+        public const char LeftBrace = '{';
+        public const char RightBrace = '}';
+        public const char LeftBracket = '[';
+        public const char RightBracket = ']';
+        public const char Comma = ',';
+        public const char Colon = ':';
+        public const char Quoter = '"';
+        public const char SingleQuoter = '\'';
+        public const char Dot = '.';
+        public const char Space = ' ';
+        public const char Slash = '\\';
+        public const char Negtive = '-';
+        public const char NonEmptyArrayMark = 'a';
         public const char NonEmptyObjectMark = 'o';
         public const char TabChar = '\t';
         public const char LineSeparator = '\n';
-		public const string Null = "null";
-		public const string Tab = "    ";
-		public const string True = "true";
-		public const string False = "false";
-	}
+        public const string Null = "null";
+        public const string Tab = "    ";
+        public const string True = "true";
+        public const string False = "false";
+    }
 }

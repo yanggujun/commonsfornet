@@ -20,9 +20,9 @@ using System.Collections.Generic;
 
 namespace Commons.Json
 {
-	internal static class Extensions
-	{
-		public static void Verify<T>(this T x, Predicate<T> check)
+    internal static class Extensions
+    {
+        public static void Verify<T>(this T x, Predicate<T> check)
         {
             if (!check(x))
             {
@@ -30,38 +30,38 @@ namespace Commons.Json
             }
         }
 
-		public static bool Is<T>(this object obj) where T : class
-		{
-			var target = obj as T;
-			return target != null;
-		}
+        public static bool Is<T>(this object obj) where T : class
+        {
+            var target = obj as T;
+            return target != null;
+        }
 
-		public static bool Is<T>(this object obj, out T target) where T : class
-		{
-			target = obj as T;
-			return target != null;
-		}
+        public static bool Is<T>(this object obj, out T target) where T : class
+        {
+            target = obj as T;
+            return target != null;
+        }
 
-		public static bool IsEmpty(this char ch)
-		{
-			return ch == JsonTokens.Space || ch == JsonTokens.TabChar
-			       || ch == JsonTokens.LineSeparator;
-		}
+        public static bool IsEmpty(this char ch)
+        {
+            return ch == JsonTokens.Space || ch == JsonTokens.TabChar
+                   || ch == JsonTokens.LineSeparator;
+        }
 
-		public static bool IsJsonPrimitive(this Type type)
-		{
-			return type.IsPrimitive || type == typeof(decimal) || type == typeof (string) || type == typeof(DateTime) || type.IsEnum;
-		}
+        public static bool IsJsonPrimitive(this Type type)
+        {
+            return type.IsPrimitive || type == typeof(decimal) || type == typeof (string) || type == typeof(DateTime) || type.IsEnum;
+        }
 
-		public static bool IsJsonNumber(this Type type)
-		{
-			return type == typeof (int) || type == typeof (long)
-				   || type == typeof (short) || type == typeof (sbyte)
-			       || type == typeof (byte) || type == typeof (uint)
-			       || type == typeof (ulong) || type == typeof (ushort)
-			       || type == typeof (double) || type == typeof (float)
-			       || type == typeof (decimal);
-		}
+        public static bool IsJsonNumber(this Type type)
+        {
+            return type == typeof (int) || type == typeof (long)
+                   || type == typeof (short) || type == typeof (sbyte)
+                   || type == typeof (byte) || type == typeof (uint)
+                   || type == typeof (ulong) || type == typeof (ushort)
+                   || type == typeof (double) || type == typeof (float)
+                   || type == typeof (decimal);
+        }
 
         public static bool IsJsonInteger(this Type type)
         {
@@ -75,34 +75,34 @@ namespace Commons.Json
             return type == typeof(double) || type == typeof(float) || type == typeof(decimal);
         }
 
-		public static bool IsJsonArray(this Type type)
-		{
-			return type.IsArray || type == typeof (IList<>) || type == typeof (ArrayList);
-		}
+        public static bool IsJsonArray(this Type type)
+        {
+            return type.IsArray || type == typeof (IList<>) || type == typeof (ArrayList);
+        }
 
-		public static bool IsList(this Type type)
-		{
-			Type itemType;
-			return type.IsList(out itemType);
-		}
+        public static bool IsList(this Type type)
+        {
+            Type itemType;
+            return type.IsList(out itemType);
+        }
 
-		public static bool IsList(this Type type, out Type itemType)
-		{
-			var isList = false;
-			itemType = null;
+        public static bool IsList(this Type type, out Type itemType)
+        {
+            var isList = false;
+            itemType = null;
 
-			foreach (var interfaceType in type.GetInterfaces())
-			{
-				if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof (IList<>))
-				{
-					itemType = interfaceType.GetGenericArguments()[0];
-					isList = true;
-					break;
-				}
-			}
+            foreach (var interfaceType in type.GetInterfaces())
+            {
+                if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof (IList<>))
+                {
+                    itemType = interfaceType.GetGenericArguments()[0];
+                    isList = true;
+                    break;
+                }
+            }
 
-			return isList;
-		}
+            return isList;
+        }
 
         public static bool IsDictionary(this Type type)
         {
@@ -145,19 +145,19 @@ namespace Commons.Json
         public static bool Deserializable(this Type type)
         {
             var isSupported = false;
-	        if (!type.IsInterface)
-	        {
-		        if (type.IsList())
-		        {
-			        isSupported = true;
-		        }
-		        else if (!type.IsSubclassOf(typeof (IEnumerable)) && !type.IsArray)
-		        {
-			        isSupported = true;
-		        }
-	        }
+            if (!type.IsInterface)
+            {
+                if (type.IsList())
+                {
+                    isSupported = true;
+                }
+                else if (!type.IsSubclassOf(typeof (IEnumerable)) && !type.IsArray)
+                {
+                    isSupported = true;
+                }
+            }
 
-	        return isSupported;
+            return isSupported;
         }
-	}
+    }
 }

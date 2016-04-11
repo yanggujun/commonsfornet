@@ -18,6 +18,6 @@ namespace Commons.Json.Mapper
 {
     public interface IJsonConverter<T>
     {
-	    T Convert(JValue jsonValue);
+        T Convert(JValue jsonValue);
     }
 }

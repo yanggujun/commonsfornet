@@ -47,7 +47,7 @@ namespace Commons.Collections.Map
         public MultiValueHashedMap(int keyCapacity, IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer) 
             : base(valueComparer)
         {
-			map = new HashedMap<K, ICollection<V>>(keyCapacity, keyComparer);
+            map = new HashedMap<K, ICollection<V>>(keyCapacity, keyComparer);
         }
 
         public MultiValueHashedMap(Equator<K> keyEquator, Equator<V> valueEquator) 
@@ -60,19 +60,19 @@ namespace Commons.Collections.Map
         {
         }
 
-	    public MultiValueHashedMap(IMultiValueMap<K, V> items) : this(items, EqualityComparer<K>.Default, EqualityComparer<V>.Default)
-	    {
-	    }
+        public MultiValueHashedMap(IMultiValueMap<K, V> items) : this(items, EqualityComparer<K>.Default, EqualityComparer<V>.Default)
+        {
+        }
 
         public MultiValueHashedMap(IMultiValueMap<K, V> items, Equator<K> keyEquator, Equator<V> valueEquator) 
-			: this(items, new EquatorComparer<K>(keyEquator), new EquatorComparer<V>(valueEquator)) 
+            : this(items, new EquatorComparer<K>(keyEquator), new EquatorComparer<V>(valueEquator)) 
         {
         }
 
         public MultiValueHashedMap(IMultiValueMap<K, V> items, IEqualityComparer<K> keyComparer, IEqualityComparer<V> valueComparer) : base(valueComparer)
         {
-	        map = new HashedMap<K, ICollection<V>>(
-				items == null ? DefaultCapacity : items.KeyCount, keyComparer);
+            map = new HashedMap<K, ICollection<V>>(
+                items == null ? DefaultCapacity : items.KeyCount, keyComparer);
 
             if (items != null)
             {

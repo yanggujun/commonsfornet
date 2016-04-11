@@ -19,16 +19,16 @@ using System.Collections.Generic;
 
 namespace Commons.Json.Mapper
 {
-	internal class IgnoreCaseStringEquator : IEqualityComparer<string>
-	{
-		public bool Equals(string x, string y)
-		{
-			return x == null ? y == null : x.Equals(y, StringComparison.InvariantCultureIgnoreCase);
-		}
+    internal class IgnoreCaseStringEquator : IEqualityComparer<string>
+    {
+        public bool Equals(string x, string y)
+        {
+            return x == null ? y == null : x.Equals(y, StringComparison.InvariantCultureIgnoreCase);
+        }
 
-		public int GetHashCode(string obj)
-		{
-			return obj.ToLowerInvariant().GetHashCode();
-		}
-	}
+        public int GetHashCode(string obj)
+        {
+            return obj.ToLowerInvariant().GetHashCode();
+        }
+    }
 }

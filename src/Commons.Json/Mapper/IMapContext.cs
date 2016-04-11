@@ -16,12 +16,12 @@
 
 namespace Commons.Json.Mapper
 {
-	public interface IMapContext
-	{
-		string Name { get; }
-		string DateFormat { get; }
-		IJsonObjectMapper<T> For<T>();
-		string ToJson<T>(T target);
-		T To<T>(string json);
-	}
+    public interface IMapContext
+    {
+        string Name { get; }
+        string DateFormat { get; }
+        IJsonObjectMapper<T> For<T>();
+        string ToJson<T>(T target);
+        T To<T>(string json);
+    }
 }

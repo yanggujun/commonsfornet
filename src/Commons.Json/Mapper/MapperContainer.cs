@@ -19,28 +19,28 @@ using Commons.Collections.Map;
 
 namespace Commons.Json.Mapper
 {
-	internal class MapperContainer
-	{
-		private ReferenceMap<Type, MapperImpl> mappers = new ReferenceMap<Type, MapperImpl>();
+    internal class MapperContainer
+    {
+        private ReferenceMap<Type, MapperImpl> mappers = new ReferenceMap<Type, MapperImpl>();
 
-		public bool ContainsMapper(Type type)
-		{
-			return mappers.ContainsKey(type);
-		}
+        public bool ContainsMapper(Type type)
+        {
+            return mappers.ContainsKey(type);
+        }
 
-		public void PushMapper(Type type)
-		{
+        public void PushMapper(Type type)
+        {
             var mapper = new MapperImpl();
-			mappers[type] = mapper;
-		}
+            mappers[type] = mapper;
+        }
 
-		public MapperImpl GetMapper(Type type)
-		{
-			if (mappers.ContainsKey(type))
-			{
-				return mappers[type];
-			}
-			return null;
-		}
-	}
+        public MapperImpl GetMapper(Type type)
+        {
+            if (mappers.ContainsKey(type))
+            {
+                return mappers[type];
+            }
+            return null;
+        }
+    }
 }

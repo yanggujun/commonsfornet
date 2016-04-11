@@ -15,8 +15,8 @@
 
 namespace Commons.Json.Mapper
 {
-	internal interface IMapEngineFactory
-	{
-		IMapEngine<T> CreateMapEngine<T>(T target, MapperContainer mappers, TypeCache typeCahce, string dateFormat);
-	}
+    internal interface IMapEngineFactory
+    {
+        IMapEngine<T> CreateMapEngine<T>(T target, MapperContainer mappers, TypeCache typeCahce, string dateFormat);
+    }
 }

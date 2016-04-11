@@ -16,63 +16,63 @@
 
 namespace Commons.Json.Mapper
 {
-	internal class MapContext : IMapContext
-	{
-		private string dateFormat = string.Empty;
-		public MapContext(string name)
-		{
-			Name = name;
-			Mappers = new MapperContainer();
-			Types = new TypeCache();
-			MapEngineFactory = new MapEngineFactory();
-		}
+    internal class MapContext : IMapContext
+    {
+        private string dateFormat = string.Empty;
+        public MapContext(string name)
+        {
+            Name = name;
+            Mappers = new MapperContainer();
+            Types = new TypeCache();
+            MapEngineFactory = new MapEngineFactory();
+        }
 
-		public string Name { get; private set; }
+        public string Name { get; private set; }
 
-		public IJsonObjectMapper<T> For<T>()
-		{
+        public IJsonObjectMapper<T> For<T>()
+        {
             var type = typeof(T);
-			if (!Mappers.ContainsMapper(type))
-			{
+            if (!Mappers.ContainsMapper(type))
+            {
                 Mappers.PushMapper(type);
-			}
+            }
             var mapper = Mappers.GetMapper(type);
             var jsonObjMapper = new JsonObjectMapper<T>(mapper);
             return jsonObjMapper;
-		}
+        }
 
-		public string ToJson<T>(T target)
-		{
+        public string ToJson<T>(T target)
+        {
             var mapEngine = MapEngineFactory.CreateMapEngine(target, Mappers, Types, dateFormat);
             return mapEngine.Map(target);
-		}
+        }
 
-		public T To<T>(string json)
-		{
-			var parseEngine = new JsonParseEngine();
-			var jsonValue = parseEngine.Parse(json);
+        public T To<T>(string json)
+        {
+            var parseEngine = new JsonParseEngine();
+            var jsonValue = parseEngine.Parse(json);
 
-			T target = default(T);
-			var targetType = typeof (T);
-			if (!targetType.IsJsonPrimitive() && !targetType.IsArray)
-			{
-				target = Types.Instantiate<T>(Mappers);
-			}
+            T target = default(T);
+            var targetType = typeof (T);
+            if (!targetType.IsJsonPrimitive() && !targetType.IsArray)
+            {
+                target = Types.Instantiate<T>(Mappers);
+            }
 
-			var mapEngine = MapEngineFactory.CreateMapEngine(target, Mappers, Types, dateFormat);
-			return mapEngine.Map(jsonValue);
-		}
+            var mapEngine = MapEngineFactory.CreateMapEngine(target, Mappers, Types, dateFormat);
+            return mapEngine.Map(jsonValue);
+        }
 
-		public MapperContainer Mappers { get; private set; }
+        public MapperContainer Mappers { get; private set; }
 
-		public TypeCache Types { get; private set; }
+        public TypeCache Types { get; private set; }
 
-		public IMapEngineFactory MapEngineFactory { get; private set; }
+        public IMapEngineFactory MapEngineFactory { get; private set; }
 
-		public string DateFormat
-		{
-			get { return dateFormat; } 
-			internal set { dateFormat = value; }
-		}
-	}
+        public string DateFormat
+        {
+            get { return dateFormat; } 
+            internal set { dateFormat = value; }
+        }
+    }
 }

@@ -24,11 +24,11 @@ namespace Commons.Json
 
         public const string JsonObjectCannotIndex = "The indexer cannot be applied to a json object";
 
-	    public const string OutOfRange = "The index is out of the JSON array range.";
+        public const string OutOfRange = "The index is out of the JSON array range.";
 
-	    public const string IndexerCannotApply = "The indexer type cannot be applied to the JSON array.";
+        public const string IndexerCannotApply = "The indexer type cannot be applied to the JSON array.";
 
-	    public const string CannotConvertToArray = "Cannot convert the JSON array to the specified object.";
+        public const string CannotConvertToArray = "Cannot convert the JSON array to the specified object.";
 
         public const string NoDefaultConstructor = "The type does not contain a default constructor so it cannot be instantiated.";
 
@@ -42,9 +42,9 @@ namespace Commons.Json
 
         public const string FieldNotProperty = "The expression only contains a field not a property.";
 
-	    public const string NoPropertyToMap = "No property is not defined yet.";
+        public const string NoPropertyToMap = "No property is not defined yet.";
 
-	    public const string InvalidDateFormat = "The date time format is invalid.";
+        public const string InvalidDateFormat = "The date time format is invalid.";
 
         public const string NotEnum = "The type is not an Enum.";
     }

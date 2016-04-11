@@ -31,7 +31,7 @@ namespace Commons.Json
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
-		[Obsolete]
+        [Obsolete]
         public static dynamic Parse(string json)
         {
             return JsonParser.Parse(json);
@@ -150,15 +150,15 @@ namespace Commons.Json
             return JsonUtils.FormatJsonObject(valueMap);
         }
 
-	    public bool HasValue(string key)
-	    {
-		    return valueMap.ContainsKey(key);
-	    }
+        public bool HasValue(string key)
+        {
+            return valueMap.ContainsKey(key);
+        }
 
-	    public JsonValue this[string key]
-	    {
-		    get { return valueMap[key]; }
-		    set { valueMap[key] = value; }
-	    }
+        public JsonValue this[string key]
+        {
+            get { return valueMap[key]; }
+            set { valueMap[key] = value; }
+        }
     }
 }

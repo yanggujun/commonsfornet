@@ -19,111 +19,111 @@ using System.Text;
 
 namespace Commons.Json.Mapper
 {
-	internal class ObjectParser : IParseEngine
-	{
-		private IParseEngine jsonParser;
-		private IParseEngine stringParser;
+    internal class ObjectParser : IParseEngine
+    {
+        private IParseEngine jsonParser;
+        private IParseEngine stringParser;
 
-		public ObjectParser(IParseEngine jsonParser, IParseEngine stringParser)
-		{
-			this.jsonParser = jsonParser;
-			this.stringParser = stringParser;
-		}
+        public ObjectParser(IParseEngine jsonParser, IParseEngine stringParser)
+        {
+            this.jsonParser = jsonParser;
+            this.stringParser = stringParser;
+        }
 
-		public JValue Parse(string json)
-		{
-			var fragment = new StringBuilder();
-			IParseEngine parser = stringParser;
+        public JValue Parse(string json)
+        {
+            var fragment = new StringBuilder();
+            IParseEngine parser = stringParser;
 
-			var quoted = false;
-			var jsonObject = new JObject();
-			var braceMatch = 0;
-			var bracketMatch = 0;
-			for (var pos = 0; pos < json.Length; pos++)
-			{
-				if (braceMatch < 0)
-				{
-					throw new ArgumentException(Messages.InvalidFormat);
-				}
-				var ch = json[pos];
-				if (ch.Equals(JsonTokens.Quoter))
-				{
-					quoted = !quoted;
-				}
+            var quoted = false;
+            var jsonObject = new JObject();
+            var braceMatch = 0;
+            var bracketMatch = 0;
+            for (var pos = 0; pos < json.Length; pos++)
+            {
+                if (braceMatch < 0)
+                {
+                    throw new ArgumentException(Messages.InvalidFormat);
+                }
+                var ch = json[pos];
+                if (ch.Equals(JsonTokens.Quoter))
+                {
+                    quoted = !quoted;
+                }
 
-				if (quoted)
-				{
-					fragment.Append(ch);
-					continue;
-				}
+                if (quoted)
+                {
+                    fragment.Append(ch);
+                    continue;
+                }
 
-				if (ch.Equals(JsonTokens.LeftBrace))
-				{
-					++braceMatch;
-					if (braceMatch > 1)
-					{
-						fragment.Append(ch);
-					}
-				}
-				else if (ch.Equals(JsonTokens.LeftBracket))
-				{
-					++bracketMatch;
-					fragment.Append(ch);
-				}
-				else if (ch.Equals(JsonTokens.RightBracket))
-				{
-					--bracketMatch;
-					fragment.Append(ch);
-				}
-				else if (ch.Equals(JsonTokens.Colon) && braceMatch == 1 && bracketMatch ==0)
-				{
-					var key = parser.Parse(fragment.ToString());
-					jsonObject.PutKey(key as JString);
-					fragment.Clear();
-					parser = jsonParser;
-				}
-				else if (ch.Equals(JsonTokens.Comma) && braceMatch == 1 && bracketMatch == 0)
-				{
-					var v = parser.Parse(fragment.ToString());
-					jsonObject.PutObject(v);
-					fragment.Clear();
-					parser = stringParser;
-				}
-				else if (ch.Equals(JsonTokens.RightBrace))
-				{
-					--braceMatch;
-					if (braceMatch == 0)
-					{
-						var text = fragment.ToString();
-						if (!string.IsNullOrWhiteSpace(text))
-						{
-							var v = parser.Parse(text);
-							jsonObject.PutObject(v);
-							if (pos < json.Length - 1)
-							{
-								throw new ArgumentException(Messages.InvalidFormat);
-							}
-						}
-					}
-					else if (braceMatch > 0)
-					{
-						fragment.Append(ch);
-					}
-				}
-				else
-				{
-					fragment.Append(ch);
-				}
-			}
-			if (quoted || braceMatch != 0)
-			{
-				throw new ArgumentException(Messages.InvalidFormat);
-			}
-			if (!jsonObject.Validate())
-			{
-				throw new ArgumentException(Messages.InvalidFormat);
-			}
-			return jsonObject;
-		}
-	}
+                if (ch.Equals(JsonTokens.LeftBrace))
+                {
+                    ++braceMatch;
+                    if (braceMatch > 1)
+                    {
+                        fragment.Append(ch);
+                    }
+                }
+                else if (ch.Equals(JsonTokens.LeftBracket))
+                {
+                    ++bracketMatch;
+                    fragment.Append(ch);
+                }
+                else if (ch.Equals(JsonTokens.RightBracket))
+                {
+                    --bracketMatch;
+                    fragment.Append(ch);
+                }
+                else if (ch.Equals(JsonTokens.Colon) && braceMatch == 1 && bracketMatch ==0)
+                {
+                    var key = parser.Parse(fragment.ToString());
+                    jsonObject.PutKey(key as JString);
+                    fragment.Clear();
+                    parser = jsonParser;
+                }
+                else if (ch.Equals(JsonTokens.Comma) && braceMatch == 1 && bracketMatch == 0)
+                {
+                    var v = parser.Parse(fragment.ToString());
+                    jsonObject.PutObject(v);
+                    fragment.Clear();
+                    parser = stringParser;
+                }
+                else if (ch.Equals(JsonTokens.RightBrace))
+                {
+                    --braceMatch;
+                    if (braceMatch == 0)
+                    {
+                        var text = fragment.ToString();
+                        if (!string.IsNullOrWhiteSpace(text))
+                        {
+                            var v = parser.Parse(text);
+                            jsonObject.PutObject(v);
+                            if (pos < json.Length - 1)
+                            {
+                                throw new ArgumentException(Messages.InvalidFormat);
+                            }
+                        }
+                    }
+                    else if (braceMatch > 0)
+                    {
+                        fragment.Append(ch);
+                    }
+                }
+                else
+                {
+                    fragment.Append(ch);
+                }
+            }
+            if (quoted || braceMatch != 0)
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+            if (!jsonObject.Validate())
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+            return jsonObject;
+        }
+    }
 }

@@ -28,10 +28,10 @@ namespace Commons.Json
         {
             var type = value.GetType();
 
-	        if (value is JsonValue)
-	        {
-		        return (JsonValue)value;
-	        }
+            if (value is JsonValue)
+            {
+                return (JsonValue)value;
+            }
             if (type.IsPrimitive || type == typeof(bool) || type == typeof(string))
             {
                 return new JsonPrimitive(value);

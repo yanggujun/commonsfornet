@@ -20,16 +20,16 @@ using System.Linq.Expressions;
 namespace Commons.Json.Mapper
 {
     //TODO: Dictionary key map
-	public interface IJsonObjectMapper<T> : IPropertyMapper<T>, IJsonKeyMapper<T>, INotMapper<T>, IFormatMapper
-	{
-		IJsonObjectMapper<T> ConstructWith(Func<T> creator);
-		//IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter);
-		//IJsonObjectMapper<T> MapWith(Func<JValue, T> converter);
-	}
+    public interface IJsonObjectMapper<T> : IPropertyMapper<T>, IJsonKeyMapper<T>, INotMapper<T>, IFormatMapper
+    {
+        IJsonObjectMapper<T> ConstructWith(Func<T> creator);
+        //IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter);
+        //IJsonObjectMapper<T> MapWith(Func<JValue, T> converter);
+    }
 
-	public interface IPropertyMapper<T>
-	{
-		IJsonKeyMapper<T> MapProperty(Expression<Func<T, object>> propertyExp);
+    public interface IPropertyMapper<T>
+    {
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, object>> propertyExp);
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, int>> propertyExp);
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, double>> propertyExp);
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, float>> propertyExp);
@@ -44,23 +44,23 @@ namespace Commons.Json.Mapper
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, ushort>> propertyExp);
 #pragma warning restore 3001
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, decimal>> propertyExp);
-		IJsonKeyMapper<T> MapProperty(Expression<Func<T, char>> propertyExp);
-		IJsonKeyMapper<T> MapProperty(Expression<Func<T, DateTime>> propertyExp);
-	}
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, char>> propertyExp);
+        IJsonKeyMapper<T> MapProperty(Expression<Func<T, DateTime>> propertyExp);
+    }
 
-	public interface IJsonKeyMapper<T>
-	{
-		IJsonObjectMapper<T> With(string jsonKey);
-	}
+    public interface IJsonKeyMapper<T>
+    {
+        IJsonObjectMapper<T> With(string jsonKey);
+    }
 
-	public interface INotMapper<T>
-	{
-		IPropertyMapper<T> Not { get; } 
-	}
+    public interface INotMapper<T>
+    {
+        IPropertyMapper<T> Not { get; } 
+    }
 
-	public interface IFormatMapper
-	{
-		IFormatMapper UseDateFormat(string format);
-		//IFormatMapper UseCulture(CultureInfo culture);
-	}
+    public interface IFormatMapper
+    {
+        IFormatMapper UseDateFormat(string format);
+        //IFormatMapper UseCulture(CultureInfo culture);
+    }
 }

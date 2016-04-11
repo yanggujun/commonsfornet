@@ -21,43 +21,43 @@ using Commons.Utils;
 
 namespace Commons.Json
 {
-	[CLSCompliant(true)]
-	public static class JsonMapper
-	{
-		private const string DefaultContext = "default";
-		private static HashedMap<string, MapContext> contexts = new HashedMap<string, MapContext>();
+    [CLSCompliant(true)]
+    public static class JsonMapper
+    {
+        private const string DefaultContext = "default";
+        private static HashedMap<string, MapContext> contexts = new HashedMap<string, MapContext>();
 
-		public static IMapContext UseDateFormat(string format)
-		{
-			var context = GetContext(DefaultContext);
-			context.DateFormat = format;
-			return context;
-		}
+        public static IMapContext UseDateFormat(string format)
+        {
+            var context = GetContext(DefaultContext);
+            context.DateFormat = format;
+            return context;
+        }
 
-		public static IJsonObjectMapper<T> For<T>()
-		{
-			var context = GetContext(DefaultContext);
-			return context.For<T>();
-		}
+        public static IJsonObjectMapper<T> For<T>()
+        {
+            var context = GetContext(DefaultContext);
+            return context.For<T>();
+        }
 
-		public static T To<T>(string json)
-		{
-			var context = GetContext(DefaultContext);
-			return context.To<T>(json);
-		}
+        public static T To<T>(string json)
+        {
+            var context = GetContext(DefaultContext);
+            return context.To<T>(json);
+        }
 
-		public static string ToJson<T>(T target)
-		{
-			var context = GetContext(DefaultContext);
-			return context.ToJson<T>(target);
-		}
+        public static string ToJson<T>(T target)
+        {
+            var context = GetContext(DefaultContext);
+            return context.ToJson<T>(target);
+        }
 
-		public static dynamic Parse(string json)
-		{
-			return JsonParser.Parse(json);
-		}
+        public static dynamic Parse(string json)
+        {
+            return JsonParser.Parse(json);
+        }
 
-		public static T ConvertTo<T>(string json, Transformer<JValue, T> transform)
+        public static T ConvertTo<T>(string json, Transformer<JValue, T> transform)
         {
             Guarder.CheckNull(transform, "transform");
             var engine = new JsonParseEngine();
@@ -89,16 +89,16 @@ namespace Commons.Json
             return value.ToString();
         }
 
-		private static MapContext GetContext(string contextName)
-		{
-			if (!contexts.ContainsKey(contextName))
-			{
-				var ctx = new MapContext(contextName);
-				contexts.Add(DefaultContext, ctx);
-			}
-			var context = contexts[contextName];
+        private static MapContext GetContext(string contextName)
+        {
+            if (!contexts.ContainsKey(contextName))
+            {
+                var ctx = new MapContext(contextName);
+                contexts.Add(DefaultContext, ctx);
+            }
+            var context = contexts[contextName];
 
-			return context;
-		}
-	}
+            return context;
+        }
+    }
 }

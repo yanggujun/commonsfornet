@@ -23,71 +23,71 @@ using System.Text;
 
 namespace Commons.Json.Mapper
 {
-	internal class MapEngine<T> : IMapEngine<T>
-	{
-		private MapperContainer mappers;
+    internal class MapEngine<T> : IMapEngine<T>
+    {
+        private MapperContainer mappers;
         private T targetObj;
         private TypeCache typeCache;
-		private string dateFormat;
+        private string dateFormat;
 
-		public MapEngine(T target, MapperContainer mappers, TypeCache typeCache, string dateFormat)
-		{
-			this.mappers = mappers;
+        public MapEngine(T target, MapperContainer mappers, TypeCache typeCache, string dateFormat)
+        {
+            this.mappers = mappers;
             this.targetObj = target;
             this.typeCache = typeCache;
-			this.dateFormat = dateFormat;
-		}
+            this.dateFormat = dateFormat;
+        }
 
-		public T Map(JValue jsonValue)
-		{
+        public T Map(JValue jsonValue)
+        {
             return (T)InternalMap(jsonValue, targetObj, typeof(T));
         }
 
         public object InternalMap(JValue jsonValue, object obj, Type type)
         {
-			if (jsonValue.Is<JString>() || jsonValue.Is<JBoolean>()
-			    || jsonValue.Is<JInteger>() || jsonValue.Is<JDecimal>())
-			{
+            if (jsonValue.Is<JString>() || jsonValue.Is<JBoolean>()
+                || jsonValue.Is<JInteger>() || jsonValue.Is<JDecimal>())
+            {
                 return ExtractPrimitiveValue(jsonValue, type);
-			}
+            }
 
-			if (jsonValue.Is<JNull>())
-			{
+            if (jsonValue.Is<JNull>())
+            {
                 return null;
-			}
+            }
 
-	        if (type.IsArray)
-	        {
-		        JArray array;
-		        if (!jsonValue.Is<JArray>(out array))
-		        {
-			        throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-		        }
-		        return ExtractJsonArray(array, type);
-	        }
+            if (type.IsArray)
+            {
+                JArray array;
+                if (!jsonValue.Is<JArray>(out array))
+                {
+                    throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                }
+                return ExtractJsonArray(array, type);
+            }
 
-		    Populate(obj, jsonValue);
+            Populate(obj, jsonValue);
 
-	        return obj;
-		}
+            return obj;
+        }
 
-		public string Map(T target)
-		{
+        public string Map(T target)
+        {
             return Jsonize(target);
-		}
+        }
 
-		private object ExtractJsonArray(JArray jsonArray, Type arrayType)
-		{
-			var itemType = arrayType.GetElementType();
-			var array = Array.CreateInstance(itemType, jsonArray.Length);
-			for (var i = 0; i < jsonArray.Length; i++)
-			{
-				var jsonValue = GetValueFromJsonArrayItem(jsonArray[i], itemType);
-				array.SetValue(jsonValue, i);
-			}
+        private object ExtractJsonArray(JArray jsonArray, Type arrayType)
+        {
+            var itemType = arrayType.GetElementType();
+            var array = Array.CreateInstance(itemType, jsonArray.Length);
+            for (var i = 0; i < jsonArray.Length; i++)
+            {
+                var jsonValue = GetValueFromJsonArrayItem(jsonArray[i], itemType);
+                array.SetValue(jsonValue, i);
+            }
 
-			return array;
-		}
+            return array;
+        }
 
         private string Jsonize(object target)
         {
@@ -108,14 +108,14 @@ namespace Commons.Json.Mapper
                 sb.Append(JsonTokens.Quoter).Append(target).Append(JsonTokens.Quoter);
                 json = sb.ToString();
             }
-			else if (type == typeof (DateTime))
-			{
-				var sb = new StringBuilder();
-				var dt = (DateTime) target;
-				var time = string.IsNullOrEmpty(dateFormat) ? dt.ToString() : dt.ToString(dateFormat);
-				sb.Append(JsonTokens.Quoter).Append(time).Append(JsonTokens.Quoter);
-				json = sb.ToString();
-			}
+            else if (type == typeof (DateTime))
+            {
+                var sb = new StringBuilder();
+                var dt = (DateTime) target;
+                var time = string.IsNullOrEmpty(dateFormat) ? dt.ToString() : dt.ToString(dateFormat);
+                sb.Append(JsonTokens.Quoter).Append(time).Append(JsonTokens.Quoter);
+                json = sb.ToString();
+            }
             else if (type.IsDictionary(out keyType))
             {
                 var sb = new StringBuilder();
@@ -187,13 +187,13 @@ namespace Commons.Json.Mapper
                 sb.Append(JsonTokens.LeftBrace);
                 foreach (var prop in manager.Getters)
                 {
-	                if (mapper != null)
-	                {
-		                if (mapper.IgnoredProperties.Contains(prop.Name))
-		                {
-			                continue;
-		                }
-	                }
+                    if (mapper != null)
+                    {
+                        if (mapper.IgnoredProperties.Contains(prop.Name))
+                        {
+                            continue;
+                        }
+                    }
                     var propValue = prop.GetValue(target, null);
                     sb.Append(JsonTokens.Quoter);
                     sb.Append(GetJsonKeyFromProperty(prop, mapper));
@@ -231,12 +231,12 @@ namespace Commons.Json.Mapper
             JArray jsonArray;
             if (jsonValue.Is<JObject>(out jsonObj))
             {
-	            PopulateJsonObject(obj, jsonObj);
+                PopulateJsonObject(obj, jsonObj);
             }
-			else if (jsonValue.Is<JArray>(out jsonArray))
-			{
-				var type = obj.GetType();
-				Type itemType;
+            else if (jsonValue.Is<JArray>(out jsonArray))
+            {
+                var type = obj.GetType();
+                Type itemType;
                 if (type.IsList(out itemType))
                 {
                     var add = type.GetMethod(Messages.AddMethod);
@@ -246,35 +246,35 @@ namespace Commons.Json.Mapper
                         add.Invoke(obj, new[] { arrayItemValue });
                     }
                 }
-			}
+            }
         }
 
-		private object GetValueFromJsonArrayItem(JValue jsonValue, Type itemType)
-		{
-			if (itemType.IsJsonPrimitive())
-			{
-				return ExtractPrimitiveValue(jsonValue, itemType);
-			}
-			else if (itemType.IsArray)
-			{
-				JArray array;
-				if (!jsonValue.Is<JArray>(out array))
-				{
-					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-				}
-				return ExtractJsonArray(array, itemType);
-			}
-			else
-			{
-				var itemValue = typeCache.Instantiate(itemType, mappers);
-				Populate(itemValue, jsonValue);
-				return itemValue;
-			}
-		}
+        private object GetValueFromJsonArrayItem(JValue jsonValue, Type itemType)
+        {
+            if (itemType.IsJsonPrimitive())
+            {
+                return ExtractPrimitiveValue(jsonValue, itemType);
+            }
+            else if (itemType.IsArray)
+            {
+                JArray array;
+                if (!jsonValue.Is<JArray>(out array))
+                {
+                    throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                }
+                return ExtractJsonArray(array, itemType);
+            }
+            else
+            {
+                var itemValue = typeCache.Instantiate(itemType, mappers);
+                Populate(itemValue, jsonValue);
+                return itemValue;
+            }
+        }
 
-		private void PopulateJsonObject(object target, JObject jsonObj)
-		{
-			var type = target.GetType();
+        private void PopulateJsonObject(object target, JObject jsonObj)
+        {
+            var type = target.GetType();
             Type keyType;
             Type valueType;
             if (type.IsDictionary(out keyType, out valueType))
@@ -306,14 +306,14 @@ namespace Commons.Json.Mapper
                 }
                 foreach (var prop in properties)
                 {
-	                if (mapper != null)
-	                {
-		                if (mapper.IgnoredProperties.Contains(prop.Name))
-		                {
-			                continue;
-		                }
-	                }
-	                var key = GetJsonKeyFromProperty(prop, mapper);
+                    if (mapper != null)
+                    {
+                        if (mapper.IgnoredProperties.Contains(prop.Name))
+                        {
+                            continue;
+                        }
+                    }
+                    var key = GetJsonKeyFromProperty(prop, mapper);
                     if (jsonObj.ContainsKey(key))
                     {
                         var propertyType = prop.PropertyType;
@@ -321,16 +321,16 @@ namespace Commons.Json.Mapper
                         {
                             PopulateJsonPrimitive(target, jsonObj, prop, mapper);
                         }
-						else if (propertyType.IsArray)
-						{
-							JArray array;
-							if (!jsonObj[key].Is<JArray>(out array))
-							{
-								throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-							}
-							var value = ExtractJsonArray(array, propertyType);
-							prop.SetValue(target, value, null);
-						}
+                        else if (propertyType.IsArray)
+                        {
+                            JArray array;
+                            if (!jsonObj[key].Is<JArray>(out array))
+                            {
+                                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                            }
+                            var value = ExtractJsonArray(array, propertyType);
+                            prop.SetValue(target, value, null);
+                        }
                         else
                         {
                             var propValue = prop.GetValue(target, null);
@@ -339,169 +339,169 @@ namespace Commons.Json.Mapper
                     }
                 }
             }
-		}
+        }
 
-		private void PopulateJsonPrimitive(object target, JObject jsonObj, PropertyInfo prop, MapperImpl mapper)
-		{
-			var propertyType = prop.PropertyType;
+        private void PopulateJsonPrimitive(object target, JObject jsonObj, PropertyInfo prop, MapperImpl mapper)
+        {
+            var propertyType = prop.PropertyType;
             var name = GetJsonKeyFromProperty(prop, mapper);
 
-			var value = jsonObj[name];
-			var valueType = value.GetType();
-			if (valueType == typeof (JArray) || valueType == typeof (JObject))
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-			}
+            var value = jsonObj[name];
+            var valueType = value.GetType();
+            if (valueType == typeof (JArray) || valueType == typeof (JObject))
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+            }
 
-			var propertyValue = ExtractPrimitiveValue(value, propertyType);
+            var propertyValue = ExtractPrimitiveValue(value, propertyType);
 
-			prop.SetValue(target, propertyValue, null);
-		}
+            prop.SetValue(target, propertyValue, null);
+        }
 
-		private object ExtractPrimitiveValue(JValue value, Type type)
-		{
-			JString str;
-			JInteger integer;
-			JBoolean boolean;
-			JDecimal floating;
-			object propertyValue;
-			if (value.Is<JString>(out str))
-			{
-				if (type != typeof (string) && type != typeof (DateTime) && !type.IsEnum)
-				{
-					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-				}
-				if (type == typeof (DateTime))
-				{
-					DateTime dt;
-					if (TryParseDate(str, out dt))
-					{
-						propertyValue = dt;
-					}
-					else
-					{
-						throw new InvalidCastException(Messages.InvalidDateFormat);
-					}
-				}
-				else if (type.IsEnum)
-				{
-					propertyValue = Enum.Parse(type, str);
-				}
-				else
-				{
-					string v = str;
-					propertyValue = v;
-				}
-			}
-			else if (value.Is<JInteger>(out integer))
-			{
-				if (!type.IsJsonNumber())
-				{
-					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-				}
-				propertyValue = GetIntegerPropertyValue(type, integer);
-			}
-			else if (value.Is<JBoolean>(out boolean))
-			{
-				if (type != typeof (bool))
-				{
-					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-				}
-				bool v = boolean;
-				propertyValue = v;
-			}
-			else if (value.Is<JDecimal>(out floating))
-			{
-				if (type != typeof (float) && type != typeof (double) && type != typeof (decimal))
-				{
-					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-				}
-				if (type == typeof (float))
-				{
-					propertyValue = floating.AsSingle();
-				}
-				else if (type == typeof (double))
-				{
-					propertyValue = floating.AsDouble();
-				}
-				else
-				{
-					propertyValue = floating.AsDecimal();
-				}
-			}
-			else if (value.Is<JNull>())
-			{
-				propertyValue = null;
-			}
-			else
-			{
-				// Unlikely to happen.
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-			}
-			return propertyValue;
-		}
+        private object ExtractPrimitiveValue(JValue value, Type type)
+        {
+            JString str;
+            JInteger integer;
+            JBoolean boolean;
+            JDecimal floating;
+            object propertyValue;
+            if (value.Is<JString>(out str))
+            {
+                if (type != typeof (string) && type != typeof (DateTime) && !type.IsEnum)
+                {
+                    throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                }
+                if (type == typeof (DateTime))
+                {
+                    DateTime dt;
+                    if (TryParseDate(str, out dt))
+                    {
+                        propertyValue = dt;
+                    }
+                    else
+                    {
+                        throw new InvalidCastException(Messages.InvalidDateFormat);
+                    }
+                }
+                else if (type.IsEnum)
+                {
+                    propertyValue = Enum.Parse(type, str);
+                }
+                else
+                {
+                    string v = str;
+                    propertyValue = v;
+                }
+            }
+            else if (value.Is<JInteger>(out integer))
+            {
+                if (!type.IsJsonNumber())
+                {
+                    throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                }
+                propertyValue = GetIntegerPropertyValue(type, integer);
+            }
+            else if (value.Is<JBoolean>(out boolean))
+            {
+                if (type != typeof (bool))
+                {
+                    throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                }
+                bool v = boolean;
+                propertyValue = v;
+            }
+            else if (value.Is<JDecimal>(out floating))
+            {
+                if (type != typeof (float) && type != typeof (double) && type != typeof (decimal))
+                {
+                    throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                }
+                if (type == typeof (float))
+                {
+                    propertyValue = floating.AsSingle();
+                }
+                else if (type == typeof (double))
+                {
+                    propertyValue = floating.AsDouble();
+                }
+                else
+                {
+                    propertyValue = floating.AsDecimal();
+                }
+            }
+            else if (value.Is<JNull>())
+            {
+                propertyValue = null;
+            }
+            else
+            {
+                // Unlikely to happen.
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+            }
+            return propertyValue;
+        }
 
-		private static object GetIntegerPropertyValue(Type propertyType, JInteger integer)
-		{
-			object integerObj = null;
-			if (propertyType == typeof (long))
-			{
-				integerObj = integer.AsInt64();
-			}
-			else if (propertyType == typeof (int))
-			{
-				integerObj = integer.AsInt32();
-			}
-			else if (propertyType == typeof (byte))
-			{
-				integerObj = integer.AsByte();
-			}
-			else if (propertyType == typeof (sbyte))
-			{
-				integerObj = integer.AsSByte();
-			}
-			else if (propertyType == typeof (short))
-			{
-				integerObj = integer.AsInt16();
-			}
-			else if (propertyType == typeof (double))
-			{
-				integerObj = integer.AsDouble();
-			}
-			else if (propertyType == typeof (float))
-			{
-				integerObj = integer.AsSingle();
-			}
-			else if (propertyType == typeof (decimal))
-			{
-				integerObj = integer.AsDecimal();
-			}
-			else if (propertyType == typeof (ulong))
-			{
-				integerObj = integer.AsUInt64();
-			}
-			else if (propertyType == typeof (uint))
-			{
-				integerObj = integer.AsUInt32();
-			}
-			else if (propertyType == typeof (ushort))
-			{
-				integerObj = integer.AsUInt16();
-			}
+        private static object GetIntegerPropertyValue(Type propertyType, JInteger integer)
+        {
+            object integerObj = null;
+            if (propertyType == typeof (long))
+            {
+                integerObj = integer.AsInt64();
+            }
+            else if (propertyType == typeof (int))
+            {
+                integerObj = integer.AsInt32();
+            }
+            else if (propertyType == typeof (byte))
+            {
+                integerObj = integer.AsByte();
+            }
+            else if (propertyType == typeof (sbyte))
+            {
+                integerObj = integer.AsSByte();
+            }
+            else if (propertyType == typeof (short))
+            {
+                integerObj = integer.AsInt16();
+            }
+            else if (propertyType == typeof (double))
+            {
+                integerObj = integer.AsDouble();
+            }
+            else if (propertyType == typeof (float))
+            {
+                integerObj = integer.AsSingle();
+            }
+            else if (propertyType == typeof (decimal))
+            {
+                integerObj = integer.AsDecimal();
+            }
+            else if (propertyType == typeof (ulong))
+            {
+                integerObj = integer.AsUInt64();
+            }
+            else if (propertyType == typeof (uint))
+            {
+                integerObj = integer.AsUInt32();
+            }
+            else if (propertyType == typeof (ushort))
+            {
+                integerObj = integer.AsUInt16();
+            }
 
-			return integerObj;
-		}
+            return integerObj;
+        }
 
-		private bool TryParseDate(string str, out DateTime dt)
-		{
-			if (string.IsNullOrEmpty(dateFormat))
-			{
-				return DateTime.TryParse(str, out dt);
-			}
-			else
-			{
-				return DateTime.TryParseExact(str, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dt);
-			}
-		}
-	}
+        private bool TryParseDate(string str, out DateTime dt)
+        {
+            if (string.IsNullOrEmpty(dateFormat))
+            {
+                return DateTime.TryParse(str, out dt);
+            }
+            else
+            {
+                return DateTime.TryParseExact(str, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dt);
+            }
+        }
+    }
 }

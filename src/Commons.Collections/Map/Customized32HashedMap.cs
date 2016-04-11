@@ -51,7 +51,7 @@ namespace Commons.Collections.Map
         public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer, IEqualityComparer<K> comparer) 
             : this(capacity, new MurmurHash32(), transformer, comparer.Equals)
         {
-	        transform = transformer;
+            transform = transformer;
         }
 
         public Customized32HashedMap(int capacity, Transformer<K, byte[]> transformer, Equator<K> isEqual)

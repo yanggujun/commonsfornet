@@ -18,17 +18,17 @@ using System;
 
 namespace Commons.Json.Mapper
 {
-	internal class BoolParser : IParseEngine
-	{
-		public JValue Parse(string json)
-		{
-			var text = json.Trim();
-			bool result;
-			if (!bool.TryParse(text, out result))
-			{
-				throw new ArgumentException(Messages.InvalidFormat);
-			}
+    internal class BoolParser : IParseEngine
+    {
+        public JValue Parse(string json)
+        {
+            var text = json.Trim();
+            bool result;
+            if (!bool.TryParse(text, out result))
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
             return new JBoolean(result);
-		}
-	}
+        }
+    }
 }

@@ -1,32 +1,32 @@
 ﻿{
-	"FieldI": "valueI",
-	"NestedItems": 
-	[
-		{
-			"FieldE": "valueE1",
-			"FieldF": 100,
-			"FieldG": 1000.2345,
-			"FieldH": true,
-			"Simple": 
-			{
-				"FieldA": "valueA1",
-				"FieldB": 200,
-				"FieldC": 10000.35985,
-				"fieldd": false
-			}
-		},
-		{
-			"fielde": "valueE2",
-			"FieldF": 300,
-			"fieldg": 2000.2345,
-			"FieldH": false,
-			"simple": 
-			{
-				"FIELDA": "valueA2",
-				"FIELDB": 400,
-				"FieldC": 20000.35985,
-				"fieldd": true
-			}
-		}
-	]
+    "FieldI": "valueI",
+    "NestedItems": 
+    [
+        {
+            "FieldE": "valueE1",
+            "FieldF": 100,
+            "FieldG": 1000.2345,
+            "FieldH": true,
+            "Simple": 
+            {
+                "FieldA": "valueA1",
+                "FieldB": 200,
+                "FieldC": 10000.35985,
+                "fieldd": false
+            }
+        },
+        {
+            "fielde": "valueE2",
+            "FieldF": 300,
+            "fieldg": 2000.2345,
+            "FieldH": false,
+            "simple": 
+            {
+                "FIELDA": "valueA2",
+                "FIELDB": 400,
+                "FieldC": 20000.35985,
+                "fieldd": true
+            }
+        }
+    ]
 }

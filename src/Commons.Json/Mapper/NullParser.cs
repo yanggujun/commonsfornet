@@ -18,16 +18,16 @@ using System;
 
 namespace Commons.Json.Mapper
 {
-	internal class NullParser : IParseEngine
-	{
-		public JValue Parse(string json)
-		{
-			var text = json.Trim();
-			if (!text.Equals(JsonTokens.Null, StringComparison.OrdinalIgnoreCase))
-			{
-				throw new ArgumentException(Messages.InvalidFormat);
-			}
-			return JNull.Value;
-		}
-	}
+    internal class NullParser : IParseEngine
+    {
+        public JValue Parse(string json)
+        {
+            var text = json.Trim();
+            if (!text.Equals(JsonTokens.Null, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+            return JNull.Value;
+        }
+    }
 }

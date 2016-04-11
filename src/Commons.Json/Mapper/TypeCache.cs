@@ -32,11 +32,11 @@ namespace Commons.Json.Mapper
             {
                 throw new InvalidOperationException(Messages.TypeNotSupported);
             }
-	        return (T) Instantiate(type, mappers);
+            return (T) Instantiate(type, mappers);
         }
 
-	    public object Instantiate(Type type, MapperContainer mappers)
-	    {
+        public object Instantiate(Type type, MapperContainer mappers)
+        {
             CacheTypeProperties(type);
             object value;
             if (!type.IsList() && !type.IsDictionary())
@@ -46,11 +46,11 @@ namespace Commons.Json.Mapper
             }
             else
             {
-		        value = Activator.CreateInstance(type);
+                value = Activator.CreateInstance(type);
             }
 
             return value;
-	    }
+        }
 
         public TypeManager this[Type type]
         {
@@ -74,32 +74,32 @@ namespace Commons.Json.Mapper
             }
         }
 
-	    private object Initialize(TypeManager manager, MapperContainer mappers)
-	    {
+        private object Initialize(TypeManager manager, MapperContainer mappers)
+        {
             if (!CanBeInstantiated(manager, mappers))
             {
                 throw new InvalidOperationException(Messages.NoDefaultConstructor);
             }
-		    var value = CreateInstance(manager.Type, mappers);
-		    var properties = manager.Setters;
-		    foreach (var prop in properties)
-		    {
-			    var propType = prop.PropertyType;
-			    if (!propType.IsJsonPrimitive() && propType.Deserializable() && !propType.IsArray)
-			    {
-				    if (propType.IsList())
-				    {
-					    prop.SetValue(value, Activator.CreateInstance(propType), null);
-				    }
-				    else
-				    {
-					    prop.SetValue(value, Initialize(typeManagers[propType], mappers), null);
-				    }
-			    }
-		    }
+            var value = CreateInstance(manager.Type, mappers);
+            var properties = manager.Setters;
+            foreach (var prop in properties)
+            {
+                var propType = prop.PropertyType;
+                if (!propType.IsJsonPrimitive() && propType.Deserializable() && !propType.IsArray)
+                {
+                    if (propType.IsList())
+                    {
+                        prop.SetValue(value, Activator.CreateInstance(propType), null);
+                    }
+                    else
+                    {
+                        prop.SetValue(value, Initialize(typeManagers[propType], mappers), null);
+                    }
+                }
+            }
 
-		    return value;
-	    }
+            return value;
+        }
 
         private void CacheTypeProperties(Type type)
         {
@@ -122,14 +122,14 @@ namespace Commons.Json.Mapper
                 var properties = new List<PropertyInfo>();
                 properties.AddRange(manager.Setters);
                 properties.AddRange(manager.Getters);
-				foreach (var property in properties)
-				{
-					var propertyType = property.PropertyType;
-					if (!propertyType.IsJsonPrimitive())
-					{
-						CacheTypeProperties(propertyType);
-					}
-				}
+                foreach (var property in properties)
+                {
+                    var propertyType = property.PropertyType;
+                    if (!propertyType.IsJsonPrimitive())
+                    {
+                        CacheTypeProperties(propertyType);
+                    }
+                }
             }
         }
 

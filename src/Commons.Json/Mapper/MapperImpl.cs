@@ -12,18 +12,18 @@ namespace Commons.Json.Mapper
 {
     internal class MapperImpl
     {
-	    private readonly HashedBimap<string, string> keyPropMap = new HashedBimap<string, string>(new IgnoreCaseStringEquator(), new IgnoreCaseStringEquator());
-		private readonly HashedSet<string> ignoredProps = new HashedSet<string>();
+        private readonly HashedBimap<string, string> keyPropMap = new HashedBimap<string, string>(new IgnoreCaseStringEquator(), new IgnoreCaseStringEquator());
+        private readonly HashedSet<string> ignoredProps = new HashedSet<string>();
 
         public void Map(string key, string prop)
         {
             keyPropMap.Enforce(key, prop);
         }
 
-	    public void IgnoreProperty(string prop)
-	    {
-		    ignoredProps.Add(prop);
-	    }
+        public void IgnoreProperty(string prop)
+        {
+            ignoredProps.Add(prop);
+        }
 
         public string GetKey(string prop)
         {
@@ -45,15 +45,15 @@ namespace Commons.Json.Mapper
             return keyPropMap.TryGetValue(key, out property);
         }
 
-	    public IReadOnlyStrictSet<string> IgnoredProperties
-	    {
-		    get { return ignoredProps; }
-	    }
+        public IReadOnlyStrictSet<string> IgnoredProperties
+        {
+            get { return ignoredProps; }
+        }
 
         public Func<object> Create {get;set;}
 
         public Func<List<object>, IEnumerable<object>> ArrayConverter { get; set; }
 
-		public string DateFormat { get; set; }
+        public string DateFormat { get; set; }
     }
 }

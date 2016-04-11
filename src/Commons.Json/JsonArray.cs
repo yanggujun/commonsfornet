@@ -27,10 +27,10 @@ namespace Commons.Json
     {
         private readonly List<JsonValue> values;
 
-	    public JsonArray()
-	    {
-		    values = new List<JsonValue>();
-	    }
+        public JsonArray()
+        {
+            values = new List<JsonValue>();
+        }
         public JsonArray(JsonValue[] values)
         {
             this.values = new List<JsonValue>(values);
@@ -41,95 +41,95 @@ namespace Commons.Json
             values.Add(value);
         }
 
-		public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
-		{
-			var index = 0;
+        public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
+        {
+            var index = 0;
 
-			try
-			{
-				index = (int) indexes[0];
-			}
-			catch
-			{
-				throw new InvalidOperationException(Messages.IndexerCannotApply);
-			}
+            try
+            {
+                index = (int) indexes[0];
+            }
+            catch
+            {
+                throw new InvalidOperationException(Messages.IndexerCannotApply);
+            }
 
-			if (index < values.Count)
-			{
-				result = values[index];
-			}
-			else
-			{
-				throw new InvalidOperationException(Messages.OutOfRange);
-			}
-			return true;
-		}
+            if (index < values.Count)
+            {
+                result = values[index];
+            }
+            else
+            {
+                throw new InvalidOperationException(Messages.OutOfRange);
+            }
+            return true;
+        }
 
-	    public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
-	    {
-		    var index = 0;
+        public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
+        {
+            var index = 0;
 
-		    try
-		    {
-			    index = (int) indexes[0];
-		    }
-		    catch
-		    {
-			    throw new InvalidOperationException(Messages.IndexerCannotApply);
-		    }
+            try
+            {
+                index = (int) indexes[0];
+            }
+            catch
+            {
+                throw new InvalidOperationException(Messages.IndexerCannotApply);
+            }
 
-		    if (index < values.Count)
-		    {
-			    values[index] = From(value);
-		    }
-			else if (index == values.Count)
-			{
-				values.Add(From(value));
-			}
-		    else
-		    {
-			    throw new InvalidOperationException(Messages.OutOfRange);
-		    }
+            if (index < values.Count)
+            {
+                values[index] = From(value);
+            }
+            else if (index == values.Count)
+            {
+                values.Add(From(value));
+            }
+            else
+            {
+                throw new InvalidOperationException(Messages.OutOfRange);
+            }
 
-		    return true;
-	    }
+            return true;
+        }
 
-	    public override bool TryGetMember(GetMemberBinder binder, out object result)
-	    {
-			throw new InvalidOperationException();
-	    }
+        public override bool TryGetMember(GetMemberBinder binder, out object result)
+        {
+            throw new InvalidOperationException();
+        }
 
-	    public override bool TrySetMember(SetMemberBinder binder, object value)
-	    {
-			throw new InvalidOperationException();
-	    }
+        public override bool TrySetMember(SetMemberBinder binder, object value)
+        {
+            throw new InvalidOperationException();
+        }
 
-	    public override bool TryConvert(ConvertBinder binder, out object result)
-	    {
-			var jsonValues = new JsonValue[values.Count];
-			for (var i = 0; i < jsonValues.Length; i++)
-			{
-				jsonValues[i] = values[i];
-			}
-			result = jsonValues;
-		    return true;
-	    }
+        public override bool TryConvert(ConvertBinder binder, out object result)
+        {
+            var jsonValues = new JsonValue[values.Count];
+            for (var i = 0; i < jsonValues.Length; i++)
+            {
+                jsonValues[i] = values[i];
+            }
+            result = jsonValues;
+            return true;
+        }
 
-	    public override string ToString()
-	    {
-		    var sb = new StringBuilder();
-		    sb.Append(JsonTokens.LeftBracket).Append(JsonTokens.Space);
-			for (var i = 0; i < values.Count; i++)
-		    {
-			    sb.Append(values[i].ToString());
-			    if (i != values.Count - 1)
-			    {
-				    sb.Append(JsonTokens.Comma);
-			    }
-		    }
-		    sb.Append(JsonTokens.RightBracket);
-		    return sb.ToString();
-	    }
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append(JsonTokens.LeftBracket).Append(JsonTokens.Space);
+            for (var i = 0; i < values.Count; i++)
+            {
+                sb.Append(values[i].ToString());
+                if (i != values.Count - 1)
+                {
+                    sb.Append(JsonTokens.Comma);
+                }
+            }
+            sb.Append(JsonTokens.RightBracket);
+            return sb.ToString();
+        }
 
         public int Length
         {

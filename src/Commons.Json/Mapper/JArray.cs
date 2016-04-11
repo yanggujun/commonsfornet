@@ -20,26 +20,26 @@ using System.Collections.Generic;
 using System.Text;
 namespace Commons.Json.Mapper
 {
-	public class JArray : JValue, IEnumerable
-	{
-		private List<JValue> values = new List<JValue>();
+    public class JArray : JValue, IEnumerable
+    {
+        private List<JValue> values = new List<JValue>();
 
-		public void Add(JValue value)
-		{
-			values.Add(value);
-		}
+        public void Add(JValue value)
+        {
+            values.Add(value);
+        }
 
-		public JValue this[int index]
-		{
-			get
-			{
-				if (index < values.Count)
-				{
-					return values[index];
-				}
-				return null;
-			}
-		}
+        public JValue this[int index]
+        {
+            get
+            {
+                if (index < values.Count)
+                {
+                    return values[index];
+                }
+                return null;
+            }
+        }
         
         public void AddByte(byte integer)
         {
@@ -94,32 +94,32 @@ namespace Commons.Json.Mapper
             values.Add(JNull.Value);
         }
 
-		public int Length
-		{
-			get { return values.Count; }
-		}
+        public int Length
+        {
+            get { return values.Count; }
+        }
 
-		public IEnumerator<JValue> GetEnumerator()
-		{
-			return values.GetEnumerator();
-		}
+        public IEnumerator<JValue> GetEnumerator()
+        {
+            return values.GetEnumerator();
+        }
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-			sb.Append(JsonTokens.LeftBracket);
-			foreach (var item in values)
-			{
-				sb.Append(item).Append(JsonTokens.Comma);
-			}
-			sb.Remove(sb.Length - 1, 1);
-			sb.Append(JsonTokens.RightBracket);
-			return sb.ToString();
-		}
-	}
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append(JsonTokens.LeftBracket);
+            foreach (var item in values)
+            {
+                sb.Append(item).Append(JsonTokens.Comma);
+            }
+            sb.Remove(sb.Length - 1, 1);
+            sb.Append(JsonTokens.RightBracket);
+            return sb.ToString();
+        }
+    }
 }

@@ -1142,7 +1142,7 @@ namespace Test.Commons.Collections
             {
                 if (count++ < 500)
                 {
-	                ICollection<KeyValuePair<Order, Bill>> col = newMap;
+                    ICollection<KeyValuePair<Order, Bill>> col = newMap;
                     Assert.True(col.Remove(kvp));
                 }
             }

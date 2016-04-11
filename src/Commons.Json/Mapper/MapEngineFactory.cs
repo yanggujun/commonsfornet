@@ -15,11 +15,11 @@
 
 namespace Commons.Json.Mapper
 {
-	internal class MapEngineFactory : IMapEngineFactory
-	{
-		public IMapEngine<T> CreateMapEngine<T>(T target, MapperContainer mappers, TypeCache typeCache, string dateFormat)
-		{
-			return new MapEngine<T>(target, mappers, typeCache, dateFormat);
-		}
-	}
+    internal class MapEngineFactory : IMapEngineFactory
+    {
+        public IMapEngine<T> CreateMapEngine<T>(T target, MapperContainer mappers, TypeCache typeCache, string dateFormat)
+        {
+            return new MapEngine<T>(target, mappers, typeCache, dateFormat);
+        }
+    }
 }

@@ -16,8 +16,8 @@
 
 namespace Commons.Json.Mapper
 {
-	public interface IObjectConverter<T>
-	{
-		JValue Convert(T target);
-	}
+    public interface IObjectConverter<T>
+    {
+        JValue Convert(T target);
+    }
 }
