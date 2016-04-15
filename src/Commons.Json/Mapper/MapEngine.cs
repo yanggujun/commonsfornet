@@ -365,13 +365,18 @@ namespace Commons.Json.Mapper
             JBoolean boolean;
             JDecimal floating;
             object propertyValue;
+	        Type actualType;
+	        if (!type.IsNullable(out actualType))
+	        {
+		        actualType = type;
+	        }
             if (value.Is<JString>(out str))
             {
-                if (type != typeof (string) && type != typeof (DateTime) && !type.IsEnum)
+                if (actualType != typeof (string) && actualType != typeof (DateTime) && !actualType.IsEnum)
                 {
                     throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
                 }
-                if (type == typeof (DateTime))
+                if (actualType == typeof (DateTime))
                 {
                     DateTime dt;
                     if (TryParseDate(str, out dt))
@@ -383,9 +388,9 @@ namespace Commons.Json.Mapper
                         throw new InvalidCastException(Messages.InvalidDateFormat);
                     }
                 }
-                else if (type.IsEnum)
+                else if (actualType.IsEnum)
                 {
-                    propertyValue = Enum.Parse(type, str);
+                    propertyValue = Enum.Parse(actualType, str);
                 }
                 else
                 {
@@ -395,15 +400,15 @@ namespace Commons.Json.Mapper
             }
             else if (value.Is<JInteger>(out integer))
             {
-                if (!type.IsJsonNumber())
+                if (!actualType.IsJsonNumber())
                 {
                     throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
                 }
-                propertyValue = GetIntegerPropertyValue(type, integer);
+                propertyValue = GetIntegerPropertyValue(actualType, integer);
             }
             else if (value.Is<JBoolean>(out boolean))
             {
-                if (type != typeof (bool))
+                if (actualType != typeof (bool))
                 {
                     throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
                 }
@@ -412,15 +417,15 @@ namespace Commons.Json.Mapper
             }
             else if (value.Is<JDecimal>(out floating))
             {
-                if (type != typeof (float) && type != typeof (double) && type != typeof (decimal))
+                if (actualType != typeof (float) && actualType != typeof (double) && actualType != typeof (decimal))
                 {
                     throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
                 }
-                if (type == typeof (float))
+                if (actualType == typeof (float))
                 {
                     propertyValue = floating.AsSingle();
                 }
-                else if (type == typeof (double))
+                else if (actualType == typeof (double))
                 {
                     propertyValue = floating.AsDouble();
                 }

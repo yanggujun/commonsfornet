@@ -50,8 +50,33 @@ namespace Commons.Json
 
         public static bool IsJsonPrimitive(this Type type)
         {
-            return type.IsPrimitive || type == typeof(decimal) || type == typeof (string) || type == typeof(DateTime) || type.IsEnum;
+            return type.IsPrimitive || type == typeof(decimal) 
+				|| type == typeof (string) || type == typeof(DateTime) 
+				|| type.IsEnum || IsNullablePrimitive(type);
         }
+
+	    public static bool IsNullable(this Type type)
+	    {
+		    Type underlyingType;
+		    return IsNullable(type, out underlyingType);
+	    }
+
+	    public static bool IsNullable(this Type type, out Type underlyingType)
+	    {
+		    underlyingType = Nullable.GetUnderlyingType(type);
+		    return underlyingType != null;
+	    }
+
+	    public static bool IsNullablePrimitive(this Type type)
+	    {
+		    Type underlying;
+		    if (IsNullable(type, out underlying))
+		    {
+			    return IsJsonPrimitive(underlying);
+		    }
+
+		    return false;
+	    }
 
         public static bool IsJsonNumber(this Type type)
         {

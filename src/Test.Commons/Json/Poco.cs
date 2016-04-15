@@ -213,4 +213,15 @@ namespace Test.Commons.Json
         public string Name { get; set; }
         public int[][] Matrix { get; set; }
     }
+
+	public class Artical
+	{
+		public string Name { get; set; }
+
+		public DateTime? PublishDate { get; set; }
+
+		public int? Pages { get; set; }
+
+		public string Author { get; set; }
+	}
 }

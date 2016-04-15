@@ -99,6 +99,11 @@ namespace Commons.Json.Mapper
             get { return values.Count; }
         }
 
+	    public void Clear()
+	    {
+		    values.Clear();
+	    }
+
         public IEnumerator<JValue> GetEnumerator()
         {
             return values.GetEnumerator();
