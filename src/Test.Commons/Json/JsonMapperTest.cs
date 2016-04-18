@@ -17,8 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Security.Cryptography.X509Certificates;
 using Commons.Collections.Map;
 using Commons.Collections.Set;
 using Commons.Json;
@@ -650,8 +648,8 @@ namespace Test.Commons.Json
 	    public void TestMapJsonToObject52()
 		{
 			var json = 
-				"{\"Name\":\"Sam\", \"Age\":\"50\",\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}";
-		    var simple = JsonMapper.To<SimpleStruct?>(json);
+				"{\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}";
+            var simple = JsonMapper.UseDateFormat(string.Empty).To<SimpleStruct?>(json);
 			Assert.NotNull(simple);
 			Assert.Equal(50,simple.Value.Age);
 			Assert.Equal("Sam", simple.Value.Name);
@@ -659,7 +657,7 @@ namespace Test.Commons.Json
 			Assert.Equal(2016, simple.Value.ExamDate.Year);
 			Assert.Equal(4, simple.Value.ExamDate.Month);
 			Assert.Equal(15, simple.Value.ExamDate.Day);
-			Assert.True(simple.Value.Pass);
+			Assert.False(simple.Value.Pass);
 	    }
 
         [Fact]

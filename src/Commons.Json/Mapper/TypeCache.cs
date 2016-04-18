@@ -144,7 +144,15 @@ namespace Commons.Json.Mapper
                     return create();
                 }
             }
-            return Activator.CreateInstance(type);
+            Type underlying;
+            if (type.IsNullable(out underlying) && !type.IsJsonPrimitive())
+            {
+                return Activator.CreateInstance(underlying);
+            }
+            else
+            {
+                return Activator.CreateInstance(type);
+            }
         }
 
         private bool CanBeInstantiated(TypeManager manager, MapperContainer mappers)
