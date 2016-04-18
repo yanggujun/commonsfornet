@@ -1,3 +1,5 @@
 language: csharp
+git:
+    depth: 2
 script: 
-    - ./Build.sh
+    - sh ./Build.sh
