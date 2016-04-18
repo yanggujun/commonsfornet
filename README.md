@@ -20,6 +20,10 @@ Currently .NET Commons consist of following major components:
 
 Apache License v2.0
 
+###Build Status
+
+[![Build Status](https://travis-ci.org/yanggujun/commonsfornet.svg?branch=master)](https://travis-ci.org/yanggujun/commonsfornet)
+
 ###Installation
 
 The lastest release source code can be found [here](https://github.com/yanggujun/commonsfornet/releases)
