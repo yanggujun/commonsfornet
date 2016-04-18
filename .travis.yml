@@ -1,4 +1,4 @@
 language: csharp
 solution: ./src/Commons.sln
 script: 
-	- ./build.sh
+	- ./Build.sh
