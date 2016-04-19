@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System.IO;
+using System.Text;
 
 namespace Test.Commons
 {
@@ -23,7 +24,8 @@ namespace Test.Commons
         public static string ReadFrom(string fileName)
         {
             string content;
-            using (var fs = new FileStream(fileName, FileMode.Open))
+            var path = GetJsonSamplePath(fileName);
+            using (var fs = new FileStream(path, FileMode.Open))
             {
                 using (var sr = new StreamReader(fs))
                 {
@@ -31,6 +33,16 @@ namespace Test.Commons
                 }
             }
             return content;
+        }
+
+        private static string GetJsonSamplePath(string fileName)
+        {
+            return new StringBuilder().Append(".")
+                                      .Append(Path.DirectorySeparatorChar)
+                                      .Append("Json")
+                                      .Append(Path.DirectorySeparatorChar)
+                                      .Append(fileName)
+                                      .ToString();
         }
     }
 }

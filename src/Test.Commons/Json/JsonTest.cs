@@ -132,7 +132,7 @@ namespace Test.Commons.Json
         [Fact]
         public void TestJsonFromRealWorld()
         {
-            string json = TestHelper.ReadFrom(@".\Json\JsonSample9.txt");
+            string json = TestHelper.ReadFrom("JsonSample9.txt");
 
             dynamic person = JsonMapper.Parse(json);
             Assert.Equal("USA", (string)person.More.Country);
@@ -141,7 +141,7 @@ namespace Test.Commons.Json
         [Fact]
         public void TestJsonFromRealWorld1()
         {
-            var json = TestHelper.ReadFrom(@".\Json\JsonSample10.txt");
+            var json = TestHelper.ReadFrom("JsonSample10.txt");
             dynamic sample = JsonMapper.Parse(json);
             Assert.Equal("Alpha", (string)sample["a"]);
         }
@@ -149,7 +149,7 @@ namespace Test.Commons.Json
         [Fact]
         public void TestParseJson()
         {
-            string json = TestHelper.ReadFrom(@".\Json\JsonSample.txt");
+            string json = TestHelper.ReadFrom("JsonSample.txt");
             dynamic worldcup = JsonMapper.Parse(json);
             string host = worldcup.Host;
             int teams = worldcup.Teams;
@@ -163,7 +163,7 @@ namespace Test.Commons.Json
         [Fact]
         public void TestParseJson2()
         {
-            var json = TestHelper.ReadFrom(@".\Json\JsonSample2.txt");
+            var json = TestHelper.ReadFrom("JsonSample2.txt");
             dynamic package = JsonMapper.Parse(json);
             Assert.Equal("yanggujun", (string)package.author);
             Assert.Equal("commons", (string)package.name);
@@ -175,7 +175,7 @@ namespace Test.Commons.Json
         [Fact]
         public void TestParseJson3()
         {
-            var json = TestHelper.ReadFrom(@".\Json\JsonSample3.txt");
+            var json = TestHelper.ReadFrom("JsonSample3.txt");
             dynamic package = JsonMapper.Parse(json);
             Assert.Equal("yanggujun", (string)package.author);
             Assert.Equal("no logo", (string)package.logo);
@@ -645,15 +645,15 @@ namespace Test.Commons.Json
         [Fact]
         public void TestParseJsonStrings()
         {
-            var json4 = TestHelper.ReadFrom(@".\Json\JsonSample4.txt");
+            var json4 = TestHelper.ReadFrom("JsonSample4.txt");
             Assert.DoesNotThrow(() => JsonMapper.Parse(json4));
-            var json5 = TestHelper.ReadFrom(@".\Json\JsonSample5.txt");
+            var json5 = TestHelper.ReadFrom("JsonSample5.txt");
             Assert.DoesNotThrow(() => JsonMapper.Parse(json5));
-            var json6 = TestHelper.ReadFrom(@".\Json\JsonSample6.txt");
+            var json6 = TestHelper.ReadFrom("JsonSample6.txt");
             Assert.DoesNotThrow(() => JsonMapper.Parse(json6));
-            var json7 = TestHelper.ReadFrom(@".\Json\JsonSample7.txt");
+            var json7 = TestHelper.ReadFrom("JsonSample7.txt");
             Assert.DoesNotThrow(() => JsonMapper.Parse(json7));
-            var json8 = TestHelper.ReadFrom(@".\Json\JsonSample8.txt");
+            var json8 = TestHelper.ReadFrom("JsonSample8.txt");
             Assert.DoesNotThrow(() => JsonMapper.Parse(json8));
         }
 

@@ -22,6 +22,8 @@ using Commons.Collections.Set;
 using Commons.Json;
 using Commons.Json.Mapper;
 using Xunit;
+using System.Text;
+using System.IO;
 
 namespace Test.Commons.Json
 {
@@ -197,7 +199,7 @@ namespace Test.Commons.Json
         [Fact]
         public void TestMapJsonToObject13()
         {
-            var json = TestHelper.ReadFrom(@".\Json\JsonSample11.txt");
+            var json = TestHelper.ReadFrom("JsonSample11.txt");
             var arrayNested = JsonMapper.To<ArrayNested>(json);
             Assert.Equal("valueI", arrayNested.FieldI);
             Assert.NotNull(arrayNested.NestedItems);
@@ -593,7 +595,7 @@ namespace Test.Commons.Json
 		{
 			var json =
 				"{\"Name\": \"A History of Europe\", \"Author\": \"Edward\", \"Pages\": 2000, \"PublishDate\": \"1750/7/5\"}";
-			var artical = JsonMapper.To<Artical>(json);
+			var artical = JsonMapper.UseDateFormat(string.Empty).To<Artical>(json);
 			Assert.Equal("A History of Europe", artical.Name);
 			Assert.Equal("Edward", artical.Author);
 			Assert.Equal(2000, artical.Pages);
@@ -1616,17 +1618,17 @@ namespace Test.Commons.Json
         public void TestParseEngine29()
         {
             var engine = new JsonParseEngine();
-            var json4 = TestHelper.ReadFrom(@".\Json\JsonSample4.txt");
+            var json4 = TestHelper.ReadFrom("JsonSample4.txt");
             engine.Parse(json4);
-            var json5 = TestHelper.ReadFrom(@".\Json\JsonSample5.txt");
+            var json5 = TestHelper.ReadFrom("JsonSample5.txt");
             engine.Parse(json5);
-            var json6 = TestHelper.ReadFrom(@".\Json\JsonSample6.txt");
+            var json6 = TestHelper.ReadFrom("JsonSample6.txt");
             engine.Parse(json6);
-            var json7 = TestHelper.ReadFrom(@".\Json\JsonSample7.txt");
+            var json7 = TestHelper.ReadFrom("JsonSample7.txt");
             engine.Parse(json7);
-            var json8 = TestHelper.ReadFrom(@".\Json\JsonSample8.txt");
+            var json8 = TestHelper.ReadFrom("JsonSample8.txt");
             engine.Parse(json8);
-            var json9 = TestHelper.ReadFrom(@".\Json\JsonSample10.txt");
+            var json9 = TestHelper.ReadFrom("JsonSample10.txt");
             engine.Parse(json9);
         }
 
@@ -1784,7 +1786,7 @@ namespace Test.Commons.Json
         public void TestPerformance()
         {
             var engine = new JsonParseEngine();
-            var json7 = TestHelper.ReadFrom(@".\Json\JsonSample10.txt");
+            var json7 = TestHelper.ReadFrom(@"JsonSample10.txt");
             engine.Parse(json7);
             var sw = new Stopwatch();
             sw.Start();
