@@ -214,14 +214,20 @@ namespace Test.Commons.Json
         public int[][] Matrix { get; set; }
     }
 
-	public class Artical
-	{
-		public string Name { get; set; }
+    public class Artical
+    {
+        public string Name { get; set; }
 
-		public DateTime? PublishDate { get; set; }
+        public DateTime? PublishDate { get; set; }
 
-		public int? Pages { get; set; }
+        public int? Pages { get; set; }
 
-		public string Author { get; set; }
-	}
+        public string Author { get; set; }
+    }
+
+    public struct Complicated
+    {
+        public string Name { get; set; }
+        public SimpleStruct? Simple { get; set; }
+    }
 }

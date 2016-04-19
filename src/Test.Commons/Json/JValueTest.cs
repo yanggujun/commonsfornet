@@ -376,53 +376,53 @@ namespace Test.Commons.Json
             collection.Contains("value4");
         }
 
-		[Fact]
-	    public void TestJsonConverter04()
-		{
-			var json1 = "{\"ourList\": {\"name\": \"X\", \"value\": \"Y\"}}";
-			var json2= "{\"ourList\": [{\"name\": \"X1\", \"value\": \"Y1\"}, {\"name\": \"X2\", \"value\": \"Y2\"}]}";
-			var l1 = JsonMapper.ConvertTo<OuterList>(json1, Convert);
-			Assert.Equal(1, l1.OurList.Length);
-			Assert.Equal("X", l1.OurList[0].Name);
-			Assert.Equal("Y", l1.OurList[0].Value);
+        [Fact]
+        public void TestJsonConverter04()
+        {
+            var json1 = "{\"ourList\": {\"name\": \"X\", \"value\": \"Y\"}}";
+            var json2= "{\"ourList\": [{\"name\": \"X1\", \"value\": \"Y1\"}, {\"name\": \"X2\", \"value\": \"Y2\"}]}";
+            var l1 = JsonMapper.ConvertTo<OuterList>(json1, Convert);
+            Assert.Equal(1, l1.OurList.Length);
+            Assert.Equal("X", l1.OurList[0].Name);
+            Assert.Equal("Y", l1.OurList[0].Value);
 
-			var l2 = JsonMapper.ConvertTo<OuterList>(json2, Convert);
-			Assert.Equal(2, l2.OurList.Length);
-			Assert.Equal("X1", l2.OurList[0].Name);
-			Assert.Equal("Y1", l2.OurList[0].Value);
-			Assert.Equal("X2", l2.OurList[1].Name);
-			Assert.Equal("Y2", l2.OurList[1].Value);
-		}
+            var l2 = JsonMapper.ConvertTo<OuterList>(json2, Convert);
+            Assert.Equal(2, l2.OurList.Length);
+            Assert.Equal("X1", l2.OurList[0].Name);
+            Assert.Equal("Y1", l2.OurList[0].Value);
+            Assert.Equal("X2", l2.OurList[1].Name);
+            Assert.Equal("Y2", l2.OurList[1].Value);
+        }
 
-	    private OuterList Convert(JValue value)
-	    {
-			var jsonObj = value as JObject;
-			var outer = new OuterList();
-		    if (jsonObj["ourList"] is JArray)
-		    {
-			    var array = jsonObj["OurList"] as JArray;
-			    outer.OurList = new Member[array.Length];
-			    for (var i = 0; i < array.Length; i++)
-			    {
-				    outer.OurList[i] = new Member
-				    {
-					    Name = (array[i] as JObject).GetString("name"),
-					    Value = (array[i] as JObject).GetString("value")
-				    };
-			    }
-		    }
-		    else
-		    {
-				outer.OurList = new Member[1];
-			    outer.OurList[0] = new Member
-			    {
-				    Name = (jsonObj["ourList"] as JObject).GetString("name"),
-				    Value = (jsonObj["ourList"] as JObject).GetString("value")
-			    };
-		    }
+        private OuterList Convert(JValue value)
+        {
+            var jsonObj = value as JObject;
+            var outer = new OuterList();
+            if (jsonObj["ourList"] is JArray)
+            {
+                var array = jsonObj["OurList"] as JArray;
+                outer.OurList = new Member[array.Length];
+                for (var i = 0; i < array.Length; i++)
+                {
+                    outer.OurList[i] = new Member
+                    {
+                        Name = (array[i] as JObject).GetString("name"),
+                        Value = (array[i] as JObject).GetString("value")
+                    };
+                }
+            }
+            else
+            {
+                outer.OurList = new Member[1];
+                outer.OurList[0] = new Member
+                {
+                    Name = (jsonObj["ourList"] as JObject).GetString("name"),
+                    Value = (jsonObj["ourList"] as JObject).GetString("value")
+                };
+            }
 
-		    return outer;
-	    }
+            return outer;
+        }
 
         [Fact]
         public void TestObjectConverter01()
@@ -523,15 +523,15 @@ namespace Test.Commons.Json
         }
     }
 
-	public class Member
-	{
-		public string Name { get; set; }
+    public class Member
+    {
+        public string Name { get; set; }
 
-		public string Value { get; set; }
-	}
+        public string Value { get; set; }
+    }
 
-	public class OuterList
-	{
-		public Member[] OurList { get; set; }
-	}
+    public class OuterList
+    {
+        public Member[] OurList { get; set; }
+    }
 }

@@ -365,11 +365,11 @@ namespace Commons.Json.Mapper
             JBoolean boolean;
             JDecimal floating;
             object propertyValue;
-	        Type actualType;
-	        if (!type.IsNullable(out actualType))
-	        {
-		        actualType = type;
-	        }
+            Type actualType;
+            if (!type.IsNullable(out actualType))
+            {
+                actualType = type;
+            }
             if (value.Is<JString>(out str))
             {
                 if (actualType != typeof (string) && actualType != typeof (DateTime) && !actualType.IsEnum)

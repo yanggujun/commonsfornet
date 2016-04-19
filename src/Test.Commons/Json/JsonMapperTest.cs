@@ -579,88 +579,121 @@ namespace Test.Commons.Json
             }
         }
 
-		[Fact]
-	    public void TestMapJsonToObject47()
-	    {
-		    var json = "{\"companies\": {\"abc\": \"abc company\", \"def\":\"def company\"}}";
-		    var dict = JsonMapper.To<Dictionary<string, Dictionary<string, string>>>(json);
-			Assert.Equal(1, dict.Count);
-			Assert.Equal(2, dict["companies"].Count);
-			Assert.Equal("abc company", dict["companies"]["abc"]);
-			Assert.Equal("def company", dict["companies"]["def"]);
-	    }
+        [Fact]
+        public void TestMapJsonToObject47()
+        {
+            var json = "{\"companies\": {\"abc\": \"abc company\", \"def\":\"def company\"}}";
+            var dict = JsonMapper.To<Dictionary<string, Dictionary<string, string>>>(json);
+            Assert.Equal(1, dict.Count);
+            Assert.Equal(2, dict["companies"].Count);
+            Assert.Equal("abc company", dict["companies"]["abc"]);
+            Assert.Equal("def company", dict["companies"]["def"]);
+        }
 
-		[Fact]
-	    public void TestMapJsonToObject48()
-		{
-			var json =
-				"{\"Name\": \"A History of Europe\", \"Author\": \"Edward\", \"Pages\": 2000, \"PublishDate\": \"1750/7/5\"}";
-			var artical = JsonMapper.UseDateFormat(string.Empty).To<Artical>(json);
-			Assert.Equal("A History of Europe", artical.Name);
-			Assert.Equal("Edward", artical.Author);
-			Assert.Equal(2000, artical.Pages);
-			Assert.Equal(1750, artical.PublishDate.Value.Year);
-			Assert.Equal(7, artical.PublishDate.Value.Month);
-			Assert.Equal(5, artical.PublishDate.Value.Day);
-		}
+        [Fact]
+        public void TestMapJsonToObject48()
+        {
+            var json =
+                "{\"Name\": \"A History of Europe\", \"Author\": \"Edward\", \"Pages\": 2000, \"PublishDate\": \"1750/7/5\"}";
+            var artical = JsonMapper.UseDateFormat(string.Empty).To<Artical>(json);
+            Assert.Equal("A History of Europe", artical.Name);
+            Assert.Equal("Edward", artical.Author);
+            Assert.Equal(2000, artical.Pages);
+            Assert.Equal(1750, artical.PublishDate.Value.Year);
+            Assert.Equal(7, artical.PublishDate.Value.Month);
+            Assert.Equal(5, artical.PublishDate.Value.Day);
+        }
 
-		[Fact]
-	    public void TestMapJsonToObject49()
-	    {
-		    var json = "5";
-		    var number1 = JsonMapper.To<int?>(json);
-			Assert.Equal(5, number1.Value);
+        [Fact]
+        public void TestMapJsonToObject49()
+        {
+            var json = "5";
+            var number1 = JsonMapper.To<int?>(json);
+            Assert.Equal(5, number1.Value);
 
-			var number2 = JsonMapper.To<short?>(json);
-			Assert.Equal(5, number2.Value);
+            var number2 = JsonMapper.To<short?>(json);
+            Assert.Equal(5, number2.Value);
 
-			var number3 = JsonMapper.To<byte?>(json);
-			Assert.Equal(5, number3.Value);
+            var number3 = JsonMapper.To<byte?>(json);
+            Assert.Equal(5, number3.Value);
 
-			var number4 = JsonMapper.To<sbyte?>(json);
-			Assert.Equal(5, number4.Value);
+            var number4 = JsonMapper.To<sbyte?>(json);
+            Assert.Equal(5, number4.Value);
 
-			var number5 = JsonMapper.To<uint?>(json);
-			Assert.Equal((uint)5, number5.Value);
+            var number5 = JsonMapper.To<uint?>(json);
+            Assert.Equal((uint)5, number5.Value);
 
-			var number6 = JsonMapper.To<long?>(json);
-			Assert.Equal(5, number6.Value);
+            var number6 = JsonMapper.To<long?>(json);
+            Assert.Equal(5, number6.Value);
 
-			var number7 = JsonMapper.To<ulong?>(json);
-			Assert.Equal((ulong)5, number7.Value);
-	    }
+            var number7 = JsonMapper.To<ulong?>(json);
+            Assert.Equal((ulong)5, number7.Value);
+        }
 
-		[Fact]
-	    public void TestMapJsonToObject50()
-	    {
-		    var json = "true";
-		    var v = JsonMapper.To<bool?>(json);
-			Assert.True(v.Value);
-	    }
+        [Fact]
+        public void TestMapJsonToObject50()
+        {
+            var json = "true";
+            var v = JsonMapper.To<bool?>(json);
+            Assert.True(v.Value);
+        }
 
-		[Fact]
-		public void TestMapJsonToObject51()
-		{
-			var json = "\"SH\"";
-			var site = JsonMapper.To<Site?>(json);
-			Assert.Equal(Site.SH, site.Value);
-		}
+        [Fact]
+        public void TestMapJsonToObject51()
+        {
+            var json = "\"SH\"";
+            var site = JsonMapper.To<Site?>(json);
+            Assert.Equal(Site.SH, site.Value);
+        }
 
-		[Fact]
-	    public void TestMapJsonToObject52()
-		{
-			var json = 
-				"{\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}";
+        public void TestMapJsonToObject52()
+        {
+            var json = 
+                "{\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}";
             var simple = JsonMapper.UseDateFormat(string.Empty).To<SimpleStruct?>(json);
-			Assert.NotNull(simple);
-			Assert.Equal(50,simple.Value.Age);
-			Assert.Equal("Sam", simple.Value.Name);
-		    Assert.Equal(80.5, simple.Value.Score);
-			Assert.Equal(2016, simple.Value.ExamDate.Year);
-			Assert.Equal(4, simple.Value.ExamDate.Month);
-			Assert.Equal(15, simple.Value.ExamDate.Day);
-			Assert.False(simple.Value.Pass);
-	    }
+            Assert.NotNull(simple);
+            Assert.Equal(50,simple.Value.Age);
+            Assert.Equal("Sam", simple.Value.Name);
+            Assert.Equal(80.5, simple.Value.Score);
+            Assert.Equal(2016, simple.Value.ExamDate.Year);
+            Assert.Equal(4, simple.Value.ExamDate.Month);
+            Assert.Equal(15, simple.Value.ExamDate.Day);
+            Assert.False(simple.Value.Pass);
+        }
+
+        public void TestMapJsonToObject53()
+        {
+            var json = 
+                "{\"Name\": \"Complex\", \"Simple\": {\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}}";
+            var complicated = JsonMapper.UseDateFormat(string.Empty).To<Complicated>(json);
+            Assert.Equal("Complex", complicated.Name);
+            Assert.NotNull(complicated.Simple);
+            Assert.Equal("Sam", complicated.Simple.Value.Name);
+            Assert.Equal(50, complicated.Simple.Value.Age);
+            Assert.Equal(80.5, complicated.Simple.Value.Score);
+            Assert.Equal(2016, complicated.Simple.Value.ExamDate.Year);
+            Assert.Equal(4, complicated.Simple.Value.ExamDate.Month);
+            Assert.Equal(15, complicated.Simple.Value.ExamDate.Day);
+            Assert.False(complicated.Simple.Value.Pass);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject54()
+        {
+            var json = 
+                "{\"Name\": \"Complex\", \"Simple\": {\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}}";
+            var complicated = JsonMapper.UseDateFormat(string.Empty).To<Complicated?>(json);
+            Assert.NotNull(complicated);
+            Assert.Equal("Complex", complicated.Value.Name);
+            Assert.NotNull(complicated.Value.Simple);
+            Assert.Equal("Sam", complicated.Value.Simple.Value.Name);
+            Assert.Equal(50, complicated.Value.Simple.Value.Age);
+            Assert.Equal(80.5, complicated.Value.Simple.Value.Score);
+            Assert.Equal(2016, complicated.Value.Simple.Value.ExamDate.Year);
+            Assert.Equal(4, complicated.Value.Simple.Value.ExamDate.Month);
+            Assert.Equal(15, complicated.Value.Simple.Value.ExamDate.Day);
+            Assert.False(complicated.Value.Simple.Value.Pass);
+        }
 
         [Fact]
         public void TestMapObjectToJson01()
@@ -1094,27 +1127,27 @@ namespace Test.Commons.Json
             Assert.Equal(1000, newCompany.StaffCount);
         }
 
-		[Fact]
-	    public void TestMapObjectToJson31()
-	    {
-		    var artical = new Artical
-		    {
-			    Author = "Edward",
-			    Name = "A History of Europe",
-			    Pages = 2000,
-			    PublishDate = new DateTime(1750, 7, 5)
-		    };
+        [Fact]
+        public void TestMapObjectToJson31()
+        {
+            var artical = new Artical
+            {
+                Author = "Edward",
+                Name = "A History of Europe",
+                Pages = 2000,
+                PublishDate = new DateTime(1750, 7, 5)
+            };
 
-		    var json = JsonMapper.ToJson(artical);
-			var atc = JsonMapper.Parse(json);
-			Assert.Equal("Edward", (string)atc.Author);
-			Assert.Equal("A History of Europe", (string)atc.Name);
-			Assert.Equal(2000, (int)atc.Pages);
-			var dt = DateTime.Parse((string) atc.PublishDate);
-			Assert.Equal(1750, dt.Year);
-			Assert.Equal(7, dt.Month);
-			Assert.Equal(5, dt.Day);
-	    }
+            var json = JsonMapper.ToJson(artical);
+            var atc = JsonMapper.Parse(json);
+            Assert.Equal("Edward", (string)atc.Author);
+            Assert.Equal("A History of Europe", (string)atc.Name);
+            Assert.Equal(2000, (int)atc.Pages);
+            var dt = DateTime.Parse((string) atc.PublishDate);
+            Assert.Equal(1750, dt.Year);
+            Assert.Equal(7, dt.Month);
+            Assert.Equal(5, dt.Day);
+        }
 
         [Fact]
         public void TestMapProperty01()
