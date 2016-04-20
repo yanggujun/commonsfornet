@@ -26,45 +26,39 @@ Apache License v2.0
 
 ###Installation
 
-The lastest release source code can be found [here](https://github.com/yanggujun/commonsfornet/releases)
+The lastest release information can be found [here](https://github.com/yanggujun/commonsfornet/releases)
+
+The projects are published as 3 nuget packages.
 
 __Commons__
     
-The package includes Commons.Utils, Commons.Collections and Commons.Json
+The package includes Commons.Utils, Commons.Collections 
 
-The nuget package can be retrieved from 
+[Download Commons](https://www.nuget.org/packages/Commons/)
 
-https://www.nuget.org/packages/Commons/
-
-Or on nuget package manager console, type:
+Install through nuget command line:
 
       PM> Install-Package Commons
 
  __Commons.Pool__
     
-The nuget package can be retrieved from 
+[Downloadd Commons.Pool](https://www.nuget.org/packages/Commons.Pool/) and its dependency [Commons](https://www.nuget.org/packages/Commons/)
 
-https://www.nuget.org/packages/Commons.Pool/
-
-Or on nuget package manager console, type:
+Install through nuget command line:
 
       PM> Install-Package Commons.Pool
 
  __Commons.Json__
     
-The nuget package can be retrieved from 
+[Download Commons.Json](https://www.nuget.org/packages/Commons.Json/) and its dependency [Commons](https://www.nuget.org/packages/Commons/)
 
-https://www.nuget.org/packages/Commons.Json/
-
-Or on nuget package manager console, type:
+Install through nuget command line:
 
       PM> Install-Package Commons.Json
 
 ###Issues
 
-Please report issues to 
-
-https://github.com/yanggujun/commonsfornet/issues
+Please report [issues](https://github.com/yanggujun/commonsfornet/issues).
 
 or send an email to: alanier@sina.cn
 

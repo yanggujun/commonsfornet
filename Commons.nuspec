@@ -9,19 +9,9 @@
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-        The library provides extensive collections as the complemnt of the ones in .NET framework
-
-        Update on 0.2.2.x
-        1. Implicitly implement some of the ICollection&lt;T&gt; interfaces on collections.
-
-        2. "Commons.Json" is separated into the new nuget package.
-
-        3. Correct an issue in map and set for how to get hash code.
-
-        4. Remove ConcurrentListBasedMap as the implementation is not correct.
-
-        For more information about .NET Commons project 
-        please visit: https://github.com/yanggujun/commonsfornet/wiki/Commons.Collections.
+        The library provides extensive collections and utilities as the complement of the ones in .NET framework. 
+        For more information please visit: 
+        https://github.com/yanggujun/commonsfornet/wiki/Commons.Collections.
     </description>
     <summary>Atomic Primitives, Hash Functions, Collections</summary>
     <releaseNotes></releaseNotes>
