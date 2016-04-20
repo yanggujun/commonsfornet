@@ -22,7 +22,7 @@ echo "JsonTest"
 mono ./src/packages/xunit.runner.console.2.1.0/tools/xunit.console.exe ./src/bin/NET45/Test.Commons.dll -class "Test.Commons.Json.JsonTest" -parallel none
 echo "JValueTest"
 mono ./src/packages/xunit.runner.console.2.1.0/tools/xunit.console.exe ./src/bin/NET45/Test.Commons.dll -class "Test.Commons.Json.JValueTest" -parallel none
-echo "ObjectPoolTest"
-mono ./src/packages/xunit.runner.console.2.1.0/tools/xunit.console.exe ./src/bin/NET45/Test.Commons.dll -class "Test.Commons.Pool.ObjectPoolTest" -parallel none
 echo "UtilsTest"
 mono ./src/packages/xunit.runner.console.2.1.0/tools/xunit.console.exe ./src/bin/NET45/Test.Commons.dll -class "Test.Commons.Utils.UtilsTest" -parallel none
+echo "ObjectPoolTest"
+mono ./src/packages/xunit.runner.console.2.1.0/tools/xunit.console.exe ./src/bin/NET45/Test.Commons.dll -class "Test.Commons.Pool.ObjectPoolTest" -parallel none
