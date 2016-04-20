@@ -335,6 +335,10 @@ namespace Commons.Json.Mapper
                         {
                             var propValue = prop.GetValue(target, null);
                             Populate(propValue, jsonObj[key]);
+                            if (propertyType.IsNullable() && !propertyType.IsNullablePrimitive())
+                            {
+                                prop.SetValue(target, propValue);
+                            }
                         }
                     }
                 }

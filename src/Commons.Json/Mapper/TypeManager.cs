@@ -29,7 +29,15 @@ namespace Commons.Json.Mapper
 
         public TypeManager(Type type)
         {
-            Type = type;
+            Type underlying;
+            if (type.IsNullable(out underlying) && !type.IsNullablePrimitive())
+            {
+                Type = underlying;
+            }
+            else
+            {
+                Type = type;
+            }
 
             getters = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(x => x.CanRead)

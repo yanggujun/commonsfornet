@@ -661,6 +661,7 @@ namespace Test.Commons.Json
             Assert.False(simple.Value.Pass);
         }
 
+        [Fact]
         public void TestMapJsonToObject53()
         {
             var json = 
@@ -693,6 +694,50 @@ namespace Test.Commons.Json
             Assert.Equal(4, complicated.Value.Simple.Value.ExamDate.Month);
             Assert.Equal(15, complicated.Value.Simple.Value.ExamDate.Day);
             Assert.False(complicated.Value.Simple.Value.Pass);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject55()
+        {
+            var json = "{\"Name\": \"Complex\"}";
+            var complicated = JsonMapper.To<Complicated>(json);
+            Assert.Equal("Complex", complicated.Name);
+            Assert.NotNull(complicated.Simple);
+            Assert.NotNull(complicated.Simple.Value);
+            Assert.Null(complicated.Simple.Value.Name);
+            Assert.Equal(0, complicated.Simple.Value.Age);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject56()
+        {
+            var json = "{\"Name\": \"Complex\"}";
+            var complicated = JsonMapper.To<Complicated?>(json);
+            Assert.Equal("Complex", complicated.Value.Name);
+            Assert.NotNull(complicated.Value.Simple);
+            Assert.NotNull(complicated.Value.Simple.Value);
+            Assert.Null(complicated.Value.Simple.Value.Name);
+            Assert.Equal(0, complicated.Value.Simple.Value.Age);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject57()
+        {
+            var json = "{}";
+            var simple = JsonMapper.To<Simple>(json);
+            Assert.NotNull(simple);
+            Assert.Null(simple.FieldA);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject58()
+        {
+            var json = "[{}]";
+            var simples = JsonMapper.To<Simple[]>(json);
+            Assert.NotNull(simples);
+            Assert.Equal(1, simples.Length);
+            Assert.NotNull(simples[0]);
+            Assert.Null(simples[0].FieldA);
         }
 
         [Fact]
@@ -1147,6 +1192,69 @@ namespace Test.Commons.Json
             Assert.Equal(1750, dt.Year);
             Assert.Equal(7, dt.Month);
             Assert.Equal(5, dt.Day);
+        }
+
+        [Fact]
+        public void TestMapObjectToJson32()
+        {
+            Complicated? complicated = new Complicated
+            {
+                Name = "Comp",
+                Simple = new SimpleStruct
+                {
+                    Name = "Theon",
+                    Age = 40,
+                    Score = 79.5,
+                    ExamDate = new DateTime(2016, 4, 20),
+                    Pass = true
+                }
+            };
+
+            var json = JsonMapper.UseDateFormat(string.Empty).ToJson(complicated);
+
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("Comp", (string)jsonObj.Name);
+            Assert.Equal("Theon", (string)jsonObj.Simple.Name);
+            Assert.Equal(40, (int)jsonObj.Simple.Age);
+            Assert.Equal(79.5, (double)jsonObj.Simple.Score);
+            Assert.True((bool)jsonObj.Simple.Pass);
+            DateTime dt;
+            Assert.True(DateTime.TryParse((string)jsonObj.Simple.ExamDate, out dt));
+            Assert.Equal(2016, dt.Year);
+            Assert.Equal(4, dt.Month);
+            Assert.Equal(20, dt.Day);
+        }
+
+        [Fact]
+        public void TestMapObjectToJson33()
+        {
+            var complicated = new Complicated
+            {
+                Name = "Comp",
+                Simple = new SimpleStruct
+                {
+                    Name = "Theon",
+                    Age = 40,
+                    Score = 79.5,
+                    ExamDate = new DateTime(2016, 4, 20),
+                    Pass = true
+                }
+            };
+
+            var json = JsonMapper.UseDateFormat(string.Empty).ToJson(complicated);
+
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("Comp", (string)jsonObj.Name);
+            Assert.Equal("Theon", (string)jsonObj.Simple.Name);
+            Assert.Equal(40, (int)jsonObj.Simple.Age);
+            Assert.Equal(79.5, (double)jsonObj.Simple.Score);
+            Assert.True((bool)jsonObj.Simple.Pass);
+            DateTime dt;
+            Assert.True(DateTime.TryParse((string)jsonObj.Simple.ExamDate, out dt));
+            Assert.Equal(2016, dt.Year);
+            Assert.Equal(4, dt.Month);
+            Assert.Equal(20, dt.Day);
+
         }
 
         [Fact]
