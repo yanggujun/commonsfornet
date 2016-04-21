@@ -61,7 +61,8 @@ namespace Commons.Json.Mapper
                 JArray array;
                 if (!jsonValue.Is<JArray>(out array))
                 {
-                    throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                    array = new JArray();
+                    array.Add(jsonValue);
                 }
                 return ExtractJsonArray(array, type);
             }
@@ -260,7 +261,8 @@ namespace Commons.Json.Mapper
                 JArray array;
                 if (!jsonValue.Is<JArray>(out array))
                 {
-                    throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                    array = new JArray();
+                    array.Add(jsonValue);
                 }
                 return ExtractJsonArray(array, itemType);
             }
@@ -326,7 +328,8 @@ namespace Commons.Json.Mapper
                             JArray array;
                             if (!jsonObj[key].Is<JArray>(out array))
                             {
-                                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                                array = new JArray();
+                                array.Add(jsonObj[key]);
                             }
                             var value = ExtractJsonArray(array, propertyType);
                             prop.SetValue(target, value, null);

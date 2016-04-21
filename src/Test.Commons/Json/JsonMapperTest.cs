@@ -741,6 +741,27 @@ namespace Test.Commons.Json
         }
 
         [Fact]
+        public void TestMapJsonToObject59()
+        {
+            var json = "{\"Name\": \"Lucy\", \"Children\": \"Gavin\"}";
+            var person = JsonMapper.To<PersonArray>(json);
+            Assert.Equal("Lucy", person.Name);
+            Assert.Equal(1, person.Children.Length);
+            Assert.Equal("Gavin", person.Children[0]);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject60()
+        {
+            var json = "{\"Name\": \"Lucy\", \"Children\": [\"Gavin\", \"Tom\"]}";
+            var person = JsonMapper.To<PersonArray>(json);
+            Assert.Equal("Lucy", person.Name);
+            Assert.Equal(2, person.Children.Length);
+            Assert.Equal("Gavin", person.Children[0]);
+            Assert.Equal("Tom", person.Children[1]);
+        }
+
+        [Fact]
         public void TestMapObjectToJson01()
         {
             var simple = new Simple();
