@@ -748,7 +748,7 @@ namespace Test.Commons.Pool
         }
 
         [Fact]
-        public void TestPoolManaagerDefaultValue()
+        public void TestPoolManagerDefaultValue()
         {
             Setup();
             var poolManager = new PoolManager();
