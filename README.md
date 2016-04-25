@@ -34,7 +34,7 @@ __Commons__
     
 The package includes Commons.Utils, Commons.Collections 
 
-Download Commons in [nuget.org](https://www.nuget.org/packages/Commons/)
+Download Commons [![NuGet](https://img.shields.io/nuget/v/Commons.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons/)
 
 Install through nuget command line:
 
@@ -42,7 +42,7 @@ Install through nuget command line:
 
  __Commons.Pool__
     
-Download Commons.Pool in [nuget.org](https://www.nuget.org/packages/Commons.Pool/) and its dependency [Commons](https://www.nuget.org/packages/Commons/)
+Download Commons.Pool [![NuGet](https://img.shields.io/nuget/v/Commons.Pool.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons.Pool/) and its dependency Commons [![NuGet](https://img.shields.io/nuget/v/Commons.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons/)
 
 Install through nuget command line:
 
@@ -50,7 +50,7 @@ Install through nuget command line:
 
  __Commons.Json__
     
-Download Commons.Json in [nuget.org](https://www.nuget.org/packages/Commons.Json/) and its dependency [Commons](https://www.nuget.org/packages/Commons/)
+Download Commons.Json [![NuGet](https://img.shields.io/nuget/v/Commons.Json.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons.Json/) and its dependency Commons [![NuGet](https://img.shields.io/nuget/v/Commons.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons/)
 
 Install through nuget command line:
 
