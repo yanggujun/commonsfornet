@@ -51,7 +51,7 @@ namespace Commons.Json
         public static bool IsJsonPrimitive(this Type type)
         {
             return type.IsPrimitive || type == typeof(decimal) 
-                || type == typeof (string) || type == typeof(DateTime) 
+                || type == typeof (string) || type == typeof(DateTime) || type == typeof(Guid)
                 || type.IsEnum || IsNullablePrimitive(type);
         }
 
@@ -118,7 +118,7 @@ namespace Commons.Json
 
             foreach (var interfaceType in type.GetInterfaces())
             {
-                if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof (IList<>))
+                if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof (ICollection<>))
                 {
                     itemType = interfaceType.GetGenericArguments()[0];
                     isList = true;
