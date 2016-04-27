@@ -27,7 +27,7 @@ namespace Commons.Json
         private readonly LinkedHashedMap<string, JsonValue> valueMap = new LinkedHashedMap<string, JsonValue>();
 
         /// <summary>
-        /// Oops! The method is obsolete from 0.2.2. Use Json.Parse(json) instead.
+        /// Oops! The method is obsolete from 0.2.2. Use JsonMapper.Parse(json) instead.
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
