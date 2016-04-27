@@ -316,7 +316,7 @@ namespace Test.Commons.Json
         {
             var json =
                 "{\"Name\": \"Ben\", \"Position\": \"Director\", \"Married\": True, \"Dob\": \"1970/4/3\", \"Department\": \"Sales\", \"Age\": 46, \"Site\": \"NY\"}";
-            var employee = JsonMapper.ConvertTo<Employee>(json, new EmployeeJsonConverter());
+            var employee = JsonMapper.To<Employee>(json, new EmployeeJsonConverter());
             Assert.Equal(46, employee.Age);
             Assert.Equal("Sales", employee.Department);
             Assert.Equal(1970, employee.Dob.Year);
@@ -332,7 +332,7 @@ namespace Test.Commons.Json
         {
             var jsonStr =
                 "{\"Name\": \"Ben\", \"Position\": \"Director\", \"Married\": True, \"Dob\": \"1970/4/3\", \"Department\": \"Sales\", \"Age\": 46, \"Site\": \"NY\"}";
-            var employee = JsonMapper.ConvertTo<Employee>(jsonStr, x =>
+            var employee = JsonMapper.To<Employee>(jsonStr, x =>
             {
                 var json = x as JObject;
                 var emp = new Employee();
@@ -359,7 +359,7 @@ namespace Test.Commons.Json
         public void TestJsonConverter03()
         {
             var json = "[\"value1\", \"value2\", \"value3\", \"value4\"]";
-            var collection = JsonMapper.ConvertTo(json, value =>
+            var collection = JsonMapper.To(json, value =>
             {
                 var set = new HashedSet<string>();
                 var array = value as JArray;
@@ -381,12 +381,12 @@ namespace Test.Commons.Json
         {
             var json1 = "{\"ourList\": {\"name\": \"X\", \"value\": \"Y\"}}";
             var json2= "{\"ourList\": [{\"name\": \"X1\", \"value\": \"Y1\"}, {\"name\": \"X2\", \"value\": \"Y2\"}]}";
-            var l1 = JsonMapper.ConvertTo<OuterList>(json1, Convert);
+            var l1 = JsonMapper.To<OuterList>(json1, Convert);
             Assert.Equal(1, l1.OurList.Length);
             Assert.Equal("X", l1.OurList[0].Name);
             Assert.Equal("Y", l1.OurList[0].Value);
 
-            var l2 = JsonMapper.ConvertTo<OuterList>(json2, Convert);
+            var l2 = JsonMapper.To<OuterList>(json2, Convert);
             Assert.Equal(2, l2.OurList.Length);
             Assert.Equal("X1", l2.OurList[0].Name);
             Assert.Equal("Y1", l2.OurList[0].Value);
@@ -437,7 +437,7 @@ namespace Test.Commons.Json
                 Position = "Director",
                 Site = Site.NY
             };
-            var json = JsonMapper.ConvertToJson(employee, new EmployeeObjectConverter());
+            var json = JsonMapper.ToJson(employee, new EmployeeObjectConverter());
             var jsonObj = JsonMapper.Parse(json);
             Assert.Equal("Ben", (string) jsonObj.Name);
             Assert.Equal("Sales", (string) jsonObj.Department);
@@ -464,7 +464,7 @@ namespace Test.Commons.Json
                 Position = "Director",
                 Site = Site.NY
             };
-            var json = JsonMapper.ConvertToJson(employee, emp =>
+            var json = JsonMapper.ToJson(employee, emp =>
             {
                 var obj = new JObject();
                 obj.SetString("Name", emp.Name);

@@ -197,6 +197,25 @@ namespace Test.Commons.Json
         }
 
         [Fact]
+        public void TestMapJsonToObject121()
+        {
+            var json = "{\"fieldj\": \"valueJ\", \"fieldk\": null}";
+            var primitiveList = JsonMapper.To<PrimitiveList>(json);
+            Assert.Equal("valueJ", primitiveList.FieldJ);
+            Assert.Null(primitiveList.FieldK);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject122()
+        {
+            var json = "{\"fieldj\": \"valueJ\", \"fieldk\": []}";
+            var primitiveList = JsonMapper.To<PrimitiveList>(json);
+            Assert.Equal("valueJ", primitiveList.FieldJ);
+            Assert.NotNull(primitiveList.FieldK);
+            Assert.Equal(0, primitiveList.FieldK.Count);
+        }
+
+        [Fact]
         public void TestMapJsonToObject13()
         {
             var json = TestHelper.ReadFrom("JsonSample11.txt");
@@ -232,6 +251,24 @@ namespace Test.Commons.Json
             var json = "\"astring\"";
             var str = JsonMapper.To<string>(json);
             Assert.Equal("astring", str);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject141()
+        {
+            var guid = Guid.NewGuid();
+            var json = "\"" + guid.ToString() + "\"";
+            var newGuid = JsonMapper.To<Guid>(json);
+            Assert.Equal(guid, newGuid);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject142()
+        {
+            var guid = Guid.NewGuid();
+            var json = "\"" + guid.ToString() + "\"";
+            var newGuid = JsonMapper.To<Guid?>(json);
+            Assert.Equal(guid, newGuid.Value);
         }
 
         [Fact]
@@ -405,6 +442,29 @@ namespace Test.Commons.Json
             var setNested = JsonMapper.To<SetNested>(json);
             Assert.Equal("valuel", setNested.FieldL);
             Assert.NotNull(setNested.FieldM);
+            Assert.Equal(6, setNested.FieldM.Count);
+            for (var i = 0; i < 6; i++)
+            {
+                Assert.True(setNested.FieldM.Contains(i + 1));
+            }
+        }
+
+        [Fact]
+        public void TestMapJsonToObject291()
+        {
+            var json = "{\"fieldl\":\"valuel\", \"fieldm\": null}";
+            var setNested = JsonMapper.To<SetNested>(json);
+            Assert.Equal("valuel", setNested.FieldL);
+            Assert.Null(setNested.FieldM);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject292()
+        {
+            var json = "{\"fieldl\":\"valuel\", \"fieldm\": []}";
+            var setNested = JsonMapper.To<SetNested>(json);
+            Assert.Equal("valuel", setNested.FieldL);
+            Assert.NotNull(setNested.FieldM);
             Assert.Equal(0, setNested.FieldM.Count);
         }
 
@@ -537,6 +597,27 @@ namespace Test.Commons.Json
                 Assert.Equal(i, obj.Array[i]);
             }
         }
+
+        [Fact]
+        public void TestMapJsonToObject431()
+        {
+            var json = "{\"Name\":\"Ken\", \"Array\":[]}";
+            var obj = JsonMapper.To<IntArray>(json);
+            Assert.Equal("Ken", obj.Name);
+            Assert.NotNull(obj.Array);
+            Assert.Equal(0, obj.Array.Length);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject432()
+        {
+            var json = "{\"Name\":\"Ken\", \"Array\":null}";
+            var obj = JsonMapper.To<IntArray>(json);
+            Assert.Equal("Ken", obj.Name);
+            Assert.Null(obj.Array);
+        }
+
+
 
         [Fact]
         public void TestMapJsonToObject44()
@@ -1187,7 +1268,7 @@ namespace Test.Commons.Json
 
             var newCompany = JsonMapper.To<Company>(json);
             Assert.Null(newCompany.Name);
-            Assert.Equal(0, newCompany.Employees.Count);
+            Assert.Null(newCompany.Employees);
             Assert.Equal("EN", newCompany.Country);
             Assert.Equal(1000000, newCompany.Revenue);
             Assert.Equal(1000, newCompany.StaffCount);
@@ -1276,6 +1357,22 @@ namespace Test.Commons.Json
             Assert.Equal(4, dt.Month);
             Assert.Equal(20, dt.Day);
 
+        }
+
+        [Fact]
+        public void TestMapObjectToJson34()
+        {
+            var guid = Guid.NewGuid();
+            var json = JsonMapper.ToJson(guid);
+            Assert.Equal(guid.ToString(), json.Trim('"'));
+        }
+
+        [Fact]
+        public void TestMapObjectToJson35()
+        {
+            Guid? guid = Guid.NewGuid();
+            var json = JsonMapper.ToJson(guid);
+            Assert.Equal(guid.Value.ToString(), json.Trim('"'));
         }
 
         [Fact]

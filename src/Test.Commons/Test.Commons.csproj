@@ -65,6 +65,7 @@
     <Compile Include="Collections\ConcurrentListTest.cs" />
     <Compile Include="Collections\HashTest.cs" />
     <Compile Include="Json\JValueTest.cs" />
+    <Compile Include="Json\Large.cs" />
     <Compile Include="Json\Poco.cs" />
     <Compile Include="Json\JsonMapperTest.cs" />
     <Compile Include="Json\JsonTest.cs" />
@@ -72,6 +73,9 @@
     <Compile Include="Collections\PriorityQueueTest.cs" />
     <Compile Include="Collections\SortedMapTest.cs" />
     <Compile Include="Collections\TestExtenstions.cs" />
+    <Compile Include="Json\Small.cs" />
+    <Compile Include="Json\Standard.cs" />
+    <Compile Include="Json\UsibilityTest.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="Pool\ObjectPoolTest.cs" />
     <Compile Include="TestHelper.cs" />
