@@ -103,7 +103,7 @@ namespace Commons.Json.Mapper
             {
                 json = target.ToString();
             }
-            else if (type == typeof(string) || type.IsEnum)
+            else if (type == typeof(string) || type.IsEnum || type == typeof(Guid))
             {
                 var sb = new StringBuilder();
                 sb.Append(JsonTokens.Quoter).Append(target).Append(JsonTokens.Quoter);
@@ -319,7 +319,11 @@ namespace Commons.Json.Mapper
                     if (jsonObj.ContainsKey(key))
                     {
                         var propertyType = prop.PropertyType;
-                        if (propertyType.IsJsonPrimitive())
+                        if (jsonObj[key].Is<JNull>())
+                        {
+                            prop.SetValue(target, null, null);
+                        }
+                        else if (propertyType.IsJsonPrimitive())
                         {
                             PopulateJsonPrimitive(target, jsonObj, prop, mapper);
                         }
@@ -379,7 +383,7 @@ namespace Commons.Json.Mapper
             }
             if (value.Is<JString>(out str))
             {
-                if (actualType != typeof (string) && actualType != typeof (DateTime) && !actualType.IsEnum)
+                if (actualType != typeof (string) && actualType != typeof (DateTime) && !actualType.IsEnum && actualType != typeof(Guid))
                 {
                     throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
                 }
@@ -398,6 +402,15 @@ namespace Commons.Json.Mapper
                 else if (actualType.IsEnum)
                 {
                     propertyValue = Enum.Parse(actualType, str);
+                }
+                else if (actualType == typeof(Guid))
+                {
+                    Guid guid;
+                    if(!Guid.TryParse(str, out guid))
+                    {
+                        throw new InvalidCastException(Messages.InvalidDateFormat);
+                    }
+                    propertyValue = guid;
                 }
                 else
                 {
