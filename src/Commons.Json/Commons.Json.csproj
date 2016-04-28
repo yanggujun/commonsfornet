@@ -54,6 +54,7 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Extensions.cs" />
+    <Compile Include="Mapper\CollectionBuilder.cs" />
     <Compile Include="Mapper\IJsonConverter.cs" />
     <Compile Include="JsonArray.cs" />
     <Compile Include="JsonMapper.cs" />

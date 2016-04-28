@@ -843,6 +843,99 @@ namespace Test.Commons.Json
         }
 
         [Fact]
+        public void TestMapJsonToObject61()
+        {
+            var json = "{\"Name\": \"Sam\", \"Array\": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}";
+            var obj = JsonMapper.To<LinkedListNested>(json);
+            Assert.Equal("Sam", obj.Name);
+            Assert.Equal(11, obj.Array.Count);
+            for (var i = 0; i < 11; i++)
+            {
+                Assert.True(obj.Array.Contains(i));
+            }
+        }
+
+        [Fact]
+        public void TestMapJsonToObject62()
+        {
+            var json = "{\"Name\": \"Sam\", \"Array\": []}";
+            var obj = JsonMapper.To<LinkedListNested>(json);
+            Assert.Equal("Sam", obj.Name);
+            Assert.Equal(0, obj.Array.Count);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject63()
+        {
+            var json = "{\"Name\": \"Sam\", \"Array\": null}";
+            var obj = JsonMapper.To<LinkedListNested>(json);
+            Assert.Equal("Sam", obj.Name);
+            Assert.Null(obj.Array);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject64()
+        {
+            var json = "[0, 1, 2, 3, 4, 5, 6, 7]";
+            var queue = JsonMapper.To<Queue<int>>(json);
+            Assert.Equal(8, queue.Count);
+            var i = 0;
+            while (queue.Count > 0)
+            {
+                var value = queue.Dequeue();
+                Assert.Equal(i, value);
+                i++;
+            }
+        }
+
+        [Fact]
+        public void TestMapJsonToObject65()
+        {
+            var json = "null";
+            var queue = JsonMapper.To<Queue<int>>(json);
+            Assert.Null(queue);
+
+            var list = JsonMapper.To<List<int>>(json);
+            Assert.Null(list);
+
+            var ll = JsonMapper.To<LinkedList<int>>(json);
+            Assert.Null(ll);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject66()
+        {
+            var json = "[]";
+            var list = JsonMapper.To<List<int>>(json);
+            Assert.NotNull(list);
+            Assert.Equal(0, list.Count);
+
+            var queue = JsonMapper.To<Queue<int>>(json);
+            Assert.NotNull(queue);
+            Assert.Equal(0, queue.Count);
+
+            var ll = JsonMapper.To<LinkedList<int>>(json);
+            Assert.NotNull(ll);
+            Assert.Equal(0, ll.Count);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject67()
+        {
+            var json = "[0, 1, 2, 3, 4, 5, 6, 7, 8]";
+            var stack = JsonMapper.To<Stack<int>>(json);
+            Assert.NotNull(stack);
+            Assert.Equal(9, stack.Count);
+            var i = 8;
+            while (stack.Count > 0)
+            {
+                Assert.Equal(i, stack.Pop());
+                i--;
+            }
+        }
+
+
+        [Fact]
         public void TestMapObjectToJson01()
         {
             var simple = new Simple();
@@ -1373,6 +1466,30 @@ namespace Test.Commons.Json
             Guid? guid = Guid.NewGuid();
             var json = JsonMapper.ToJson(guid);
             Assert.Equal(guid.Value.ToString(), json.Trim('"'));
+        }
+
+        [Fact]
+        public void TestMapObjectToJson36()
+        {
+            var list = new LinkedList<int>();
+            for (var i = 0; i < 100; i++)
+            {
+                list.AddLast(i);
+            }
+            var obj = new LinkedListNested
+            {
+                Name = "Susan",
+                Array = list
+            };
+
+            var json = JsonMapper.ToJson(obj);
+
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("Susan", (string)jsonObj.Name);
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.Equal(i, (int)jsonObj.Array[i]);
+            }
         }
 
         [Fact]

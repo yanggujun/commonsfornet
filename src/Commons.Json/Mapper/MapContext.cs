@@ -25,6 +25,7 @@ namespace Commons.Json.Mapper
             Mappers = new MapperContainer();
             Types = new TypeCache();
             MapEngineFactory = new MapEngineFactory();
+            DefaultBuilder = new CollectionBuilder();
         }
 
         public string Name { get; private set; }
@@ -43,7 +44,7 @@ namespace Commons.Json.Mapper
 
         public string ToJson<T>(T target)
         {
-            var mapEngine = MapEngineFactory.CreateMapEngine(target, Mappers, Types, dateFormat);
+            var mapEngine = MapEngineFactory.CreateMapEngine(target, Mappers, Types, DefaultBuilder, dateFormat);
             return mapEngine.Map(target);
         }
 
@@ -59,7 +60,7 @@ namespace Commons.Json.Mapper
                 target = Types.Instantiate<T>(Mappers);
             }
 
-            var mapEngine = MapEngineFactory.CreateMapEngine(target, Mappers, Types, dateFormat);
+            var mapEngine = MapEngineFactory.CreateMapEngine(target, Mappers, Types, DefaultBuilder, dateFormat);
             return mapEngine.Map(jsonValue);
         }
 
@@ -68,6 +69,8 @@ namespace Commons.Json.Mapper
         public TypeCache Types { get; private set; }
 
         public IMapEngineFactory MapEngineFactory { get; private set; }
+
+        public CollectionBuilder DefaultBuilder { get; private set; }
 
         public string DateFormat
         {

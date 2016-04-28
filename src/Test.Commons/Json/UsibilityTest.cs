@@ -16,6 +16,7 @@
 
 using Commons.Json;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Test.Commons.Json
@@ -123,8 +124,13 @@ namespace Test.Commons.Json
                 {
                     if (post.comments[j].approved.HasValue)
                     {
-                        AssertDateTime(post.comments[j].approved.Value, post.comments[j].approved.Value);
+                        AssertDateTime(post.comments[j].approved.Value, newPost.comments[j].approved.Value);
                     }
+                    else
+                    {
+                        Assert.False(newPost.comments[j].approved.HasValue);
+                    }
+
                     Assert.Equal(post.comments[j].created, newPost.comments[j].created);
                     Assert.Equal(post.comments[j].message, newPost.comments[j].message);
                     Assert.Equal(post.comments[j].user, newPost.comments[j].user);

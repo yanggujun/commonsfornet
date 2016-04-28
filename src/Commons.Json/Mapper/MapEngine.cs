@@ -28,14 +28,16 @@ namespace Commons.Json.Mapper
         private MapperContainer mappers;
         private T targetObj;
         private TypeCache typeCache;
+        private CollectionBuilder builder;
         private string dateFormat;
 
-        public MapEngine(T target, MapperContainer mappers, TypeCache typeCache, string dateFormat)
+        public MapEngine(T target, MapperContainer mappers, TypeCache typeCache, CollectionBuilder builder, string dateFormat)
         {
             this.mappers = mappers;
             this.targetObj = target;
             this.typeCache = typeCache;
             this.dateFormat = dateFormat;
+            this.builder = builder;
         }
 
         public T Map(JValue jsonValue)
@@ -238,13 +240,12 @@ namespace Commons.Json.Mapper
             {
                 var type = obj.GetType();
                 Type itemType;
-                if (type.IsList(out itemType))
+                if (type.IsEnumerable(out itemType) && !type.IsDictionary())
                 {
-                    var add = type.GetMethod(Messages.AddMethod);
                     foreach (var value in jsonArray)
                     {
                         var arrayItemValue = GetValueFromJsonArrayItem(value, itemType);
-                        add.Invoke(obj, new[] { arrayItemValue });
+                        builder.Build((IEnumerable)obj, arrayItemValue);
                     }
                 }
             }

@@ -230,4 +230,10 @@ namespace Test.Commons.Json
         public string Name { get; set; }
         public SimpleStruct? Simple { get; set; }
     }
+
+    public class LinkedListNested
+    {
+        public string Name { get; set; }
+        public LinkedList<int> Array { get; set; }
+    }
 }

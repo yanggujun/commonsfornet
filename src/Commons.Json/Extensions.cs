@@ -105,20 +105,20 @@ namespace Commons.Json
             return type.IsArray || type == typeof (IList<>) || type == typeof (ArrayList);
         }
 
-        public static bool IsList(this Type type)
+        public static bool IsEnumerable(this Type type)
         {
             Type itemType;
-            return type.IsList(out itemType);
+            return type.IsEnumerable(out itemType);
         }
 
-        public static bool IsList(this Type type, out Type itemType)
+        public static bool IsEnumerable(this Type type, out Type itemType)
         {
             var isList = false;
             itemType = null;
 
             foreach (var interfaceType in type.GetInterfaces())
             {
-                if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof (ICollection<>))
+                if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
                 {
                     itemType = interfaceType.GetGenericArguments()[0];
                     isList = true;
@@ -172,7 +172,7 @@ namespace Commons.Json
             var isSupported = false;
             if (!type.IsInterface)
             {
-                if (type.IsList())
+                if (type.IsEnumerable())
                 {
                     isSupported = true;
                 }

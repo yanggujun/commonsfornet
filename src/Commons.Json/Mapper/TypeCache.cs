@@ -39,7 +39,7 @@ namespace Commons.Json.Mapper
         {
             CacheTypeProperties(type);
             object value;
-            if (!type.IsList() && !type.IsDictionary())
+            if (!type.IsEnumerable() && !type.IsDictionary())
             {
                 var manager = typeManagers[type];
                 value = Initialize(manager, mappers);
@@ -87,7 +87,7 @@ namespace Commons.Json.Mapper
                 var propType = prop.PropertyType;
                 if (!propType.IsJsonPrimitive() && propType.Deserializable() && !propType.IsArray)
                 {
-                    if (propType.IsList())
+                    if (propType.IsEnumerable())
                     {
                         prop.SetValue(value, Activator.CreateInstance(propType), null);
                     }
@@ -106,7 +106,7 @@ namespace Commons.Json.Mapper
             TypeManager manager;
             Type itemType;
             Type cacheType;
-            if (type.IsList(out itemType))
+            if (type.IsEnumerable(out itemType))
             {
                 cacheType = itemType;
             }
@@ -151,6 +151,10 @@ namespace Commons.Json.Mapper
             }
             else
             {
+                if (type.IsInterface)
+                {
+                    throw new InvalidOperationException(Messages.TypeNotSupported);
+                }
                 return Activator.CreateInstance(type);
             }
         }

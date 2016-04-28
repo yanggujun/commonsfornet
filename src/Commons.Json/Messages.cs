@@ -47,5 +47,11 @@ namespace Commons.Json
         public const string InvalidDateFormat = "The date time format is invalid.";
 
         public const string NotEnum = "The type is not an Enum.";
+
+        public const string AddLastMethod = "AddLast";
+
+        public const string EnqueueMethod = "Enqueue";
+
+        public const string PushMethod = "Push";
     }
 }
