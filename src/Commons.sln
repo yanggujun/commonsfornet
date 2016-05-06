@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02", "02", "{C4B256A4-A2BA-45D2-ADD6-4CFC267C4AF3}"
 EndProject
@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.Json", "Commons.Jso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.Pool", "Commons.Pool\Commons.Pool.csproj", "{1C0B57BF-8039-49BD-A641-6FF9E6860530}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.MemQueue", "Commons.MemQueue\Commons.MemQueue.csproj", "{F7DE3F34-80BD-4DA7-8715-E123DAADCB34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,10 @@ Global
 		{1C0B57BF-8039-49BD-A641-6FF9E6860530}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C0B57BF-8039-49BD-A641-6FF9E6860530}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C0B57BF-8039-49BD-A641-6FF9E6860530}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7DE3F34-80BD-4DA7-8715-E123DAADCB34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7DE3F34-80BD-4DA7-8715-E123DAADCB34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7DE3F34-80BD-4DA7-8715-E123DAADCB34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7DE3F34-80BD-4DA7-8715-E123DAADCB34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,5 +76,6 @@ Global
 		{EA220245-82AC-455E-B108-70D48F43AC2B} = {984AF548-3612-40F4-A5D9-F3AF16D2DA6A}
 		{1EEB9B63-C564-4C51-A88B-5D253BC68C99} = {657A8C3E-73F2-445E-918B-4ED95882D18F}
 		{1C0B57BF-8039-49BD-A641-6FF9E6860530} = {657A8C3E-73F2-445E-918B-4ED95882D18F}
+		{F7DE3F34-80BD-4DA7-8715-E123DAADCB34} = {657A8C3E-73F2-445E-918B-4ED95882D18F}
 	EndGlobalSection
 EndGlobal
