@@ -28,15 +28,15 @@ namespace Commons.Json.Mapper
         public T Instantiate<T>(MapperContainer mappers)
         {
             var type = typeof(T);
-            if (!type.Deserializable())
-            {
-                throw new InvalidOperationException(Messages.TypeNotSupported);
-            }
             return (T) Instantiate(type, mappers);
         }
 
         public object Instantiate(Type type, MapperContainer mappers)
         {
+            if (!type.Deserializable())
+            {
+                throw new InvalidOperationException(Messages.TypeNotSupported);
+            }
             CacheTypeProperties(type);
             object value;
             if (!type.IsEnumerable() && !type.IsDictionary())

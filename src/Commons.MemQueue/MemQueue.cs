@@ -14,25 +14,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Commons.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 
 namespace Commons.MemQueue
 {
-    internal class MemQueue<T> : IMemQueue<T>
+    internal class MemQueue<T> : IMemQueue
     {
-        private readonly BlockingCollection<T> queue = new BlockingCollection<T>(new ConcurrentQueue<T>());
-        private IMessageHandler<T> handler;
-        private int threadNumbers;
+        private readonly BlockingCollection<HttpListenerContext> queue = new BlockingCollection<HttpListenerContext>(new ConcurrentQueue<HttpListenerContext>());
+        private int threadNumber;
         private List<Thread> threads;
+        private readonly IMessageInterpreter<HttpListenerContext> msgInterpreter;
+        private readonly IMessageHandler<T> handler;
 
-        public MemQueue(string name, IMessageHandler<T> handler, int threadNumbers = 1)
+        public MemQueue(string name, IMessageHandler<T> handler, IMessageInterpreter<HttpListenerContext> msgInterpreter, int threadNumber = 1)
         {
             QueueName = name;
+            this.threadNumber = threadNumber;
             this.handler = handler;
-            this.threadNumbers = threadNumbers;
+            this.msgInterpreter = msgInterpreter;
         }
 
         public bool IsEmpty
@@ -50,7 +54,7 @@ namespace Commons.MemQueue
             queue.CompleteAdding();
         }
 
-        public void Enqueue(T message)
+        public void Enqueue(HttpListenerContext message)
         {
             if (!queue.IsAddingCompleted)
             {
@@ -61,7 +65,7 @@ namespace Commons.MemQueue
         public void Start()
         {
             threads = new List<Thread>();
-            for (var i = 0; i < threadNumbers; i++)
+            for (var i = 0; i < threadNumber; i++)
             {
                 var thread = new Thread(Handle);
                 threads.Add(thread);
@@ -74,12 +78,15 @@ namespace Commons.MemQueue
 
         private void Handle()
         {
-            T element;
+            HttpListenerContext element;
             while (queue.TryTake(out element, -1))
             {
                 try
                 {
-                    handler.Handle(element);
+                    var json = msgInterpreter.GetRequest(element);
+                    var msg = JsonMapper.To<T>(json);
+                    var response = handler.Handle(msg);
+                    msgInterpreter.SendResponse(response);
                 }
                 catch
                 {

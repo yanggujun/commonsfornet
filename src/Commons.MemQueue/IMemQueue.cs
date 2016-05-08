@@ -14,12 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Net;
+
 namespace Commons.MemQueue
 {
-    public interface IMemQueue<T>
+    public interface IMemQueue
     {
         void Start();
-        void Enqueue(T message);
+        void Enqueue(HttpListenerContext message);
         void Close();
         bool IsEmpty { get; }
         string QueueName { get; }

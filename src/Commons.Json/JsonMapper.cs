@@ -46,6 +46,12 @@ namespace Commons.Json
             return context.To<T>(json);
         }
 
+        public static object To(Type type, string json)
+        {
+            var context = GetContext(DefaultContext);
+            return context.To(type, json);
+        }
+
         public static string ToJson<T>(T target)
         {
             var context = GetContext(DefaultContext);

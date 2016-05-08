@@ -16,9 +16,9 @@
 
 namespace Commons.Json.Mapper
 {
-    public interface IMapEngine<T>
+    public interface IMapEngine
     {
-        T Map(JValue jsonValue);
-        string Map(T target);
+        object Map(JValue jsonValue);
+        string Map(object target);
     }
 }

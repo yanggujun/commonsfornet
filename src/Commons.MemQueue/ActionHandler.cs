@@ -20,14 +20,14 @@ namespace Commons.MemQueue
 {
     internal class ActionHandler<T> : IMessageHandler<T>
     {
-        private Action<T> handler;
-        public ActionHandler(Action<T> handler)
+        private Func<T, string> handler;
+        public ActionHandler(Func<T, string> handler)
         {
             this.handler = handler;
         }
-        public void Handle(T message)
+        public string Handle(T message)
         {
-            handler(message);
+            return handler(message);
         }
 
     }

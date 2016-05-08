@@ -14,6 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Commons.Json.Mapper
 {
     internal class MapContext : IMapContext
@@ -44,23 +46,27 @@ namespace Commons.Json.Mapper
 
         public string ToJson<T>(T target)
         {
-            var mapEngine = MapEngineFactory.CreateMapEngine(target, Mappers, Types, DefaultBuilder, dateFormat);
+            var mapEngine = MapEngineFactory.CreateMapEngine(target, typeof(T), Mappers, Types, DefaultBuilder, dateFormat);
             return mapEngine.Map(target);
         }
 
         public T To<T>(string json)
         {
+            return (T)To(typeof(T), json);
+        }
+
+        public object To(Type type, string json)
+        {
             var parseEngine = new JsonParseEngine();
             var jsonValue = parseEngine.Parse(json);
 
-            T target = default(T);
-            var targetType = typeof (T);
-            if (!targetType.IsJsonPrimitive() && !targetType.IsArray)
+            object target = null;
+            if (!type.IsJsonPrimitive() && !type.IsArray)
             {
-                target = Types.Instantiate<T>(Mappers);
+                target = Types.Instantiate(type, Mappers);
             }
 
-            var mapEngine = MapEngineFactory.CreateMapEngine(target, Mappers, Types, DefaultBuilder, dateFormat);
+            var mapEngine = MapEngineFactory.CreateMapEngine(target, type, Mappers, Types, DefaultBuilder, dateFormat);
             return mapEngine.Map(jsonValue);
         }
 

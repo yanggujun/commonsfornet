@@ -13,13 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Commons.Json.Mapper
 {
     internal class MapEngineFactory : IMapEngineFactory
     {
-        public IMapEngine<T> CreateMapEngine<T>(T target, MapperContainer mappers, TypeCache typeCache, CollectionBuilder builder, string dateFormat)
+        public IMapEngine CreateMapEngine(object target, Type type, MapperContainer mappers, TypeCache typeCache, CollectionBuilder builder, string dateFormat)
         {
-            return new MapEngine<T>(target, mappers, typeCache, builder, dateFormat);
+            return new MapEngine(target, type, mappers, typeCache, builder, dateFormat);
         }
     }
 }

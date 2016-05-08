@@ -23,26 +23,28 @@ using System.Text;
 
 namespace Commons.Json.Mapper
 {
-    internal class MapEngine<T> : IMapEngine<T>
+    internal class MapEngine : IMapEngine
     {
-        private MapperContainer mappers;
-        private T targetObj;
-        private TypeCache typeCache;
-        private CollectionBuilder builder;
+        private readonly MapperContainer mappers;
+        private object targetObj;
+        private readonly TypeCache typeCache;
+        private readonly CollectionBuilder builder;
         private string dateFormat;
+        private readonly Type type;
 
-        public MapEngine(T target, MapperContainer mappers, TypeCache typeCache, CollectionBuilder builder, string dateFormat)
+        public MapEngine(object target, Type type, MapperContainer mappers, TypeCache typeCache, CollectionBuilder builder, string dateFormat)
         {
             this.mappers = mappers;
             this.targetObj = target;
             this.typeCache = typeCache;
             this.dateFormat = dateFormat;
             this.builder = builder;
+            this.type = type;
         }
 
-        public T Map(JValue jsonValue)
+        public object Map(JValue jsonValue)
         {
-            return (T)InternalMap(jsonValue, targetObj, typeof(T));
+            return InternalMap(jsonValue, targetObj, type);
         }
 
         public object InternalMap(JValue jsonValue, object obj, Type type)
@@ -74,7 +76,7 @@ namespace Commons.Json.Mapper
             return obj;
         }
 
-        public string Map(T target)
+        public string Map(object target)
         {
             return Jsonize(target);
         }

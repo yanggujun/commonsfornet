@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Commons.MemQueue</id>
+    <version>0.2.2.421</version>
+    <authors>yanggujun</authors>
+    <owners>yanggujun</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+        A light weight in memery queue for sequenced message processing.
+    </description>
+    <summary>
+        A light weight in memery queue for sequenced message processing.
+    </summary>
+    <releaseNotes></releaseNotes>
+    <tags>Memery Queue</tags>
+    <dependencies>
+        <dependency id="Commons" version="0.2.2.421"/>
+    </dependencies>
+  </metadata>
+  <files>
+      <file src="src\bin\NET45\Commons.MemQueue.dll" target="lib\net45\" />
+      <file src="src\bin\NET40\Commons.MemQueue.dll" target="lib\net40\" />
+  </files>
+</package>

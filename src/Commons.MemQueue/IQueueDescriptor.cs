@@ -22,8 +22,12 @@ namespace Commons.MemQueue
     {
         IQueueDescriptor<T> CreateQueue(string name);
 
-        IQueueDescriptor<T> AddHandler(Action<T> handle);
+        IQueueDescriptor<T> AddHandler(Func<T, string> handler);
 
         IQueueDescriptor<T> AddHandler(IMessageHandler<T> handler);
+
+        IQueueDescriptor<T> UseThreads(int threadNumber);
+
+        IMemQueue Instance();
     }
 }

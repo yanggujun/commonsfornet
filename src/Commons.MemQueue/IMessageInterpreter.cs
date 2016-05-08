@@ -15,16 +15,15 @@
 // limitations under the License.
 
 using System;
+using System.Text;
 
-namespace Commons.Json.Mapper
+namespace Commons.MemQueue
 {
-    public interface IMapContext
+    public interface IMessageInterpreter<T>
     {
-        string Name { get; }
-        string DateFormat { get; }
-        IJsonObjectMapper<T> For<T>();
-        string ToJson<T>(T target);
-        T To<T>(string json);
-        object To(Type type, string json);
+        Type GetRequestType(T origin);
+        string GetRequest(T origin);
+        void SendResponse(string message);
+        void SendResponse(string message, Encoding encoding);
     }
 }

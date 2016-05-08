@@ -18,6 +18,6 @@ namespace Commons.MemQueue
 {
     public interface IMessageHandler<T>
     {
-        void Handle(T message);
+        string Handle(T message);
     }
 }

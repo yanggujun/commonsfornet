@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Commons.MemQueue</RootNamespace>
     <AssemblyName>Commons.MemQueue</AssemblyName>
-    <TargetFrameworkVersion Condition=" '$(Framework)' == ''">v4.5</TargetFrameworkVersion>
+    <Framework Condition=" '$(Framework)' == '' ">NET45</Framework>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -62,8 +62,11 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ActionHandler.cs" />
+    <Compile Include="HttpBus.cs" />
+    <Compile Include="HttpInterpreter.cs" />
     <Compile Include="IMemQueue.cs" />
     <Compile Include="IMessageHandler.cs" />
+    <Compile Include="IMessageInterpreter.cs" />
     <Compile Include="IQueueDescriptor.cs" />
     <Compile Include="IQueueFactory.cs" />
     <Compile Include="MemQueue.cs" />
@@ -72,6 +75,20 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Commons.Collections\Commons.Collections.csproj">
+      <Project>{E8221711-1B2B-4ED7-B359-9A5D990B3ABD}</Project>
+      <Name>Commons.Collections</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Commons.Json\Commons.Json.csproj">
+      <Project>{1eeb9b63-c564-4c51-a88b-5d253bc68c99}</Project>
+      <Name>Commons.Json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj">
+      <Project>{ea220245-82ac-455e-b108-70d48f43ac2b}</Project>
+      <Name>Commons.Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
