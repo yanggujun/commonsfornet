@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
@@ -82,9 +83,11 @@ namespace Commons.MemQueue
             {
                 try
                 {
+                    var msgType = element.Request.Headers.Get("MsgType");
+                    var type = Type.GetType(msgType);
                     var json = msgInterpreter.GetRequest(element);
-                    var msg = JsonMapper.To<T>(json);
-                    var response = handler.Handle(msg);
+                    var msg = JsonMapper.To(type, json);
+                    var response = handler.Handle((T)msg);
                     msgInterpreter.SendResponse(response);
                 }
                 catch
