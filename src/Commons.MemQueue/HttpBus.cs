@@ -14,20 +14,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Commons.Collections.Map;
 using System;
 using System.Net;
-using System.Reflection;
+using Commons.Collections.Map;
+using Commons.Utils;
 
 namespace Commons.MemQueue
 {
     public class HttpBus
     {
-        private readonly HashedMap<Type, IMemQueue> queues = new HashedMap<Type, IMemQueue>();
+        private readonly HashedMap<string, IMemQueue> queues = new HashedMap<string, IMemQueue>();
+        private readonly HashedMap<string, Type> types = new HashedMap<string, Type>();
 
-        public void AddQueue(Type type, IMemQueue queue)
+        public void Configure<T>(Action<IQueueDescriptor<T>> queueConfig)
         {
-            queues.Add(type, queue);
+            var type = typeof(T);
+            var fullName = type.FullName;
+            var queueDesc = new QueueDescriptor<T>();
+            queueConfig(queueDesc);
+            var queue = queueDesc.Instance();
+            queues.Add(fullName, queue);
+        }
+
+        public void Post(string url, string json)
+        {
+        }
+
+        public void Post<T>(string url, T obj)
+        {
+
+        }
+
+        public void Post<T>(string url, T obj, Action<T> jsonize)
+        {
+
         }
 
         public void Listen(string url)
@@ -44,17 +64,33 @@ namespace Commons.MemQueue
             {
                 try
                 {
-
                     var contex = listener.GetContext();
                     var msgType = contex.Request.Headers.Get("MsgType");
-                    var lastDot = msgType.LastIndexOf('.');
-                    var assemblyName = msgType.Substring(0, lastDot);
-                    var ass = Assembly.Load(assemblyName);
-                    var type = ass.GetType(msgType);
-                    if (queues.ContainsKey(type))
+                    if (queues.ContainsKey(msgType))
                     {
-                        var queue = queues[type];
-                        queue.Enqueue(contex);
+                        queues[msgType].Enqueue(contex);
+                    }
+                    else
+                    {
+                        Type type;
+                        if (types.ContainsKey(msgType))
+                        {
+                            type = types[msgType];
+                        }
+                        else
+                        {
+                            type = Type.GetType(msgType);
+                        }
+
+                        foreach (var t in type.SuperTypes())
+                        {
+                            if (queues.ContainsKey(t.FullName))
+                            {
+                                queues[msgType] = queues[t.FullName];
+                                queues[t.FullName].Enqueue(contex);
+                                break;
+                            }
+                        }
                     }
                 }
                 catch (Exception e)

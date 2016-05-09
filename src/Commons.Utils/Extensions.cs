@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 
 namespace Commons.Utils
 {
@@ -43,6 +44,26 @@ namespace Commons.Utils
             catch
             {
                 //quiet
+            }
+        }
+
+        public static IEnumerable<Type> SuperTypes(this Type type, bool includeSelf = true)
+        {
+            if (includeSelf)
+            {
+                yield return type;
+            }
+
+            var tmp = type;
+            while (tmp.BaseType != null)
+            {
+                tmp = tmp.BaseType;
+                yield return tmp;
+            }
+
+            foreach (var i in type.GetInterfaces())
+            {
+                yield return i;
             }
         }
     }
