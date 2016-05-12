@@ -69,25 +69,25 @@ namespace Commons.Utils
             return atomic.Value;
         }
 
-        public void Increment()
+        public Int64 Increment()
         {
-            Interlocked.Increment(ref value);
+            return Interlocked.Increment(ref value);
         }
 
-        public void Decrement()
+        public Int64 Decrement()
         {
-            Interlocked.Decrement(ref value);
+            return Interlocked.Decrement(ref value);
         }
 
-        public void Add(Int64 right)
+        public Int64 Add(Int64 right)
         {
-            Interlocked.Add(ref value, right);
+            return Interlocked.Add(ref value, right);
         }
 
-        public void Minus(Int64 right)
+        public Int64 Minus(Int64 right)
         {
             var oprand = -right;
-            Interlocked.Add(ref value, oprand);
+            return Interlocked.Add(ref value, oprand);
         }
     }
 }

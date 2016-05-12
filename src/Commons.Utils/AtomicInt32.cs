@@ -55,25 +55,25 @@ namespace Commons.Utils
             return o == r;
         }
 
-        public void Increment()
+        public Int32 Increment()
         {
-            Interlocked.Increment(ref value);
+            return Interlocked.Increment(ref value);
         }
 
-        public void Decrement()
+        public Int32 Decrement()
         {
-            Interlocked.Decrement(ref value);
+            return Interlocked.Decrement(ref value);
         }
 
-        public void Add(Int32 right)
+        public Int32 Add(Int32 right)
         {
-            Interlocked.Add(ref value, right);
+            return Interlocked.Add(ref value, right);
         }
 
-        public void Minus(Int32 right)
+        public Int32 Minus(Int32 right)
         {
             var oprand = -right;
-            Interlocked.Add(ref value, oprand);
+            return Interlocked.Add(ref value, oprand);
         }
 
 #pragma warning restore 420

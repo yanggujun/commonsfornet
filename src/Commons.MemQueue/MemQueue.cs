@@ -85,10 +85,17 @@ namespace Commons.MemQueue
                 {
                     var msgType = element.Request.Headers.Get("MsgType");
                     var type = Type.GetType(msgType);
-                    var json = msgInterpreter.GetRequest(element);
-                    var msg = JsonMapper.To(type, json);
-                    var response = handler.Handle((T)msg);
-                    msgInterpreter.SendResponse(response);
+                    if (type == null)
+                    {
+                        type = TypeLoader.Load(msgType);
+                    }
+                    if (type != null)
+                    {
+                        var json = msgInterpreter.GetRequest(element);
+                        var msg = JsonMapper.To(type, json);
+                        var response = handler.Handle((T)msg);
+                        msgInterpreter.SendResponse(response);
+                    }
                 }
                 catch
                 {

@@ -15,7 +15,9 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using System.Net;
+using System.Reflection;
 using Commons.Collections.Map;
 using Commons.Utils;
 
@@ -80,6 +82,10 @@ namespace Commons.MemQueue
                         else
                         {
                             type = Type.GetType(msgType);
+                            if (type == null)
+                            {
+                                type = TypeLoader.Load(msgType);
+                            }
                         }
 
                         foreach (var t in type.SuperTypes())
@@ -99,5 +105,6 @@ namespace Commons.MemQueue
                 }
             }
         }
+
     }
 }
