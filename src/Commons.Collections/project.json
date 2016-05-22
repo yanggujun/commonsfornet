@@ -1,0 +1,24 @@
+﻿{
+  "version": "0.2.2.421",
+  "buildOptions": {
+    "emitEntryPoint": false,
+    "compile": {
+      "includeFiles": "..\\AssemblyInfo.cs"
+    }
+  },
+
+  "dependencies": {
+    "Commons.Utils": "0.2.2.421",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0-rc2-3002702"
+    }
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dnxcore50"
+    }
+  }
+
+}

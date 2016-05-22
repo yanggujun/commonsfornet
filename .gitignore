@@ -30,3 +30,5 @@ Thumbs.db
 *.sbr
 [Rr]elease*/
 .vs
+*.un~
+*.lock.json
