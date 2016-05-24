@@ -55,7 +55,7 @@ namespace Commons.Json.Mapper
                 builders[type](collection, value);
                 filled = true;
             }
-            else if (type.IsGenericType)
+            else if (type.GetTypeInfo().IsGenericType)
             {
                 var genericType = type.GetGenericTypeDefinition();
                 if (builders.ContainsKey(genericType))
@@ -69,7 +69,7 @@ namespace Commons.Json.Mapper
             {
                 foreach (var interfaceType in type.GetInterfaces())
                 {
-                    if (interfaceType.IsGenericType)
+                    if (interfaceType.GetTypeInfo().IsGenericType)
                     {
                         var genericType = interfaceType.GetGenericTypeDefinition();
                         if (builders.ContainsKey(genericType))

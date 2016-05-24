@@ -40,10 +40,11 @@ namespace Commons.Utils
             {
 #if NET45
                 return Volatile.Read(ref value);
-#endif
-#if NET40
+#elif NET40
                 return Thread.VolatileRead(ref value);
-#endif 
+#elif NETSTANDARD1_3
+                return Volatile.Read(ref value);
+#endif
             }
         }
 

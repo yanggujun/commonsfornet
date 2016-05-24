@@ -8,8 +8,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>c7b457de-7eb4-4a66-a83e-4f54aaaa5171</ProjectGuid>
     <RootNamespace>Commons.Utils</RootNamespace>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\bin\NETCORE10\obj\</BaseIntermediateOutputPath>
-    <OutputPath Condition="'$(OutputPath)'=='' ">..\bin\NETCORE10\</OutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\bin\obj\</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)'=='' ">..\bin</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
@@ -19,6 +19,7 @@
     <DnxInvisibleContent Include="AtomicMarkableReference.cs.orig" />
     <DnxInvisibleContent Include="Commons.Utils.xproj~" />
     <DnxInvisibleContent Include="project.json~" />
+    <DnxInvisibleContent Include="project.lock.json" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

@@ -3,24 +3,24 @@
   "buildOptions": {
     "emitEntryPoint": false,
     "compile": {
+      "exclude": "*.un~",
       "includeFiles": "..\\AssemblyInfo.cs"
     }
   },
 
   "dependencies": {
-    "Commons.Collections": "0.2.2.421",
     "Commons.Utils": "0.2.2.421",
-    "System.Data.Common": "4.0.1-rc2-24027",
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.0-rc2-3002702"
-    }
+    "Commons.Collections": "0.2.2.421",
+    "NETStandard.Library": {
+      "version": "1.5.0-rc2-24027",
+      "type": "platform"
+    },
+    "System.Dynamic.Runtime": "4.0.11-rc2-24027",
+    "System.Reflection.TypeExtensions": "4.1.0-rc2-24027"
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": "dnxcore50"
+    "netstandard1.3": {
     }
   }
-
 }

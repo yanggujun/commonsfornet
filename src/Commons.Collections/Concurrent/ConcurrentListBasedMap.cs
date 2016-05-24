@@ -345,7 +345,7 @@ namespace Commons.Collections.Concurrent
                 {
                     if (pc > 1 && i < SpinCount)
                     {
-                        Thread.SpinWait(SpinCycles * ( i + 1));
+                        Thread.Sleep(SpinCycles * ( i + 1));
                     }
                     else if (i < (SpinCount + YieldCount))
                     {

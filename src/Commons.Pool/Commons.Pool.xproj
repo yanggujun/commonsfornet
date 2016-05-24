@@ -8,15 +8,17 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>fc9af941-4bbe-4859-b4e3-e14352f473a0</ProjectGuid>
     <RootNamespace>Commons.Pool</RootNamespace>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\bin\NETCORE10\obj\</BaseIntermediateOutputPath>
-    <OutputPath Condition="'$(OutputPath)'=='' ">..\bin\NETCORE10\</OutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\bin\obj\</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)'=='' ">..\bin</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <ItemGroup>
     <DnxInvisibleContent Include=".Commons.Pool.xproj.un~" />
+    <DnxInvisibleContent Include=".project.json.un~" />
     <DnxInvisibleContent Include="Commons.Pool.xproj~" />
+    <DnxInvisibleContent Include="project.json~" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

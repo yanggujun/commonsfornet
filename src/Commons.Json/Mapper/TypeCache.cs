@@ -151,7 +151,7 @@ namespace Commons.Json.Mapper
             }
             else
             {
-                if (type.IsInterface)
+                if (type.GetTypeInfo().IsInterface)
                 {
                     throw new InvalidOperationException(Messages.TypeNotSupported);
                 }
@@ -163,7 +163,7 @@ namespace Commons.Json.Mapper
         {
             var type = manager.Type;
             var init = false;
-            if (type.IsClass)
+            if (type.GetTypeInfo().IsClass)
             {
                 if (manager.Constructor != null)
                 {

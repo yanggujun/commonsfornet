@@ -16,6 +16,7 @@
 
 using System;
 using System.Dynamic;
+using System.Reflection;
 using System.Text;
 
 namespace Commons.Json
@@ -29,7 +30,7 @@ namespace Commons.Json
             if (value != null)
             {
                 var type = value.GetType();
-                if (!type.IsPrimitive && type != typeof(string) && type != typeof(DateTime))
+                if (!type.GetTypeInfo().IsPrimitive && type != typeof(string) && type != typeof(DateTime))
                 {
                     throw new ArgumentException(Messages.InvalidValue);
                 }
