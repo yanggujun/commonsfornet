@@ -28,6 +28,6 @@ namespace Commons.MemQueue
 
         IQueueDescriptor<T> UseThreads(int threadNumber);
 
-        IMemQueue Instance();
+        IMemQueue<T> Instance();
     }
 }

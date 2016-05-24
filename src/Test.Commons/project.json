@@ -24,7 +24,7 @@
   },
 
   "frameworks": {
-    "netstandard1.3": {}
+    "dotnet": { }
   }
 
 }

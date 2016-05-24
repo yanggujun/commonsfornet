@@ -18,10 +18,10 @@ using System.Net;
 
 namespace Commons.MemQueue
 {
-    public interface IMemQueue
+    public interface IMemQueue<T>
     {
         void Start();
-        void Enqueue(HttpListenerContext message);
+        void Enqueue(T message);
         void Close();
         bool IsEmpty { get; }
         string QueueName { get; }

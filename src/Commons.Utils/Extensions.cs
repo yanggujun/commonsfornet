@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Commons.Utils
 {
@@ -44,6 +45,26 @@ namespace Commons.Utils
             catch
             {
                 //quiet
+            }
+        }
+
+        public static IEnumerable<Type> SuperTypes(this Type type, bool includeSelf = true)
+        {
+            if (includeSelf)
+            {
+                yield return type;
+            }
+
+            var tmp = type;
+            while (tmp.GetTypeInfo().BaseType != null)
+            {
+                tmp = tmp.GetTypeInfo().BaseType;
+                yield return tmp;
+            }
+
+            foreach (var i in type.GetInterfaces())
+            {
+                yield return i;
             }
         }
     }

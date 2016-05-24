@@ -41,9 +41,9 @@ namespace Commons.MemQueue
             return this;
         }
 
-        public IMemQueue Instance()
+        public IMemQueue<T> Instance()
         {
-            return new MemQueue<T>(queueName, handler, new HttpInterpreter(), threadNumber);
+            return null;
         }
 
         public IQueueDescriptor<T> UseThreads(int threadNumber)

@@ -23,20 +23,18 @@ using Commons.Json;
 
 namespace Commons.MemQueue
 {
-    internal class MemQueue<T> : IMemQueue
+    internal class MemQueue<T> : IMemQueue<T>
     {
-        private readonly BlockingCollection<HttpListenerContext> queue = new BlockingCollection<HttpListenerContext>(new ConcurrentQueue<HttpListenerContext>());
+        private readonly BlockingCollection<T> queue = new BlockingCollection<T>(new ConcurrentQueue<T>());
         private int threadNumber;
         private List<Thread> threads;
-        private readonly IMessageInterpreter<HttpListenerContext> msgInterpreter;
         private readonly IMessageHandler<T> handler;
 
-        public MemQueue(string name, IMessageHandler<T> handler, IMessageInterpreter<HttpListenerContext> msgInterpreter, int threadNumber = 1)
+        public MemQueue(string name, IMessageHandler<T> handler, int threadNumber = 1)
         {
             QueueName = name;
             this.threadNumber = threadNumber;
             this.handler = handler;
-            this.msgInterpreter = msgInterpreter;
         }
 
         public bool IsEmpty
@@ -54,7 +52,7 @@ namespace Commons.MemQueue
             queue.CompleteAdding();
         }
 
-        public void Enqueue(HttpListenerContext message)
+        public void Enqueue(T message)
         {
             if (!queue.IsAddingCompleted)
             {
@@ -78,24 +76,11 @@ namespace Commons.MemQueue
 
         private void Handle()
         {
-            HttpListenerContext element;
+            T element;
             while (queue.TryTake(out element, -1))
             {
                 try
                 {
-                    var msgType = element.Request.Headers.Get("MsgType");
-                    var type = Type.GetType(msgType);
-                    if (type == null)
-                    {
-                        type = TypeLoader.Load(msgType);
-                    }
-                    if (type != null)
-                    {
-                        var json = msgInterpreter.GetRequest(element);
-                        var msg = JsonMapper.To(type, json);
-                        var response = handler.Handle((T)msg);
-                        msgInterpreter.SendResponse(response);
-                    }
                 }
                 catch
                 {
