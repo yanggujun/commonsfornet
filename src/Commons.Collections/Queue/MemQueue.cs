@@ -14,14 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading;
-using Commons.Json;
 
-namespace Commons.MemQueue
+namespace Commons.Collections.Queue
 {
     internal class MemQueue<T> : IMemQueue<T>
     {
@@ -81,6 +78,7 @@ namespace Commons.MemQueue
             {
                 try
                 {
+                    handler.Handle(element);
                 }
                 catch
                 {

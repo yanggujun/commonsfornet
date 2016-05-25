@@ -24,8 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02", "02", "{008930F3-0DBE-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03", "03", "{0086A424-1BB9-4DBF-9F07-B60774F51E23}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Commons.MemQueue", "Commons.MemQueue\Commons.MemQueue.xproj", "{2C2C4F26-A7CB-438D-A68F-746EA6471409}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,10 +46,6 @@ Global
 		{FC9AF941-4BBE-4859-B4E3-E14352F473A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC9AF941-4BBE-4859-B4E3-E14352F473A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC9AF941-4BBE-4859-B4E3-E14352F473A0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C2C4F26-A7CB-438D-A68F-746EA6471409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C2C4F26-A7CB-438D-A68F-746EA6471409}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C2C4F26-A7CB-438D-A68F-746EA6471409}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C2C4F26-A7CB-438D-A68F-746EA6471409}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

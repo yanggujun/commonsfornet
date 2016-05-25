@@ -15,31 +15,20 @@
 // limitations under the License.
 
 using System;
-using System.IO;
-using System.Reflection;
-using System.Linq;
 
-namespace Commons.MemQueue
+namespace Commons.Collections.Queue
 {
-    internal class TypeLoader
+    internal class ActionHandler<T> : IMessageHandler<T>
     {
-        public static Type Load(string typeName)
+        private Func<T, string> handler;
+        public ActionHandler(Func<T, string> handler)
         {
-            var currentDir = Directory.GetCurrentDirectory();
-            var dll = Directory.GetFiles(currentDir, "*.dll").Concat(Directory.GetFiles(currentDir, "*.exe"));
-            foreach (var f in dll)
-            {
-                var name = new AssemblyName();
-                name.Name = f.Substring(0, f.LastIndexOf('.'));
-                var ass = Assembly.Load(name);
-                var type = ass.GetType(typeName);
-                if (type != null)
-                {
-                    return type;
-                }
-            }
-
-            return null;
+            this.handler = handler;
         }
+        public string Handle(T message)
+        {
+            return handler(message);
+        }
+
     }
 }
