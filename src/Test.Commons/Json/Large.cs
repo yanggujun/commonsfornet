@@ -17,12 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 
 namespace Test.Commons.Json
 {
-	[DataContract]
 	public class Book : IEquatable<Book>
 	{
 		private static DateTime NOW = DateTime.UtcNow;
@@ -46,23 +44,14 @@ namespace Test.Commons.Json
 			genres = new Genre[0];
 			cover = new byte[0];//otherwise buggy ProtoBuf and some other libs
 		}
-		[DataMember(Order = 2)]
 		public int ID { get; set; }
-		[DataMember(Order = 3)]
 		public string title { get; set; }
-		[DataMember(Order = 4)]
 		public int authorId { get; set; }
-		[DataMember(Order = 5)]
 		public LinkedList<Page> pages { get; set; }
-		[DataMember(Order = 6)]
 		public DateTime? published { get; set; }
-		[DataMember(Order = 7)]
 		public byte[] cover { get; set; }
-		[DataMember(Order = 8)]
 		public HashSet<DateTime> changes { get; set; }
-		[DataMember(Order = 9)]
 		public Dictionary<string, string> metadata { get; set; }
-		[DataMember(Order = 10)]
 		public Genre[] genres { get; set; }
 		public override int GetHashCode() { return ID; }
 		public override bool Equals(object obj) { return Equals(obj as Book); }
@@ -139,19 +128,13 @@ namespace Test.Commons.Json
 			return book;
 		}
 	}
-	[DataContract]
 	public enum Genre
 	{
-		[DataMember]
 		Action,
-		[DataMember]
 		Romance,
-		[DataMember]
 		Comedy,
-		[DataMember]
 		SciFi
 	}
-	[DataContract]
 	public class Page : IEquatable<Page>
 	{
 		public Page()
@@ -159,11 +142,8 @@ namespace Test.Commons.Json
 			notes = new List<Note>();
 			identity = Guid.NewGuid();
 		}
-		[DataMember]
 		public string text { get; set; }
-		[DataMember]
 		public List<Note> notes { get; set; }
-		[DataMember]
 		public Guid identity { get; set; }
 		public override int GetHashCode() { return identity.GetHashCode(); }
 		public override bool Equals(object obj) { return Equals(obj as Page); }
@@ -175,16 +155,11 @@ namespace Test.Commons.Json
 				&& other.identity == this.identity;
 		}
 	}
-	[DataContract]
 	public class Footnote : Note, IEquatable<Footnote>
 	{
-		[DataMember]
 		public string note { get; set; }
-		[DataMember]
 		public string writtenBy { get; set; }
-		[DataMember]
 		public DateTime createadAt { get; set; }
-		[DataMember]
 		public long index { get; set; }
 		public override int GetHashCode() { return (int)index; }
 		public override bool Equals(object obj) { return Equals(obj as Footnote); }
@@ -194,14 +169,10 @@ namespace Test.Commons.Json
 				&& other.createadAt == this.createadAt && other.index == this.index;
 		}
 	}
-	[DataContract]
 	public class Headnote : Note, IEquatable<Headnote>
 	{
-		[DataMember]
 		public string note { get; set; }
-		[DataMember]
 		public string writtenBy { get; set; }
-		[DataMember]
 		public DateTime? modifiedAt { get; set; }
 		public override int GetHashCode() { return (modifiedAt ?? DateTime.MinValue).GetHashCode(); }
 		public override bool Equals(object obj) { return Equals(obj as Headnote); }

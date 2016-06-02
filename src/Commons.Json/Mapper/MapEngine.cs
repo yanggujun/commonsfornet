@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Commons.Utils;
 using System;
 using System.Collections;
 using System.Globalization;
@@ -107,7 +108,7 @@ namespace Commons.Json.Mapper
             {
                 json = target.ToString();
             }
-            else if (type == typeof(string) || type.GetTypeInfo().IsEnum || type == typeof(Guid))
+            else if (type == typeof(string) || type.IsEnum() || type == typeof(Guid))
             {
                 var sb = new StringBuilder();
                 sb.Append(JsonTokens.Quoter).Append(target).Append(JsonTokens.Quoter);
@@ -386,7 +387,7 @@ namespace Commons.Json.Mapper
             }
             if (value.Is<JString>(out str))
             {
-                if (actualType != typeof (string) && actualType != typeof (DateTime) && !actualType.GetTypeInfo().IsEnum && actualType != typeof(Guid))
+                if (actualType != typeof (string) && actualType != typeof (DateTime) && !actualType.IsEnum() && actualType != typeof(Guid))
                 {
                     throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
                 }
@@ -402,7 +403,7 @@ namespace Commons.Json.Mapper
                         throw new InvalidCastException(Messages.InvalidDateFormat);
                     }
                 }
-                else if (actualType.GetTypeInfo().IsEnum)
+                else if (actualType.IsEnum())
                 {
                     propertyValue = Enum.Parse(actualType, str);
                 }

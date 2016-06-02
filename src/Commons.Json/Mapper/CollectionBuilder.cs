@@ -17,6 +17,7 @@
 using Commons.Collections.Map;
 using Commons.Collections.Queue;
 using Commons.Collections.Set;
+using Commons.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ namespace Commons.Json.Mapper
                 builders[type](collection, value);
                 filled = true;
             }
-            else if (type.GetTypeInfo().IsGenericType)
+            else if (type.IsGenericType())
             {
                 var genericType = type.GetGenericTypeDefinition();
                 if (builders.ContainsKey(genericType))
@@ -69,7 +70,7 @@ namespace Commons.Json.Mapper
             {
                 foreach (var interfaceType in type.GetInterfaces())
                 {
-                    if (interfaceType.GetTypeInfo().IsGenericType)
+                    if (interfaceType.IsGenericType())
                     {
                         var genericType = interfaceType.GetGenericTypeDefinition();
                         if (builders.ContainsKey(genericType))

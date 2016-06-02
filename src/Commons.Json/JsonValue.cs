@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Commons.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace Commons.Json
             {
                 return (JsonValue)value;
             }
-            if (type.GetTypeInfo().IsPrimitive || type == typeof(bool) || type == typeof(string))
+            if (type.IsPrimitive() || type == typeof(bool) || type == typeof(string))
             {
                 return new JsonPrimitive(value);
             }

@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Commons.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -51,9 +52,9 @@ namespace Commons.Json
 
         public static bool IsJsonPrimitive(this Type type)
         {
-            return type.GetTypeInfo().IsPrimitive || type == typeof(decimal) 
+            return type.IsPrimitive() || type == typeof(decimal) 
                 || type == typeof (string) || type == typeof(DateTime) || type == typeof(Guid)
-                || type.GetTypeInfo().IsEnum || IsNullablePrimitive(type);
+                || type.IsEnum() || IsNullablePrimitive(type);
         }
 
         public static bool IsNullable(this Type type)
@@ -119,7 +120,7 @@ namespace Commons.Json
 
             foreach (var interfaceType in type.GetInterfaces())
             {
-                if (interfaceType.GetTypeInfo().IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
+                if (interfaceType.IsGenericType() && interfaceType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
                 {
                     itemType = interfaceType.GetGenericArguments()[0];
                     isList = true;
@@ -150,7 +151,7 @@ namespace Commons.Json
             valueType = null;
             foreach (var interfaceType in type.GetInterfaces())
             {
-                if (interfaceType.GetTypeInfo().IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                if (interfaceType.IsGenericType() && interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
                 {
                     isDict = true;
                     keyType = interfaceType.GetGenericArguments()[0];
@@ -171,13 +172,13 @@ namespace Commons.Json
         public static bool Deserializable(this Type type)
         {
             var isSupported = false;
-            if (!type.GetTypeInfo().IsInterface)
+            if (!type.IsInterface())
             {
                 if (type.IsEnumerable())
                 {
                     isSupported = true;
                 }
-                else if (!type.GetTypeInfo().IsSubclassOf(typeof (IEnumerable)) && !type.IsArray)
+                else if (!type.IsSubClassOf(typeof (IEnumerable)) && !type.IsArray)
                 {
                     isSupported = true;
                 }

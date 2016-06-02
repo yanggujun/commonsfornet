@@ -15,16 +15,12 @@
 // limitations under the License.
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Test.Commons.Json
 {
-	[DataContract]
 	public class Message : IEquatable<Message>
 	{
-		[DataMember(Order = 1)]
 		public string message { get; set; }
-		[DataMember(Order = 2)]
 		public int version { get; set; }
 		public override int GetHashCode() { return version; }
 		public override bool Equals(object obj) { return base.Equals(obj as Message); }
@@ -40,14 +36,10 @@ namespace Test.Commons.Json
 			return instance;
 		}
 	}
-	[DataContract]
 	public class Complex : IEquatable<Complex>
 	{
-		[DataMember(Order = 1)]
 		public decimal x { get; set; }
-		[DataMember(Order = 2)]
 		public float y { get; set; }
-		[DataMember(Order = 3)]
 		public long z { get; set; }
 		public override int GetHashCode() { return (int)z; }
 		public override bool Equals(object obj) { return Equals(obj as Complex); }
@@ -64,18 +56,13 @@ namespace Test.Commons.Json
 			return instance;
 		}
 	}
-	[DataContract]
 	public class SmallPost : IEquatable<SmallPost>
 	{
 		private static DateTime NOW = DateTime.UtcNow;
 
-		[DataMember(Order = 2)]
 		public Guid ID { get; set; }
-		[DataMember(Order = 3)]
 		public string title { get; set; }
-		[DataMember(Order = 4)]
 		public bool active { get; set; }
-		[DataMember(Order = 5)]
 		public DateTime created { get; set; }
 		public override int GetHashCode() { return ID.GetHashCode(); }
 		public override bool Equals(object obj) { return Equals(obj as SmallPost); }

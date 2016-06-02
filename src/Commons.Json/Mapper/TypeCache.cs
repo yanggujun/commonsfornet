@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Commons.Collections.Map;
+using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
@@ -151,7 +152,7 @@ namespace Commons.Json.Mapper
             }
             else
             {
-                if (type.GetTypeInfo().IsInterface)
+                if (type.IsInterface())
                 {
                     throw new InvalidOperationException(Messages.TypeNotSupported);
                 }
@@ -163,7 +164,7 @@ namespace Commons.Json.Mapper
         {
             var type = manager.Type;
             var init = false;
-            if (type.GetTypeInfo().IsClass)
+            if (type.IsClass())
             {
                 if (manager.Constructor != null)
                 {

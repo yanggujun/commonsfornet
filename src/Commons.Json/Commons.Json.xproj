@@ -16,8 +16,10 @@
   </PropertyGroup>
   <ItemGroup>
     <DnxInvisibleContent Include=".Commons.Json.xproj.un~" />
+    <DnxInvisibleContent Include=".project.json.un~" />
     <DnxInvisibleContent Include="Commons.Json.csproj~" />
     <DnxInvisibleContent Include="Commons.Json.xproj~" />
+    <DnxInvisibleContent Include="project.json~" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>
