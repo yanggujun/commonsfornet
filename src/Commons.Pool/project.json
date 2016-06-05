@@ -9,8 +9,16 @@
   },
 
   "dependencies": {
-    "Commons.Utils": "0.2.2.421",
-    "Commons.Collections": "0.2.2.421",
+    "Commons.Utils": {
+      "target": "project",
+      "type": "build",
+      "version": ""
+    },
+    "Commons.Collections": {
+      "target": "project",
+      "type": "build",
+      "version": ""
+    },
     "NETStandard.Library": {
       "version": "1.5.0-rc2-24027",
       "type": "platform"
