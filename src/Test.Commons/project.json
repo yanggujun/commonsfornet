@@ -48,12 +48,14 @@
     "net40": {
       "dependencies": {
         "Moq": "4.2.1506.2515",
+        "xunit.runner.console": "2.1.0",
         "xunit": "1.9.2"
       }
     },
     "net45": {
       "dependencies": {
         "Moq": "4.2.1506.2515",
+        "xunit.runner.console": "2.1.0",
         "xunit": "2.1.0"
       }
     }

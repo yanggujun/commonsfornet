@@ -2,9 +2,11 @@
   "version": "0.2.2.421",
   "buildOptions": {
     "emitEntryPoint": false,
+    "warningsAsErrors": true,
+    "keyFile": "../FullKey.snk",
     "compile": {
       "exclude": "*.un~",
-      "includeFiles": "..\\AssemblyInfo.cs"
+      "includeFiles": "../AssemblyInfo.cs"
     }
   },
 

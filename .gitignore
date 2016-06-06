@@ -32,3 +32,4 @@ Thumbs.db
 .vs
 *.un~
 *.lock.json
+artifacts/
