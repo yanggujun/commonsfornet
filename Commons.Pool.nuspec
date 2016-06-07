@@ -22,7 +22,8 @@
     </dependencies>
   </metadata>
   <files>
-      <file src="src\bin\NET45\Commons.Pool.dll" target="lib\net45\" />
-      <file src="src\bin\NET40\Commons.Pool.dll" target="lib\net40\" />
+      <file src="src\artifacts\binaries\net45\Commons.Pool.dll" target="lib\net45\" />
+      <file src="src\artifacts\binaries\net40\Commons.Pool.dll" target="lib\net40\" />
+      <file src="src\artifacts\binaries\netstandard1.3\Commons.Pool.dll" target="lib\netstandard1.3\" />
   </files>
 </package>

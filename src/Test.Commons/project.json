@@ -4,7 +4,8 @@
     "emitEntryPoint": false,
     "compile": {
       "exclude": "*.un~"
-    }
+    },
+    "copyToOutput": "Json/*.txt"
   },
 
   "testRunner": "xunit",
