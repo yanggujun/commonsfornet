@@ -178,7 +178,7 @@ namespace Commons.Json
                 {
                     isSupported = true;
                 }
-                else if (!type.IsSubClassOf(typeof (IEnumerable)) && !type.IsArray)
+                else if (!type.IsSubTypeOf(typeof (IEnumerable)) && !type.IsArray)
                 {
                     isSupported = true;
                 }

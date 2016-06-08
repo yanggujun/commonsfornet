@@ -122,10 +122,10 @@ namespace Commons.Utils
 #endif
         }
 
-        public static bool IsSubClassOf(this Type type, Type anotherType)
+        public static bool IsSubTypeOf(this Type type, Type anotherType)
         {
 #if NET40
-            return type.IsSubClassOf(anotherType);
+            return type.IsSubclassOf(anotherType);
 #else
             return type.GetTypeInfo().IsSubclassOf(anotherType);
 #endif
