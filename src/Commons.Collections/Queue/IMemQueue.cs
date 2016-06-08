@@ -14,10 +14,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Commons.MemQueue
+using System.Net;
+
+namespace Commons.Collections.Queue
 {
-    public interface IQueueFactory
+    public interface IMemQueue<T>
     {
-        IQueueDescriptor<T> For<T>();
+        void Start();
+        void Enqueue(T message);
+        void Close();
+        bool IsEmpty { get; }
+        string QueueName { get; }
     }
 }

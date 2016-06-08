@@ -17,42 +17,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace Test.Commons.Json
 {
-	[DataContract]
 	public enum PostState
 	{
-		[DataMember]
 		Draft,
-		[DataMember]
 		Published,
-		[DataMember]
 		Hidden,
 	}
 
-	[DataContract]
 	public class DeletePost : IEquatable<DeletePost>
 	{
 		private static DateTime NOW = DateTime.UtcNow;
 		private static readonly Guid[] GUIDS = Enumerable.Range(0, 100).Select(it => Guid.NewGuid()).ToArray();
 
-		[DataMember(Order = 1)]
 		public int postID { get; set; }
-		[DataMember(Order = 2)]
 		public Guid? referenceId { get; set; }
-		[DataMember(Order = 3)]
 		public DateTime lastModified { get; set; }
-		[DataMember(Order = 4)]
 		public long deletedBy { get; set; }
-		[DataMember(Order = 5)]
 		public string reason { get; set; }
-		[DataMember(Order = 6)]
 		public long[] versions { get; set; }
-		[DataMember(Order = 7)]
 		public PostState? state { get; set; }
-		[DataMember(Order = 8)]
 		public List<bool?> votes { get; set; }
 		public override int GetHashCode() { return postID; }
 		public override bool Equals(object obj) { return Equals(obj as DeletePost); }
@@ -91,7 +77,6 @@ namespace Test.Commons.Json
 			return delete;
 		}
 	}
-	[DataContract]
 	public class Post : IEquatable<Post>
 	{
 		private static DateTime NOW = DateTime.UtcNow;
@@ -103,25 +88,15 @@ namespace Test.Commons.Json
 			comments = new List<Comment>();
 		}
 
-		[DataMember(Order = 2)]
 		public int ID { get; set; }
-		[DataMember(Order = 3)]
 		public string title { get; set; }
-		[DataMember(Order = 4)]
 		public string text { get; set; }
-		[DataMember(Order = 5)]
 		public DateTime created { get; set; }
-		[DataMember(Order = 6)]
 		public HashSet<string> tags { get; set; }
-		[DataMember(Order = 7)]
 		public DateTime? approved { get; set; }
-		[DataMember(Order = 8)]
 		public List<Comment> comments { get; set; }
-		[DataMember(Order = 9)]
 		public Vote votes { get; set; }
-		[DataMember(Order = 10)]
 		public List<string> notes { get; set; }
-		[DataMember(Order = 11)]
 		public PostState state { get; set; }
 		public override int GetHashCode() { return ID; }
 		public override bool Equals(object obj) { return Equals(obj as Post); }
@@ -174,18 +149,12 @@ namespace Test.Commons.Json
 			return post;
 		}
 	}
-	[DataContract]
 	public class Comment : IEquatable<Comment>
 	{
-		[DataMember(Order = 4)]
 		public DateTime created { get; set; }
-		[DataMember(Order = 5)]
 		public DateTime? approved { get; set; }
-		[DataMember(Order = 6)]
 		public string user { get; set; }
-		[DataMember(Order = 7)]
 		public string message { get; set; }
-		[DataMember(Order = 8)]
 		public Vote votes { get; set; }
 		public override int GetHashCode() { return created.GetHashCode(); }
 		public override bool Equals(object obj) { return Equals(obj as Comment); }
@@ -196,12 +165,9 @@ namespace Test.Commons.Json
 				&& other.message == this.message && other.votes.Equals(this.votes);
 		}
 	}
-	[DataContract]
 	public class Vote : IEquatable<Vote>
 	{
-		[DataMember(Order = 1)]
 		public int upvote { get; set; }
-		[DataMember(Order = 2)]
 		public int downvote { get; set; }
 		public override int GetHashCode() { return upvote ^ downvote; }
 		public override bool Equals(object obj) { return Equals(obj as Vote); }

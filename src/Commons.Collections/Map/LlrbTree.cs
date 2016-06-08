@@ -661,60 +661,6 @@ namespace Commons.Collections.Map
             root.Validate(x => x != null, new InvalidOperationException("The collection is empty"));
         }
 
-#if DEBUG
-        private static void WriteNodeHtml(TreeNode node)
-        {
-            using (var fs = new FileStream(@"c:\misc\node.html", FileMode.Create))
-            {
-                using (var sw = new StreamWriter(fs))
-                {
-                    sw.Write(NodeHtmlDoc(node));
-                    sw.Flush();
-                    sw.Close();
-                }
-            }
-        }
-
-        private void WriteToHtml()
-        {
-            using (var fs = new FileStream(@"c:\misc\tree.html", FileMode.Create))
-            {
-                using (var sw = new StreamWriter(fs))
-                {
-                    sw.Write(this.HtmlDoc);
-                    sw.Flush();
-                    sw.Close();
-                }
-            }
-        }
-
-        private static string NodeHtmlDoc(TreeNode node)
-        {
-            return
-                    "<html>" +
-                    "<body>" +
-                        (null != node ? node.HtmlFragment : "[null]") +
-                    "</body>" +
-                "</html>";
-
-        }
-
-        private string HtmlDoc
-        {
-            get
-            {
-                return 
-                    "<html>" +
-                    "<body>" +
-                        (null != root ? root.HtmlFragment : "[null]") +
-                    "</body>" +
-                "</html>";
-
-            }
-        }
-
-        [DebuggerDisplay("Item = {Item}, Color = {Color}")]
-#endif
         private class TreeNode
         {
             public KeyValuePair<K, V> Item { get; set; }
@@ -727,26 +673,6 @@ namespace Commons.Collections.Map
                 Item = item;
                 Color = RED;
             }
-
-#if DEBUG
-            public string HtmlFragment
-            {
-                get
-                {
-                    return
-                            "<table border='1'>" +
-                                "<tr>" +
-                                    "<td colspan='2' align='center' bgcolor='" + (Color ? "red" : "grey") + "'>" + Item + "</td>" +
-                                "</tr>" +
-                                "<tr>" +
-                                    "<td valign='top'>" + (null != Left ? Left.HtmlFragment : "[null]") + "</td>" +
-                                    "<td valign='top'>" + (null != Right ? Right.HtmlFragment : "[null]") + "</td>" +
-                                "</tr>" +
-                            "</table>";
-
-                }
-            }
-#endif
         }
     }
 }

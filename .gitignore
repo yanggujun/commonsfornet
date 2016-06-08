@@ -31,3 +31,4 @@ Thumbs.db
 [Rr]elease*/
 .vs
 *.lock.json
+artifacts/

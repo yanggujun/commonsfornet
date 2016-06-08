@@ -14,8 +14,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Commons.Utils;
 using System;
 using System.Dynamic;
+using System.Reflection;
 using System.Text;
 
 namespace Commons.Json
@@ -29,7 +31,7 @@ namespace Commons.Json
             if (value != null)
             {
                 var type = value.GetType();
-                if (!type.IsPrimitive && type != typeof(string) && type != typeof(DateTime))
+                if (!type.IsPrimitive() && type != typeof(string) && type != typeof(DateTime))
                 {
                     throw new ArgumentException(Messages.InvalidValue);
                 }

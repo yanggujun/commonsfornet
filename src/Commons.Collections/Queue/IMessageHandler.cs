@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Commons.MemQueue
+namespace Commons.Collections.Queue
 {
     public interface IMessageHandler<T>
     {

@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Commons.Utils
 {
@@ -55,9 +56,9 @@ namespace Commons.Utils
             }
 
             var tmp = type;
-            while (tmp.BaseType != null)
+            while (tmp.GetBaseType() != null)
             {
-                tmp = tmp.BaseType;
+                tmp = tmp.GetBaseType();
                 yield return tmp;
             }
 
@@ -66,5 +67,69 @@ namespace Commons.Utils
                 yield return i;
             }
         }
+
+        public static Type GetBaseType(this Type type)
+        {
+#if NET40
+            return type.BaseType;
+#else
+            return type.GetTypeInfo().BaseType;
+#endif
+        }
+
+        public static bool IsPrimitive(this Type type)
+        {
+#if NET40
+            return type.IsPrimitive;
+#else
+            return type.GetTypeInfo().IsPrimitive;
+#endif
+        }
+
+        public static bool IsEnum(this Type type)
+        {
+#if NET40
+            return type.IsEnum;
+#else
+            return type.GetTypeInfo().IsEnum;
+#endif
+        }
+
+        public static bool IsGenericType(this Type type)
+        {
+#if NET40
+            return type.IsGenericType;
+#else
+            return type.GetTypeInfo().IsGenericType;
+#endif
+        }
+
+        public static bool IsInterface(this Type type)
+        {
+#if NET40
+            return type.IsInterface;
+#else
+            return type.GetTypeInfo().IsInterface;
+#endif
+        }
+
+        public static bool IsClass(this Type type)
+        {
+#if NET40
+            return type.IsClass;
+#else
+            return type.GetTypeInfo().IsClass;
+#endif
+        }
+
+        public static bool IsSubTypeOf(this Type type, Type anotherType)
+        {
+#if NET40
+            return type.IsSubclassOf(anotherType);
+#else
+            return type.GetTypeInfo().IsSubclassOf(anotherType);
+#endif
+        }
+
     }
 }

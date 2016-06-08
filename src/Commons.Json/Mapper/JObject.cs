@@ -19,6 +19,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Commons.Collections.Map;
+using System.Reflection;
+using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
@@ -192,7 +194,7 @@ namespace Commons.Json.Mapper
         public T GetEnum<T>(string key) where T : struct
         {
             var type = typeof(T);
-            if (!type.IsEnum)
+            if (!type.IsEnum())
             {
                 throw new ArgumentException(Messages.NotEnum);
             }
@@ -210,7 +212,7 @@ namespace Commons.Json.Mapper
         public void SetEnum<T>(string key, T value) where T : struct
         {
             var type = typeof(T);
-            if (!type.IsEnum)
+            if (!type.IsEnum())
             {
                 throw new ArgumentException(Messages.NotEnum);
             }

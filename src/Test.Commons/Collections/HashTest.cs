@@ -187,7 +187,7 @@ namespace Test.Commons.Collections
             Assert.Throws(typeof(ArgumentNullException), () => map.CopyTo(null, 0));
 
             var simpleMap = new Customized32HashedMap<int, string>();
-            Assert.DoesNotThrow(() => simpleMap.Add(0, null));
+            simpleMap.Add(0, null);
         }
 
         [Fact]

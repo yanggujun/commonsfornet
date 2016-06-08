@@ -18,9 +18,11 @@
     <tags>Atomics Hashes Collections</tags>
   </metadata>
   <files>
-      <file src="src\bin\NET45\Commons.Utils.dll" target="lib\net45\" />
-      <file src="src\bin\NET45\Commons.Collections.dll" target="lib\net45\" />
-      <file src="src\bin\NET40\Commons.Utils.dll" target="lib\net40\" />
-      <file src="src\bin\NET40\Commons.Collections.dll" target="lib\net40\" />
+      <file src="src\artifacts\rbin\net45\Commons.Utils.dll" target="lib\net45\" />
+      <file src="src\artifacts\rbin\net45\Commons.Collections.dll" target="lib\net45\" />
+      <file src="src\artifacts\rbin\net40\Commons.Utils.dll" target="lib\net40\" />
+      <file src="src\artifacts\rbin\net40\Commons.Collections.dll" target="lib\net40\" />
+      <file src="src\artifacts\rbin\netstandard1.3\Commons.Utils.dll" target="lib\netstandard1.3\" />
+      <file src="src\artifacts\rbin\netstandard1.3\Commons.Collections.dll" target="lib\netstandard1.3\" />
   </files>
 </package>

@@ -17,6 +17,8 @@
 using System.IO;
 using System.Text;
 using Commons.Collections.Map;
+using System.Reflection;
+using Commons.Utils;
 
 namespace Commons.Json
 {
@@ -58,7 +60,7 @@ namespace Commons.Json
         {
             var type = jsonValue.GetType();
             var str = string.Empty;
-            if (type.IsPrimitive || type == typeof(bool))
+            if (type.IsPrimitive() || type == typeof(bool))
             {
                 str = jsonValue.ToString();
             }

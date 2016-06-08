@@ -1,0 +1,44 @@
+{
+  "version": "0.2.2.421",
+  "buildOptions": {
+    "emitEntryPoint": false,
+    "warningsAsErrors": true,
+    "keyFile": "../FullKey.snk",
+    "compile": {
+      "exclude": "*.un~",
+      "includeFiles": "../AssemblyInfo.cs"
+    }
+  },
+
+  "dependencies": {
+    "Commons.Utils": {
+      "target": "project",
+      "type": "build",
+      "version": ""
+    },
+    "Commons.Collections": {
+      "target": "project",
+      "type": "build",
+      "version": ""
+    },
+    "NETStandard.Library": {
+      "version": "1.5.0-rc2-24027",
+      "type": "platform"
+    }
+  },
+
+  "frameworks": {
+    "net40": {
+      "frameworkAssemblies": {"System.Data": "4.0.0.0"}
+    },
+    "net45": {
+      "frameworkAssemblies": {"System.Data": "4.0.0.0"}
+    },
+    "netstandard1.3": {
+      "dependencies": {
+        "System.Data.Common": "4.0.1-rc2-24027"
+      }
+    }
+  }
+
+}

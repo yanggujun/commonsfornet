@@ -15,15 +15,20 @@
 // limitations under the License.
 
 using System;
-using System.Text;
 
-namespace Commons.MemQueue
+namespace Commons.Collections.Queue
 {
-    public interface IMessageInterpreter<T>
+    internal class ActionHandler<T> : IMessageHandler<T>
     {
-        Type GetRequestType(T origin);
-        string GetRequest(T origin);
-        void SendResponse(string message);
-        void SendResponse(string message, Encoding encoding);
+        private Func<T, string> handler;
+        public ActionHandler(Func<T, string> handler)
+        {
+            this.handler = handler;
+        }
+        public string Handle(T message)
+        {
+            return handler(message);
+        }
+
     }
 }

@@ -23,7 +23,11 @@ namespace Commons.Json.Mapper
     {
         public bool Equals(string x, string y)
         {
+#if NETSTANDARD1_3
+            return x == null ? y == null : x.Equals(y, StringComparison.OrdinalIgnoreCase);
+#else
             return x == null ? y == null : x.Equals(y, StringComparison.InvariantCultureIgnoreCase);
+#endif
         }
 
         public int GetHashCode(string obj)
