@@ -1,24 +1,41 @@
-set PATH=%PATH%;.\src\.nuget
-call "%VS120COMNTOOLS%\vsvars32.bat"
-call "%VS140COMNTOOLS%\vsvars32.bat"
-call rmdir /S /Q ".\src\bin"
+set OUTPUT=src\artifacts\rbin
 
-call msbuild src\Commons.sln /t:Rebuild /p:Configuration=Release;Platform="Any CPU";Framework=NET45
-call sn -R .\src\bin\NET45\Commons.Utils.dll .\src\FullKey.snk
-call sn -R .\src\bin\NET45\Commons.Collections.dll .\src\FullKey.snk
-call sn -R .\src\bin\NET45\Commons.Json.dll .\src\FullKey.snk
-call sn -R .\src\bin\NET45\Commons.Pool.dll .\src\FullKey.snk
+call rmdir /S /Q ".\src\artifacts"
 
-call msbuild src\Commons.sln /t:Rebuild /p:Configuration=Release;Platform="Any CPU";Framework=NET40
-call sn -R .\src\bin\NET40\Commons.Utils.dll .\src\FullKey.snk
-call sn -R .\src\bin\NET40\Commons.Collections.dll .\src\FullKey.snk
-call sn -R .\src\bin\NET40\Commons.Json.dll .\src\FullKey.snk
-call sn -R .\src\bin\NET40\Commons.Pool.dll .\src\FullKey.snk
+call dotnet restore 
 
-call src\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe src\bin\NET45\Test.Commons.dll 
-call src\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe src\bin\NET40\Test.Commons.dll
+call dotnet build src\Commons.Utils -c Release --no-dependencies -o "%OUTPUT%\net40" -f net40 --no-incremental
+call dotnet build src\Commons.Collections -c Release --no-dependencies -o "%OUTPUT%\net40" -f net40 --no-incremental
+call dotnet build src\Commons.Json -c Release --no-dependencies -o "%OUTPUT%\net40" -f net40 --no-incremental
+call dotnet build src\Commons.Pool -c Release --no-dependencies -o "%OUTPUT%\net40" -f net40 --no-incremental
+call dotnet build src\Test.Commons -c Release --no-dependencies -o "%OUTPUT%\net40" -f net40 --no-incremental
 
-call nuget pack Commons.nuspec -OutputDirectory ".\src\bin"
-call nuget pack Commons.Pool.nuspec -OutputDirectory ".\src\bin"
-call nuget pack Commons.Json.nuspec -OutputDirectory ".\src\bin"
+
+call dotnet build src\Commons.Utils -c Release --no-dependencies -o "%OUTPUT%\net45" -f net45 --no-incremental
+call dotnet build src\Commons.Collections -c Release --no-dependencies -o "%OUTPUT%\net45" -f net45 --no-incremental
+call dotnet build src\Commons.Json -c Release --no-dependencies -o "%OUTPUT%\net45" -f net45 --no-incremental
+call dotnet build src\Commons.Pool -c Release --no-dependencies -o "%OUTPUT%\net45" -f net45 --no-incremental
+call dotnet build src\Test.Commons -c Release --no-dependencies -o "%OUTPUT%\net45" -f net45 --no-incremental
+
+
+call dotnet build src\Commons.Utils -c Release --no-dependencies -o "%OUTPUT%\netstandard1.3" -f netstandard1.3 --no-incremental
+call dotnet build src\Commons.Collections -c Release --no-dependencies -o "%OUTPUT%\netstandard1.3" -f netstandard1.3 --no-incremental
+call dotnet build src\Commons.Json -c Release --no-dependencies -o "%OUTPUT%\netstandard1.3" -f netstandard1.3 --no-incremental
+call dotnet build src\Commons.Pool -c Release --no-dependencies -o "%OUTPUT%\netstandard1.3" -f netstandard1.3 --no-incremental
+
+
+call dotnet build src\Test.Commons -c Release --no-dependencies -o "%OUTPUT%\netcoreapp1.0" -f netcoreapp1.0 --no-incremental
+
+call pushd %OUTPUT%\netcoreapp1.0
+call dotnet test ..\..\..\Test.Commons -o .\ --no-build -f netcoreapp1.0
+call popd
+
+call "%USERPROFILE%\.nuget\packages\xunit.runner.console\2.1.0\tools\xunit.console.exe" %OUTPUT%\net40\Test.Commons.dll -parallel none -verbose
+call "%USERPROFILE%\.nuget\packages\xunit.runner.console\2.1.0\tools\xunit.console.exe" %OUTPUT%\net45\Test.Commons.dll -parallel none -verbose
+
+.\src\.nuget\nuget pack Commons.nuspec -outputdirectory %OUTPUT%
+.\src\.nuget\nuget pack Commons.Json.nuspec -outputdirectory %OUTPUT%
+.\src\.nuget\nuget pack Commons.Pool.nuspec -outputdirectory %OUTPUT%
+
+
 call PAUSE
