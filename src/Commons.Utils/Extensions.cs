@@ -113,6 +113,15 @@ namespace Commons.Utils
 #endif
         }
 
+        public static bool IsAbstract(this Type type)
+        {
+#if NET40 
+            return type.IsAbstract;
+#else
+            return type.GetTypeInfo().IsAbstract;
+#endif
+        }
+
         public static bool IsClass(this Type type)
         {
 #if NET40

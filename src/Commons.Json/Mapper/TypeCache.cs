@@ -152,7 +152,7 @@ namespace Commons.Json.Mapper
             }
             else
             {
-                if (type.IsInterface())
+                if (type.IsInterface() || type.IsAbstract)
                 {
                     throw new InvalidOperationException(Messages.TypeNotSupported);
                 }

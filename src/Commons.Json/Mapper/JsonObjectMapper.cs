@@ -205,7 +205,7 @@ namespace Commons.Json.Mapper
             }
         }
 
-        IFormatMapper IFormatMapper.UseDateFormat(string format)
+        public IFormatMapper UseDateFormat(string format)
         {
             mapper.DateFormat = format;
             return this;
