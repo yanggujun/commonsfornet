@@ -39,12 +39,30 @@ namespace Commons.Json.Mapper
 
         public string GetKey(string prop)
         {
-            return keyPropMap.KeyOf(prop);
+            string key;
+            if (keyPropMap.ContainsValue(prop))
+            {
+                key = keyPropMap.KeyOf(prop);
+            }
+            else
+            {
+                key = prop;
+            }
+            return key;
         }
 
         public string GetProp(string key)
         {
-            return keyPropMap.ValueOf(key);
+            string prop;
+            if (keyPropMap.ContainsKey(key))
+            {
+                prop = keyPropMap.ValueOf(key);
+            }
+            else
+            {
+                prop = key;
+            }
+            return prop;
         }
 
         public bool TryGetKey(string prop, out string key)

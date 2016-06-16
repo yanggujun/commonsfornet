@@ -19,9 +19,26 @@ namespace Commons.Json.Mapper
 {
     internal class MapEngineFactory : IMapEngineFactory
     {
-        public IMapEngine CreateMapEngine(object target, Type type, MapperContainer mappers, TypeCache typeCache, CollectionBuilder builder, string dateFormat)
+        public IMapEngine CreateMapEngine(object target, Type type, CollectionBuilder builder, MapperContainer mappers, TypeContainer types, ConfigContainer configuration)
         {
-            return new MapEngine(target, type, mappers, typeCache, builder, dateFormat);
+            var jsonBuilder = new JsonBuilder(mappers, types, configuration);
+            var objBuilder = new ObjectBuilder(mappers, types);
+
+            var nullBuilder = new NullBuilder(configuration);
+            var primitiveBuilder = new PrimitiveBuilder(configuration);
+            var arrayBuilder = new ArrayBuilder(configuration, objBuilder);
+            var enumBuilder = new EnumerableBuilder(configuration, objBuilder, builder);
+            var dictBuilder = new DictionaryBuilder(configuration, mappers, objBuilder);
+            var objPropBuilder = new ObjectPropertyBuilder(configuration, mappers, types);
+
+            nullBuilder.SetSuccessor(primitiveBuilder);
+            primitiveBuilder.SetSuccessor(arrayBuilder);
+            arrayBuilder.SetSuccessor(enumBuilder);
+            enumBuilder.SetSuccessor(dictBuilder);
+            dictBuilder.SetSuccessor(objPropBuilder);
+            objPropBuilder.SetSuccessor(nullBuilder);
+
+            return new MapEngine(jsonBuilder, nullBuilder);
         }
     }
 }

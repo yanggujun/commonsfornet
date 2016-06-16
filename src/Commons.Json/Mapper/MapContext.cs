@@ -25,9 +25,11 @@ namespace Commons.Json.Mapper
         {
             Name = name;
             Mappers = new MapperContainer();
-            Types = new TypeCache();
             MapEngineFactory = new MapEngineFactory();
-            DefaultBuilder = new CollectionBuilder();
+            Types = new TypeContainer();
+            CollBuilder = new CollectionBuilder();
+            ObjectBuilder = new ObjectBuilder(Mappers, Types);
+            JsonBuilder = new JsonBuilder(Mappers, Types, Configuration);
         }
 
         public string Name { get; private set; }
@@ -46,7 +48,10 @@ namespace Commons.Json.Mapper
 
         public string ToJson<T>(T target)
         {
-            var mapEngine = MapEngineFactory.CreateMapEngine(target, typeof(T), Mappers, Types, DefaultBuilder, dateFormat);
+            var mapEngine = 
+                MapEngineFactory.CreateMapEngine(target, typeof(T), CollBuilder, 
+                                                 Mappers, Types, Configuration);
+
             return mapEngine.Map(target);
         }
 
@@ -63,20 +68,28 @@ namespace Commons.Json.Mapper
             object target = null;
             if (!type.IsJsonPrimitive() && !type.IsArray)
             {
-                target = Types.Instantiate(type, Mappers);
+                target = ObjectBuilder.Build(type);
             }
 
-            var mapEngine = MapEngineFactory.CreateMapEngine(target, type, Mappers, Types, DefaultBuilder, dateFormat);
-            return mapEngine.Map(jsonValue);
+            var mapEngine = 
+                MapEngineFactory.CreateMapEngine(target, type, CollBuilder, 
+                                                 Mappers, Types, Configuration);
+            return mapEngine.Map(target, jsonValue);
         }
 
         public MapperContainer Mappers { get; private set; }
 
-        public TypeCache Types { get; private set; }
-
         public IMapEngineFactory MapEngineFactory { get; private set; }
 
-        public CollectionBuilder DefaultBuilder { get; private set; }
+        public CollectionBuilder CollBuilder { get; private set; }
+
+        public IObjectBuilder ObjectBuilder { get; private set; }
+        
+        public ConfigContainer Configuration { get; private set; }
+
+        public TypeContainer Types { get; private set; }
+
+        public IJsonBuilder JsonBuilder { get; private set; }
 
         public string DateFormat
         {

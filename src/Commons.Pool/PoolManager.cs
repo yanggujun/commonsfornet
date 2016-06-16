@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using Commons.Collections.Concurrent;
 using Commons.Utils;
 
 namespace Commons.Pool

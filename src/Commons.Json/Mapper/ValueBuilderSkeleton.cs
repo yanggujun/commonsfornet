@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET.
+﻿// Copyright CommonsForNET.  
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -15,37 +15,38 @@
 // limitations under the License.
 
 using System;
-using Commons.Collections.Map;
 
 namespace Commons.Json.Mapper
 {
-    internal class MapperContainer
+    internal abstract class ValueBuilderSkeleton : IValueBuilder
     {
-        private ReferenceMap<Type, MapperImpl> mappers = new ReferenceMap<Type, MapperImpl>();
+        protected IValueBuilder Successor { get; set; }
+        protected ConfigContainer Configuration { get; set; }
 
-        public bool ContainsMapper(Type type)
+        public ValueBuilderSkeleton(ConfigContainer configuration)
         {
-            return mappers.ContainsKey(type);
+            Configuration = configuration;
         }
 
-        public void PushMapper(Type type)
+        public object Build(object raw, Type targetType, JValue jsonValue)
         {
-            var mapper = new MapperImpl();
-            mappers[type] = mapper;
-        }
-
-        public MapperImpl GetMapper(Type type)
-        {
-            MapperImpl mapper;
-            if (mappers.ContainsKey(type))
+            if (CanProcess(raw, targetType, jsonValue))
             {
-                mapper = mappers[type];
+                return DoBuild(raw, targetType, jsonValue);
             }
             else
             {
-                mappers[type] = new MapperImpl();
+                return Successor.Build(raw, targetType, jsonValue);
             }
-            return mappers[type];
         }
+
+        public void SetSuccessor(IValueBuilder successor)
+        {
+            Successor = successor;
+        }
+
+        protected abstract object DoBuild(object raw, Type targetType, JValue jsonValue);
+
+        protected abstract bool CanProcess(object raw, Type targetType, JValue jsonValue);
     }
 }

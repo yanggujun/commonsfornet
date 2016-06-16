@@ -40,5 +40,7 @@ namespace Commons.Collections.Set
         /// <param name="other"></param>
         /// <returns></returns>
         bool IsDisjointWith(IStrictSet<T> other);
+
+        bool Contains(T item);
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET.
+﻿// Copyright CommonsForNET.  
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -14,35 +14,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Commons.Utils;
+
 using System;
-using System.Collections;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace Commons.Json.Mapper
 {
-    internal class MapEngine : IMapEngine
+    internal class NullBuilder : ValueBuilderSkeleton
     {
-        private readonly JsonBuilder jsonBuilder;
-        private readonly IValueBuilder valueBuilder;
-
-        public MapEngine(JsonBuilder jsonBuilder, IValueBuilder valueBuilder)
+        public NullBuilder(ConfigContainer configuration) : base(configuration)
         {
-            this.jsonBuilder = jsonBuilder;
-            this.valueBuilder = valueBuilder;
         }
 
-        public object Map(object raw, JValue jsonValue)
+        protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
         {
-            return valueBuilder.Build(raw, raw.GetType(), jsonValue);
+            return jsonValue.Is<JNull>();
         }
 
-        public string Map(object target)
+        protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
         {
-            return jsonBuilder.Build(target);
+            return null;
         }
     }
 }

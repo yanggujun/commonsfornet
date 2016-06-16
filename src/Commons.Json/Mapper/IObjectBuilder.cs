@@ -14,35 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Commons.Utils;
 using System;
-using System.Collections;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace Commons.Json.Mapper
 {
-    internal class MapEngine : IMapEngine
+    public interface IObjectBuilder
     {
-        private readonly JsonBuilder jsonBuilder;
-        private readonly IValueBuilder valueBuilder;
-
-        public MapEngine(JsonBuilder jsonBuilder, IValueBuilder valueBuilder)
-        {
-            this.jsonBuilder = jsonBuilder;
-            this.valueBuilder = valueBuilder;
-        }
-
-        public object Map(object raw, JValue jsonValue)
-        {
-            return valueBuilder.Build(raw, raw.GetType(), jsonValue);
-        }
-
-        public string Map(object target)
-        {
-            return jsonBuilder.Build(target);
-        }
+        object Build(Type type);
     }
 }

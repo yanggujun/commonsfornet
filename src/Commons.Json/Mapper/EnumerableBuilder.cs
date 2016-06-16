@@ -1,4 +1,4 @@
-﻿// Copyright CommonsForNET.
+﻿// Copyright CommonsForNET.  
 // Licensed to the Apache Software Foundation (ASF) under one or more
 // contributor license agreements. See the NOTICE file distributed with
 // this work for additional information regarding copyright ownership.
@@ -14,35 +14,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Commons.Utils;
 using System;
 using System.Collections;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace Commons.Json.Mapper
 {
-    internal class MapEngine : IMapEngine
+    internal class EnumerableBuilder : ArrayBuilder
     {
-        private readonly JsonBuilder jsonBuilder;
-        private readonly IValueBuilder valueBuilder;
+        private readonly CollectionBuilder colBuilder;
 
-        public MapEngine(JsonBuilder jsonBuilder, IValueBuilder valueBuilder)
+        public EnumerableBuilder(ConfigContainer configuration, IObjectBuilder objBuilder, CollectionBuilder colBuilder) 
+            : base(configuration, objBuilder)
         {
-            this.jsonBuilder = jsonBuilder;
-            this.valueBuilder = valueBuilder;
+            this.colBuilder = colBuilder;
         }
 
-        public object Map(object raw, JValue jsonValue)
+        protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
         {
-            return valueBuilder.Build(raw, raw.GetType(), jsonValue);
+            return targetType.IsEnumerable() && !targetType.IsDictionary();
         }
 
-        public string Map(object target)
+        protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
         {
-            return jsonBuilder.Build(target);
+            var array = (Array) base.DoBuild(raw, targetType, jsonValue);
+            foreach (var item in array)
+            {
+                colBuilder.Build((IEnumerable)raw, item);
+            }
+
+            return raw;
         }
     }
 }
