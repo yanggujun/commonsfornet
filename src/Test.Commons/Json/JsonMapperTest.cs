@@ -24,6 +24,7 @@ using Commons.Json.Mapper;
 using Xunit;
 using System.Text;
 using System.IO;
+using System.Collections;
 
 namespace Test.Commons.Json
 {
@@ -934,6 +935,64 @@ namespace Test.Commons.Json
             }
         }
 
+        [Fact]
+        public void TestMapJsonToObject68()
+        {
+            var json = "null";
+            var str = JsonMapper.To<string>(json);
+            Assert.Equal(null, str);
+            var list = JsonMapper.To<List<int>>(json);
+            Assert.Null(list);
+
+            var array = JsonMapper.To<int[]>(json);
+            Assert.Null(array);
+
+            var obj = JsonMapper.To<Simple>(json);
+            Assert.Null(obj);
+
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SimpleStruct>(json));
+
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
+        }
+
+        [Fact]
+        public void TestMapJsonToObject69()
+        {
+            var json = "{\"a\":\"b\"}";
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<string>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int[]>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<List<int>>(json));
+        }
+
+        [Fact]
+        public void TestMapJsonToObject70()
+        {
+            var json = "[{\"a\":\"b\", \"g\":\"h\"}, {\"c\":\"d\"}, {\"e\":\"f\"}]";
+            var dictArray = JsonMapper.To<Dictionary<string, string>[]>(json);
+            Assert.True(dictArray[0].ContainsKey("a"));
+            Assert.Equal("b", dictArray[0]["a"]);
+
+            Assert.True(dictArray[0].ContainsKey("g"));
+            Assert.Equal("h", dictArray[0]["g"]);
+
+            Assert.True(dictArray[1].ContainsKey("c"));
+            Assert.Equal("d", dictArray[1]["c"]);
+
+            Assert.True(dictArray[2].ContainsKey("e"));
+            Assert.Equal("f", dictArray[2]["e"]);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject71()
+        {
+            var json = "{\"Name\": \"Ben\", \"Awesome\": {\"Reason\":\"because it's beautiful\"}}";
+            JsonMapper.For<IAwesome>().ConstructWith(() => new Awesome());
+            var awe = JsonMapper.To<HasInterface>(json);
+            Assert.Equal("Ben", awe.Name);
+            Assert.NotNull(awe.AwesomeImpl);
+            Assert.Equal("because it's beautiful", awe.AwesomeImpl.Reason);
+        }
 
         [Fact]
         public void TestMapObjectToJson01()

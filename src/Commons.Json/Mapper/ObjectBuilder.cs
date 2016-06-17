@@ -15,6 +15,10 @@
 // limitations under the License.
 
 using System;
+#if NETSTANDARD1_3
+using System.Reflection;
+#endif
+
 using Commons.Utils;
 
 namespace Commons.Json.Mapper
@@ -32,15 +36,19 @@ namespace Commons.Json.Mapper
 
         public object Build(Type type)
         {
-            object value;
-            if (!type.IsEnumerable() && !type.IsDictionary())
+            object value = null;
+            if (!type.IsCollection() && !type.IsDictionary())
             {
                 var manager = types[type];
                 value = Instantiate(manager);
             }
-            else
+            else if (!type.IsInterface() && !type.IsAbstract())
             {
                 value = Activator.CreateInstance(type);
+            }
+            else
+            {
+                throw new InvalidOperationException(Messages.TypeNotSupported);
             }
 
             return value;
@@ -48,38 +56,34 @@ namespace Commons.Json.Mapper
 
         private object Instantiate(TypeManager manager)
         {
-            var value = CreateInstance(manager.Type);
+            var value = CreateInstance(manager);
             var properties = manager.Setters;
             foreach (var prop in properties)
             {
                 var propType = prop.PropertyType;
-                if (!propType.IsJsonPrimitive() && propType.Deserializable() && !propType.IsArray)
+                if (propType.IsCollection() && !propType.IsInterface() && !propType.IsAbstract())
                 {
-                    if (propType.IsEnumerable())
-                    {
-                        prop.SetValue(value, Activator.CreateInstance(propType), null);
-                    }
-                    else
-                    {
-                        prop.SetValue(value, Instantiate(types[propType]), null);
-                    }
+                    prop.SetValue(value, Activator.CreateInstance(propType), null);
+                }
+                else if (!propType.IsInterface() && !propType.IsAbstract() && !propType.IsArray && !propType.IsJsonPrimitive()) 
+                {
+                    prop.SetValue(value, Instantiate(types[propType]), null);
                 }
             }
 
             return value;
         }
 
-        private object CreateInstance(Type type)
+        private object CreateInstance(TypeManager manager)
         {
-            if (mappers.ContainsMapper(type))
+            var type = manager.Type;
+            var mapper = mappers.GetMapper(type);
+            var create = mapper.Create;
+            if (create != null)
             {
-                var mapper = mappers.GetMapper(type);
-                var create = mapper.Create;
-                if (create != null)
-                {
-                    return create();
-                }
+                return create();
             }
+
             Type underlying;
             if (type.IsNullable(out underlying) && !type.IsJsonPrimitive())
             {
@@ -90,6 +94,10 @@ namespace Commons.Json.Mapper
                 if (type.IsInterface() || type.IsAbstract())
                 {
                     throw new InvalidOperationException(Messages.TypeNotSupported);
+                }
+                if (type.IsClass() && manager.Constructor == null)
+                {
+                    throw new InvalidOperationException(Messages.NoDefaultConstructor);
                 }
                 return Activator.CreateInstance(type);
             }

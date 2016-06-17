@@ -43,7 +43,7 @@ namespace Commons.Json.Mapper
             targetType.IsDictionary(out keyType, out valueType);
             JObject jsonObj;
 
-            if (jsonValue.Is<JObject>(out jsonObj))
+            if (!jsonValue.Is<JObject>(out jsonObj))
             {
                 throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
             }

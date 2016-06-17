@@ -236,4 +236,22 @@ namespace Test.Commons.Json
         public string Name { get; set; }
         public LinkedList<int> Array { get; set; }
     }
+
+    public class HasInterface
+    {
+        public string Name { get; set; }
+        public IAwesome AwesomeImpl { get; set; }
+    }
+
+    public interface IAwesome
+    {
+        string Reason { get; set; }
+    }
+
+    public class Awesome : IAwesome
+    {
+        public string Reason { get; set; }
+    }
+
+
 }

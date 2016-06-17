@@ -14,11 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Commons.Json.Mapper
 {
     public interface IMapEngine
     {
-        object Map(object obj, JValue jsonValue);
+        object Map(object obj, Type type, JValue jsonValue);
         string Map(object target);
     }
 }

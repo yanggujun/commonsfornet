@@ -30,18 +30,21 @@ namespace Commons.Json.Mapper
 
         protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
         {
-            return jsonValue.Is<JObject>();
+            return jsonValue.Is<JObject>() && !targetType.IsDictionary();
         }
 
         protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
         {
-            PopulateJsonObject(raw, (JObject)jsonValue);
+            if (targetType.IsJsonArray() || targetType.IsJsonPrimitive() || targetType == typeof(string))
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+            }
+            PopulateJsonObject(raw, targetType, (JObject)jsonValue);
             return raw;
         }
 
-        private void PopulateJsonObject(object target, JObject jsonObj)
+        private void PopulateJsonObject(object target, Type type, JObject jsonObj)
         {
-            var type = target.GetType();
             var properties = types[type].Setters;
             MapperImpl mapper = mappers.GetMapper(type);
 

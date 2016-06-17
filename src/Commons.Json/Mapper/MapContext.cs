@@ -26,6 +26,7 @@ namespace Commons.Json.Mapper
             Name = name;
             Mappers = new MapperContainer();
             MapEngineFactory = new MapEngineFactory();
+            Configuration = new ConfigContainer();
             Types = new TypeContainer();
             CollBuilder = new CollectionBuilder();
             ObjectBuilder = new ObjectBuilder(Mappers, Types);
@@ -74,7 +75,7 @@ namespace Commons.Json.Mapper
             var mapEngine = 
                 MapEngineFactory.CreateMapEngine(target, type, CollBuilder, 
                                                  Mappers, Types, Configuration);
-            return mapEngine.Map(target, jsonValue);
+            return mapEngine.Map(target, type, jsonValue);
         }
 
         public MapperContainer Mappers { get; private set; }

@@ -14,13 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Commons.Utils;
 using System;
-using System.Collections;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace Commons.Json.Mapper
 {
@@ -35,9 +29,9 @@ namespace Commons.Json.Mapper
             this.valueBuilder = valueBuilder;
         }
 
-        public object Map(object raw, JValue jsonValue)
+        public object Map(object raw, Type type, JValue jsonValue)
         {
-            return valueBuilder.Build(raw, raw.GetType(), jsonValue);
+            return valueBuilder.Build(raw, type, jsonValue);
         }
 
         public string Map(object target)

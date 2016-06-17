@@ -34,7 +34,7 @@ namespace Commons.Json.Mapper
 
         protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
         {
-            return (jsonValue.Is<JString>() || jsonValue.Is<JBoolean>()
+            return !targetType.IsArray && (jsonValue.Is<JString>() || jsonValue.Is<JBoolean>()
                 || jsonValue.Is<JInteger>() || jsonValue.Is<JDecimal>());
         }
 
@@ -138,13 +138,14 @@ namespace Commons.Json.Mapper
         private bool TryParseDate(string str, out DateTime dt)
         {
             object format;
-            if (Configuration.TryGetValue("DateFormat", out format))
+            var hasFormat = Configuration.TryGetValue("DateFormat", out format);
+            if (hasFormat && !string.IsNullOrWhiteSpace((string)format))
             {
-                return DateTime.TryParse(str, out dt);
+                return DateTime.TryParseExact(str, (string)format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dt);
             }
             else
             {
-                return DateTime.TryParseExact(str, (string)format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dt);
+                return DateTime.TryParse(str, out dt);
             }
         }
 

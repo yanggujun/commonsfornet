@@ -16,6 +16,9 @@
 
 using System;
 using System.Collections;
+#if NETSTANDARD1_3
+using System.Reflection;
+#endif
 
 namespace Commons.Json.Mapper
 {
@@ -31,15 +34,19 @@ namespace Commons.Json.Mapper
 
         protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
         {
-            return targetType.IsEnumerable() && !targetType.IsDictionary();
+            return targetType.IsCollection() && !targetType.IsDictionary();
         }
 
         protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
         {
-            var array = (Array) base.DoBuild(raw, targetType, jsonValue);
-            foreach (var item in array)
+            if (raw != null)
             {
-                colBuilder.Build((IEnumerable)raw, item);
+                var itemType = targetType.GetGenericArguments()[0];
+                var array = (Array)BuildArray(raw, itemType, jsonValue);
+                foreach (var item in array)
+                {
+                    colBuilder.Build((IEnumerable)raw, item);
+                }
             }
 
             return raw;

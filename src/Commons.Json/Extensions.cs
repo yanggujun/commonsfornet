@@ -107,24 +107,32 @@ namespace Commons.Json
             return type.IsArray || type == typeof (IList<>) || type == typeof (ArrayList);
         }
 
-        public static bool IsEnumerable(this Type type)
+        public static bool IsCollection(this Type type)
         {
             Type itemType;
-            return type.IsEnumerable(out itemType);
+            return type.IsCollection(out itemType);
         }
 
-        public static bool IsEnumerable(this Type type, out Type itemType)
+        public static bool IsCollection(this Type type, out Type itemType)
         {
             var isList = false;
             itemType = null;
 
-            foreach (var interfaceType in type.GetInterfaces())
+            if (!type.IsArray)
             {
-                if (interfaceType.IsGenericType() && interfaceType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
+                foreach (var interfaceType in type.GetInterfaces())
                 {
-                    itemType = interfaceType.GetGenericArguments()[0];
-                    isList = true;
-                    break;
+                    if (interfaceType.IsGenericType() && interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
+                    {
+                        itemType = interfaceType.GetGenericArguments()[0];
+                        isList = true;
+                        break;
+                    }
+                    else if (interfaceType == typeof(ICollection))
+                    {
+                        isList = true;
+                        break;
+                    }
                 }
             }
 
@@ -171,20 +179,7 @@ namespace Commons.Json
 
         public static bool Deserializable(this Type type)
         {
-            var isSupported = false;
-            if (!type.IsInterface())
-            {
-                if (type.IsEnumerable())
-                {
-                    isSupported = true;
-                }
-                else if (!type.IsSubTypeOf(typeof (IEnumerable)) && !type.IsArray)
-                {
-                    isSupported = true;
-                }
-            }
-
-            return isSupported;
+            return true;
         }
     }
 }

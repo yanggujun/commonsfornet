@@ -53,7 +53,7 @@ namespace Commons.Json.Mapper
             TypeManager manager;
             Type itemType;
             Type cacheType;
-            if (type.IsEnumerable(out itemType))
+            if (type.IsCollection(out itemType))
             {
                 cacheType = itemType;
             }

@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 using System;
+using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
@@ -32,6 +32,10 @@ namespace Commons.Json.Mapper
 
         protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
         {
+            if (targetType.IsPrimitive() || !targetType.IsClass())
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+            }
             return null;
         }
     }

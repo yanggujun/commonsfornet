@@ -28,13 +28,8 @@ namespace Commons.Json.Mapper
 
         protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
         {
-            JArray array;
-            if (!jsonValue.Is<JArray>(out array))
-            {
-                array = new JArray();
-                array.Add(jsonValue);
-            }
-            return ExtractJsonArray(array, targetType);
+            var itemType = targetType.GetElementType();
+            return BuildArray(raw, itemType, jsonValue);
         }
 
         protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
@@ -42,9 +37,19 @@ namespace Commons.Json.Mapper
             return targetType.IsArray;
         }
 
-        private object ExtractJsonArray(JArray jsonArray, Type arrayType)
+        protected object BuildArray(object raw, Type itemType, JValue jsonValue)
         {
-            var itemType = arrayType.GetElementType();
+            JArray array;
+            if (!jsonValue.Is<JArray>(out array))
+            {
+                array = new JArray();
+                array.Add(jsonValue);
+            }
+            return ExtractJsonArray(array, itemType);
+        }
+
+        private object ExtractJsonArray(JArray jsonArray, Type itemType)
+        {
             var array = Array.CreateInstance(itemType, jsonArray.Length);
             for (var i = 0; i < jsonArray.Length; i++)
             {
@@ -63,13 +68,7 @@ namespace Commons.Json.Mapper
             }
             else if (itemType.IsArray)
             {
-                JArray array;
-                if (!jsonValue.Is<JArray>(out array))
-                {
-                    array = new JArray();
-                    array.Add(jsonValue);
-                }
-                return ExtractJsonArray(array, itemType);
+                return Successor.Build(null, itemType, jsonValue);
             }
             else
             {
