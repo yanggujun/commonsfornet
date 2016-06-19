@@ -36,71 +36,70 @@ namespace Commons.Json.Mapper
 
         public object Build(Type type)
         {
+            var mapper = mappers.GetMapper(type);
+            var create = mapper.Create;
             object value = null;
-            if (!type.IsCollection() && !type.IsDictionary())
+            if (create != null)
             {
-                var manager = types[type];
-                value = Instantiate(manager);
+                value = create();
             }
             else if (!type.IsInterface() && !type.IsAbstract())
             {
-                value = Activator.CreateInstance(type);
-            }
-            else
-            {
-                throw new InvalidOperationException(Messages.TypeNotSupported);
+                value = Instantiate(type);
             }
 
             return value;
         }
 
-        private object Instantiate(TypeManager manager)
+        private object Instantiate(Type type)
         {
-            var value = CreateInstance(manager);
-            var properties = manager.Setters;
-            foreach (var prop in properties)
+            var value = CreateInstance(type);
+            if (value != null && !type.IsCollection())
             {
-                var propType = prop.PropertyType;
-                if (propType.IsCollection() && !propType.IsInterface() && !propType.IsAbstract())
+                var manager = types[type];
+                var properties = manager.Setters;
+                foreach (var prop in properties)
                 {
-                    prop.SetValue(value, Activator.CreateInstance(propType), null);
-                }
-                else if (!propType.IsInterface() && !propType.IsAbstract() && !propType.IsArray && !propType.IsJsonPrimitive()) 
-                {
-                    prop.SetValue(value, Instantiate(types[propType]), null);
+                    var propType = prop.PropertyType;
+                    var propValue = Build(propType);
+                    if (propValue != null)
+                    {
+                        prop.SetValue(value, propValue, null);
+                    }
                 }
             }
 
             return value;
         }
 
-        private object CreateInstance(TypeManager manager)
+        private object CreateInstance(Type type)
         {
-            var type = manager.Type;
-            var mapper = mappers.GetMapper(type);
-            var create = mapper.Create;
-            if (create != null)
+            if (type.IsJsonPrimitive() || type.IsInterface() 
+                || type.IsAbstract() || type.IsArray)
             {
-                return create();
+                return null;
             }
-
+            object instance;
             Type underlying;
             if (type.IsNullable(out underlying) && !type.IsJsonPrimitive())
             {
-                return Activator.CreateInstance(underlying);
+                instance = Activator.CreateInstance(underlying);
+            }
+            else if (type.IsCollection())
+            {
+                instance = Activator.CreateInstance(type);
             }
             else
             {
-                if (type.IsInterface() || type.IsAbstract())
-                {
-                    throw new InvalidOperationException(Messages.TypeNotSupported);
-                }
+                var manager = types[type];
                 if (type.IsClass() && manager.Constructor == null)
                 {
                     throw new InvalidOperationException(Messages.NoDefaultConstructor);
                 }
-                return Activator.CreateInstance(type);
+                instance = Activator.CreateInstance(type);
             }
+
+            return instance;
         }
     }
 }

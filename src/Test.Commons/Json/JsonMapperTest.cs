@@ -986,12 +986,12 @@ namespace Test.Commons.Json
         [Fact]
         public void TestMapJsonToObject71()
         {
-            var json = "{\"Name\": \"Ben\", \"Awesome\": {\"Reason\":\"because it's beautiful\"}}";
+            var json = "{\"Name\": \"Ben\", \"SomeAwesomeThing\": {\"Reason\":\"because it's beautiful\"}}";
             JsonMapper.For<IAwesome>().ConstructWith(() => new Awesome());
             var awe = JsonMapper.To<HasInterface>(json);
             Assert.Equal("Ben", awe.Name);
-            Assert.NotNull(awe.AwesomeImpl);
-            Assert.Equal("because it's beautiful", awe.AwesomeImpl.Reason);
+            Assert.NotNull(awe.SomeAwesomeThing);
+            Assert.Equal("because it's beautiful", awe.SomeAwesomeThing.Reason);
         }
 
         [Fact]
@@ -1363,7 +1363,7 @@ namespace Test.Commons.Json
                 Assert.Equal(i % 2 == 0, simple.FieldD);
             }
 
-            Assert.Throws(typeof (InvalidOperationException), () => JsonMapper.To<IDictionary<string, Simple>>(json));
+            Assert.Null(JsonMapper.To<IDictionary<string, Simple>>(json));
         }
 
         [Fact]

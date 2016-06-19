@@ -240,7 +240,7 @@ namespace Test.Commons.Json
     public class HasInterface
     {
         public string Name { get; set; }
-        public IAwesome AwesomeImpl { get; set; }
+        public IAwesome SomeAwesomeThing { get; set; }
     }
 
     public interface IAwesome
