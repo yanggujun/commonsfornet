@@ -23,6 +23,7 @@ namespace Commons.Json.Mapper
     public interface IJsonObjectMapper<T> : IPropertyMapper<T>, IJsonKeyMapper<T>, INotMapper<T>, IFormatMapper
     {
         IJsonObjectMapper<T> ConstructWith(Func<T> creator);
+        IJsonObjectMapper<T> ConstructWith(Func<JValue, T> creator);
         //IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter);
         //IJsonObjectMapper<T> MapWith(Func<JValue, T> converter);
     }

@@ -131,6 +131,12 @@ namespace Commons.Json.Mapper
             return this;
         }
 
+        public IJsonObjectMapper<T> ConstructWith(Func<JValue, T> creator)
+        {
+            mapper.ManualCreate = x => creator(x);
+            return this;
+        }
+
         public IJsonObjectMapper<T> MapCollection(Func<List<T>, IEnumerable<T>> converter)
         {
             return this;

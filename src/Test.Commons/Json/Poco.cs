@@ -253,5 +253,9 @@ namespace Test.Commons.Json
         public string Reason { get; set; }
     }
 
-
+    public class HasEnumerable
+    {
+        public string Name { get; set; }
+        public IEnumerable<double> Numbers { get; set; }
+    }
 }

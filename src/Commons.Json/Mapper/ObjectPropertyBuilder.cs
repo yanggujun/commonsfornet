@@ -77,11 +77,23 @@ namespace Commons.Json.Mapper
                     }
                     else
                     {
-                        var propValue = prop.GetValue(target, null);
-                        Successor.Build(propValue, propertyType, jsonValue);
-                        if (propertyType.IsNullable() && !propertyType.IsNullablePrimitive())
+                        var propMapper = mappers.GetMapper(propertyType);
+                        object propValue = null;
+                        if (propMapper.ManualCreate != null)
                         {
-                            prop.SetValue(target, propValue, null);
+                            propValue = propMapper.ManualCreate(jsonValue);
+                        }
+                        else
+                        {
+                            propValue = prop.GetValue(target, null);
+                            if (propValue != null)
+                            {
+                                Successor.Build(propValue, propValue.GetType(), jsonValue);
+                                if (propertyType.IsNullable() && !propertyType.IsNullablePrimitive())
+                                {
+                                    prop.SetValue(target, propValue, null);
+                                }
+                            }
                         }
                     }
                 }

@@ -995,6 +995,41 @@ namespace Test.Commons.Json
         }
 
         [Fact]
+        public void TestMapJsonToObject72()
+        {
+            var json = "{\"Name\": \"Alex\", \"Numbers\": [0.1, 0.9, 0.1234, 0.569, 0.89]}";
+            JsonMapper.For<IEnumerable<double>>().ConstructWith(() => new List<double>());
+            var obj = JsonMapper.To<HasEnumerable>(json);
+            Assert.Equal("Alex", obj.Name);
+            Assert.NotNull(obj.Numbers);
+            var index = 0;
+            foreach (var i in obj.Numbers)
+            {
+                if (index == 0)
+                {
+                    Assert.Equal(0.1, i);
+                }
+                else if (index == 1)
+                {
+                    Assert.Equal(0.9, i);
+                }
+                else if (index == 2)
+                {
+                    Assert.Equal(0.1234, i);
+                }
+                else if (index ==3)
+                {
+                    Assert.Equal(0.569, i);
+                }
+                else if (index == 4)
+                {
+                    Assert.Equal(0.89, i);
+                }
+                index++;
+            }
+        }
+
+        [Fact]
         public void TestMapObjectToJson01()
         {
             var simple = new Simple();
