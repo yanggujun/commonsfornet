@@ -23,18 +23,18 @@ using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-    internal class ObjectBuilder : IObjectBuilder
+    internal class Launcher : ILauncher
     {
         private readonly MapperContainer mappers;
         private readonly TypeContainer types;
 
-        public ObjectBuilder(MapperContainer mappers, TypeContainer types)
+        public Launcher(MapperContainer mappers, TypeContainer types)
         {
             this.mappers = mappers;
             this.types = types;
         }
 
-        public object Build(Type type)
+        public object Launch(Type type)
         {
             var mapper = mappers.GetMapper(type);
             var create = mapper.Create;
@@ -61,7 +61,7 @@ namespace Commons.Json.Mapper
                 foreach (var prop in properties)
                 {
                     var propType = prop.PropertyType;
-                    var propValue = Build(propType);
+                    var propValue = Launch(propType);
                     if (propValue != null)
                     {
                         prop.SetValue(value, propValue, null);

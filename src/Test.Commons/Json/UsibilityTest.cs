@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using Commons.Json;
+using Commons.Json.Mapper;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -96,6 +97,48 @@ namespace Test.Commons.Json
                 var n = rand.Next() % 1000;
                 TestPost(n);
             }
+        }
+
+        [Fact]
+        public void TestLarge01()
+        {
+            var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
+            for (var i = 0; i < 10; i++)
+            {
+                var n = rand.Next();
+                TestBook(n);
+            }
+        }
+
+        private void TestBook(int n)
+        {
+            JsonMapper.For<Note>().ConstructWith(x =>
+            {
+                var jsonObj = x as JObject;
+                Note note;
+                if (jsonObj.ContainsKey("index"))
+                {
+                    var foot = new Footnote();
+                    foot.note = jsonObj.GetString("note");
+                    foot.writtenBy = jsonObj.GetString("writtenBy");
+                    foot.index = jsonObj.GetInt64("index");
+                    foot.createadAt = DateTime.Parse(jsonObj.GetString("createadAt"));
+                    note = foot;
+                }
+                else
+                {
+                    var head = new Headnote();
+                    head.note = jsonObj.GetString("note");
+                    head.writtenBy = jsonObj.GetString("writtenBy");
+                    head.modifiedAt = DateTime.Parse(jsonObj.GetString("modifiedAt"));
+                    note = head;
+                }
+                return note;
+            });
+            var large = Book.Factory<Book, Genre, Page, Headnote, Footnote>(n, x => (Genre)x);
+            var json = JsonMapper.ToJson(large);
+            var newLarge = JsonMapper.To<Book>(json);
+            Assert.True(large.Equals(newLarge));
         }
 
         private void AssertDateTime(DateTime v1, DateTime v2)

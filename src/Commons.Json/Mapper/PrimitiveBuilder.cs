@@ -65,7 +65,7 @@ namespace Commons.Json.Mapper
                     }
                     else
                     {
-                        throw new InvalidCastException(Messages.InvalidDateFormat);
+                        throw new FormatException(Messages.InvalidDateFormat);
                     }
                 }
                 else if (actualType.IsEnum())
@@ -138,7 +138,7 @@ namespace Commons.Json.Mapper
         private bool TryParseDate(string str, out DateTime dt)
         {
             object format;
-            var hasFormat = Configuration.TryGetValue("DateFormat", out format);
+            var hasFormat = Configuration.TryGetValue(Messages.DateFormat, out format);
             if (hasFormat && !string.IsNullOrWhiteSpace((string)format))
             {
                 return DateTime.TryParseExact(str, (string)format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dt);

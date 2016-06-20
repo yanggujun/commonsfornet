@@ -178,6 +178,10 @@ namespace Commons.Json.Mapper
 
         public string GetString(string key)
         {
+            if (values[key].Is<JNull>())
+            {
+                return null;
+            }
             var str = values[key] as JString;
             if (str == null)
             {

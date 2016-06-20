@@ -65,15 +65,16 @@ namespace Test.Commons.Json
 			var thisKeys = this.metadata.Keys.ToList();
 			if (otherKeys != null) otherKeys.Sort();
 			thisKeys.Sort();
-			return other != null && other.ID == this.ID && other.title == this.title
-				&& other.authorId == this.authorId
-				&& other.pages != null && Enumerable.SequenceEqual(other.pages, this.pages)
-				&& other.published == this.published
-				&& other.cover != null && Enumerable.SequenceEqual(other.cover, this.cover)
-				&& otherChanges != null && Enumerable.SequenceEqual(otherChanges, thisChanges)
-				&& otherKeys != null && Enumerable.SequenceEqual(otherKeys, thisKeys)
-				&& otherKeys.All(it => other.metadata[it] == this.metadata[it])
-				&& other.genres != null && Enumerable.SequenceEqual(other.genres, this.genres);
+            var result = other != null && other.ID == this.ID && other.title == this.title;
+            result = result && other.authorId == this.authorId;
+            result = result && other.pages != null && Enumerable.SequenceEqual(other.pages, this.pages);
+            result = result && other.published == this.published;
+            result = result && other.cover != null && Enumerable.SequenceEqual(other.cover, this.cover);
+            result = result && otherChanges != null && Enumerable.SequenceEqual(otherChanges, thisChanges);
+            result = result && otherKeys != null && Enumerable.SequenceEqual(otherKeys, thisKeys);
+            result = result && otherKeys.All(it => other.metadata[it] == this.metadata[it]);
+            result = result && other.genres != null && Enumerable.SequenceEqual(other.genres, this.genres);
+            return result;
 		}
 		public static TB Factory<TB, TG, TP, TH, TF>(int i, Func<int, TG> cast)
 			where TB : new()
@@ -149,10 +150,11 @@ namespace Test.Commons.Json
 		public override bool Equals(object obj) { return Equals(obj as Page); }
 		public bool Equals(Page other)
 		{
-			return other != null
-				&& other.text == this.text
-				&& Enumerable.SequenceEqual(other.notes, this.notes)
-				&& other.identity == this.identity;
+            var result = other != null;
+            result = result && other.text == this.text;
+            result = result && Enumerable.SequenceEqual(other.notes, this.notes);
+            result = result && other.identity == this.identity;
+            return result;
 		}
 	}
 	public class Footnote : Note, IEquatable<Footnote>
@@ -165,8 +167,12 @@ namespace Test.Commons.Json
 		public override bool Equals(object obj) { return Equals(obj as Footnote); }
 		public bool Equals(Footnote other)
 		{
-			return other != null && other.note == this.note && other.writtenBy == this.writtenBy
-				&& other.createadAt == this.createadAt && other.index == this.index;
+            var result = other != null;
+            result = result && other.note == this.note;
+            result = result && other.writtenBy == this.writtenBy;
+            result = result && TestHelper.DateTimeEqual(other.createadAt, createadAt);
+            result = result && other.index == this.index;
+            return result;
 		}
 	}
 	public class Headnote : Note, IEquatable<Headnote>
@@ -178,8 +184,11 @@ namespace Test.Commons.Json
 		public override bool Equals(object obj) { return Equals(obj as Headnote); }
 		public bool Equals(Headnote other)
 		{
-			return other != null && other.note == this.note && other.writtenBy == this.writtenBy
-				&& other.modifiedAt == this.modifiedAt;
+            var result = other != null;
+            result = result && other.note == this.note;
+            result = result && other.writtenBy == this.writtenBy;
+            result = result && TestHelper.DateTimeEqual(other.modifiedAt.Value, modifiedAt.Value);
+            return result;
 		}
 	}
 	public interface Note

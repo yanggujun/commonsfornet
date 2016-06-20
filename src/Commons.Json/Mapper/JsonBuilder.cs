@@ -58,7 +58,7 @@ namespace Commons.Json.Mapper
                 var sb = new StringBuilder();
                 var dt = (DateTime) target;
                 object dateFormat;
-                var time = config.TryGetValue("DateFormat", out dateFormat) ? dt.ToString((string)dateFormat) : dt.ToString();
+                var time = config.TryGetValue(Messages.DateFormat, out dateFormat) ? dt.ToString((string)dateFormat) : dt.ToString();
                 sb.Append(JsonTokens.Quoter).Append(time).Append(JsonTokens.Quoter);
                 json = sb.ToString();
             }

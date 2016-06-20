@@ -13,5 +13,10 @@ namespace Commons.Json.Mapper
         {
             return configure.TryGetValue(key, out value);
         }
+
+        public void Add(string key, object value)
+        {
+            configure[key] = value;
+        }
     }
 }

@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.IO;
 using System.Text;
 
@@ -43,6 +44,12 @@ namespace Test.Commons
                                       .Append(Path.DirectorySeparatorChar)
                                       .Append(fileName)
                                       .ToString();
+        }
+
+        public static bool DateTimeEqual(DateTime d1, DateTime d2)
+        {
+            return d1.Year == d2.Year && d1.Month == d2.Month && d1.Day == d2.Day 
+                && d1.Hour == d2.Hour && d1.Minute == d2.Minute && d1.Second == d2.Second;
         }
     }
 }

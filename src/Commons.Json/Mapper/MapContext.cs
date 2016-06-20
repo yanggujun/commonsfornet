@@ -29,7 +29,7 @@ namespace Commons.Json.Mapper
             Configuration = new ConfigContainer();
             Types = new TypeContainer();
             CollBuilder = new CollectionBuilder();
-            ObjectBuilder = new ObjectBuilder(Mappers, Types);
+            Launcher = new Launcher(Mappers, Types);
             JsonBuilder = new JsonBuilder(Mappers, Types, Configuration);
         }
 
@@ -43,7 +43,7 @@ namespace Commons.Json.Mapper
                 Mappers.PushMapper(type);
             }
             var mapper = Mappers.GetMapper(type);
-            var jsonObjMapper = new JsonObjectMapper<T>(mapper);
+            var jsonObjMapper = new JsonObjectMapper<T>(mapper, Configuration);
             return jsonObjMapper;
         }
 
@@ -69,7 +69,7 @@ namespace Commons.Json.Mapper
             object target = null;
             if (!type.IsJsonPrimitive() && !type.IsArray)
             {
-                target = ObjectBuilder.Build(type);
+                target = Launcher.Launch(type);
             }
 
             var mapEngine = 
@@ -84,7 +84,7 @@ namespace Commons.Json.Mapper
 
         public CollectionBuilder CollBuilder { get; private set; }
 
-        public IObjectBuilder ObjectBuilder { get; private set; }
+        public ILauncher Launcher { get; private set; }
         
         public ConfigContainer Configuration { get; private set; }
 
@@ -94,8 +94,10 @@ namespace Commons.Json.Mapper
 
         public string DateFormat
         {
-            get { return dateFormat; } 
-            internal set { dateFormat = value; }
+            set
+            {
+                Configuration.Add(Messages.DateFormat, value);
+            }
         }
     }
 }

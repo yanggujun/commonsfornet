@@ -32,7 +32,7 @@ namespace Commons.Json.Mapper
 
         protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
         {
-            if (targetType.IsPrimitive() || !targetType.IsClass())
+            if (!targetType.IsClass() && !targetType.IsNullable())
             {
                 throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
             }

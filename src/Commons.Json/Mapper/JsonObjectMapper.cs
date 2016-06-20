@@ -27,12 +27,14 @@ namespace Commons.Json.Mapper
     internal class JsonObjectMapper<T> : IJsonObjectMapper<T>
     {
         private readonly MapperImpl mapper;
+        private readonly ConfigContainer configuration;
         private LambdaExpression lastExp;
         private bool not;
 
-        public JsonObjectMapper(MapperImpl mapper)
+        public JsonObjectMapper(MapperImpl mapper, ConfigContainer configuration)
         {
             this.mapper = mapper;
+            this.configuration = configuration;
         }
 
         public IJsonKeyMapper<T> MapProperty(Expression<Func<T, int>> propertyExp)
@@ -213,7 +215,7 @@ namespace Commons.Json.Mapper
 
         public IFormatMapper UseDateFormat(string format)
         {
-            mapper.DateFormat = format;
+            configuration.Add(Messages.DateFormat, format);
             return this;
         }
 

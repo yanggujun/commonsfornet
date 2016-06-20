@@ -18,8 +18,8 @@ using System;
 
 namespace Commons.Json.Mapper
 {
-    public interface IObjectBuilder
+    public interface ILauncher
     {
-        object Build(Type type);
+        object Launch(Type type);
     }
 }

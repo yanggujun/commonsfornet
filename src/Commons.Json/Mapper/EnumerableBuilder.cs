@@ -26,8 +26,8 @@ namespace Commons.Json.Mapper
     {
         private readonly CollectionBuilder colBuilder;
 
-        public EnumerableBuilder(ConfigContainer configuration, IObjectBuilder objBuilder, CollectionBuilder colBuilder) 
-            : base(configuration, objBuilder)
+        public EnumerableBuilder(ConfigContainer configuration, ILauncher launcher, CollectionBuilder colBuilder, MapperContainer mappers) 
+            : base(configuration, launcher, mappers)
         {
             this.colBuilder = colBuilder;
         }
@@ -42,7 +42,7 @@ namespace Commons.Json.Mapper
             if (raw != null)
             {
                 var itemType = targetType.GetGenericArguments()[0];
-                var array = (Array)BuildArray(raw, itemType, jsonValue);
+                var array = BuildArray(raw, itemType, jsonValue);
                 foreach (var item in array)
                 {
                     colBuilder.Build((IEnumerable)raw, item);

@@ -82,6 +82,7 @@ namespace Commons.Json.Mapper
                         if (propMapper.ManualCreate != null)
                         {
                             propValue = propMapper.ManualCreate(jsonValue);
+                            prop.SetValue(target, propValue, null);
                         }
                         else
                         {

@@ -498,7 +498,7 @@ namespace Test.Commons.Json
         public void TestMapJsonToObject33()
         {
             var json = "{\"Birthday\": \"1990/1/5/88\", \"name\": \"alan\"}";
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json));
+            Assert.Throws(typeof(FormatException), () => JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json));
         }
 
         [Fact]
@@ -1027,6 +1027,82 @@ namespace Test.Commons.Json
                 }
                 index++;
             }
+        }
+
+        [Fact]
+        public void TestMapJsonToObject73()
+        {
+            var json = "{\"Name\": \"Ben\", \"SomeAwesomeThing\": {\"TheReason\":\"because it's very nice\"}}";
+            JsonMapper.For<IAwesome>().ConstructWith(x =>
+            {
+                var jsonObj = x as JObject;
+                var reason = jsonObj.GetString("thereason");
+                var a = new Awesome();
+                a.Reason = reason;
+                return a;
+            });
+            var awe = JsonMapper.To<HasInterface>(json);
+            Assert.Equal("Ben", awe.Name);
+            Assert.NotNull(awe.SomeAwesomeThing);
+            Assert.Equal("because it's very nice", awe.SomeAwesomeThing.Reason);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject731()
+        {
+            var json = "[{\"AweReason\":\"nice\"}, {\"AweReason\":\"beautiful\"}, {\"AweReason\":\"elegent\"}]";
+            JsonMapper.For<IAwesome>().ConstructWith(x =>
+            {
+                var jsonObj = x as JObject;
+                var reason = jsonObj.GetString("awereason");
+                var a = new Awesome();
+                a.Reason = reason;
+                return a;
+            });
+
+            var aweArray = JsonMapper.To<IAwesome[]>(json);
+            Assert.Equal(3, aweArray.Length);
+            Assert.Equal("nice", aweArray[0].Reason);
+            Assert.Equal("beautiful", aweArray[1].Reason);
+            Assert.Equal("elegent", aweArray[2].Reason);
+
+            var aweList = JsonMapper.To<List<IAwesome>>(json);
+            Assert.Equal(3, aweList.Count);
+            Assert.Equal("nice", aweList[0].Reason);
+            Assert.Equal("beautiful", aweList[1].Reason);
+            Assert.Equal("elegent", aweList[2].Reason);
+        }
+
+        public void TestMapJsonToObject732()
+        {
+            var json = "[{\"Reason\":\"nice\"}, {\"Reason\":\"beautiful\"}, {\"Reason\":\"elegent\"}]";
+            JsonMapper.For<IAwesome>().ConstructWith(x => new Awesome());
+
+            var aweArray = JsonMapper.To<IAwesome[]>(json);
+            Assert.Equal(3, aweArray.Length);
+            Assert.Equal("nice", aweArray[0].Reason);
+            Assert.Equal("beautiful", aweArray[1].Reason);
+            Assert.Equal("elegent", aweArray[2].Reason);
+
+            var aweList = JsonMapper.To<List<IAwesome>>(json);
+            Assert.Equal(3, aweList.Count);
+            Assert.Equal("nice", aweList[0].Reason);
+            Assert.Equal("beautiful", aweList[1].Reason);
+            Assert.Equal("elegent", aweList[2].Reason);
+
+        }
+
+        [Fact]
+        public void TestMapJsonToObject74()
+        {
+            var json = "{\"FieldI\": \"valuei\", \"NestedItems\": [null, null, null]}";
+            var arrayInside = JsonMapper.To<ArrayNested>(json);
+            Assert.Equal("valuei", arrayInside.FieldI);
+            Assert.NotNull(arrayInside.NestedItems);
+            Assert.Equal(3, arrayInside.NestedItems.Count);
+            Assert.Null(arrayInside.NestedItems[0]);
+            Assert.Null(arrayInside.NestedItems[1]);
+            Assert.Null(arrayInside.NestedItems[2]);
         }
 
         [Fact]
@@ -1786,7 +1862,19 @@ namespace Test.Commons.Json
             Assert.Equal(23, people[2].Age);
             Assert.Equal("US", people[2].Nationality);
             Assert.Equal("Male", people[2].Gender);
+        }
 
+        [Fact]
+        public void TestMapProperty10()
+        {
+            var json = "{\"Birthday\": \"10:05:1995\", \"Name\": \"Joe\"}";
+            var hasDate = JsonMapper.UseDateFormat("MM:dd:yyyy").To<HasDate>(json);
+            Assert.Equal("Joe", hasDate.Name);
+            Assert.Equal(1995, hasDate.Birthday.Year);
+            Assert.Equal(10, hasDate.Birthday.Month);
+            Assert.Equal(5, hasDate.Birthday.Day);
+
+            Assert.Throws(typeof(FormatException), () => JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json));
         }
 
         [Fact]

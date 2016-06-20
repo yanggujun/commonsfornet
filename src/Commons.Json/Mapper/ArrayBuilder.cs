@@ -20,10 +20,12 @@ namespace Commons.Json.Mapper
 {
     internal class ArrayBuilder : ValueBuilderSkeleton
     {
-        private readonly IObjectBuilder objBuilder;
-        public ArrayBuilder(ConfigContainer configuration, IObjectBuilder objBuilder) : base(configuration)
+        private readonly ILauncher launcher;
+        private readonly MapperContainer mappers;
+        public ArrayBuilder(ConfigContainer configuration, ILauncher launcher, MapperContainer mappers) : base(configuration)
         {
-            this.objBuilder = objBuilder;
+            this.launcher = launcher;
+            this.mappers = mappers;
         }
 
         protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
@@ -37,7 +39,7 @@ namespace Commons.Json.Mapper
             return targetType.IsArray;
         }
 
-        protected object BuildArray(object raw, Type itemType, JValue jsonValue)
+        protected Array BuildArray(object raw, Type itemType, JValue jsonValue)
         {
             JArray array;
             if (!jsonValue.Is<JArray>(out array))
@@ -48,13 +50,16 @@ namespace Commons.Json.Mapper
             return ExtractJsonArray(array, itemType);
         }
 
-        private object ExtractJsonArray(JArray jsonArray, Type itemType)
+        private Array ExtractJsonArray(JArray jsonArray, Type itemType)
         {
             var array = Array.CreateInstance(itemType, jsonArray.Length);
             for (var i = 0; i < jsonArray.Length; i++)
             {
                 var jsonValue = GetValueFromJsonArrayItem(jsonArray[i], itemType);
-                array.SetValue(jsonValue, i);
+                if (jsonValue != null)
+                {
+                    array.SetValue(jsonValue, i);
+                }
             }
 
             return array;
@@ -72,8 +77,21 @@ namespace Commons.Json.Mapper
             }
             else
             {
-                var itemValue = objBuilder.Build(itemType);
-                Successor.Build(itemValue, itemType, jsonValue);
+                object itemValue;
+                var mapper = mappers.GetMapper(itemType);
+                if (mapper.ManualCreate != null)
+                {
+                    itemValue = mapper.ManualCreate(jsonValue);
+                }
+                else if (mapper.Create != null)
+                {
+                    itemValue = mapper.Create();
+                }
+                else
+                {
+                    itemValue = launcher.Launch(itemType);
+                }
+                itemValue = Successor.Build(itemValue, itemType, jsonValue);
                 return itemValue;
             }
         }

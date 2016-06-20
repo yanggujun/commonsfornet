@@ -53,5 +53,7 @@ namespace Commons.Json
         public const string EnqueueMethod = "Enqueue";
 
         public const string PushMethod = "Push";
+
+        public const string DateFormat = "DateFormat";
     }
 }

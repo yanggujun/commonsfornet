@@ -24,11 +24,11 @@ namespace Commons.Json.Mapper
     internal class DictionaryBuilder : ValueBuilderSkeleton
     {
         private readonly MapperContainer mappers;
-        private readonly IObjectBuilder objBuilder;
-        public DictionaryBuilder(ConfigContainer configuration, MapperContainer mappers, IObjectBuilder objBuilder) : base(configuration)
+        private readonly ILauncher launcher;
+        public DictionaryBuilder(ConfigContainer configuration, MapperContainer mappers, ILauncher launcher) : base(configuration)
         {
             this.mappers = mappers;
-            this.objBuilder = objBuilder;
+            this.launcher = launcher;
         }
 
         protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
@@ -59,7 +59,7 @@ namespace Commons.Json.Mapper
                 object value = null;
                 if (!valueType.IsJsonPrimitive())
                 {
-                    value = objBuilder.Build(valueType);
+                    value = launcher.Launch(valueType);
                 }
                 value = Successor.Build(value, valueType, kvp.Value);
                 method.Invoke(raw, new[] { key, value });
