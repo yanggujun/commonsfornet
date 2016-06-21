@@ -986,12 +986,12 @@ namespace Test.Commons.Json
         [Fact]
         public void TestMapJsonToObject71()
         {
-            var json = "{\"Name\": \"Ben\", \"SomeAwesomeThing\": {\"Reason\":\"because it's beautiful\"}}";
-            JsonMapper.For<IAwesome>().ConstructWith(() => new Awesome());
-            var awe = JsonMapper.To<HasInterface>(json);
-            Assert.Equal("Ben", awe.Name);
-            Assert.NotNull(awe.SomeAwesomeThing);
-            Assert.Equal("because it's beautiful", awe.SomeAwesomeThing.Reason);
+            var json = "{\"Name\": \"Ben\", \"Excellent\": {\"Reason\": 5}}";
+            JsonMapper.For<IExcellent>().ConstructWith(() => new Excellent());
+            var won = JsonMapper.To<Wonderful>(json);
+            Assert.Equal("Ben", won.Name);
+            Assert.NotNull(won.Excellent);
+            Assert.Equal(5, won.Excellent.Reason);
         }
 
         [Fact]

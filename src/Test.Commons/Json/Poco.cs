@@ -243,6 +243,22 @@ namespace Test.Commons.Json
         public IAwesome SomeAwesomeThing { get; set; }
     }
 
+    public class Wonderful
+    {
+        public string Name { get; set; }
+        public IExcellent Excellent {get;set;}
+    }
+
+    public interface IExcellent
+    {
+        int Reason { get; set; }
+    }
+
+    public class Excellent : IExcellent
+    {
+        public int Reason { get; set; }
+    }
+
     public interface IAwesome
     {
         string Reason { get; set; }

@@ -762,6 +762,12 @@ namespace Test.Commons.Collections
                 Assert.True(map.ContainsKey(order));
             }
 
+            foreach (var order in orderList)
+            {
+                Assert.Equal(order.Id, map[order].Id);
+                Assert.Equal(order.Id, map[order].Count);
+            }
+
             var newOrderList = new List<Order>();
             for (var i = 0; i < 10000; i++)
             {
