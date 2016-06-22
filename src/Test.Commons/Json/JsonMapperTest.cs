@@ -1075,20 +1075,20 @@ namespace Test.Commons.Json
 
         public void TestMapJsonToObject732()
         {
-            var json = "[{\"Reason\":\"nice\"}, {\"Reason\":\"beautiful\"}, {\"Reason\":\"elegent\"}]";
-            JsonMapper.For<IAwesome>().ConstructWith(x => new Awesome());
+            var json = "[{\"Reason\": 1 }, {\"Reason\": 2 }, {\"Reason\": 3}]";
+            JsonMapper.For<IExcellent>().ConstructWith(x => new Excellent());
 
-            var aweArray = JsonMapper.To<IAwesome[]>(json);
+            var aweArray = JsonMapper.To<IExcellent[]>(json);
             Assert.Equal(3, aweArray.Length);
-            Assert.Equal("nice", aweArray[0].Reason);
-            Assert.Equal("beautiful", aweArray[1].Reason);
-            Assert.Equal("elegent", aweArray[2].Reason);
+            Assert.Equal(1, aweArray[0].Reason);
+            Assert.Equal(2, aweArray[1].Reason);
+            Assert.Equal(3, aweArray[2].Reason);
 
-            var aweList = JsonMapper.To<List<IAwesome>>(json);
+            var aweList = JsonMapper.To<List<IExcellent>>(json);
             Assert.Equal(3, aweList.Count);
-            Assert.Equal("nice", aweList[0].Reason);
-            Assert.Equal("beautiful", aweList[1].Reason);
-            Assert.Equal("elegent", aweList[2].Reason);
+            Assert.Equal(1, aweList[0].Reason);
+            Assert.Equal(2, aweList[1].Reason);
+            Assert.Equal(3, aweList[2].Reason);
 
         }
 
@@ -1103,6 +1103,29 @@ namespace Test.Commons.Json
             Assert.Null(arrayInside.NestedItems[0]);
             Assert.Null(arrayInside.NestedItems[1]);
             Assert.Null(arrayInside.NestedItems[2]);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject75()
+        {
+            var json = "{\"FieldJ\": \"a broken\nline\", \"FieldK\": [0, 1]}";
+            var obj1 = JsonMapper.To<PrimitiveList>(json);
+            var str = obj1.FieldJ;
+            using (var sr = new StringReader(str))
+            {
+                var line1 = sr.ReadLine();
+                Assert.Equal("a broken", line1);
+                var line2 = sr.ReadLine();
+                Assert.Equal("line", line2);
+            }
+
+            var json2 = "{\"FieldJ\": \"d:\\test\\\", \"FieldK\": [0, 1]}";
+            var obj2 = JsonMapper.To<PrimitiveList>(json2);
+            Assert.Equal("d:\\test\\", obj2.FieldJ);
+
+            var json3 = "{\"FieldJ\": \"~/test/workspace\", \"FieldK\": [0, 1]}";
+            var obj3 = JsonMapper.To<PrimitiveList>(json3);
+            Assert.Equal("~/test/workspace", obj3.FieldJ);
         }
 
         [Fact]
