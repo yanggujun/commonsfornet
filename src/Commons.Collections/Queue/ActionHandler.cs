@@ -20,14 +20,19 @@ namespace Commons.Collections.Queue
 {
     internal class ActionHandler<T> : IMessageHandler<T>
     {
-        private Func<T, string> handler;
-        public ActionHandler(Func<T, string> handler)
+        private Action<T> handler;
+        public ActionHandler(Action<T> handler)
         {
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
             this.handler = handler;
         }
-        public string Handle(T message)
+
+        public void Handle(T message)
         {
-            return handler(message);
+            handler(message);
         }
 
     }

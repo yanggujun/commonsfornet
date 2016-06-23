@@ -19,10 +19,12 @@ using Xunit;
 using Commons.Collections.Queue;
 using System;
 using Commons.Collections.Set;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Test.Commons.Collections
 {
-    public class PriorityQueueTest
+    public class QueueTest
     {
         [Fact]
         public void TestMinPriortyQueueConstructor()
@@ -116,6 +118,38 @@ namespace Test.Commons.Collections
 
             var pq2 = new MaxPriorityQueue<int>();
             Enumerate(pq2);
+        }
+
+        [Fact]
+        public void TestMemQueueOneThread()
+        {
+            var handler = new DefaultHandler<Order>();
+            var memq = new MemQueue<Order>("Test1", handler);
+            Assert.Equal("Test1", memq.QueueName);
+            Assert.True(memq.IsEmpty);
+            memq.Start();
+
+            var tasks = new Task[100];
+            for (var i = 0; i < tasks.Length; i++)
+            {
+                var order = new Order { Id = i };
+                tasks[i] = new Task(() => memq.Enqueue(order));
+            }
+
+            foreach (var t in tasks)
+            {
+                t.Start();
+            }
+            Task.WaitAll(tasks);
+
+            while(!memq.IsEmpty)
+            {
+                Thread.Sleep(10);
+            }
+
+            Thread.Sleep(20);
+
+            Assert.Equal(100, handler.RequestCount);
         }
 
         private void Enumerate(IPriorityQueue<int> pq)

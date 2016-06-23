@@ -14,18 +14,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace Commons.Collections.Queue
 {
-    internal class MemQueue<T> : IMemQueue<T>
+    public class MemQueue<T> : IMemQueue<T>
     {
         private readonly BlockingCollection<T> queue = new BlockingCollection<T>(new ConcurrentQueue<T>());
         private int threadNumber;
         private List<Thread> threads;
         private readonly IMessageHandler<T> handler;
+
+        public MemQueue(string name, Action<T> handle, int threadNumber = 1)
+            :this(name, new ActionHandler<T>(handle), threadNumber)
+        {
+
+        }
 
         public MemQueue(string name, IMessageHandler<T> handler, int threadNumber = 1)
         {

@@ -14,10 +14,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Commons.Collections.Queue
+using System;
+using Commons.Collections.Queue;
+using System.Threading;
+
+namespace Test.Commons.Collections
 {
-    public interface IMessageHandler<T>
+    public class DefaultHandler<T> : IMessageHandler<T>
     {
-        void Handle(T message);
+        public void Handle(T message)
+        {
+            Thread.Sleep(10);
+            RequestCount++;
+        }
+
+        public int RequestCount { get; set; }
     }
 }
