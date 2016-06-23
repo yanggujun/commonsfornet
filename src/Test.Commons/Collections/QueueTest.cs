@@ -150,6 +150,53 @@ namespace Test.Commons.Collections
             Thread.Sleep(20);
 
             Assert.Equal(100, handler.RequestCount);
+
+            memq.Close();
+
+            memq.Enqueue(new Order { Id = 101 });
+            memq.Enqueue(new Order { Id = 102 });
+            memq.Enqueue(new Order { Id = 103 });
+
+            Assert.Equal(100, handler.RequestCount);
+            Assert.True(memq.IsEmpty);
+        }
+
+        [Fact]
+        public void TestMemQueueMultiThread()
+        {
+            var handler = new ConcurrentHandler<Order>();
+            var memq = new MemQueue<Order>("Test2", handler, 4);
+            Assert.Equal("Test2", memq.QueueName);
+            Assert.True(memq.IsEmpty);
+
+            memq.Start();
+            var tasks = new Task[100];
+            for (var i = 0; i < tasks.Length; i++)
+            {
+                var order = new Order { Id = i };
+                tasks[i] = new Task(() => memq.Enqueue(order));
+            }
+            foreach (var t in tasks)
+            {
+                t.Start();
+            }
+
+            Task.WaitAll(tasks);
+            while(!memq.IsEmpty)
+            {
+                Thread.Sleep(10);
+            }
+
+            Thread.Sleep(20);
+            Assert.Equal(100, handler.RequestCount);
+
+            memq.Close();
+            memq.Enqueue(new Order { Id = 101 });
+            memq.Enqueue(new Order { Id = 102 });
+            memq.Enqueue(new Order { Id = 103 });
+            memq.Enqueue(new Order { Id = 104 });
+
+            Assert.Equal(100, handler.RequestCount);
         }
 
         private void Enumerate(IPriorityQueue<int> pq)

@@ -15,37 +15,16 @@
 // limitations under the License.
 
 using System;
-using Commons.Collections.Queue;
-using System.Threading;
-using Commons.Utils;
+using Microsoft.AspNetCore.Http;
 
-namespace Test.Commons.Collections
+namespace Commons.Messaging
 {
-    public class DefaultHandler<T> : IMessageHandler<T>
+    [CLSCompliant(false)]
+    public class HttpFacade
     {
-        public void Handle(T message)
+        public void OnHttpRequest(HttpContext context)
         {
-            Thread.Sleep(10);
-            RequestCount++;
-        }
 
-        public int RequestCount { get; set; }
-    }
-
-    public class ConcurrentHandler<T> : IMessageHandler<T>
-    {
-        private AtomicInt32 requestCount;
-        public void Handle(T message)
-        {
-            requestCount.Increment();
-        }
-
-        public int RequestCount
-        {
-            get
-            {
-                return requestCount.Value;
-            }
         }
     }
 }
