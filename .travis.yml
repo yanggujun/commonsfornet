@@ -1,36 +1,22 @@
 language: csharp
-env:
-  - CLI_VERSION=latest
-    
+sudo: required
 dist: trusty
-
+os:
+  - linux
+mono:
+  - 4.2.3
 addons:
   apt:
-    sources:
-
     packages:
     - gettext
     - libcurl4-openssl-dev
     - libicu-dev
     - libssl-dev
+    - libunwind8
     - zlib1g
+branches:
+  only:
+    - master
 
-before_install:
-  - sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet/ trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
-  - sudo apt-key adv --keyserver apt-mo.trafficmanager.net --recv-keys 417A0893
-  - sudo apt-get update
-
-install:
-  - export DOTNET_INSTALL_DIR="$PWD/.dotnetcli"
-  - curl -sSL https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh | bash /dev/stdin --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR"
-  - export PATH="$DOTNET_INSTALL_DIR:$PATH"  
-  
-git:
-    depth: 2
-
-branshes:
-    only:
-      - master
-
-script: 
-    - sh ./Build.sh
+script:
+  - ./build.sh
