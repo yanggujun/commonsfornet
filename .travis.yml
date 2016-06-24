@@ -1,6 +1,8 @@
 language: csharp
 sudo: required
 dist: trusty
+env:  
+  - CLI_VERSION=latest
 os:
   - linux
 mono:
@@ -24,4 +26,4 @@ install:
     - export PATH="$DOTNET_INSTALL_DIR:$PATH"
 
 script:
-  - ./build.sh
+  - sh ./build.sh
