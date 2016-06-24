@@ -1,4 +1,4 @@
-language: csharp
+language: generic
 env:
   - CLI_VERSION=latest
     
