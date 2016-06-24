@@ -3,7 +3,7 @@ env:
   - CLI_VERSION=LATEST
 git:
     depth: 2
-dist: trusty
+
 addons: 
     apt:
         sources:
