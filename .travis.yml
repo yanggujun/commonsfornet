@@ -6,6 +6,8 @@ dist: trusty
 
 addons:
   apt:
+    sources:
+    - debian-sid
     packages:
     - gettext
     - libunwind8
