@@ -22,6 +22,7 @@ branshes:
 
 before install:
   - sudo apt-key adv --keyserver apt-mo.trafficmanager.net --recv-keys 417A0893
+  - sudo apt-get update
 
 install:
   - export DOTNET_INSTALL_DIR="$PWD/.dotnetcli"
