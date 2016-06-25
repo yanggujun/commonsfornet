@@ -1,37 +1,46 @@
-#!/bin/sh
+#!/usr/bin/env bash
+repoFolder="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $repoFolder
 
-OUTPUT=./src/artifacts/rbin
+koreBuildZip="https://github.com/aspnet/KoreBuild/archive/dev.zip"
+if [ ! -z $KOREBUILD_ZIP ]; then
+    koreBuildZip=$KOREBUILD_ZIP
+    fi
 
-rm -r ./src/artifacts
+    buildFolder=".build"
+    buildFile="$buildFolder/KoreBuild.sh"
 
-dotnet restore 
+    if test ! -d $buildFolder; then
+        echo "Downloading KoreBuild from $koreBuildZip"
+                
+        tempFolder="/tmp/KoreBuild-$(uuidgen)"    
+        mkdir $tempFolder
+                                
+        localZipFile="$tempFolder/korebuild.zip"
+                                        
+        retries=6
+        until (wget -O $localZipFile $koreBuildZip 2>/dev/null || curl -o $localZipFile --location $koreBuildZip 2>/dev/null)
+        do
+            echo "Failed to download '$koreBuildZip'"
+            if [ "$retries" -le 0 ]; then
+            exit 1
+            fi
+            retries=$((retries - 1))
+            echo "Waiting 10 seconds before retrying. Retries left: $retries"
+            sleep 10s
+        done
+                                                                                                                                
+        unzip -q -d $tempFolder $localZipFile
+        
+        mkdir $buildFolder
+        cp -r $tempFolder/**/build/** $buildFolder
+        
+        chmod +x $buildFile
+        
+        # Cleanup
+        if test ! -d $tempFolder; then
+            rm -rf $tempFolder  
+        fi
+    fi
 
-dotnet build src/Commons.Utils -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
-dotnet build src/Commons.Collections -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
-dotnet build src/Commons.Json -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
-dotnet build src/Commons.Pool -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
-dotnet build src/Test.Commons -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
-
-dotnet build src/Commons.Utils -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental
-dotnet build src/Commons.Collections -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental
-dotnet build src/Commons.Json -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental
-dotnet build src/Commons.Pool -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental
-dotnet build src/Test.Commons -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental
-
-dotnet build src/Commons.Utils -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental
-dotnet build src/Commons.Collections -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental
-dotnet build src/Commons.Json -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental
-dotnet build src/Commons.Pool -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental
-
-dotnet build src/Test.Commons -c Release --no-dependencies -o "$OUTPUT/netcoreapp1.0" -f netcoreapp1.0 --no-incremental
-
-dotnet test src/Test.Commons -f netcoreapp1.0 -o "$OUTPUT/netcoreapp1.0" --no-build -parallel none
-mono %USERPROFILE%/.nuget/packages/xunit.runner.console/2.1.0/tools/xunit.console.exe $OUTPUT/net40/Test.Commons.dll
-mono %USERPROFILE%/.nuget/packages/xunit.runner.console/2.1.0/tools/xunit.console.exe $OUTPUT/net45/Test.Commons.dll
-
-mono ./src/.nuget/nuget.exe pack Commons.nuspec -outputdirectory $OUTPUT
-mono ./src/.nuget/nuget.exe pack Commons.Json.nuspec -outputdirectory $OUTPUT
-mono ./src/.nuget/nuget.exe pack Commons.Pool.nuspec -outputdirectory $OUTPUT
-
-
-PAUSE
+$buildFile -r $repoFolder "$@"
