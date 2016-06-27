@@ -1577,8 +1577,6 @@ namespace Test.Commons.Json
             Assert.Equal("A History of Europe", (string)atc.Name);
             Assert.Equal(2000, (int)atc.Pages);
             var dt = DateTime.Parse((string) atc.PublishDate);
-            Console.WriteLine((string)atc.PublishDate);
-            Console.WriteLine(dt);
             Assert.Equal(1985, dt.Year);
             Assert.Equal(7, dt.Month);
             Assert.Equal(5, dt.Day);
