@@ -1568,7 +1568,7 @@ namespace Test.Commons.Json
                 Author = "Edward",
                 Name = "A History of Europe",
                 Pages = 2000,
-                PublishDate = new DateTime(1750, 7, 5)
+                PublishDate = new DateTime(1985, 7, 5)
             };
 
             var json = JsonMapper.ToJson(artical);
@@ -1577,7 +1577,9 @@ namespace Test.Commons.Json
             Assert.Equal("A History of Europe", (string)atc.Name);
             Assert.Equal(2000, (int)atc.Pages);
             var dt = DateTime.Parse((string) atc.PublishDate);
-            Assert.Equal(1750, dt.Year);
+            Console.WriteLine((string)atc.PublishDate);
+            Console.WriteLine(dt);
+            Assert.Equal(1985, dt.Year);
             Assert.Equal(7, dt.Month);
             Assert.Equal(5, dt.Day);
         }
