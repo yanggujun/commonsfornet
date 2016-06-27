@@ -1,5 +1,9 @@
 ##.NET Commons
 
+Travis: [![Build Status](https://travis-ci.org/yanggujun/commonsfornet.svg?branch=master)](https://travis-ci.org/yanggujun/commonsfornet)
+
+Appveyor: [![Build status](https://ci.appveyor.com/api/projects/status/k41cr396bexk1e9f?svg=true)](https://ci.appveyor.com/project/yanggujun/commonsfornet)
+
 ###About
 
 Welcome to .NET Commons home.
@@ -19,10 +23,6 @@ Currently .NET Commons consist of following major components:
 ###License
 
 Apache License v2.0
-
-###Build Status
-
-[![Build Status](https://travis-ci.org/yanggujun/commonsfornet.svg?branch=master)](https://travis-ci.org/yanggujun/commonsfornet)
 
 ###Installation
 
