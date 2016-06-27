@@ -37,5 +37,3 @@ call "%USERPROFILE%\.nuget\packages\xunit.runner.console\2.1.0\tools\xunit.conso
 .\src\.nuget\nuget pack Commons.Json.nuspec -outputdirectory %OUTPUT%
 .\src\.nuget\nuget pack Commons.Pool.nuspec -outputdirectory %OUTPUT%
 
-
-call PAUSE
