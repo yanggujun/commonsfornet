@@ -162,6 +162,38 @@ namespace Test.Commons.Collections
         }
 
         [Fact]
+        public void TestMemQueueOneThreadException()
+        {
+            var bill = new Bill { Count = 0 };
+            var memq = new MemQueue<Order>("Test3", x =>
+            {
+                if (x.Id % 2 == 0)
+                {
+                    throw new InvalidOperationException();
+                }
+                else
+                {
+                    bill.Count++;
+                }
+            });
+
+            memq.Start();
+
+            for (var i = 0; i < 100; i++)
+            {
+                memq.Enqueue(new Order { Id = i } );
+            }
+
+            while (!memq.IsEmpty)
+            {
+            }
+
+            Thread.Sleep(10);
+            Assert.Equal(50, bill.Count);
+            memq.Close();
+        }
+
+        [Fact]
         public void TestMemQueueMultiThread()
         {
             var handler = new ConcurrentHandler<Order>();
