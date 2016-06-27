@@ -2,7 +2,7 @@
 
 Travis: [![Build Status](https://travis-ci.org/yanggujun/commonsfornet.svg?branch=master)](https://travis-ci.org/yanggujun/commonsfornet)
 
-Appveyor: [![Build status](https://ci.appveyor.com/api/projects/status/k41cr396bexk1e9f?svg=true)](https://ci.appveyor.com/project/yanggujun/commonsfornet)
+AppVeyor: [![Build status](https://ci.appveyor.com/api/projects/status/k41cr396bexk1e9f?svg=true)](https://ci.appveyor.com/project/yanggujun/commonsfornet)
 
 ###About
 
@@ -30,28 +30,22 @@ The lastest release information can be found [here](https://github.com/yanggujun
 
 The projects are published as 3 nuget packages.
 
-__Commons__
+__Commons__    [![NuGet](https://img.shields.io/nuget/v/Commons.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons/)
     
 The package includes Commons.Utils, Commons.Collections 
-
-Download Commons [![NuGet](https://img.shields.io/nuget/v/Commons.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons/)
 
 Install through nuget command line:
 
       PM> Install-Package Commons
 
- __Commons.Pool__
+ __Commons.Pool__    [![NuGet](https://img.shields.io/nuget/v/Commons.Pool.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons.Pool/)
     
-Download Commons.Pool [![NuGet](https://img.shields.io/nuget/v/Commons.Pool.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons.Pool/) and its dependency Commons [![NuGet](https://img.shields.io/nuget/v/Commons.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons/)
-
 Install through nuget command line:
 
       PM> Install-Package Commons.Pool
 
- __Commons.Json__
+ __Commons.Json__    [![NuGet](https://img.shields.io/nuget/v/Commons.Json.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons.Json/)
     
-Download Commons.Json [![NuGet](https://img.shields.io/nuget/v/Commons.Json.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons.Json/) and its dependency Commons [![NuGet](https://img.shields.io/nuget/v/Commons.svg?maxAge=2592000)](https://www.nuget.org/packages/Commons/)
-
 Install through nuget command line:
 
       PM> Install-Package Commons.Json
