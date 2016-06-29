@@ -36,6 +36,5 @@ using System.Runtime.InteropServices;
 //   build number is increased by one if the number of days to the first day is less than or 
 //   equal to the build number.
 // * TODO: Automated version strategy will be developed in future.
-[assembly: AssemblyVersion("0.2.2.421")]
-[assembly: AssemblyFileVersion("0.2.2.421")]
+[assembly: AssemblyFileVersion("0.2.3")]
 [assembly: CLSCompliant(true)]
