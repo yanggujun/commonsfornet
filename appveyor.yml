@@ -3,9 +3,11 @@ init:
 branches:
   only:
     - master
+    
 environment:
   matrix:
-    - CLI_VERSION:Latest
+    - CLI_VERSION: Latest
+    
 install:
   - ps: $url = "https://dotnetcli.blob.core.windows.net/dotnet/preview/Binaries/$($env:CLI_VERSION)/dotnet-dev-win-x64.$($env:CLI_VERSION.ToLower()).zip"
 build_script:
