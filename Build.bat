@@ -2,6 +2,8 @@ set OUTPUT=src\artifacts\rbin
 
 call rmdir /S /Q ".\src\artifacts"
 
+call dotnet --info
+
 call dotnet restore 
 
 call dotnet build src\Commons.Utils -c Release --no-dependencies -o "%OUTPUT%\net40" -f net40 --no-incremental
