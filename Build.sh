@@ -43,6 +43,8 @@ if test ! -d $buildFolder; then
     fi
 fi
 
+dotnet --info
+
 $buildFile -r $repoFolder "$@"
 
 cd ./src/Test.Commons
