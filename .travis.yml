@@ -21,6 +21,8 @@ addons:
 branches:
   only:
     - master
+git:
+  depth: 3
 
 before_install:  
   - if test "$TRAVIS_OS_NAME" == "osx"; then brew update; brew install openssl; brew link --force openssl; fi
