@@ -3,6 +3,8 @@ init:
 branches:
   only:
     - master
+install:
+  - ps: $url = "https://dotnetcli.blob.core.windows.net/dotnet/preview/Binaries/$($env:CLI_VERSION)/dotnet-dev-win-x64.$($env:latest).zip"
 build_script:
   - build.bat
 clone_depth: 1
