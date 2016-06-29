@@ -4,7 +4,7 @@ rm -r ./src/artifacts
 
 dotnet --info
 
-dotnet restore ./src/packages
+dotnet restore --packages ./src/packages
 
 dotnet build src/Commons.Utils -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
 dotnet build src/Commons.Collections -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
