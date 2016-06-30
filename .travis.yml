@@ -5,6 +5,8 @@ env:
   - CLI_VERSION=latest
 os:
   - linux
+  - osx
+osx_image: xcode7.1
 mono:
   - 4.2.3
 addons:
