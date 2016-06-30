@@ -83,5 +83,7 @@ namespace Commons.Json.Mapper
         public Func<object> Create {get;set;}
 
         public Func<JValue, object> ManualCreate { get; set; }
+
+        public Func<object, JValue> Serializer { get; set; }
     }
 }

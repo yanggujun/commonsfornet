@@ -139,18 +139,13 @@ namespace Commons.Json.Mapper
             return this;
         }
 
-        public IJsonObjectMapper<T> MapCollection(Func<List<T>, IEnumerable<T>> converter)
+        public IJsonObjectMapper<T> SerializeBy(Func<T, JValue> serializer)
         {
-            return this;
-        }
-
-        public IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter)
-        {
-            return this;
-        }
-
-        public IJsonObjectMapper<T> MapWith(Func<JValue, T> converter)
-        {
+            mapper.Serializer = x =>
+            {
+                var v = (T)x;
+                return serializer(v);
+            };
             return this;
         }
 

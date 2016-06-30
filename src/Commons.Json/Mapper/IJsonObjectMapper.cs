@@ -24,6 +24,7 @@ namespace Commons.Json.Mapper
     {
         IJsonObjectMapper<T> ConstructWith(Func<T> creator);
         IJsonObjectMapper<T> ConstructWith(Func<JValue, T> creator);
+        IJsonObjectMapper<T> SerializeBy(Func<T, JValue> serializer);
         //IJsonObjectMapper<T> MapWith(IObjectConverter<T> converter);
         //IJsonObjectMapper<T> MapWith(Func<JValue, T> converter);
     }

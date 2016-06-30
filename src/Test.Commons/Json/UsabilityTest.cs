@@ -18,11 +18,12 @@ using Commons.Json;
 using Commons.Json.Mapper;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Test.Commons.Json
 {
-    public class UsibilityTest
+    public class UsabilityTest
     {
         [Fact]
         public void TestSmall01()
@@ -138,7 +139,28 @@ namespace Test.Commons.Json
             var large = Book.Factory<Book, Genre, Page, Headnote, Footnote>(n, x => (Genre)x);
             var json = JsonMapper.ToJson(large);
             var newLarge = JsonMapper.To<Book>(json);
-            Assert.True(large.Equals(newLarge));
+            AssertBook(large, newLarge);
+        }
+
+        private void AssertBook(Book book1, Book book2)
+        {
+			var otherChanges = book2 != null ? book2.changes.ToList() : null;
+			var thisChanges = book1.changes.ToList();
+			if (otherChanges != null) otherChanges.Sort();
+			thisChanges.Sort();
+			var otherKeys = book2 != null ? book2.metadata.Keys.ToList() : null;
+			var thisKeys = book1.metadata.Keys.ToList();
+			if (otherKeys != null) otherKeys.Sort();
+			thisKeys.Sort();
+            Assert.True(book2 != null && book2.ID == book1.ID && book2.title == book1.title);
+            Assert.True(book2.authorId == book1.authorId);
+            Assert.True(book2.pages != null && Enumerable.SequenceEqual(book2.pages, book1.pages));
+            Assert.True(book2.published == book1.published);
+            Assert.True(book2.cover != null && Enumerable.SequenceEqual(book2.cover, book1.cover));
+            Assert.True(otherChanges != null && Enumerable.SequenceEqual(otherChanges, thisChanges));
+            Assert.True(otherKeys != null && Enumerable.SequenceEqual(otherKeys, thisKeys));
+            Assert.True(otherKeys.All(it => book2.metadata[it] == book1.metadata[it]));
+            Assert.True(book2.genres != null && Enumerable.SequenceEqual(book2.genres, book1.genres)); 
         }
 
         private void AssertDateTime(DateTime v1, DateTime v2)

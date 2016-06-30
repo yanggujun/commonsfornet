@@ -124,21 +124,14 @@ namespace Commons.Json.Mapper
             else
             {
                 var manager = types[type];
-                MapperImpl mapper = null;
-                if (mappers.ContainsMapper(type))
-                {
-                    mapper = mappers.GetMapper(type);
-                }
+                MapperImpl mapper = mappers.GetMapper(type);
                 var sb = new StringBuilder();
                 sb.Append(JsonTokens.LeftBrace);
                 foreach (var prop in manager.Getters)
                 {
-                    if (mapper != null)
+                    if (mapper.IgnoredProperties.Contains(prop.Name))
                     {
-                        if (mapper.IgnoredProperties.Contains(prop.Name))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
                     var propValue = prop.GetValue(target, null);
                     sb.Append(JsonTokens.Quoter);
@@ -159,16 +152,7 @@ namespace Commons.Json.Mapper
         private string GetJsonKeyFromProperty(PropertyInfo prop, MapperImpl mapper)
         {
             var key = prop.Name;
-            if (mapper != null)
-            {
-                string k;
-                if (mapper.TryGetKey(key, out k))
-                {
-                    key = k;
-                }
-            }
-
-            return key;
+            return mapper.GetKey(key);
         }
     }
 }
