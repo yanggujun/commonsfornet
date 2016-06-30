@@ -75,7 +75,7 @@ namespace Commons.Pool
             keyedPools.Clear();
         }
 
-        public IPoolDescriptor<T> NewPoolOf<T>() where T : class
+        public IPoolDescriptor<T> NewPool<T>() where T : class
         {
             return new GenericPoolDescriptor<T>(this);
         }

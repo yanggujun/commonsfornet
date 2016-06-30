@@ -33,7 +33,7 @@ namespace Commons.Pool
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        IPoolDescriptor<T> NewPoolOf<T>() where T : class;
+        IPoolDescriptor<T> NewPool<T>() where T : class;
 
         /// <summary>
         /// Retrieves an object pool with the <paramref name="key"/>. When the key does not exist in the pool manager,
