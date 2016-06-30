@@ -720,18 +720,20 @@ namespace Test.Commons.Collections
         {
             var randomValue = new Random((int)(DateTime.Now.Ticks & 0x0000FFFF));
             List<Order> orderList = new List<Order>();
+            var idList = new List<int>();
             for (var i = 0; i < 1000; ) 
             {
                 var next = randomValue.Next();
                 var order = new Order();
                 order.Id = next;
                 order.Name = next + "*%%%(*&()*_)(;;";
-                if (!orderList.Contains(order))
+                if (!idList.Contains(next))
                 {
                     var orderToList = new Order();
                     orderToList.Id = next;
                     orderToList.Name = next + "2*%^*((%";
                     orderList.Add(orderToList);
+                    idList.Add(next);
                     Bill bill = new Bill();
                     bill.Id = next;
                     bill.Count = next % 1000;

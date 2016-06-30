@@ -127,6 +127,12 @@ namespace Commons.Json.Mapper
             return this;
         }
 
+        public IJsonKeyMapper<T> MapProperty(Expression<Func<T, Guid>> propertyExp)
+        {
+            Put(propertyExp);
+            return this;
+        }
+
         public IJsonObjectMapper<T> ConstructWith(Func<T> creator)
         {
             mapper.Create = () => creator();
@@ -141,11 +147,13 @@ namespace Commons.Json.Mapper
 
         public IJsonObjectMapper<T> SerializeBy(Func<T, JValue> serializer)
         {
-            mapper.Serializer = x =>
-            {
-                var v = (T)x;
-                return serializer(v);
-            };
+            mapper.Serializer = x => serializer((T)x);
+            return this;
+        }
+
+        public IJsonObjectMapper<T> SerializeBy(IObjectConverter<T> converter)
+        {
+            mapper.Serializer = x => converter.Convert((T)x);
             return this;
         }
 
@@ -213,6 +221,5 @@ namespace Commons.Json.Mapper
             configuration.Add(Messages.DateFormat, format);
             return this;
         }
-
     }
 }

@@ -52,7 +52,7 @@ namespace Commons.Json.Mapper
             }
             if (value.Is<JString>(out str))
             {
-                if (actualType != typeof (string) && actualType != typeof (DateTime) && !actualType.IsEnum() && actualType != typeof(Guid))
+                if (actualType != typeof (string) && actualType != typeof (DateTime) && !actualType.IsEnum() && actualType != typeof(Guid) && actualType != typeof(char))
                 {
                     throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
                 }
@@ -80,6 +80,10 @@ namespace Commons.Json.Mapper
                         throw new InvalidCastException(Messages.InvalidDateFormat);
                     }
                     propertyValue = guid;
+                }
+                else if (actualType == typeof(char))
+                {
+                    propertyValue = Convert.ToChar(str);
                 }
                 else
                 {

@@ -81,4 +81,25 @@ namespace Test.Commons.Json
 			return instance;
 		}
 	}
+
+    public class CompletePrimitiveObject
+    {
+        public string F1 { get; set; }
+        public int F2 { get; set; }
+        public double F3 { get; set; }
+        public float F4 { get; set; }
+        public short F5 { get; set; }
+        public bool F6 { get; set; }
+        public long F7 { get; set; }
+        public byte F8 { get; set; }
+        public sbyte F9 { get; set; }
+        public uint F10 { get; set; }
+        public ulong F11 { get; set; }
+        public ushort F12 { get; set; }
+        public decimal F13 { get; set; }
+        public char F14 { get; set; }
+        public DateTime F15 { get; set; }
+        public Simple F16 { get; set; }
+        public Guid F17 { get; set; }
+    }
 }

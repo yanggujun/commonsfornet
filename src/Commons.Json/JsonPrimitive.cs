@@ -89,6 +89,10 @@ namespace Commons.Json
             {
                 result = Convert.ToSByte(primitive);
             }
+            else if (binder.Type == typeof (char))
+            {
+                result = Convert.ToChar(primitive);
+            }
             else
             {
                 result = primitive;

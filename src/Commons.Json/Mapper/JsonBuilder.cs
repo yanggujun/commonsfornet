@@ -43,11 +43,16 @@ namespace Commons.Json.Mapper
             var type = target.GetType();
             var json = string.Empty;
             Type keyType;
-            if (type.IsJsonNumber() || type == typeof(bool))
+            var mapper = mappers.GetMapper(type);
+            if (mapper.Serializer != null)
+            {
+                json = mapper.Serializer(target).ToString();
+            }
+            else if (type.IsJsonNumber() || type == typeof(bool))
             {
                 json = target.ToString();
             }
-            else if (type == typeof(string) || type.IsEnum() || type == typeof(Guid))
+            else if (type == typeof(string) || type.IsEnum() || type == typeof(Guid) || type == typeof(char))
             {
                 var sb = new StringBuilder();
                 sb.Append(JsonTokens.Quoter).Append(target).Append(JsonTokens.Quoter);
@@ -124,7 +129,6 @@ namespace Commons.Json.Mapper
             else
             {
                 var manager = types[type];
-                MapperImpl mapper = mappers.GetMapper(type);
                 var sb = new StringBuilder();
                 sb.Append(JsonTokens.LeftBrace);
                 foreach (var prop in manager.Getters)

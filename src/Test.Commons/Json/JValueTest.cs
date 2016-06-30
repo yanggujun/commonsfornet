@@ -488,6 +488,83 @@ namespace Test.Commons.Json
             Assert.Equal(4, dob.Month);
             Assert.Equal(3, dob.Day);
         }
+
+        [Fact]
+        public void TestObjectSerializer01()
+        {
+            JsonMapper.For<Member>().SerializeBy(x =>
+            {
+                var jo = new JObject();
+                jo.SetString("member name", x.Name);
+                jo.SetString("member value", x.Value);
+                return jo;
+            });
+
+            var c = new ComplexMember
+            {
+                F1 = "v1",
+                F2 = "v2",
+                F3 = "v3",
+                Member = new Member
+                {
+                    Name = "Location",
+                    Value = "Chicago"
+                }
+            };
+
+            var json = JsonMapper.ToJson(c);
+
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("Location", (string)jsonObj.Member["member name"]);
+            Assert.Equal("Chicago", (string)jsonObj.Member["member value"]);
+            Assert.Equal("v1", (string)jsonObj.F1);
+            Assert.Equal("v2", (string)jsonObj.F2);
+            Assert.Equal("v3", (string)jsonObj.F3);
+        }
+
+        [Fact]
+        public void TestObjectSerializer02()
+        {
+            JsonMapper.For<Member>().SerializeBy(x =>
+            {
+                var jo = new JObject();
+                jo.SetString("member name", x.Name);
+                jo.SetString("member value", x.Value);
+                return jo;
+            });
+
+            var m = new Member { Name = "Club", Value = "Arsenal" };
+
+            var json = JsonMapper.ToJson(m);
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("Club", (string)jsonObj["member name"]);
+            Assert.Equal("Arsenal", (string)jsonObj["member value"]);
+        }
+
+        [Fact]
+        public void TestObjectSerializer03()
+        {
+            JsonMapper.For<Class1>().SerializeBy(new Class1Converter());
+
+            var c = new Class2
+            {
+                F3 = "value33333",
+                Items = new Class1[]
+                {
+                    new Class1 { F1 = "value1", F2 = "value2" },
+                    new Class1 { F1 = "value3", F2 = "value4" }
+                }
+            };
+
+            var json = JsonMapper.ToJson(c);
+
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("value33333", (string)jsonObj.F3);
+            Assert.Equal("value1", (string)jsonObj.Items[0].FieldA);
+            Assert.Equal("value2", (string)jsonObj.Items[0].FieldB);
+            Assert.Equal("value3", (string)jsonObj.Items[1].FieldA);
+            Assert.Equal("value4", (string)jsonObj.Items[1].FieldB);
+        }
     }
 
     public class EmployeeObjectConverter : IObjectConverter<Employee>
@@ -533,5 +610,37 @@ namespace Test.Commons.Json
     public class OuterList
     {
         public Member[] OurList { get; set; }
+    }
+
+    public class ComplexMember
+    {
+        public string F1 { get; set; }
+        public string F2 { get; set; }
+        public string F3 { get; set; }
+
+        public Member Member { get; set; }
+    }
+
+    public class Class1
+    {
+        public string F1 { get; set; }
+        public string F2 { get; set; }
+    }
+
+    public class Class2
+    {
+        public string F3 { get; set; }
+        public Class1[] Items { get; set; }
+    }
+
+    public class Class1Converter : IObjectConverter<Class1>
+    {
+        public JValue Convert(Class1 target)
+        {
+            var jsonObj = new JObject();
+            jsonObj.SetString("FieldA", target.F1);
+            jsonObj.SetString("FieldB", target.F2);
+            return jsonObj;
+        }
     }
 }

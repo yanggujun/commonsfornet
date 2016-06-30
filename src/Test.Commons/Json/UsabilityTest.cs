@@ -61,6 +61,103 @@ namespace Test.Commons.Json
         }
 
         [Fact]
+        public void TestSmall04()
+        {
+            JsonMapper.For<CompletePrimitiveObject>()
+                    .MapProperty(x => x.F1).With("K1")
+                    .MapProperty(x => x.F2).With("K2")
+                    .MapProperty(x => x.F3).With("K3")
+                    .MapProperty(x => x.F4).With("K4")
+                    .MapProperty(x => x.F5).With("K5")
+                    .MapProperty(x => x.F6).With("K6")
+                    .MapProperty(x => x.F7).With("K7")
+                    .MapProperty(x => x.F8).With("K8")
+                    .MapProperty(x => x.F9).With("K9")
+                    .MapProperty(x => x.F10).With("K10")
+                    .MapProperty(x => x.F11).With("K11")
+                    .MapProperty(x => x.F12).With("K12")
+                    .MapProperty(x => x.F13).With("K13")
+                    .MapProperty(x => x.F14).With("K14")
+                    .MapProperty(x => x.F15).With("K15")
+                    .MapProperty(x => x.F16).With("K16")
+                    .MapProperty(x => x.F17).With("K17");
+
+            var id = Guid.NewGuid();
+            var cpo = new CompletePrimitiveObject
+            {
+                F1 = "booo",
+                F2 = 20000,
+                F3 = 3.09769,
+                F4 = 100.2f,
+                F5 = 100,
+                F6 = true,
+                F7 = 899999212312,
+                F8 = 35,
+                F9 = 80,
+                F10 = 347312,
+                F11 = 98876868687897876,
+                F12 = 300,
+                F13 = 9.4134123175123m,
+                F14 = 't',
+                F15 = new DateTime(1995, 10, 21),
+                F16 = new Simple
+                {
+                    FieldA = "F1",
+                    FieldB = 3412,
+                    FieldC = 60098.1234124,
+                    FieldD = false,
+                },
+                F17 = id
+            };
+
+            var json = JsonMapper.ToJson(cpo);
+
+            var dj = JsonMapper.Parse(json);
+            Assert.Equal("booo", (string)dj.K1);
+            Assert.Equal(20000, (int)dj.K2);
+            Assert.Equal(3.09769, (double)dj.K3);
+            Assert.Equal(100.2f, (float)dj.K4);
+            Assert.Equal(100, (short)dj.K5);
+            Assert.True((bool)dj.K6);
+            Assert.Equal(899999212312, (long)dj.K7);
+            Assert.Equal(35, (byte)dj.K8);
+            Assert.Equal(80, (sbyte)dj.K9);
+            Assert.Equal((uint)347312, (uint)dj.K10);
+            Assert.Equal((ulong)98876868687897876, (ulong)dj.K11);
+            Assert.Equal(300, (ushort)dj.K12);
+            Assert.Equal(9.4134123175123m, (decimal)dj.K13);
+            Assert.Equal("t", (string)dj.K14);
+            Assert.True(TestHelper.DateTimeEqual(new DateTime(1995, 10, 21), DateTime.Parse((string)dj.K15)));
+            Assert.Equal("F1", (string)dj.K16.FieldA);
+            Assert.Equal(3412, (int)dj.K16.FieldB);
+            Assert.Equal(60098.1234124, (double)dj.K16.FieldC);
+            Assert.False((bool)dj.K16.FieldD);
+            Assert.Equal(id, Guid.Parse((string)dj.K17));
+
+            var newCpo = JsonMapper.To<CompletePrimitiveObject>(json);
+            Assert.Equal("booo", newCpo.F1);
+            Assert.Equal(20000, newCpo.F2);
+            Assert.Equal(3.09769, newCpo.F3);
+            Assert.Equal(100.2f, newCpo.F4);
+            Assert.Equal(100, newCpo.F5);
+            Assert.True(newCpo.F6);
+            Assert.Equal(899999212312, newCpo.F7);
+            Assert.Equal(35, newCpo.F8);
+            Assert.Equal(80, newCpo.F9);
+            Assert.Equal((uint)347312, newCpo.F10);
+            Assert.Equal((ulong)98876868687897876, newCpo.F11);
+            Assert.Equal(300, newCpo.F12);
+            Assert.Equal(9.4134123175123m, newCpo.F13);
+            Assert.Equal('t', newCpo.F14);
+            Assert.True(TestHelper.DateTimeEqual(new DateTime(1995, 10, 21), newCpo.F15));
+            Assert.Equal("F1", newCpo.F16.FieldA);
+            Assert.Equal(3412, newCpo.F16.FieldB);
+            Assert.Equal(60098.1234124, newCpo.F16.FieldC);
+            Assert.False(newCpo.F16.FieldD);
+            Assert.Equal(id, newCpo.F17);
+        }
+
+        [Fact]
         public void TestStandard01()
         {
             for (var i = 0; i < 10; i++)
