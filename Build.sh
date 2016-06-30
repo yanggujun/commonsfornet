@@ -1,31 +1,33 @@
 export OUTPUT=src/artifacts/rbin
 
+export BuildNo=501
+
 rm -r ./src/artifacts
 
 dotnet --info
 
 dotnet restore
 
-dotnet build src/Commons.Utils -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
-dotnet build src/Commons.Collections -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
-dotnet build src/Commons.Json -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
-dotnet build src/Commons.Pool -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
-dotnet build src/Test.Commons -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental
+dotnet build src/Commons.Utils -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental --version-suffix $BuildNo
+dotnet build src/Commons.Collections -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental --version-suffix $BuildNo
+dotnet build src/Commons.Json -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental --version-suffix $BuildNo
+dotnet build src/Commons.Pool -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental --version-suffix $BuildNo
+dotnet build src/Test.Commons -c Release --no-dependencies -o "$OUTPUT/net40" -f net40 --no-incremental --version-suffix $BuildNo
 
 
-dotnet build src/Commons.Utils -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental
-dotnet build src/Commons.Collections -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental
-dotnet build src/Commons.Json -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental
-dotnet build src/Commons.Pool -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental
-dotnet build src/Test.Commons -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental
+dotnet build src/Commons.Utils -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental --version-suffix $BuildNo
+dotnet build src/Commons.Collections -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental --version-suffix $BuildNo
+dotnet build src/Commons.Json -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental --version-suffix $BuildNo
+dotnet build src/Commons.Pool -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental --version-suffix $BuildNo
+dotnet build src/Test.Commons -c Release --no-dependencies -o "$OUTPUT/net45" -f net45 --no-incremental --version-suffix $BuildNo
 
-dotnet build src/Commons.Utils -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental
-dotnet build src/Commons.Collections -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental
-dotnet build src/Commons.Json -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental
-dotnet build src/Commons.Pool -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental
+dotnet build src/Commons.Utils -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental --version-suffix $BuildNo
+dotnet build src/Commons.Collections -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental --version-suffix $BuildNo
+dotnet build src/Commons.Json -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental --version-suffix $BuildNo
+dotnet build src/Commons.Pool -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netstandard1.3 --no-incremental --version-suffix $BuildNo
 
 
-dotnet build src/Test.Commons -c Release --no-dependencies -o "$OUTPUT/netcoreapp1.0" -f netcoreapp1.0 --no-incremental
+dotnet build src/Test.Commons -c Release --no-dependencies -o "$OUTPUT/netcoreapp1.0" -f netcoreapp1.0 --no-incremental --version-suffix $BuildNo
 
 cd $OUTPUT/netcoreapp1.0
 dotnet test ../../../Test.Commons -o ./ --no-build -f netcoreapp1.0 -parallel none 
