@@ -1,5 +1,7 @@
 $OUTPUT=".\src\artifacts\rbin"
 
+ri .\src\artifacts -recurse -force
+
 $StartDate = [datetime]::ParseExact("02/15/2015", "MM/dd/yyyy", [System.Globalization.CultureInfo]::InvariantCulture)
 $Today = (Get-Date)
 $BuildNo = ($Today - $StartDate).Days
