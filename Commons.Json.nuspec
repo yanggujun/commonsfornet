@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Commons.Json</id>
-    <version>0.2.2.421</version>
+    <version>0.2.3</version>
     <authors>yanggujun</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
