@@ -210,7 +210,7 @@ namespace Test.Commons.Json
 
         private void TestBook(int n)
         {
-            JsonMapper.For<Note>().ConstructWith(x =>
+            JsonMapper.UseDateFormat("MM/dd/yyyy HH:mm:ss").For<Note>().ConstructWith(x =>
             {
                 var jsonObj = x as JObject;
                 Note note;
