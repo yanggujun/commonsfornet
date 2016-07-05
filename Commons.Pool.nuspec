@@ -9,13 +9,13 @@
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-        A lightweight and thread safe generic object pool. 
+        A light weight and thread safe generic object pool. 
 
         For more information please visit: 
 
         https://github.com/yanggujun/commonsfornet/wiki/Commons.Pool
     </description>
-    <summary>A lightweight and thread safe generic object pool.
+    <summary>A light weight and thread safe generic object pool.
     </summary>
     <releaseNotes>
         Update on 0.2.3.x

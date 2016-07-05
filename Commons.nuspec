@@ -9,9 +9,11 @@
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-        The library provides extensive collections and utilities as the complement of the ones in .NET framework. 
+        Atomic primitives, hash functions and collections.
+
         For more information please visit: 
-        https://github.com/yanggujun/commonsfornet/wiki/Commons.Collections.
+
+        https://github.com/yanggujun/commonsfornet/wiki/Commons.Collections
     </description>
     <summary>Atomic Primitives, Hash Functions, Collections</summary>
     <releaseNotes>
@@ -26,6 +28,7 @@
         4. Add System.Type utitlies to adapt incompatible interfaces between difference .NET framework versions.
 
         5. Add an in-memory queue, MemQueue and the message handler on the queue.
+
     </releaseNotes>
     <tags>Atomics Hashes Collections</tags>
   </metadata>
