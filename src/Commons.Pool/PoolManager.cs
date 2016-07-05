@@ -80,7 +80,7 @@ namespace Commons.Pool
             return new GenericPoolDescriptor<T>(this);
         }
 
-        public IObjectPool<T> GetPoolOf<T>(string key) where T : class
+        public IObjectPool<T> GetPool<T>(string key) where T : class
         {
             object pool;
             if (keyedPools.TryGetValue(key, out pool))

@@ -26,7 +26,7 @@
 
         3. Build and test passed on platform: .NET framework 4.0, 4.5, mono and NETStandard1.3
 
-        4. Change IPoolManager.NewPoolOf to IPoolManager.NewPool
+        4. Change IPoolManager.NewPoolOf to NewPool, and IPoolManager.GetPoolOf to GetPool
         
     </releaseNotes>
     <tags>Object Pool</tags>

@@ -42,7 +42,7 @@ namespace Commons.Pool
         /// <typeparam name="T">The type of the pooled object.</typeparam>
         /// <param name="key">The key of the object pool.</param>
         /// <returns>The an existing generic object pool.</returns>
-        IObjectPool<T> GetPoolOf<T>(string key) where T : class;
+        IObjectPool<T> GetPool<T>(string key) where T : class;
 
         /// <summary>
         /// Destroys an object pool with the key. When the key does not exist in the pool manager, <exception cref="ArgumentException"></exception> is thrown.

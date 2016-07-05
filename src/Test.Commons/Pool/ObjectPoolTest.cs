@@ -640,10 +640,10 @@ namespace Test.Commons.Pool
                 return mock.Object;
             }).Instance();
 
-            var existingPool = poolManager.GetPoolOf<IDbConnection>("mock");
+            var existingPool = poolManager.GetPool<IDbConnection>("mock");
             Assert.True(ReferenceEquals(keyedPool, existingPool));
             poolManager.Destroy("mock");
-            Assert.Null(poolManager.GetPoolOf<IDbConnection>("mock"));
+            Assert.Null(poolManager.GetPool<IDbConnection>("mock"));
         }
 
         [Fact]
@@ -704,9 +704,9 @@ namespace Test.Commons.Pool
                 return mock.Object;
             }).WithDesctroyer(x => x.Dispose()).Instance();
             var connection = pool.Acquire();
-            Assert.NotNull(poolManager.GetPoolOf<IDbConnection>("mock"));
+            Assert.NotNull(poolManager.GetPool<IDbConnection>("mock"));
             poolManager.Destroy("mock");
-            Assert.Null(poolManager.GetPoolOf<IDbConnection>("mock"));
+            Assert.Null(poolManager.GetPool<IDbConnection>("mock"));
             mock.Verify(x => x.Dispose());
         }
 
@@ -779,7 +779,7 @@ namespace Test.Commons.Pool
             Task.WaitAll(tasks);
             for (var i = 0; i < 10; i++)
             {
-                var pool = poolManager.GetPoolOf<IDbConnection>("mock" + i);
+                var pool = poolManager.GetPool<IDbConnection>("mock" + i);
                 Assert.Equal(i + 10, pool.Capacity);
             }
         }
