@@ -9,16 +9,39 @@
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-        The library provides fluent interfaces to convert JSON string to .NET objects and .NET objects to JSON string. 
+        A light weight, simple and fluent JSON - Object converter.
+
         For more information, please visit: 
+
         https://github.com/yanggujun/commonsfornet/wiki/Commons.Json
     </description>
     <summary>Work with JSON fluently and dynamically.
     </summary>
-    <releaseNotes></releaseNotes>
+    <releaseNotes>
+        Update on 0.2.3.x
+
+        1. Build against .net core 1.0, into the next era.
+
+        2. Build and test passed on os: win81, win10, ubuntu14.04 lts.
+
+        3. Build and test passed on platform: .NET framework 4.0, 4.5, mono and NETStandard1.3.
+
+        4. Support Nullable primitives and structs.
+
+        5. Support a single JSON object to .net array object.
+
+        6. Support to manually convert a type from JValue and convert JValue to a type.
+
+        7. Support interfaces.
+
+        8. Support collections in System.Collections.Generics.
+
+        9. Support GUID.
+        
+    </releaseNotes>
     <tags>JSON</tags>
     <dependencies>
-        <dependency id="Commons" version="0.2.2.421"/>
+        <dependency id="Commons" version="0.2.3.0"/>
     </dependencies>
   </metadata>
   <files>

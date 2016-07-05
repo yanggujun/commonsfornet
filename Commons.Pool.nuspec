@@ -10,15 +10,28 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
         A lightweight and thread safe generic object pool. 
+
         For more information please visit: 
+
         https://github.com/yanggujun/commonsfornet/wiki/Commons.Pool
     </description>
     <summary>A lightweight and thread safe generic object pool.
     </summary>
-    <releaseNotes>Minor fix on the underlying concurrent data strcuture used in the pool</releaseNotes>
+    <releaseNotes>
+        Update on 0.2.3.x
+
+        1. Build against .net core 1.0, into the next era.
+
+        2. Build and test passed on os: win81, win10, ubuntu14.04 lts
+
+        3. Build and test passed on platform: .NET framework 4.0, 4.5, mono and NETStandard1.3
+
+        4. Change IPoolManager.NewPoolOf to IPoolManager.NewPool
+        
+    </releaseNotes>
     <tags>Object Pool</tags>
     <dependencies>
-        <dependency id="Commons" version="0.2.2.421"/>
+        <dependency id="Commons" version="0.2.3.0"/>
     </dependencies>
   </metadata>
   <files>

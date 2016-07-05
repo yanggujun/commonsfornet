@@ -11,6 +11,10 @@ $BuildNo = ($Today - $StartDate).Days
 
 $version = "0.2.3.$BuildNo"
 
+$BuildInfo = "Building project Commons, version: {0}" -f $version
+
+echo $BuildInfo
+
 dotnet --info
 dotnet restore
 

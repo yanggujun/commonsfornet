@@ -14,7 +14,19 @@
         https://github.com/yanggujun/commonsfornet/wiki/Commons.Collections.
     </description>
     <summary>Atomic Primitives, Hash Functions, Collections</summary>
-    <releaseNotes></releaseNotes>
+    <releaseNotes>
+        Update on 0.2.3.x
+
+        1. Build against .net core 1.0, into the next era.
+
+        2. Build and test passed on os: win81, win10, ubuntu14.04 lts
+
+        3. Build and test passed on platform: .NET framework 4.0, 4.5, mono and NETStandard1.3
+
+        4. Add System.Type utitlies to adapt incompatible interfaces between difference .NET framework versions.
+
+        5. Add an in-memory queue, MemQueue and the message handler on the queue.
+    </releaseNotes>
     <tags>Atomics Hashes Collections</tags>
   </metadata>
   <files>
