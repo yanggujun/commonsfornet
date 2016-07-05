@@ -1,10 +1,15 @@
 $OUTPUT=".\src\artifacts\rbin"
+$Artifacts=".\src\artifacts"
 
-ri .\src\artifacts -recurse -force
+if ( Test-Path -Path "$Artifacts" ) {
+    ri $Artifacts -recurse -force
+}
 
 $StartDate = [datetime]::ParseExact("02/15/2015", "MM/dd/yyyy", [System.Globalization.CultureInfo]::InvariantCulture)
 $Today = (Get-Date)
 $BuildNo = ($Today - $StartDate).Days
+
+$version = "0.2.3.$BuildNo"
 
 dotnet --info
 dotnet restore
@@ -41,7 +46,7 @@ $xunit = "$env:userprofile\.nuget\packages\xunit.runner.console\2.1.0\tools\xuni
 $nuget = ".\src\.nuget\NuGet.exe"
 
 
-&$nuget pack Commons.nuspec -outputdirectory $OUTPUT -version 0.2.3.$BuildNo
-&$nuget pack Commons.Json.nuspec -outputdirectory $OUTPUT -version 0.2.3.$BuildNo
-&$nuget pack Commons.Pool.nuspec -outputdirectory $OUTPUT -version 0.2.3.$BuildNo
+&$nuget pack Commons.nuspec -outputdirectory $OUTPUT -version $version
+&$nuget pack Commons.Json.nuspec -outputdirectory $OUTPUT -version $version
+&$nuget pack Commons.Pool.nuspec -outputdirectory $OUTPUT -version $version
 
