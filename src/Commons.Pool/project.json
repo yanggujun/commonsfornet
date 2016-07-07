@@ -1,5 +1,5 @@
 {
-  "version": "0.2.3.506",
+  "version": "0.2.3.508",
   "buildOptions": {
     "emitEntryPoint": false,
     "warningsAsErrors": true,

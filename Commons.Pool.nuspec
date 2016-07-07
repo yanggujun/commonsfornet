@@ -20,18 +20,23 @@
     <releaseNotes>
         Update on 0.2.3.x
 
-        1. Build against .net core 1.0, into the next era.
+        *. Build against .net core 1.0, into the next era.
 
-        2. Build and test passed on os: win81, win10, ubuntu14.04 lts
+        *. Build and test passed on os: win81, win10, ubuntu14.04 lts
 
-        3. Build and test passed on platform: .NET framework 4.0, 4.5, mono and NETStandard1.3
+        *. Build and test passed on platform: .NET framework 4.0, 4.5, mono and NETStandard1.3
 
-        4. Change IPoolManager.NewPoolOf to NewPool, and IPoolManager.GetPoolOf to GetPool
+        *. Change IPoolManager.NewPoolOf to NewPool, and IPoolManager.GetPoolOf to GetPool
         
     </releaseNotes>
     <tags>Object Pool</tags>
     <dependencies>
-        <dependency id="Commons" version="0.2.3.0"/>
+        <group>
+            <dependency id="Commons" version="0.2.3.508"/>
+        </group>
+        <group targetFramework=".NETSTANDARD1.3">
+            <dependency id="System.Data.Common" version="4.1.0"/>
+        </group>
     </dependencies>
   </metadata>
   <files>

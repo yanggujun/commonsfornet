@@ -19,17 +19,24 @@
     <releaseNotes>
         Update on 0.2.3.x
 
-        1. Build against .net core 1.0, into the next era.
+        *. Build against .net core 1.0, into the next era.
 
-        2. Build and test passed on os: win81, win10, ubuntu14.04 lts
+        *. Build and test passed on os: win81, win10, ubuntu14.04 lts
 
-        3. Build and test passed on platform: .NET framework 4.0, 4.5, mono and NETStandard1.3
+        *. Build and test passed on platform: .NET framework 4.0, 4.5, mono and NETStandard1.3
 
-        4. Add System.Type utitlies to adapt incompatible interfaces between difference .NET framework versions.
+        *. Add System.Type utitlies to adapt incompatible interfaces between different .NET framework versions.
 
-        5. Add an in-memory queue, MemQueue and the message handler on the queue.
+        *. Add an in-memory queue, MemQueue and the message handler on the queue.
 
     </releaseNotes>
+    <dependencies>
+      <group targetFramework=".NETSTANDARD1.3">
+          <dependency id="System.Reflection.TypeExtensions" version="4.1.0"/>
+          <dependency id="System.Collections.NonGeneric" version="4.0.1"/>
+          <dependency id="System.Threading.Thread" version="4.0.0"/>
+      </group>
+    </dependencies>
     <tags>Atomics Hashes Collections</tags>
   </metadata>
   <files>
