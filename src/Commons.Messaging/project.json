@@ -1,5 +1,5 @@
 ﻿{
-  "version": "0.2.3.0",
+  "version": "0.2.3.508",
   "buildOptions": {
     "emitEntryPoint": false,
     "warningsAsErrors": true,
@@ -15,6 +15,21 @@
     "NETStandard.Library": {
       "version": "1.6.0",
       "type": "platform"
+    },
+    "Commons.Json": {
+      "type": "build",
+      "target": "project",
+      "version": ""
+    },
+    "Commons.Utils": {
+      "type": "build",
+      "target": "project",
+      "version": ""
+    },
+    "Commons.Collections": {
+      "type": "build",
+      "target": "project",
+      "version": ""
     }
   },
 
