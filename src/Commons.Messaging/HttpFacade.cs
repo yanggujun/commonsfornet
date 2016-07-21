@@ -37,13 +37,13 @@ namespace Commons.Messaging
                 if (strValues.Count > 1)
                 {
                     var assemblyName = strValues[0];
-                    var typeName = strValues[0];
+                    var typeName = strValues[1];
                     var assembly = Assembly.Load(new AssemblyName(assemblyName));
                     var type = assembly.GetType(typeName);
                     var length = context.Request.Body.Length;
                     var buffer = new byte[length];
                     context.Request.Body.Read(buffer, 0, (int)length);
-                    var json = Encoding.Unicode.GetString(buffer);
+                    var json = Encoding.UTF8.GetString(buffer);
                     var message = (T)JsonMapper.To(type, json);
                     queue.Enqueue(message);
                 }
