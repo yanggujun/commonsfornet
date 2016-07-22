@@ -52,7 +52,7 @@ namespace Commons.Messaging
                     var content = Encoding.UTF8.GetString(buffer);
                     var message = JsonMapper.To(type, content);
                     var target = router.FindTarget(message);
-                    var response = target.Dipatch(message);
+                    var response = target.Dispatch(message);
                     requestContext.Response.ContentLength = response.Length;
                     requestContext.Response.ContentType = "text/plain";
                     requestContext.Response.WriteAsync(response).Wait();
