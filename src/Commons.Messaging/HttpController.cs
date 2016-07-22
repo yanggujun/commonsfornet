@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using System.Text;
-using Commons.Collections.Queue;
 using Commons.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
@@ -25,14 +24,17 @@ using Microsoft.Extensions.Primitives;
 namespace Commons.Messaging
 {
     [CLSCompliant(false)]
-    public class HttpFacade<T>
+    public class HttpController : IMessageController<HttpContext>
     {
-        private MemQueue<T> queue = new MemQueue<T>(typeof(T).GetType().ToString(), x => Console.WriteLine(x));
-
-        public void OnHttpRequest(HttpContext context)
+        private IRouter<Type> router;
+        public HttpController(IRouter<Type> router)
+        {
+            this.router = router;
+        }
+        public void Accept(HttpContext requestContext)
         {
             StringValues strValues;
-            if (context.Request.Headers.TryGetValue(Contants.MessageType, out strValues))
+            if (requestContext.Request.Headers.TryGetValue(Contants.MessageType, out strValues))
             {
                 if (strValues.Count > 1)
                 {
@@ -40,13 +42,29 @@ namespace Commons.Messaging
                     var typeName = strValues[1];
                     var assembly = Assembly.Load(new AssemblyName(assemblyName));
                     var type = assembly.GetType(typeName);
-                    var length = context.Request.Body.Length;
+                    if (type == null)
+                    {
+                        throw new InvalidOperationException("The type does not exist");
+                    }
+                    var length = requestContext.Request.Body.Length;
                     var buffer = new byte[length];
-                    context.Request.Body.Read(buffer, 0, (int)length);
-                    var json = Encoding.UTF8.GetString(buffer);
-                    var message = (T)JsonMapper.To(type, json);
-                    queue.Enqueue(message);
+                    requestContext.Request.Body.Read(buffer, 0, (int)length);
+                    var content = Encoding.UTF8.GetString(buffer);
+                    var message = JsonMapper.To(type, content);
+                    var target = router.FindTarget(message);
+                    var response = target.Dipatch(message);
+                    requestContext.Response.ContentLength = response.Length;
+                    requestContext.Response.ContentType = "text/plain";
+                    requestContext.Response.WriteAsync(response).Wait();
                 }
+                else
+                {
+                    throw new InvalidOperationException("The http header does not have adequat message type information");
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("The http header does not contain message type information.");
             }
         }
     }

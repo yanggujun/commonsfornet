@@ -14,25 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 using System;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
-namespace Commons.Messaging.Http
+namespace Commons.Messaging
 {
-    [CLSCompliant(false)]
-    public class Startup
+    public interface IMessageController<T>
     {
-        public void Configure(IApplicationBuilder appBuilder, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            // TODO: retrieve configurator object from container when integrated with object container.
-            loggerFactory.AddConsole(LogLevel.Debug);
-        }
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-
-        }
+        void Accept(T requestContext);
     }
 }

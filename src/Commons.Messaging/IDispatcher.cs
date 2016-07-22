@@ -16,8 +16,8 @@
 
 namespace Commons.Messaging
 {
-    public interface IHost
+    public interface IDispatcher
     {
-        void Run();
+        string Dispatch(object message);
     }
 }

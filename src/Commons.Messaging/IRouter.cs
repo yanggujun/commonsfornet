@@ -18,8 +18,12 @@ using System;
 
 namespace Commons.Messaging
 {
-    public interface IRouter
+    public interface IRouter<T>
     {
-        void FindTarget(Type msgType, string json);
+        IDispatcher FindTarget(object message);
+
+        void AddTarget(T target, IDispatcher dispatcher);
+
+        void ReomveTarget(T target);
     }
 }
