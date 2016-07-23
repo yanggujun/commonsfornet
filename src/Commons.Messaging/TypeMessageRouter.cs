@@ -15,7 +15,9 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Commons.Collections.Map;
+using Commons.Utils;
 
 namespace Commons.Messaging
 {
@@ -33,7 +35,7 @@ namespace Commons.Messaging
 
         public IDispatcher FindTarget(object message)
         {
-            IDispatcher dispatcher;
+            IDispatcher dispatcher = null;
             var type = message.GetType();
             if (routeTable.ContainsKey(type))
             {
@@ -41,10 +43,38 @@ namespace Commons.Messaging
             }
             else
             {
-                dispatcher = null;
+                var superTypes = type.SuperTypes();
+                foreach (var t in superTypes)
+                {
+                    if (routeTable.ContainsKey(t))
+                    {
+                        dispatcher = routeTable[t];
+                    }
+                }
             }
 
             return dispatcher;
+        }
+
+        public IDispatcher[] FindTargets(object message)
+        {
+            var dispatchers = new List<IDispatcher>();
+            var type = message.GetType();
+            if (routeTable.ContainsKey(type))
+            {
+                dispatchers.Add(routeTable[type]);
+            }
+
+            var superTypes = type.SuperTypes();
+            foreach (var t in superTypes)
+            {
+                if (routeTable.ContainsKey(t))
+                {
+                    dispatchers.Add(routeTable[t]);
+                }
+            }
+
+            return dispatchers.ToArray();
         }
 
         public void ReomveTarget(Type target)

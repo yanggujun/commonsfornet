@@ -14,18 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
 namespace Commons.Messaging
 {
-    public interface IRouter<T>
+    public class QueueDispatcher : IDispatcher
     {
-        IDispatcher FindTarget(object message);
-
-        IDispatcher[] FindTargets(object message);
-
-        void AddTarget(T target, IDispatcher dispatcher);
-
-        void ReomveTarget(T target);
+        public string Dispatch(object message)
+        {
+            return string.Empty;
+        }
     }
 }
