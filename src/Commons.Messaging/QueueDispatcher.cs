@@ -14,13 +14,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Threading;
+using Commons.Collections.Queue;
+
 namespace Commons.Messaging
 {
     public class QueueDispatcher : IDispatcher
     {
-        public string Dispatch(object message)
+        private IMemQueue<InboundInfo> inq;
+        private IMemQueue<OutboundInfo> outq;
+        public QueueDispatcher(IWorker worker)
         {
-            return string.Empty;
+            var messageHandler = new MessageHandler(worker);
+            messageHandler.Completed += OnCompleted;
+            inq = new MemQueue<InboundInfo>("inbound", messageHandler);
+            outq = new MemQueue<OutboundInfo>("outbound", new OutboundAgent());
+        }
+
+        private void OnCompleted(object sender, WorkCompleteEventArgs e)
+        {
+            outq.Enqueue(e.OutboundMessage);
+        }
+
+        public void Dispatch(InboundInfo message)
+        {
+            inq.Enqueue(message);
         }
     }
 }

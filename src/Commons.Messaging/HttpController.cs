@@ -52,7 +52,13 @@ namespace Commons.Messaging
                     var content = Encoding.UTF8.GetString(buffer);
                     var message = JsonMapper.To(type, content);
                     var target = router.FindTarget(message);
-                    var response = target.Dispatch(message);
+                    var inbound = new InboundInfo
+                    {
+                        Content = message,
+                        RemoteIp = requestContext.Connection.RemoteIpAddress.ToString(),
+                    };
+                    target.Dispatch(inbound);
+                    var response = "ACK";
                     requestContext.Response.ContentLength = response.Length;
                     requestContext.Response.ContentType = "text/plain";
                     requestContext.Response.WriteAsync(response).Wait();
