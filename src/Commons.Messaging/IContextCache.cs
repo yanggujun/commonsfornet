@@ -14,29 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Commons.Collections.Queue;
-using Microsoft.AspNetCore.Http;
-
 namespace Commons.Messaging
 {
-    [CLSCompliant(false)]
-    public class OutboundController : IMessageHandler<OutboundInfo>
+    public interface IContextCache<T>
     {
-        private IContextCache<HttpContext> contextCache;
-        public OutboundController(IContextCache<HttpContext> contextCache)
-        {
-            this.contextCache = contextCache;
-        }
+        void AddContext(long sequence, T context);
 
-        public void Handle(OutboundInfo message)
-        {
-            var context = contextCache.FromSequence(message.SequenceNo);
-            if (context != null)
-            {
-                var json = (string)message.Content;
-                context.Response.WriteAsync(json).Wait();
-            }
-        }
+        T FromSequence(long sequence);
+
+        void RemoveContext(long sequence);
     }
 }

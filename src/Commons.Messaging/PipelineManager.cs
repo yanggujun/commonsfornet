@@ -15,28 +15,33 @@
 // limitations under the License.
 
 using System;
-using Commons.Collections.Queue;
-using Microsoft.AspNetCore.Http;
 
 namespace Commons.Messaging
 {
     [CLSCompliant(false)]
-    public class OutboundController : IMessageHandler<OutboundInfo>
+    public class PipelineManager<T> : IPipelineManager<T>
     {
-        private IContextCache<HttpContext> contextCache;
-        public OutboundController(IContextCache<HttpContext> contextCache)
+        private IPipelineConfigurator<T> configurator;
+        private Type controllerType;
+        public PipelineManager(IPipelineConfigurator<T> configurator)
         {
-            this.contextCache = contextCache;
+            this.configurator = configurator;
+        }
+        public IPipelineManager<T> Configure(Action<IPipelineConfigurator<T>> configure)
+        {
+            configure(configurator);
+            return this;
         }
 
-        public void Handle(OutboundInfo message)
+        public IPipelineManager<T> Use<TF>() where TF : IMessageController<T>
         {
-            var context = contextCache.FromSequence(message.SequenceNo);
-            if (context != null)
-            {
-                var json = (string)message.Content;
-                context.Response.WriteAsync(json).Wait();
-            }
+            controllerType = typeof(TF);
+            return this;
+        }
+
+        public IMessageController<T> Start()
+        {
+            return (IMessageController<T>) Activator.CreateInstance(controllerType);
         }
     }
 }

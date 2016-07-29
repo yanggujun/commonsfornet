@@ -15,21 +15,21 @@
 // limitations under the License.
 
 using System;
-using System.Threading;
 using Commons.Collections.Queue;
 
 namespace Commons.Messaging
 {
-    public class QueueDispatcher : IDispatcher
+    public class QueueDispatcher : IDispatcher, IDisposable
     {
         private IMemQueue<InboundInfo> inq;
         private IMemQueue<OutboundInfo> outq;
-        public QueueDispatcher(IWorker worker)
+        private MessageHandler messageHandler;
+        public QueueDispatcher(IWorker worker, IMessageHandler<OutboundInfo> outboundController)
         {
-            var messageHandler = new MessageHandler(worker);
+            messageHandler = new MessageHandler(worker);
             messageHandler.Completed += OnCompleted;
             inq = new MemQueue<InboundInfo>("inbound", messageHandler);
-            outq = new MemQueue<OutboundInfo>("outbound", new OutboundController());
+            outq = new MemQueue<OutboundInfo>("outbound", outboundController);
         }
 
         private void OnCompleted(object sender, WorkCompleteEventArgs e)
@@ -40,6 +40,11 @@ namespace Commons.Messaging
         public void Dispatch(InboundInfo message)
         {
             inq.Enqueue(message);
+        }
+
+        public void Dispose()
+        {
+            messageHandler.Completed -= OnCompleted;
         }
     }
 }

@@ -15,7 +15,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
 using Commons.Json;
@@ -29,12 +28,12 @@ namespace Commons.Messaging
     public class InboundController : IMessageController<HttpContext>
     {
         private IRouter<Type> router;
-        private ConcurrentDictionary<long, HttpContext> contextTable;
         private AtomicInt64 sequence;
-        public InboundController(IRouter<Type> router)
+        private IContextCache<HttpContext> contexts;
+        public InboundController(IRouter<Type> router, IContextCache<HttpContext> contexts)
         {
             this.router = router;
-            contextTable = new ConcurrentDictionary<long, HttpContext>();
+            this.contexts = contexts;
             sequence = new AtomicInt64();
         }
         public void Accept(HttpContext requestContext)
@@ -53,7 +52,7 @@ namespace Commons.Messaging
                         throw new InvalidOperationException("The type does not exist");
                     }
                     var index = sequence.Increment();
-                    contextTable[index] = requestContext;
+                    contexts.AddContext(index, requestContext);
                     var length = requestContext.Request.Body.Length;
                     var buffer = new byte[length];
                     requestContext.Request.Body.Read(buffer, 0, (int)length);

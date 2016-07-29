@@ -15,27 +15,40 @@
 // limitations under the License.
 
 using System;
-using Commons.Collections.Queue;
+using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Http;
 
 namespace Commons.Messaging
 {
     [CLSCompliant(false)]
-    public class OutboundController : IMessageHandler<OutboundInfo>
+    public class ContextCache : IContextCache<HttpContext>
     {
-        private IContextCache<HttpContext> contextCache;
-        public OutboundController(IContextCache<HttpContext> contextCache)
+        private ConcurrentDictionary<long, HttpContext> contexts = new ConcurrentDictionary<long, HttpContext>();
+
+        public void AddContext(long sequence, HttpContext context)
         {
-            this.contextCache = contextCache;
+            if (contexts.ContainsKey(sequence))
+            {
+                throw new InvalidOperationException("The sequence number is already added.");
+            }
+            contexts[sequence] = context;
         }
 
-        public void Handle(OutboundInfo message)
+        public HttpContext FromSequence(long sequence)
         {
-            var context = contextCache.FromSequence(message.SequenceNo);
-            if (context != null)
+            if (contexts.ContainsKey(sequence))
             {
-                var json = (string)message.Content;
-                context.Response.WriteAsync(json).Wait();
+                return contexts[sequence];
+            }
+            return null;
+        }
+
+        public void RemoveContext(long sequence)
+        {
+            HttpContext context;
+            if (!contexts.TryRemove(sequence, out context))
+            {
+                throw new InvalidOperationException("The sequence number does not exist in the context cache.");
             }
         }
     }
