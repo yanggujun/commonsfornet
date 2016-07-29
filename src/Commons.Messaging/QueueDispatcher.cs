@@ -29,7 +29,7 @@ namespace Commons.Messaging
             var messageHandler = new MessageHandler(worker);
             messageHandler.Completed += OnCompleted;
             inq = new MemQueue<InboundInfo>("inbound", messageHandler);
-            outq = new MemQueue<OutboundInfo>("outbound", new OutboundAgent());
+            outq = new MemQueue<OutboundInfo>("outbound", new OutboundController());
         }
 
         private void OnCompleted(object sender, WorkCompleteEventArgs e)

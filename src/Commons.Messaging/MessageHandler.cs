@@ -31,7 +31,6 @@ namespace Commons.Messaging
             var outbound = new OutboundInfo
             {
                 Content = result,
-                RemoteIp = message.RemoteIp,
                 SequenceNo = message.SequenceNo,
                 Success = success
             };

@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Commons.Messaging
 {
-    public class OutboundAgent : IMessageHandler<OutboundInfo>
+    public class OutboundController : IMessageHandler<OutboundInfo>
     {
         public void Handle(OutboundInfo message)
         {

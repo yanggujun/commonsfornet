@@ -15,21 +15,27 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
 using Commons.Json;
+using Commons.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
 namespace Commons.Messaging
 {
     [CLSCompliant(false)]
-    public class HttpController : IMessageController<HttpContext>
+    public class InboundController : IMessageController<HttpContext>
     {
         private IRouter<Type> router;
-        public HttpController(IRouter<Type> router)
+        private ConcurrentDictionary<long, HttpContext> contextTable;
+        private AtomicInt64 sequence;
+        public InboundController(IRouter<Type> router)
         {
             this.router = router;
+            contextTable = new ConcurrentDictionary<long, HttpContext>();
+            sequence = new AtomicInt64();
         }
         public void Accept(HttpContext requestContext)
         {
@@ -46,6 +52,8 @@ namespace Commons.Messaging
                     {
                         throw new InvalidOperationException("The type does not exist");
                     }
+                    var index = sequence.Increment();
+                    contextTable[index] = requestContext;
                     var length = requestContext.Request.Body.Length;
                     var buffer = new byte[length];
                     requestContext.Request.Body.Read(buffer, 0, (int)length);
@@ -54,14 +62,10 @@ namespace Commons.Messaging
                     var target = router.FindTarget(message);
                     var inbound = new InboundInfo
                     {
+                        SequenceNo = index,
                         Content = message,
-                        RemoteIp = requestContext.Connection.RemoteIpAddress.ToString(),
                     };
                     target.Dispatch(inbound);
-                    var response = "ACK";
-                    requestContext.Response.ContentLength = response.Length;
-                    requestContext.Response.ContentType = "text/plain";
-                    requestContext.Response.WriteAsync(response).Wait();
                 }
                 else
                 {
