@@ -32,10 +32,17 @@ namespace Commons.Messaging
         public void Handle(OutboundInfo message)
         {
             var context = contextCache.FromSequence(message.SequenceNo);
-            if (context != null)
+            try
             {
-                var json = (string)message.Content;
-                context.Response.WriteAsync(json).Wait();
+                if (context != null)
+                {
+                    var json = (string)message.Content;
+                    context.Response.WriteAsync(json).Wait();
+                }
+            }
+            finally
+            {
+                contextCache.RemoveContext(message.SequenceNo);
             }
         }
     }
