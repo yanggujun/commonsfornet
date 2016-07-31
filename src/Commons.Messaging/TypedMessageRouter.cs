@@ -21,7 +21,7 @@ using Commons.Utils;
 
 namespace Commons.Messaging
 {
-    public class TypeMessageRouter : IRouter<Type>
+    public class TypedMessageRouter : IRouter<Type>
     {
         private HashedMap<Type, IDispatcher> routeTable = new HashedMap<Type, IDispatcher>();
 

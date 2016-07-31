@@ -37,6 +37,8 @@ namespace Commons.Messaging
                 if (context != null)
                 {
                     var json = (string)message.Content;
+                    context.Response.ContentLength = json.Length;
+                    context.Response.ContentType = "text/plain";
                     context.Response.WriteAsync(json).Wait();
                 }
             }
