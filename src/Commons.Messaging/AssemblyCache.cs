@@ -14,10 +14,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+
 namespace Commons.Messaging
 {
-    internal static class Contants
+    public class AssemblyCache : ICache<string, Assembly>
     {
-        public const string MessageType = "MessageType";
+        public void Add(string key, Assembly val)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Assembly From(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(string key)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

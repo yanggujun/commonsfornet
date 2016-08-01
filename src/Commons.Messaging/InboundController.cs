@@ -38,42 +38,39 @@ namespace Commons.Messaging
         }
         public void Accept(HttpContext requestContext)
         {
-            StringValues strValues;
-            if (requestContext.Request.Headers.TryGetValue(Contants.MessageType, out strValues))
+            StringValues typeValues;
+            StringValues assemblyValues;
+            var hasAsm = requestContext.Request.Headers.TryGetValue(Constants.MessageAssembly, out assemblyValues);
+            var hasType = requestContext.Request.Headers.TryGetValue(Constants.MessageType, out typeValues);
+            if (hasAsm && hasType && typeValues.Count > 0 && assemblyValues.Count > 0)
             {
-                if (strValues.Count > 1)
+                var assemblyName = assemblyValues[0];
+                var typeName = typeValues[0];
+                var assName = new AssemblyName(assemblyName);
+                var assembly = Assembly.Load(assName);
+                var type = assembly.GetType(typeName);
+                if (type == null)
                 {
-                    var assemblyName = strValues[0];
-                    var typeName = strValues[1];
-                    var assembly = Assembly.Load(new AssemblyName(assemblyName));
-                    var type = assembly.GetType(typeName);
-                    if (type == null)
-                    {
-                        throw new InvalidOperationException("The type does not exist");
-                    }
-                    var index = sequence.Increment();
-                    contexts.AddContext(index, requestContext);
-                    var length = requestContext.Request.Body.Length;
-                    var buffer = new byte[length];
-                    requestContext.Request.Body.Read(buffer, 0, (int)length);
-                    var content = Encoding.UTF8.GetString(buffer);
-                    var message = JsonMapper.To(type, content);
-                    var target = router.FindTarget(message);
-                    var inbound = new InboundInfo
-                    {
-                        SequenceNo = index,
-                        Content = message,
-                    };
-                    target.Dispatch(inbound);
+                    throw new InvalidOperationException("The type does not exist");
                 }
-                else
+                var index = sequence.Increment();
+                contexts.AddContext(index, requestContext);
+                var length = requestContext.Request.Body.Length;
+                var buffer = new byte[length];
+                requestContext.Request.Body.Read(buffer, 0, (int)length);
+                var content = Encoding.UTF8.GetString(buffer);
+                var message = JsonMapper.To(type, content);
+                var target = router.FindTarget(message);
+                var inbound = new InboundInfo
                 {
-                    throw new InvalidOperationException("The http header does not have adequat message type information");
-                }
+                    SequenceNo = index,
+                    Content = message,
+                };
+                target.Dispatch(inbound);
             }
             else
             {
-                throw new InvalidOperationException("The http header does not contain message type information.");
+                throw new InvalidOperationException("The http header does not contain enough information.");
             }
         }
     }
