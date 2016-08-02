@@ -19,6 +19,5 @@ namespace Commons.Messaging
     internal static class Constants
     {
         public const string MessageType = "MessageType";
-        public const string MessageAssembly = "MessageAssembly";
     }
 }

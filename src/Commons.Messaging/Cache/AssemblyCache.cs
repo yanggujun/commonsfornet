@@ -15,28 +15,49 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Commons.Collections.Map;
 
-namespace Commons.Messaging
+namespace Commons.Messaging.Cache
 {
     public class AssemblyCache : ICache<string, Assembly>
     {
+        private readonly HashedMap<string, Assembly> assemblies = new HashedMap<string, Assembly>();
         public void Add(string key, Assembly val)
         {
-            throw new NotImplementedException();
+            assemblies.Add(key, val);
+        }
+
+        public bool Contains(string key)
+        {
+            return assemblies.ContainsKey(key);
         }
 
         public Assembly From(string key)
         {
-            throw new NotImplementedException();
+            return assemblies[key];
+        }
+
+        public IEnumerator<Assembly> GetEnumerator()
+        {
+            foreach (var kvp in assemblies)
+            {
+                yield return kvp.Value;
+            }
         }
 
         public void Remove(string key)
         {
-            throw new NotImplementedException();
+            assemblies.Remove(key);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

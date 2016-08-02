@@ -30,6 +30,8 @@ namespace Commons.Messaging
             messageHandler.Completed += OnCompleted;
             inq = new MemQueue<InboundInfo>("inbound", messageHandler);
             outq = new MemQueue<OutboundInfo>("outbound", outboundController);
+            inq.Start();
+            outq.Start();
         }
 
         private void OnCompleted(object sender, WorkCompleteEventArgs e)
@@ -45,6 +47,8 @@ namespace Commons.Messaging
         public void Dispose()
         {
             messageHandler.Completed -= OnCompleted;
+            inq.Close();
+            outq.Close();
         }
     }
 }

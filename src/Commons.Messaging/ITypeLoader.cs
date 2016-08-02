@@ -14,14 +14,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace Commons.Messaging
 {
-    public interface IContextCache<T>
+    public interface ITypeLoader
     {
-        void AddContext(long sequence, T context);
-
-        T FromSequence(long sequence);
-
-        void RemoveContext(long sequence);
+        Type Load(string assemblyQualifiedName);
     }
 }

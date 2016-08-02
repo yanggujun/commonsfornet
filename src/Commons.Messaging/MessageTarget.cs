@@ -23,26 +23,36 @@ namespace Commons.Messaging
 {
     public class MessageTarget : ITarget
     {
-        private readonly string address;
         public MessageTarget(string address)
         {
-            this.address = address;
+            Address = address;
         }
+
+        public string Address
+        {
+            get;
+            private set;
+        }
+
         public string Send(string json, Type messageType)
         {
-            var http = new HttpClient();
-            var assembly = messageType.AssemblyQualifiedName;
-            var typeName = messageType.FullName;
-            http.DefaultRequestHeaders.Add(Constants.MessageAssembly, new string[] { assembly });
-            http.DefaultRequestHeaders.Add(Constants.MessageType, new string[] { typeName });
-            var bytes = Encoding.UTF8.GetBytes(json);
-            var content = new ByteArrayContent(bytes);
-            var post = http.PostAsync(address, content);
-            post.Wait();
-            var response = post.Result;
-            var result = response.Content.ReadAsByteArrayAsync();
-            result.Wait();
-            return Encoding.UTF8.GetString(result.Result);
+            using (var http = new HttpClient())
+            {
+                var fullName = messageType.FullName;
+                http.DefaultRequestHeaders.Add(Constants.MessageType, new string[] { fullName });
+                var bytes = Encoding.UTF8.GetBytes(json);
+                var content = new ByteArrayContent(bytes);
+                http.Timeout = new TimeSpan(0, 0, 10);
+                var post = http.PostAsync(Address, content);
+                post.Wait();
+                using (var response = post.Result)
+                {
+                    response.EnsureSuccessStatusCode();
+                    var result = response.Content.ReadAsStringAsync();
+                    result.Wait();
+                    return result.Result;
+                }
+            }
         }
 
         public string Send<T>(T message)

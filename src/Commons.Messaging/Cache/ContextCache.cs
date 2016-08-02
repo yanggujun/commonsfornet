@@ -15,17 +15,19 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
-namespace Commons.Messaging
+namespace Commons.Messaging.Cache
 {
     [CLSCompliant(false)]
-    public class ContextCache : IContextCache<HttpContext>
+    public class ContextCache : ICache<long, HttpContext>
     {
         private ConcurrentDictionary<long, HttpContext> contexts = new ConcurrentDictionary<long, HttpContext>();
 
-        public void AddContext(long sequence, HttpContext context)
+        public void Add(long sequence, HttpContext context)
         {
             if (contexts.ContainsKey(sequence))
             {
@@ -34,7 +36,12 @@ namespace Commons.Messaging
             contexts[sequence] = context;
         }
 
-        public HttpContext FromSequence(long sequence)
+        public bool Contains(long key)
+        {
+            return contexts.ContainsKey(key);
+        }
+
+        public HttpContext From(long sequence)
         {
             if (contexts.ContainsKey(sequence))
             {
@@ -43,13 +50,26 @@ namespace Commons.Messaging
             return null;
         }
 
-        public void RemoveContext(long sequence)
+        public IEnumerator<HttpContext> GetEnumerator()
+        {
+            foreach(var kvp in contexts)
+            {
+                yield return kvp.Value;
+            }
+        }
+
+        public void Remove(long sequence)
         {
             HttpContext context;
             if (!contexts.TryRemove(sequence, out context))
             {
                 throw new InvalidOperationException("The sequence number does not exist in the context cache.");
             }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

@@ -16,6 +16,7 @@
 
 using System;
 using Commons.Collections.Queue;
+using Commons.Messaging.Cache;
 using Microsoft.AspNetCore.Http;
 
 namespace Commons.Messaging
@@ -23,15 +24,15 @@ namespace Commons.Messaging
     [CLSCompliant(false)]
     public class OutboundController : IMessageHandler<OutboundInfo>
     {
-        private IContextCache<HttpContext> contextCache;
-        public OutboundController(IContextCache<HttpContext> contextCache)
+        private ICache<long, HttpContext> contextCache;
+        public OutboundController(ICache<long, HttpContext> contextCache)
         {
             this.contextCache = contextCache;
         }
 
         public void Handle(OutboundInfo message)
         {
-            var context = contextCache.FromSequence(message.SequenceNo);
+            var context = contextCache.From(message.SequenceNo);
             try
             {
                 if (context != null)
@@ -44,7 +45,7 @@ namespace Commons.Messaging
             }
             finally
             {
-                contextCache.RemoveContext(message.SequenceNo);
+                contextCache.Remove(message.SequenceNo);
             }
         }
     }

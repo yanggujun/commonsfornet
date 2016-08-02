@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using System.Text;
 using Commons.Json;
+using Commons.Messaging.Cache;
 using Commons.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
@@ -27,37 +28,36 @@ namespace Commons.Messaging
     [CLSCompliant(false)]
     public class InboundController : IMessageController<HttpContext>
     {
-        private IRouter<Type> router;
+        private readonly IRouter<Type> router;
         private AtomicInt64 sequence;
-        private IContextCache<HttpContext> contexts;
-        public InboundController(IRouter<Type> router, IContextCache<HttpContext> contexts)
+        private readonly ITypeLoader typeLoader;
+        private readonly ICache<long, HttpContext> contexts;
+
+        public InboundController(IRouter<Type> router, ICache<long, HttpContext> contexts, ITypeLoader typeLoader)
         {
             this.router = router;
             this.contexts = contexts;
             sequence = new AtomicInt64();
+            this.typeLoader = typeLoader;
         }
+
         public void Accept(HttpContext requestContext)
         {
             StringValues typeValues;
-            StringValues assemblyValues;
-            var hasAsm = requestContext.Request.Headers.TryGetValue(Constants.MessageAssembly, out assemblyValues);
-            var hasType = requestContext.Request.Headers.TryGetValue(Constants.MessageType, out typeValues);
-            if (hasAsm && hasType && typeValues.Count > 0 && assemblyValues.Count > 0)
+            var hasAsm = requestContext.Request.Headers.TryGetValue(Constants.MessageType, out typeValues);
+            if (hasAsm && typeValues.Count > 0)
             {
-                var assemblyName = assemblyValues[0];
                 var typeName = typeValues[0];
-                var assName = new AssemblyName(assemblyName);
-                var assembly = Assembly.Load(assName);
-                var type = assembly.GetType(typeName);
+                var type = typeLoader.Load(typeName);
                 if (type == null)
                 {
                     throw new InvalidOperationException("The type does not exist");
                 }
                 var index = sequence.Increment();
-                contexts.AddContext(index, requestContext);
-                var length = requestContext.Request.Body.Length;
-                var buffer = new byte[length];
-                requestContext.Request.Body.Read(buffer, 0, (int)length);
+                contexts.Add(index, requestContext);
+                var length = requestContext.Request.ContentLength;
+                var buffer = new byte[length.Value];
+                requestContext.Request.Body.Read(buffer, 0, (int)length.Value);
                 var content = Encoding.UTF8.GetString(buffer);
                 var message = JsonMapper.To(type, content);
                 var target = router.FindTarget(message);
