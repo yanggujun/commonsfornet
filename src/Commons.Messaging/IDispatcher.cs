@@ -18,6 +18,6 @@ namespace Commons.Messaging
 {
     public interface IDispatcher
     {
-        void Dispatch(InboundInfo message);
+        object Dispatch(InboundInfo message);
     }
 }

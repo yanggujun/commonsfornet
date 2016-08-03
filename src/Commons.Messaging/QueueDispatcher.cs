@@ -39,9 +39,10 @@ namespace Commons.Messaging
             outq.Enqueue(e.OutboundMessage);
         }
 
-        public void Dispatch(InboundInfo message)
+        public object Dispatch(InboundInfo message)
         {
             inq.Enqueue(message);
+            return null;
         }
 
         public void Dispose()

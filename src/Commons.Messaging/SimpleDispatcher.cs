@@ -14,37 +14,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 using System;
+using System.Reflection;
 using Commons.Collections.Queue;
-using Commons.Messaging.Cache;
-using Microsoft.AspNetCore.Http;
 
 namespace Commons.Messaging
 {
-    [CLSCompliant(false)]
-    public class OutboundController : IMessageHandler<OutboundInfo>
+    public class SimpleDispatcher : IDispatcher
     {
-        private ICache<long, HttpContext> contextCache;
-        public OutboundController(ICache<long, HttpContext> contextCache)
+        private readonly IWorker worker;
+        private readonly MethodInfo work;
+        public SimpleDispatcher(IWorker worker)
         {
-            this.contextCache = contextCache;
+            this.worker = worker;
+            work = worker.GetType().GetMethod("Do");
         }
 
-        public void Handle(OutboundInfo message)
+        public object Dispatch(InboundInfo message)
         {
-            var context = contextCache.From(message.SequenceNo);
-            try
-            {
-                if (context != null)
-                {
-                    var json = (string)message.Content;
-                    context.Response.WriteAsync("abcdefg").Wait();
-                }
-            }
-            finally
-            {
-                contextCache.Remove(message.SequenceNo);
-            }
+            return work.Invoke(worker, new[] { message.Content });
         }
     }
 }

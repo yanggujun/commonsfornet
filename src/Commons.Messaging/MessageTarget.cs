@@ -45,13 +45,11 @@ namespace Commons.Messaging
                 http.Timeout = new TimeSpan(0, 0, 10);
                 var post = http.PostAsync(Address, content);
                 post.Wait();
-                using (var response = post.Result)
-                {
-                    response.EnsureSuccessStatusCode();
-                    var result = response.Content.ReadAsStringAsync();
-                    result.Wait();
-                    return result.Result;
-                }
+                var response = post.Result;
+                response.EnsureSuccessStatusCode();
+                var result = response.Content.ReadAsStringAsync();
+                result.Wait();
+                return result.Result;
             }
         }
 

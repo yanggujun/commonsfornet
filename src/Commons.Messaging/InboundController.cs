@@ -66,7 +66,17 @@ namespace Commons.Messaging
                     SequenceNo = index,
                     Content = message,
                 };
-                target.Dispatch(inbound);
+                var result = target.Dispatch(inbound);
+                string response;
+                if (result.GetType() == typeof(string))
+                {
+                    response = result as string;
+                }
+                else
+                {
+                    response = JsonMapper.ToJson(result);
+                }
+                requestContext.Response.WriteAsync(response).Wait();
             }
             else
             {
