@@ -22,6 +22,7 @@ namespace Commons.Messaging
     {
         string Send(string json, Type messageType);
         string Send<T>(T message);
+        string Send<T>();
         string Address { get; }
     }
 }

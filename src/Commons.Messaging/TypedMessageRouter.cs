@@ -21,7 +21,7 @@ using Commons.Utils;
 
 namespace Commons.Messaging
 {
-    public class TypedMessageRouter : IRouter<Type>
+    public class TypedMessageRouter : IRouter
     {
         private HashedMap<Type, IDispatcher> routeTable = new HashedMap<Type, IDispatcher>();
 
@@ -33,10 +33,19 @@ namespace Commons.Messaging
             }
         }
 
-        public IDispatcher FindTarget(object message)
+        public void AddTarget<T>(IDispatcher dispatcher)
+        {
+            AddTarget(typeof(T), dispatcher);
+        }
+
+        public IDispatcher FindTarget<T>()
+        {
+            return FindTarget(typeof(T));
+        }
+
+        public IDispatcher FindTarget(Type type)
         {
             IDispatcher dispatcher = null;
-            var type = message.GetType();
             if (routeTable.ContainsKey(type))
             {
                 dispatcher = routeTable[type];
@@ -56,10 +65,9 @@ namespace Commons.Messaging
             return dispatcher;
         }
 
-        public IDispatcher[] FindTargets(object message)
+        public IDispatcher[] FindTargets(Type type)
         {
             var dispatchers = new List<IDispatcher>();
-            var type = message.GetType();
             if (routeTable.ContainsKey(type))
             {
                 dispatchers.Add(routeTable[type]);
@@ -77,7 +85,17 @@ namespace Commons.Messaging
             return dispatchers.ToArray();
         }
 
-        public void ReomveTarget(Type target)
+        public IDispatcher[] FindTargets<T>()
+        {
+            return FindTargets(typeof(T));
+        }
+
+        public void RemoveTarget<T>()
+        {
+            RemoveTarget(typeof(T));
+        }
+
+        public void RemoveTarget(Type target)
         {
             if (routeTable.ContainsKey(target))
             {

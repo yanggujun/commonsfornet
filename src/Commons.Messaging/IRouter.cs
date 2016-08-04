@@ -18,14 +18,22 @@ using System;
 
 namespace Commons.Messaging
 {
-    public interface IRouter<T>
+    public interface IRouter
     {
-        IDispatcher FindTarget(object message);
+        IDispatcher FindTarget<T>();
 
-        IDispatcher[] FindTargets(object message);
+        IDispatcher FindTarget(Type type);
 
-        void AddTarget(T target, IDispatcher dispatcher);
+        IDispatcher[] FindTargets<T>();
 
-        void ReomveTarget(T target);
+        IDispatcher[] FindTargets(Type type);
+
+        void AddTarget<T>(IDispatcher dispatcher);
+
+        void AddTarget(Type type, IDispatcher dispatcher);
+
+        void RemoveTarget<T>();
+
+        void RemoveTarget(Type type);
     }
 }

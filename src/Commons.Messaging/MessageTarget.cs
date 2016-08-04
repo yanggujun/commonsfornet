@@ -40,14 +40,24 @@ namespace Commons.Messaging
             {
                 var fullName = messageType.FullName;
                 http.DefaultRequestHeaders.Add(Constants.MessageType, new string[] { fullName });
-                var bytes = Encoding.UTF8.GetBytes(json);
-                var content = new ByteArrayContent(bytes);
                 http.Timeout = new TimeSpan(0, 0, 10);
-                var post = http.PostAsync(Address, content);
-                post.Wait();
-                var response = post.Result;
-                response.EnsureSuccessStatusCode();
-                var result = response.Content.ReadAsStringAsync();
+                HttpResponseMessage httpResponse;
+                if (!string.IsNullOrWhiteSpace(json))
+                {
+                    var bytes = Encoding.UTF8.GetBytes(json);
+                    var content = new ByteArrayContent(bytes);
+                    var t = http.PostAsync(Address, content);
+                    t.Wait();
+                    httpResponse = t.Result;
+                }
+                else
+                {
+                    var t = http.GetAsync(Address);
+                    t.Wait();
+                    httpResponse = t.Result;
+                }
+                httpResponse.EnsureSuccessStatusCode();
+                var result = httpResponse.Content.ReadAsStringAsync();
                 result.Wait();
                 return result.Result;
             }
@@ -56,6 +66,11 @@ namespace Commons.Messaging
         public string Send<T>(T message)
         {
             return Send(JsonMapper.ToJson(message), typeof(T));
+        }
+
+        public string Send<T>()
+        {
+            return Send("", typeof(T));
         }
     }
 }

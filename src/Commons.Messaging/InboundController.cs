@@ -15,10 +15,8 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
 using System.Text;
 using Commons.Json;
-using Commons.Messaging.Cache;
 using Commons.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
@@ -28,15 +26,13 @@ namespace Commons.Messaging
     [CLSCompliant(false)]
     public class InboundController : IMessageController<HttpContext>
     {
-        private readonly IRouter<Type> router;
+        private readonly IRouter router;
         private AtomicInt64 sequence;
         private readonly ITypeLoader typeLoader;
-        private readonly ICache<long, HttpContext> contexts;
 
-        public InboundController(IRouter<Type> router, ICache<long, HttpContext> contexts, ITypeLoader typeLoader)
+        public InboundController(IRouter router, ITypeLoader typeLoader)
         {
             this.router = router;
-            this.contexts = contexts;
             sequence = new AtomicInt64();
             this.typeLoader = typeLoader;
         }
@@ -53,14 +49,23 @@ namespace Commons.Messaging
                 {
                     throw new InvalidOperationException("The type does not exist");
                 }
+
+                object message = null;
                 var index = sequence.Increment();
-                contexts.Add(index, requestContext);
-                var length = requestContext.Request.ContentLength;
-                var buffer = new byte[length.Value];
-                requestContext.Request.Body.Read(buffer, 0, (int)length.Value);
-                var content = Encoding.UTF8.GetString(buffer);
-                var message = JsonMapper.To(type, content);
-                var target = router.FindTarget(message);
+                if (requestContext.Request.Method == "POST")
+                {
+                    var length = requestContext.Request.ContentLength;
+                    var buffer = new byte[length.Value];
+                    requestContext.Request.Body.Read(buffer, 0, (int)length.Value);
+                    var content = Encoding.UTF8.GetString(buffer);
+                    message = JsonMapper.To(type, content);
+                }
+                else
+                {
+                    message = Activator.CreateInstance(type);
+                }
+
+                var target = router.FindTarget(type);
                 var inbound = new InboundInfo
                 {
                     SequenceNo = index,
