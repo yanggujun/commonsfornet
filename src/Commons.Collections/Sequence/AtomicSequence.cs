@@ -14,49 +14,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Commons.Collections.Map;
+using Commons.Utils;
 
-namespace Commons.Messaging.Cache
+namespace Commons.Collections.Sequence
 {
-    public class TypeCache : ICache<string, Type>
+    public class AtomicSequence : ISequence
     {
-        private readonly HashedMap<string, Type> types = new HashedMap<string, Type>();
-        public void Add(string key, Type val)
+        private AtomicInt64 seq;
+        public AtomicSequence()
         {
-            types.Add(key, val);
+            seq = AtomicInt64.From(0);
         }
-
-        public bool Contains(string key)
+        public void Clear()
         {
-            return types.ContainsKey(key);
-        }
-
-        public Type From(string key)
-        {
-            return types[key];
-        }
-
-        public IEnumerator<Type> GetEnumerator()
-        {
-            foreach (var kvp in types)
+            long old = 0;
+            do
             {
-                yield return kvp.Value;
-            }
+                old = seq.Value;
+            } while (!seq.CompareExchange(0, old));
         }
 
-        public void Remove(string key)
+        public long Get()
         {
-            types.Remove(key);
+            return seq.Value;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public long Next()
         {
-            return GetEnumerator();
+            return seq.Increment();
         }
     }
 }

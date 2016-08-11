@@ -14,20 +14,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-
-namespace Commons.Messaging.Cache
+namespace Commons.Collections.Sequence
 {
-    public interface ICache
+    public class SimpleSequence : ISequence
     {
-        string Name { get; }
-    }
+        private long seq;
+        public void Clear()
+        {
+            seq = 0;
+        }
 
-    public interface ICache<K, T> : ICache, IEnumerable<T>
-    {
-        void Add(K key, T val);
-        void Remove(K key);
-        bool Contains(K key);
-        T From(K key);
+        public long Get()
+        {
+            return seq;
+        }
+
+        public long Next()
+        {
+            ++seq;
+            return seq;
+        }
     }
 }

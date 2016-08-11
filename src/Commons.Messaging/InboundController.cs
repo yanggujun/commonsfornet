@@ -16,6 +16,7 @@
 
 using System;
 using System.Text;
+using Commons.Collections.Sequence;
 using Commons.Json;
 using Commons.Utils;
 using Microsoft.AspNetCore.Http;
@@ -27,13 +28,13 @@ namespace Commons.Messaging
     public class InboundController : IMessageController<HttpContext>
     {
         private readonly IRouter router;
-        private AtomicInt64 sequence;
+        private ISequence sequence;
         private readonly ITypeLoader typeLoader;
 
-        public InboundController(IRouter router, ITypeLoader typeLoader)
+        public InboundController(IRouter router, ITypeLoader typeLoader, ISequence sequence)
         {
             this.router = router;
-            sequence = new AtomicInt64();
+            this.sequence = sequence;
             this.typeLoader = typeLoader;
         }
 
@@ -51,7 +52,7 @@ namespace Commons.Messaging
                 }
 
                 object message = null;
-                var index = sequence.Increment();
+                var index = sequence.Next();
                 if (requestContext.Request.Method == "POST")
                 {
                     var length = requestContext.Request.ContentLength;
