@@ -34,6 +34,13 @@ namespace Commons.Json
             return context;
         }
 
+        public static IMapContext UseLowerCaseBool()
+        {
+            var context = GetContext(DefaultContext);
+            context.UseLowerCaseBool = true;
+            return context;
+        }
+
         public static IJsonObjectMapper<T> For<T>()
         {
             var context = GetContext(DefaultContext);

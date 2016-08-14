@@ -48,7 +48,20 @@ namespace Commons.Json.Mapper
             {
                 json = mapper.Serializer(target).ToString();
             }
-            else if (type.IsJsonNumber() || type == typeof(bool))
+            else if (type == typeof(bool))
+            {
+                object useLowerCase;
+                var hasValue = config.TryGetValue(Messages.UseLowerCaseBool, out useLowerCase);
+                if (hasValue && (bool)useLowerCase)
+                {
+                    json = target.ToString().ToLowerInvariant();
+                }
+                else
+                {
+                    json = target.ToString();
+                }
+            }
+            else if (type.IsJsonNumber())
             {
                 json = target.ToString();
             }

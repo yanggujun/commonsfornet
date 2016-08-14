@@ -99,5 +99,13 @@ namespace Commons.Json.Mapper
                 Configuration.Add(Messages.DateFormat, value);
             }
         }
+
+        public bool UseLowerCaseBool
+        {
+            set
+            {
+                Configuration.Add(Messages.UseLowerCaseBool, true);
+            }
+        }
     }
 }

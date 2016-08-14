@@ -221,5 +221,11 @@ namespace Commons.Json.Mapper
             configuration.Add(Messages.DateFormat, format);
             return this;
         }
+
+        public IFormatMapper UseLowerCaseBool()
+        {
+            configuration.Add(Messages.UseLowerCaseBool, true);
+            return this;
+        }
     }
 }

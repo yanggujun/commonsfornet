@@ -55,5 +55,7 @@ namespace Commons.Json
         public const string PushMethod = "Push";
 
         public const string DateFormat = "DateFormat";
+
+        public const string UseLowerCaseBool = "UseLowerCaseBool";
     }
 }
