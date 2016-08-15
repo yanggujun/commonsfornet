@@ -21,9 +21,12 @@ namespace Commons.Messaging.Cache
     public interface ICache
     {
         string Name { get; }
+        bool IsEmpty { get; }
+        string ToJson();
+        byte[] ToBson();
     }
 
-    public interface ICache<K, T> : ICache, IEnumerable<T>
+    public interface ICache<K, T> : ICache, IEnumerable<KeyValuePair<K, T>>
     {
         void Add(K key, T val);
         void Remove(K key);

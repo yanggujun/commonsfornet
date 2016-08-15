@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Commons.Collections.Collection;
 using Commons.Collections.Map;
+using Commons.Json;
 using Commons.Utils;
 
 namespace Commons.Messaging.Cache
@@ -25,6 +26,14 @@ namespace Commons.Messaging.Cache
 
         public SimpleCache(string name, Equator<K> equator) : this(name, new EquatorComparer<K>(equator))
         {
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return map.Count == 0;
+            }
         }
 
         public string Name
@@ -50,9 +59,9 @@ namespace Commons.Messaging.Cache
             return map[key];
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerator<KeyValuePair<K, T>> GetEnumerator()
         {
-            return map.Values.GetEnumerator();
+            return map.GetEnumerator();
         }
 
         public void Remove(K key)
@@ -61,6 +70,16 @@ namespace Commons.Messaging.Cache
             {
                 map.Remove(key);
             }
+        }
+
+        public byte[] ToBson()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ToJson()
+        {
+            return JsonMapper.ToJson(map);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
