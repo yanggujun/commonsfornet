@@ -19,7 +19,6 @@ using System.Linq.Expressions;
 
 namespace Commons.Json.Mapper
 {
-    //TODO: Dictionary key map
     public interface IJsonObjectMapper<T> : IPropertyMapper<T>, IJsonKeyMapper<T>, INotMapper<T>, IFormatMapper
     {
         IJsonObjectMapper<T> ConstructWith(Func<T> creator);
@@ -52,7 +51,7 @@ namespace Commons.Json.Mapper
         IJsonKeyMapper<T> MapProperty(Expression<Func<T, Guid>> propertyExp);
     }
 
-    public interface IJsonKeyMapper<T>
+    public interface IJsonKeyMapper<T> : INotMapper<T>
     {
         IJsonObjectMapper<T> With(string jsonKey);
     }

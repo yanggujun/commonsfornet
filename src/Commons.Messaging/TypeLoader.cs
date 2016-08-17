@@ -65,7 +65,7 @@ namespace Commons.Messaging
             {
                 foreach(var assembly in assemblies)
                 {
-                    var t = assembly.GetType(assemblyQualifiedName);
+                    var t = assembly.Value.GetType(assemblyQualifiedName);
                     if (t != null)
                     {
                         types.Add(assemblyQualifiedName, t);
