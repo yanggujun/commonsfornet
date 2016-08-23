@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace Commons.Messaging.Cache
 {
     public class SimpleCache<K, T> : ICache<K, T>
     {
-        private readonly HashedMap<K, T> map;
+        private readonly ConcurrentDictionary<K, T> map;
 
         public SimpleCache(string name) : this(name, EqualityComparer<K>.Default)
         {
@@ -21,7 +22,7 @@ namespace Commons.Messaging.Cache
         public SimpleCache(string name, IEqualityComparer<K> equator)
         {
             Name = name;
-            map = new HashedMap<K, T>(equator);
+            map = new ConcurrentDictionary<K, T>(equator);
         }
 
         public SimpleCache(string name, Equator<K> equator) : this(name, new EquatorComparer<K>(equator))
@@ -45,8 +46,13 @@ namespace Commons.Messaging.Cache
         {
             if (!map.ContainsKey(key))
             {
-                map.Add(key, val);
+                map[key] = val;
             }
+        }
+
+        public void Clear()
+        {
+            map.Clear();
         }
 
         public bool Contains(K key)
@@ -68,7 +74,8 @@ namespace Commons.Messaging.Cache
         {
             if (map.ContainsKey(key))
             {
-                map.Remove(key);
+                T val;
+                map.TryRemove(key, out val);
             }
         }
 
