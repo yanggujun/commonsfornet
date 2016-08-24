@@ -22,7 +22,7 @@ using Commons.Collections.Map;
 
 using Xunit;
 
-namespace Test.Commons.Collections
+namespace Commons.Test.Collections
 {
     public class MultiMapTest
     {

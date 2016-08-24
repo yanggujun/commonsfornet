@@ -20,10 +20,10 @@ namespace Commons.Json.Mapper
 {
     internal class MapEngine : IMapEngine
     {
-        private readonly JsonBuilder jsonBuilder;
+        private readonly IJsonBuilder jsonBuilder;
         private readonly IValueBuilder valueBuilder;
 
-        public MapEngine(JsonBuilder jsonBuilder, IValueBuilder valueBuilder)
+        public MapEngine(IJsonBuilder jsonBuilder, IValueBuilder valueBuilder)
         {
             this.jsonBuilder = jsonBuilder;
             this.valueBuilder = valueBuilder;

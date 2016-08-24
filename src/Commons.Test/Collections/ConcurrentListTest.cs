@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using Commons.Collections.Concurrent;
 using Xunit;
 
-namespace Test.Commons.Collections
+namespace Commons.Test.Collections
 {
     public class ConcurrentListTest
     {

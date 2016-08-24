@@ -19,7 +19,7 @@ using System.Globalization;
 using Commons.Collections.Bag;
 using Xunit;
 
-namespace Test.Commons.Collections
+namespace Commons.Test.Collections
 {
     public class BagTest
     {

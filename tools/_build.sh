@@ -12,5 +12,5 @@ dotnet build src/Commons.Collections -c Release --no-dependencies -o "$OUTPUT/$f
 dotnet build src/Commons.Json -c Release --no-dependencies -o "$OUTPUT/$framework" -f $framework --no-incremental --build-profile
 dotnet build src/Commons.Pool -c Release --no-dependencies -o "$OUTPUT/$framework" -f $framework --no-incremental --build-profile
 dotnet build src/Commons.Messaging -c Release --no-dependencies -o "$OUTPUT/$framework" -f $framework --no-incremental --build-profile
-dotnet build src/Test.Commons -c Release --no-dependencies -o "$OUTPUT/$testFramework" -f $testFramework --no-incremental --build-profile
+dotnet build src/Commons.Test -c Release --no-dependencies -o "$OUTPUT/$testFramework" -f $testFramework --no-incremental --build-profile
 

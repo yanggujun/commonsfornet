@@ -49,15 +49,15 @@ namespace Commons.Pool
         {
             if (initialSize < 0)
             {
-                throw new ArgumentException("The initial size is negtive.");
+                throw new ArgumentException(Constants.InvalidInitialSize);
             }
-            if (maxSize < initialSize)
+            if (maxSize != -1 && maxSize < initialSize)
             {
-                throw new ArgumentException("Max size is smaller than initialSize.");
+                throw new ArgumentException(Constants.InvalidMaxSize);
             }
             if (factory == null)
             {
-                throw new ArgumentNullException("factory");
+                throw new ArgumentNullException(nameof(factory));
             }
             this.initialSize = initialSize;
             this.maxSize = maxSize;
@@ -126,7 +126,7 @@ namespace Commons.Pool
                 locker.EnterWriteLock();
                 try
                 {
-                    if (createdCount < maxSize)
+                    if (maxSize == -1 || createdCount < maxSize)
                     {
                         obj = factory.Create();
                         createdCount++;

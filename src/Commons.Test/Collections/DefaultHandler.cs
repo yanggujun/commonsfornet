@@ -19,7 +19,7 @@ using Commons.Collections.Queue;
 using System.Threading;
 using Commons.Utils;
 
-namespace Test.Commons.Collections
+namespace Commons.Test.Collections
 {
     public class DefaultHandler<T> : IMessageHandler<T>
     {

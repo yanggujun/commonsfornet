@@ -56,6 +56,8 @@ namespace Commons.Json
 
         public const string DateFormat = "DateFormat";
 
-        public const string UseLowerCaseBool = "UseLowerCaseBool";
+        public const string True = "true";
+
+        public const string False = "false";
     }
 }

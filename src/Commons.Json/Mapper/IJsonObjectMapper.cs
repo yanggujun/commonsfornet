@@ -64,7 +64,6 @@ namespace Commons.Json.Mapper
     public interface IFormatMapper
     {
         IFormatMapper UseDateFormat(string format);
-        IFormatMapper UseLowerCaseBool();
         //IFormatMapper UseCulture(CultureInfo culture);
     }
 }

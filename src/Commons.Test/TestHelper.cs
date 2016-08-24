@@ -18,7 +18,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Test.Commons
+namespace Commons.Test
 {
     public static class TestHelper
     {

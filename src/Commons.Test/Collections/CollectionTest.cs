@@ -25,7 +25,7 @@ using Commons.Collections.Bag;
 using Commons.Collections.Map;
 using System.Collections;
 
-namespace Test.Commons.Collections
+namespace Commons.Test.Collections
 {
     public class CollectionTest
     {

@@ -26,7 +26,7 @@ using Commons.Collections.Map;
 using Commons.Collections.Set;
 using System.Diagnostics;
 
-namespace Test.Commons.Collections
+namespace Commons.Test.Collections
 {
     public class HashTest
     {

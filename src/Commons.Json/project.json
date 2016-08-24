@@ -21,6 +21,11 @@
       "type": "build",
       "version": ""
     },
+    "Commons.Pool": {
+      "target": "project",
+      "type": "build",
+      "version": ""
+    },
     "NETStandard.Library": {
       "version": "1.6.0",
       "type": "platform"

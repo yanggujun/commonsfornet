@@ -22,7 +22,7 @@ using Commons.Collections.Set;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace Test.Commons.Collections
+namespace Commons.Test.Collections
 {
     public class QueueTest
     {

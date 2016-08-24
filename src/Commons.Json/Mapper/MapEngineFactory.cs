@@ -14,14 +14,15 @@
 // limitations under the License.
 
 using System;
+using System.Text;
+using Commons.Pool;
 
 namespace Commons.Json.Mapper
 {
     internal class MapEngineFactory : IMapEngineFactory
     {
-        public IMapEngine CreateMapEngine(object target, Type type, CollectionBuilder builder, MapperContainer mappers, TypeContainer types, ConfigContainer configuration)
+        public IMapEngine CreateMapEngine(IJsonBuilder jsonBuilder, CollectionBuilder builder, MapperContainer mappers, TypeContainer types, ConfigContainer configuration, IObjectPool<StringBuilder> bufferPool)
         {
-            var jsonBuilder = new JsonBuilder(mappers, types, configuration);
             var launcher = new Launcher(mappers, types);
 
             var nullBuilder = new NullBuilder(configuration);

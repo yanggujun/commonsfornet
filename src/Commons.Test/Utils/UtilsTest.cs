@@ -22,7 +22,7 @@ using Commons.Collections.Map;
 using Commons.Utils;
 using Xunit;
 
-namespace Test.Commons.Utils
+namespace Commons.Test.Utils
 {
     public class UtilsTest
     {

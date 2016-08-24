@@ -16,7 +16,7 @@
 
 using System;
 
-namespace Test.Commons.Json
+namespace Commons.Test.Json
 {
 	public class Message : IEquatable<Message>
 	{

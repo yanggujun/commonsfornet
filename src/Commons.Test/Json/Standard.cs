@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Test.Commons.Json
+namespace Commons.Test.Json
 {
 	public enum PostState
 	{

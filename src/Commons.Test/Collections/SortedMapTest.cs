@@ -23,7 +23,7 @@ using Xunit;
 using Commons.Collections.Map;
 using Commons.Collections.Set;
 
-namespace Test.Commons.Collections
+namespace Commons.Test.Collections
 {
     public class SortedMapTest
     {

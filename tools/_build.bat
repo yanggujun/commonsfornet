@@ -11,5 +11,5 @@ call dotnet build src\Commons.Utils -c Release --no-dependencies -o "%OUTPUT%\%F
 call dotnet build src\Commons.Collections -c Release --no-dependencies -o "%OUTPUT%\%Framework%" -f %Framework% --no-incremental --version-suffix %BuildNo% --build-profile
 call dotnet build src\Commons.Json -c Release --no-dependencies -o "%OUTPUT%\%Framework%" -f %Framework% --no-incremental --version-suffix %BuildNo% --build-profile
 call dotnet build src\Commons.Pool -c Release --no-dependencies -o "%OUTPUT%\%Framework%" -f %Framework% --no-incremental --version-suffix %BuildNo% --build-profile
-call dotnet build src\Test.Commons -c Release --no-dependencies -o "%OUTPUT%\%TestFramework%" -f %TestFramework% --no-incremental --version-suffix %BuildNo% --build-profile
+call dotnet build src\Commons.Test -c Release --no-dependencies -o "%OUTPUT%\%TestFramework%" -f %TestFramework% --no-incremental --version-suffix %BuildNo% --build-profile
 

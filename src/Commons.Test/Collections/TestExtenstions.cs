@@ -21,7 +21,7 @@ using Commons.Collections.Set;
 using Commons.Utils;
 using Xunit;
 
-namespace Test.Commons.Collections
+namespace Commons.Test.Collections
 {
     internal static class TestExtenstions
     {

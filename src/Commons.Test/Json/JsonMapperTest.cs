@@ -26,7 +26,7 @@ using System.Text;
 using System.IO;
 using System.Collections;
 
-namespace Test.Commons.Json
+namespace Commons.Test.Json
 {
     public class JsonMapperTest
     {
@@ -1386,7 +1386,7 @@ namespace Test.Commons.Json
         {
             var t = true;
             var json = JsonMapper.ToJson(t);
-            Assert.Equal("True", json);
+            Assert.Equal("true", json);
         }
 
         [Fact]
@@ -1394,7 +1394,7 @@ namespace Test.Commons.Json
         {
             var f = false;
             var json = JsonMapper.ToJson(f);
-            Assert.Equal("False", json);
+            Assert.Equal("false", json);
         }
 
         [Fact]

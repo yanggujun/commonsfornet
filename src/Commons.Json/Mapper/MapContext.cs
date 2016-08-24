@@ -15,12 +15,15 @@
 // limitations under the License.
 
 using System;
+using System.Text;
+using Commons.Pool;
 
 namespace Commons.Json.Mapper
 {
     internal class MapContext : IMapContext
     {
         private string dateFormat = string.Empty;
+        private readonly IObjectPool<StringBuilder> bufferPool;
         public MapContext(string name)
         {
             Name = name;
@@ -30,7 +33,8 @@ namespace Commons.Json.Mapper
             Types = new TypeContainer();
             CollBuilder = new CollectionBuilder();
             Launcher = new Launcher(Mappers, Types);
-            JsonBuilder = new JsonBuilder(Mappers, Types, Configuration);
+            bufferPool = new PoolManager().NewPool<StringBuilder>().InitialSize(0).WithCreator(() => new StringBuilder()).Instance();
+            JsonBuilder = new JsonBuilder(Mappers, Types, Configuration, bufferPool);
         }
 
         public string Name { get; private set; }
@@ -50,8 +54,8 @@ namespace Commons.Json.Mapper
         public string ToJson<T>(T target)
         {
             var mapEngine = 
-                MapEngineFactory.CreateMapEngine(target, typeof(T), CollBuilder, 
-                                                 Mappers, Types, Configuration);
+                MapEngineFactory.CreateMapEngine(JsonBuilder, CollBuilder, 
+                                                 Mappers, Types, Configuration, bufferPool);
 
             return mapEngine.Map(target);
         }
@@ -73,8 +77,8 @@ namespace Commons.Json.Mapper
             }
 
             var mapEngine = 
-                MapEngineFactory.CreateMapEngine(target, type, CollBuilder, 
-                                                 Mappers, Types, Configuration);
+                MapEngineFactory.CreateMapEngine(JsonBuilder, CollBuilder, 
+                                                 Mappers, Types, Configuration, bufferPool);
             return mapEngine.Map(target, type, jsonValue);
         }
 
@@ -100,12 +104,5 @@ namespace Commons.Json.Mapper
             }
         }
 
-        public bool UseLowerCaseBool
-        {
-            set
-            {
-                Configuration.Add(Messages.UseLowerCaseBool, true);
-            }
-        }
     }
 }

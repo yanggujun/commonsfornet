@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Test.Commons
+namespace Commons.Test
 {
     public class Order
     {

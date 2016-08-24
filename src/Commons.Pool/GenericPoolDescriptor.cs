@@ -31,6 +31,7 @@ namespace Commons.Pool
         public GenericPoolDescriptor(PoolManager poolManager)
         {
             this.poolManager = poolManager;
+            maxSize = -1;
         }
 
         public IPoolDescriptor<T> OfKey(string key)
@@ -51,7 +52,7 @@ namespace Commons.Pool
 
         public IPoolDescriptor<T> MaxSize(int maxSize)
         {
-            if (maxSize < 0)
+            if (maxSize < -1)
             {
                 throw new ArgumentException("The max size value is invalid.");
             }
@@ -95,9 +96,8 @@ namespace Commons.Pool
                     Destroyer = destroyer
                 };
             }
-            maxSize = maxSize == 0 ? 10 : maxSize;
 
-            if (maxSize < initialSize)
+            if (maxSize > 0 && maxSize < initialSize)
             {
                 throw new ArgumentException("The maximum size of the pool shall not be smaller than its initial size.");
             }

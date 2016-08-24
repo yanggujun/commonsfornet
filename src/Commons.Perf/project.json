@@ -1,0 +1,41 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "testRunner": "xunit",
+
+  "dependencies": {
+    "Commons.Utils": {
+      "target": "project",
+      "type": "build"
+    },
+    "Commons.Collections": {
+      "target": "project",
+      "type": "build"
+    },
+    "Commons.Json": {
+      "target": "project",
+      "type": "build"
+    },
+    "Commons.Test": {
+      "target": "project",
+      "type": "build"
+    },
+    "Commons.Pool": {
+      "target": "project",
+      "type": "build"
+    },
+    "xunit": "2.2.0-beta2-build3300",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dnxcore50"
+    }
+  },
+  "runtimes": {
+    "win10-x64": {},
+    "win81-x64": {},
+    "ubuntu.14.04-x64": {}
+  }
+}

@@ -19,7 +19,7 @@ using System.Globalization;
 using Commons.Json;
 using Xunit;
 
-namespace Test.Commons.Json
+namespace Commons.Test.Json
 {
     public class JsonTest
     {

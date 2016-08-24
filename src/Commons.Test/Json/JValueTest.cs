@@ -21,7 +21,7 @@ using Commons.Collections.Set;
 using Commons.Json;
 using Commons.Json.Mapper;
 using Xunit;
-namespace Test.Commons.Json
+namespace Commons.Test.Json
 {
     public class JValueTest
     {

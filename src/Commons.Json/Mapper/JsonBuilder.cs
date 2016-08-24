@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Text;
 using System.Collections;
 using Commons.Utils;
+using Commons.Pool;
 
 namespace Commons.Json.Mapper
 {
@@ -27,11 +28,14 @@ namespace Commons.Json.Mapper
         private readonly MapperContainer mappers;
         private readonly TypeContainer types;
         private readonly ConfigContainer config;
-        public JsonBuilder(MapperContainer mappers, TypeContainer types, ConfigContainer config)
+        private readonly IObjectPool<StringBuilder> bufferPool;
+
+        public JsonBuilder(MapperContainer mappers, TypeContainer types, ConfigContainer config, IObjectPool<StringBuilder> bufferPool)
         {
             this.mappers = mappers;
             this.types = types;
             this.config = config;
+            this.bufferPool = bufferPool;
         }
 
         public string Build(object target)
@@ -50,15 +54,14 @@ namespace Commons.Json.Mapper
             }
             else if (type == typeof(bool))
             {
-                object useLowerCase;
-                var hasValue = config.TryGetValue(Messages.UseLowerCaseBool, out useLowerCase);
-                if (hasValue && (bool)useLowerCase)
+                var val = (bool)target;
+                if (val)
                 {
-                    json = target.ToString().ToLowerInvariant();
+                    json = Messages.True;
                 }
                 else
                 {
-                    json = target.ToString();
+                    json = Messages.False;
                 }
             }
             else if (type.IsJsonNumber())
@@ -67,22 +70,26 @@ namespace Commons.Json.Mapper
             }
             else if (type == typeof(string) || type.IsEnum() || type == typeof(Guid) || type == typeof(char))
             {
-                var sb = new StringBuilder();
+                var sb = bufferPool.Acquire();
                 sb.Append(JsonTokens.Quoter).Append(target).Append(JsonTokens.Quoter);
                 json = sb.ToString();
+                sb.Clear();
+                bufferPool.Return(sb);
             }
             else if (type == typeof (DateTime))
             {
-                var sb = new StringBuilder();
+                var sb = bufferPool.Acquire();
                 var dt = (DateTime) target;
                 object dateFormat;
                 var time = config.TryGetValue(Messages.DateFormat, out dateFormat) ? dt.ToString((string)dateFormat) : dt.ToString();
                 sb.Append(JsonTokens.Quoter).Append(time).Append(JsonTokens.Quoter);
                 json = sb.ToString();
+                sb.Clear();
+                bufferPool.Return(sb);
             }
             else if (type.IsDictionary(out keyType))
             {
-                var sb = new StringBuilder();
+                var sb = bufferPool.Acquire();
                 sb.Append(JsonTokens.LeftBrace);
                 if (keyType == typeof(string))
                 {
@@ -103,11 +110,13 @@ namespace Commons.Json.Mapper
                 }
                 sb.Append(JsonTokens.RightBrace);
                 json = sb.ToString();
+                sb.Clear();
+                bufferPool.Return(sb);
             }
             else if (type.IsArray)
             {
                 var array = (Array)target;
-                var sb = new StringBuilder();
+                var sb = bufferPool.Acquire();
                 sb.Append(JsonTokens.LeftBracket);
                 var hasValue = false;
                 foreach(var item in array)
@@ -121,10 +130,12 @@ namespace Commons.Json.Mapper
                 }
                 sb.Append(JsonTokens.RightBracket);
                 json = sb.ToString();
+                sb.Clear();
+                bufferPool.Return(sb);
             }
             else if (typeof(IEnumerable).IsInstanceOfType(target))
             {
-                var sb = new StringBuilder();
+                var sb = bufferPool.Acquire();
                 sb.Append(JsonTokens.LeftBracket);
                 var hasValue = false;
                 foreach (var item in ((IEnumerable)target))
@@ -138,11 +149,13 @@ namespace Commons.Json.Mapper
                 }
                 sb.Append(JsonTokens.RightBracket);
                 json = sb.ToString();
+                sb.Clear();
+                bufferPool.Return(sb);
             }
             else
             {
                 var manager = types[type];
-                var sb = new StringBuilder();
+                var sb = bufferPool.Acquire();
                 sb.Append(JsonTokens.LeftBrace);
                 foreach (var prop in manager.Getters)
                 {
@@ -161,6 +174,8 @@ namespace Commons.Json.Mapper
                 sb.Remove(sb.Length - 1, 1);
                 sb.Append(JsonTokens.RightBrace);
                 json = sb.ToString();
+                sb.Clear();
+                bufferPool.Return(sb);
             }
 
             return json;

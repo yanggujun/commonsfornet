@@ -25,7 +25,7 @@ using Commons.Pool;
 using Moq;
 using Xunit;
 
-namespace Test.Commons.Pool
+namespace Commons.Test.Pool
 {
     public class ObjectPoolTest
     {    
@@ -754,7 +754,7 @@ namespace Test.Commons.Pool
             var poolManager = new PoolManager();
             var pool = poolManager.NewPool<IDbConnection>().WithFactory(mockObjFactory).Instance();
             Assert.Equal(0, pool.InitialSize);
-            Assert.Equal(10, pool.Capacity);
+            Assert.Equal(-1, pool.Capacity);
         }
 
         [Fact]
