@@ -33,8 +33,8 @@ dotnet build .\src\Commons.Test -c Release --no-dependencies -o "$OUTPUT\net45" 
 
 dotnet build .\src\Commons.Utils -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile
 dotnet build .\src\Commons.Collections -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile
-dotnet build .\src\Commons.Json -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile
 dotnet build .\src\Commons.Pool -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile
+dotnet build .\src\Commons.Json -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile
 dotnet build .\src\Commons.Messaging -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile
 dotnet build .\src\Commons.Test -c Release --no-dependencies -o "$OUTPUT\netcoreapp1.0" -f netcoreapp1.0 --no-incremental --build-profile
 dotnet build .\src\Commons.Perf -c Release --no-dependencies -o "$OUTPUT\netcoreapp1.0" -f netcoreapp1.0 --no-incremental --build-profile
