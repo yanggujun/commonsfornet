@@ -24,12 +24,16 @@ namespace Commons.Json.Mapper
 {
     internal class MapperImpl
     {
-        private readonly HashedBimap<string, string> keyPropMap = new HashedBimap<string, string>(new IgnoreCaseStringEquator(), new IgnoreCaseStringEquator());
+        private readonly HashedMap<string, string> keyPropMap = new HashedMap<string, string>(new IgnoreCaseStringEquator());
+        private readonly HashedMap<string, string> propKeyMap = new HashedMap<string, string>(new IgnoreCaseStringEquator());
         private readonly HashedSet<string> ignoredProps = new HashedSet<string>();
+        private bool propMapped;
 
         public void Map(string key, string prop)
         {
-            keyPropMap.Enforce(key, prop);
+            keyPropMap[key] = prop;
+            propKeyMap[prop] = key;
+            propMapped = true;
         }
 
         public void IgnoreProperty(string prop)
@@ -40,13 +44,20 @@ namespace Commons.Json.Mapper
         public string GetKey(string prop)
         {
             string key;
-            if (keyPropMap.ContainsValue(prop))
+            if (!propMapped)
             {
-                key = keyPropMap.KeyOf(prop);
+                key = prop;
             }
             else
             {
-                key = prop;
+                if (propKeyMap.ContainsKey(prop))
+                {
+                    key = propKeyMap[prop];
+                }
+                else
+                {
+                    key = prop;
+                }
             }
             return key;
         }
@@ -54,25 +65,32 @@ namespace Commons.Json.Mapper
         public string GetProp(string key)
         {
             string prop;
-            if (keyPropMap.ContainsKey(key))
+            if (!propMapped)
             {
-                prop = keyPropMap.ValueOf(key);
+                prop = key;
             }
             else
             {
-                prop = key;
+                if (keyPropMap.ContainsKey(key))
+                {
+                    prop = keyPropMap[key];
+                }
+                else
+                {
+                    prop = key;
+                }
             }
             return prop;
         }
 
         public bool TryGetKey(string prop, out string key)
         {
-            return keyPropMap.TryGetKey(prop, out key);
+            return propKeyMap.TryGetValue(prop, out key);
         }
 
-        public bool TryGetProperty(string key, out string property)
+        public bool TryGetProperty(string key, out string prop)
         {
-            return keyPropMap.TryGetValue(key, out property);
+            return keyPropMap.TryGetValue(key, out prop);
         }
 
         public IReadOnlyStrictSet<string> IgnoredProperties

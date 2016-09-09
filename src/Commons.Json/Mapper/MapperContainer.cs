@@ -21,7 +21,7 @@ namespace Commons.Json.Mapper
 {
     internal class MapperContainer
     {
-        private ReferenceMap<Type, MapperImpl> mappers = new ReferenceMap<Type, MapperImpl>();
+        private HashedMap<Type, MapperImpl> mappers = new HashedMap<Type, MapperImpl>();
 
         public bool ContainsMapper(Type type)
         {

@@ -15,15 +15,12 @@
 // limitations under the License.
 
 using System;
-using System.Text;
-using Commons.Pool;
 
 namespace Commons.Json.Mapper
 {
     internal class MapContext : IMapContext
     {
         private string dateFormat = string.Empty;
-        private readonly IObjectPool<StringBuilder> bufferPool;
         public MapContext(string name)
         {
             Name = name;
@@ -33,8 +30,11 @@ namespace Commons.Json.Mapper
             Types = new TypeContainer();
             CollBuilder = new CollectionBuilder();
             Launcher = new Launcher(Mappers, Types);
-            bufferPool = new PoolManager().NewPool<StringBuilder>().InitialSize(0).WithCreator(() => new StringBuilder()).Instance();
-            JsonBuilder = new JsonBuilder(Mappers, Types, Configuration, bufferPool);
+            JsonBuilder = new JsonBuilder(Mappers, Types, Configuration);
+            MapEngine = 
+                MapEngineFactory.CreateMapEngine(JsonBuilder, CollBuilder,
+                                                 Mappers, Types, Configuration);
+
         }
 
         public string Name { get; private set; }
@@ -53,11 +53,7 @@ namespace Commons.Json.Mapper
 
         public string ToJson<T>(T target)
         {
-            var mapEngine = 
-                MapEngineFactory.CreateMapEngine(JsonBuilder, CollBuilder, 
-                                                 Mappers, Types, Configuration, bufferPool);
-
-            return mapEngine.Map(target);
+            return MapEngine.Map(target);
         }
 
         public T To<T>(string json)
@@ -76,10 +72,7 @@ namespace Commons.Json.Mapper
                 target = Launcher.Launch(type);
             }
 
-            var mapEngine = 
-                MapEngineFactory.CreateMapEngine(JsonBuilder, CollBuilder, 
-                                                 Mappers, Types, Configuration, bufferPool);
-            return mapEngine.Map(target, type, jsonValue);
+            return MapEngine.Map(target, type, jsonValue);
         }
 
         public MapperContainer Mappers { get; private set; }
@@ -95,6 +88,8 @@ namespace Commons.Json.Mapper
         public TypeContainer Types { get; private set; }
 
         public IJsonBuilder JsonBuilder { get; private set; }
+
+        public IMapEngine MapEngine { get; private set; }
 
         public string DateFormat
         {

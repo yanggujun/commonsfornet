@@ -13,15 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Text;
-using Commons.Pool;
-
 namespace Commons.Json.Mapper
 {
     internal class MapEngineFactory : IMapEngineFactory
     {
-        public IMapEngine CreateMapEngine(IJsonBuilder jsonBuilder, CollectionBuilder builder, MapperContainer mappers, TypeContainer types, ConfigContainer configuration, IObjectPool<StringBuilder> bufferPool)
+        public IMapEngine CreateMapEngine(IJsonBuilder jsonBuilder, CollectionBuilder builder, MapperContainer mappers, TypeContainer types, ConfigContainer configuration)
         {
             var launcher = new Launcher(mappers, types);
 
