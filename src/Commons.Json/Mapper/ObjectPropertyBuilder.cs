@@ -50,7 +50,7 @@ namespace Commons.Json.Mapper
 
             foreach (var prop in properties)
             {
-                if (mapper.IgnoredProperties.Contains(prop.Name))
+                if (mapper.IsPropertyIgnored(prop.Name))
                 {
                     continue;
                 }

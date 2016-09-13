@@ -28,6 +28,7 @@ namespace Commons.Json.Mapper
         private readonly HashedMap<string, string> propKeyMap = new HashedMap<string, string>(new IgnoreCaseStringEquator());
         private readonly HashedSet<string> ignoredProps = new HashedSet<string>();
         private bool propMapped;
+        private bool propIgnored;
 
         public void Map(string key, string prop)
         {
@@ -39,6 +40,7 @@ namespace Commons.Json.Mapper
         public void IgnoreProperty(string prop)
         {
             ignoredProps.Add(prop);
+            propIgnored = true;
         }
 
         public string GetKey(string prop)
@@ -65,22 +67,27 @@ namespace Commons.Json.Mapper
         public string GetProp(string key)
         {
             string prop;
-            if (!propMapped)
+            if (keyPropMap.ContainsKey(key))
             {
-                prop = key;
+                prop = keyPropMap[key];
             }
             else
             {
-                if (keyPropMap.ContainsKey(key))
-                {
-                    prop = keyPropMap[key];
-                }
-                else
-                {
-                    prop = key;
-                }
+                prop = key;
             }
             return prop;
+        }
+
+        public bool IsPropertyIgnored(string propName)
+        {
+            if (!propIgnored)
+            {
+                return false;
+            }
+            else
+            {
+                return IgnoredProperties.Contains(propName);
+            }
         }
 
         public bool TryGetKey(string prop, out string key)
@@ -88,12 +95,12 @@ namespace Commons.Json.Mapper
             return propKeyMap.TryGetValue(prop, out key);
         }
 
-        public bool TryGetProperty(string key, out string prop)
+        public bool TryGetProperty(string key, out string property)
         {
-            return keyPropMap.TryGetValue(key, out prop);
+            return keyPropMap.TryGetValue(key, out property);
         }
 
-        public IReadOnlyStrictSet<string> IgnoredProperties
+        private IReadOnlyStrictSet<string> IgnoredProperties
         {
             get { return ignoredProps; }
         }

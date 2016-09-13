@@ -204,7 +204,7 @@ namespace Commons.Json.Mapper
             if (not)
             {
                 var propName = GetPropertyName(exp);
-                if (!mapper.IgnoredProperties.Contains(propName))
+                if (!mapper.IsPropertyIgnored(propName))
                 {
                     mapper.IgnoreProperty(GetPropertyName(exp));
                 }

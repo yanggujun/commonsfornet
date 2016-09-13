@@ -73,7 +73,7 @@ namespace Commons.Json.Mapper
                 localBuffer.Length = 0;
                 var dt = (DateTime) target;
                 object dateFormat;
-                var time = config.TryGetValue(Messages.DateFormat, out dateFormat) ? dt.ToString((string)dateFormat) : dt.ToString();
+                var time = config.TryGetValue(Messages.DateFormat, out dateFormat) ? dt.ToString((string)dateFormat) : dt.FastToStringInvariantCulture();
                 localBuffer.Append(JsonTokens.Quoter).Append(time).Append(JsonTokens.Quoter);
                 json = localBuffer.ToString();
             }
@@ -150,7 +150,7 @@ namespace Commons.Json.Mapper
                     sb.Append(JsonTokens.LeftBrace);
                     foreach (var prop in manager.Getters)
                     {
-                        if (mapper.IgnoredProperties.Contains(prop.Name))
+                        if (mapper.IsPropertyIgnored(prop.Name))
                         {
                             continue;
                         }

@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Commons.Collections.Map;
@@ -413,6 +414,32 @@ namespace Commons.Test.Utils
                     }
                 }
             }
+        }
+
+        [Fact]
+        public void TestDateTimeToString()
+        {
+            var dt = new DateTime(1980, 5, 20);
+            var str = dt.FastToStringInvariantCulture();
+            var newTime = DateTime.Parse(str, CultureInfo.InvariantCulture);
+            Assert.Equal(1980, newTime.Year);
+            Assert.Equal(5, newTime.Month);
+            Assert.Equal(20, newTime.Day);
+        }
+
+        [Fact]
+        public void TestDateTimeToStringNow()
+        {
+            var dt = DateTime.Now;
+            var str = dt.FastToStringInvariantCulture();
+            var newTime = DateTime.Parse(str, CultureInfo.InvariantCulture);
+            Assert.Equal(dt.Year, newTime.Year);
+            Assert.Equal(dt.Month, newTime.Month);
+            Assert.Equal(dt.Day, newTime.Day);
+            Assert.Equal(dt.Hour, newTime.Hour);
+            Assert.Equal(dt.Minute, newTime.Minute);
+            Assert.Equal(dt.Second, newTime.Second);
+            Assert.Equal(dt.Millisecond, newTime.Millisecond);
         }
     }
 }

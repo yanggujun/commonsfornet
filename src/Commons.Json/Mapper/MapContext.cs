@@ -30,9 +30,8 @@ namespace Commons.Json.Mapper
             Types = new TypeContainer();
             CollBuilder = new CollectionBuilder();
             Launcher = new Launcher(Mappers, Types);
-            JsonBuilder = new JsonBuilder(Mappers, Types, Configuration);
             MapEngine = 
-                MapEngineFactory.CreateMapEngine(JsonBuilder, CollBuilder,
+                MapEngineFactory.CreateMapEngine(null, CollBuilder,
                                                  Mappers, Types, Configuration);
 
         }
@@ -51,9 +50,11 @@ namespace Commons.Json.Mapper
             return jsonObjMapper;
         }
 
+        // TODO: need to parse the actually typeof(T) to JsonBuilder as sometimes, typeof(T) != target.GetType()
         public string ToJson<T>(T target)
         {
-            return MapEngine.Map(target);
+            var jsonBuilder = new JsonBuilder(Mappers, Types, Configuration);
+            return jsonBuilder.Build(target);
         }
 
         public T To<T>(string json)
@@ -86,8 +87,6 @@ namespace Commons.Json.Mapper
         public ConfigContainer Configuration { get; private set; }
 
         public TypeContainer Types { get; private set; }
-
-        public IJsonBuilder JsonBuilder { get; private set; }
 
         public IMapEngine MapEngine { get; private set; }
 

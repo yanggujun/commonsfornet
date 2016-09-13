@@ -25,37 +25,32 @@ namespace Commons.Json
     public static class JsonMapper
     {
         private const string DefaultContext = "default";
-        private static HashedMap<string, MapContext> contexts = new HashedMap<string, MapContext>();
+        private static readonly IMapContext defaultContext = new MapContext(DefaultContext);
 
         public static IMapContext UseDateFormat(string format)
         {
-            var context = GetContext(DefaultContext);
-            context.DateFormat = format;
-            return context;
+            defaultContext.DateFormat = format;
+            return defaultContext;
         }
 
         public static IJsonObjectMapper<T> For<T>()
         {
-            var context = GetContext(DefaultContext);
-            return context.For<T>();
+            return defaultContext.For<T>();
         }
 
         public static T To<T>(string json)
         {
-            var context = GetContext(DefaultContext);
-            return (T)context.To(typeof(T), json);
+            return (T)defaultContext.To(typeof(T), json);
         }
 
         public static object To(Type type, string json)
         {
-            var context = GetContext(DefaultContext);
-            return context.To(type, json);
+            return defaultContext.To(type, json);
         }
 
         public static string ToJson<T>(T target)
         {
-            var context = GetContext(DefaultContext);
-            return context.ToJson<T>(target);
+            return defaultContext.ToJson<T>(target);
         }
 
         public static T To<T>(string json, Transformer<JValue, T> transform)
@@ -96,16 +91,5 @@ namespace Commons.Json
             return JsonParser.Parse(json);
         }
 
-        private static MapContext GetContext(string contextName)
-        {
-            if (!contexts.ContainsKey(contextName))
-            {
-                var ctx = new MapContext(contextName);
-                contexts.Add(DefaultContext, ctx);
-            }
-            var context = contexts[contextName];
-
-            return context;
-        }
     }
 }

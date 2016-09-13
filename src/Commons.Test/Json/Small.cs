@@ -64,6 +64,7 @@ namespace Commons.Test.Json
 		public string title { get; set; }
 		public bool active { get; set; }
 		public DateTime created { get; set; }
+        public int Count { get; set; }
 		public override int GetHashCode() { return ID.GetHashCode(); }
 		public override bool Equals(object obj) { return Equals(obj as SmallPost); }
 		public bool Equals(SmallPost other)
@@ -78,6 +79,7 @@ namespace Commons.Test.Json
 			instance.title = "some title " + i;
 			instance.active = i % 2 == 0;
 			instance.created = NOW.AddMinutes(i).Date;
+            instance.Count = NOW.Millisecond;
 			return instance;
 		}
 	}

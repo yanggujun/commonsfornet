@@ -23,6 +23,12 @@ namespace Commons.Utils
     [CLSCompliant(true)]
     public static class Extensions
     {
+        private const char Zero = '0';
+        private const char TimeSlash = '/';
+        private const char TimeSpace = ' ';
+        private const char TimeColon = ':';
+        private const char TimeDot = '.';
+
         public static byte[] ToBytes(this string str)
         {
             if (string.IsNullOrWhiteSpace(str))
@@ -140,5 +146,39 @@ namespace Commons.Utils
 #endif
         }
 
+        public static string FastToStringInvariantCulture(this DateTime dt)
+        {
+            var timeArray = new char[23];
+            timeArray[0] = (char)(dt.Month / 10 + Zero);
+            timeArray[1] = (char)(dt.Month % 10 + Zero);
+            timeArray[2] = TimeSlash;
+            timeArray[3] = (char)(dt.Day / 10 + Zero);
+            timeArray[4] = (char)(dt.Day % 10 + Zero);
+            timeArray[5] = TimeSlash;
+            timeArray[6] = (char)(dt.Year / 1000 + Zero);
+            timeArray[7] = (char)((dt.Year / 100) % 10 + Zero);
+            timeArray[8] = (char)((dt.Year / 10) % 10 + Zero);
+            timeArray[9] = (char)((dt.Year % 10) + Zero);
+            timeArray[10] = TimeSpace;
+
+            var ticks = dt.Ticks;
+            int hour = (int)((ticks / 0x861c46800L)) % 24;
+            int minute = (int)((ticks / 0x23c34600L)) % 60;
+            int second = (int)(((ticks / 0x989680L)) % 60L);
+            int ms = (int)(((ticks / 0x2710L)) % 0x3e8L);
+            timeArray[11] = (char)(hour / 10 + Zero);
+            timeArray[12] = (char)(hour % 10 + Zero);
+            timeArray[13] = TimeColon;
+            timeArray[14] = (char)(minute / 10 + Zero);
+            timeArray[15] = (char)(minute % 10 + Zero);
+            timeArray[16] = TimeColon;
+            timeArray[17] = (char)(second / 10 + Zero);
+            timeArray[18] = (char)(second % 10 + Zero);
+            timeArray[19] = TimeDot;
+            timeArray[20] = (char)(ms / 100 + Zero);
+            timeArray[21] = (char)(ms / 10 % 10 + Zero);
+            timeArray[22] = (char)(ms % 10 + Zero);
+            return new string(timeArray);
+        }
     }
 }
