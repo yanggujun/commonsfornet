@@ -45,7 +45,7 @@ namespace Commons.Main
 
         public static void TestSmall()
         {
-            const int LN = 100000;
+            const int LN = 1000000;
             var sw1 = new Stopwatch();
             for (var i = 0; i < LN; i++)
             {
