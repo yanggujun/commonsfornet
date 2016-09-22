@@ -97,24 +97,6 @@ namespace Commons.Json.Mapper
                 .Where(x => x.CanRead && x.GetIndexParameters().Length == 0 && x.GetGetMethod(false) != null);
             foreach(var get in getters)
             {
-                //var method = new DynamicMethod(Type.FullName + ".Get_" + get.Name, typeof(object), new[] { typeof(object) }, true);
-                //var generator = method.GetILGenerator();
-                //var methodInfo = get.GetGetMethod();
-                //var isValueType = Type.IsValueType();
-                //generator.Emit( isValueType ? OpCodes.Ldarga : OpCodes.Ldarg, 0);
-                //generator.Emit(OpCodes.Castclass, Type);
-                //if (isValueType)
-                //{
-                //    generator.Emit(OpCodes.Unbox, Type);
-                //}
-                //generator.Emit(OpCodes.Call, methodInfo);
-                //if (methodInfo.ReturnType.IsValueType())
-                //{
-                //    generator.Emit(OpCodes.Box, methodInfo.ReturnType);
-                //}
-                //generator.Emit(OpCodes.Ret);
-                //var getter =  (Get)method.CreateDelegate(typeof(Get));
-
                 var targetParamExp= Expression.Parameter(typeof(object), "target");
                 var castExp = Expression.Convert(targetParamExp, Type);
                 var getMethod = get.GetGetMethod();
@@ -129,18 +111,6 @@ namespace Commons.Json.Mapper
 
             foreach(var set in setters)
             {
-                //var method = new DynamicMethod(Type.FullName + ".Set_" + set.Name, null, new[] { typeof(object), typeof(object)}, true);
-                //var generator = method.GetILGenerator();
-                //var methodInfo = set.GetSetMethod();
-                //generator.Emit(OpCodes.Ldarg_0);
-                //generator.Emit(OpCodes.Castclass, Type);
-                //generator.Emit(OpCodes.Ldarg_1);
-                //generator.Emit(OpCodes.Castclass, set.PropertyType);
-                //generator.Emit(OpCodes.Call, methodInfo);
-                //generator.Emit(OpCodes.Ret);
-
-                //var setter =  (Set)method.CreateDelegate(typeof(Set));
-                //Setters.Add(new Triple<string, Type, Set>(set.Name, set.PropertyType, setter));
                 var targetParamExp = Expression.Parameter(typeof(object), "target");
                 var valueParamExp = Expression.Parameter(typeof(object), "val");
                 var setMethod = set.GetSetMethod();

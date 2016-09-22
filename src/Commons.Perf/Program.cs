@@ -47,6 +47,9 @@ namespace Commons.Main
         public static void TestSmall()
         {
             const int LN = 1000000;
+            var warm = SmallPost.Create((int)DateTime.Now.Ticks & 0x0000ffff);
+            JsonMapper.ToJson(warm);
+            JsonConvert.SerializeObject(warm);
             var sw1 = new Stopwatch();
             for (var i = 0; i < LN; i++)
             {
