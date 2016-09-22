@@ -92,6 +92,15 @@ namespace Commons.Utils
 #endif
         }
 
+        public static bool IsValueType(this Type type)
+        {
+#if NET40
+            return type.IsValueType;
+#else
+            return type.GetTypeInfo().IsValueType;
+#endif
+        }
+
         public static bool IsEnum(this Type type)
         {
 #if NET40
@@ -121,7 +130,7 @@ namespace Commons.Utils
 
         public static bool IsAbstract(this Type type)
         {
-#if NET40 
+#if NET40
             return type.IsAbstract;
 #else
             return type.GetTypeInfo().IsAbstract;

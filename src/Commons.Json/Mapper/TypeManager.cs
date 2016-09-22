@@ -19,39 +19,32 @@ using System.Linq;
 
 using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
+
+using Commons.Utils;
+using System.Linq.Expressions;
 
 namespace Commons.Json.Mapper
 {
+    internal struct Triple<T1, T2, T3>
+    {
+        public Triple(T1 v1, T2 v2, T3 v3)
+        {
+            Value1 = v1;
+            Value2 = v2;
+            Value3 = v3;
+        }
+
+        public T1 Value1 { get; set; }
+        public T2 Value2 { get; set; }
+        public T3 Value3 { get; set; }
+    }
     internal class TypeManager
     {
-        private readonly List<PropertyInfo> getters;
-        private readonly List<PropertyInfo> setters;
 
         public TypeManager(Type type)
         {
-            Type underlying;
-            if (type.IsNullable(out underlying) && !type.IsNullablePrimitive())
-            {
-                Type = underlying;
-            }
-            else
-            {
-                Type = type;
-            }
-
-            getters = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => x.CanRead)
-                .Where(y => y.GetGetMethod(false) != null)
-                .Where(z => z.PropertyType.Serializable())
-                .ToList();
-
-            setters = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => x.CanWrite)
-                .Where(y => y.GetSetMethod(false) != null)
-                .Where(z => z.PropertyType.Deserializable())
-                .ToList();
-
-            Constructor = type.GetConstructor(Type.EmptyTypes);
+            Initialize(type);
         }
 
         public Type Type
@@ -65,28 +58,103 @@ namespace Commons.Json.Mapper
             get;
             set;
         }
-#if NET45
-        public IReadOnlyList<PropertyInfo> Getters
-#else
-        public IList<PropertyInfo> Getters
-#endif
-        {
-            get
-            {
-                return getters;
-            }
-        }
 
-#if NET45
-        public IReadOnlyList<PropertyInfo> Setters
-#else
-        public IList<PropertyInfo> Setters
-#endif
+        public IList<Triple<string, Type, Func<object, object>>> Getters
         {
-            get
+            get;
+        } = new List<Triple<string, Type, Func<object, object>>>();
+
+        public IList<Triple<string, Type, Action<object, object>>> Setters
+        {
+            get;
+        } = new List<Triple<string, Type, Action<object, object>>>();
+
+        public IList<PropertyInfo> Properties
+        {
+            get; private set;
+        } 
+
+        private void Initialize(Type type)
+        {
+            Type underlying;
+            if (type.IsNullable(out underlying) && !type.IsNullablePrimitive())
             {
-                return setters;
+                Type = underlying;
             }
+            else
+            {
+                Type = type;
+            }
+
+            if (Type.IsPrimitive())
+            {
+                throw new InvalidOperationException("The primitive type cannot be cached.");
+            }
+
+            Properties = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(x => x.GetIndexParameters().Length == 0).ToList();
+
+            var getters = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => x.CanRead && x.GetIndexParameters().Length == 0 && x.GetGetMethod(false) != null);
+            foreach(var get in getters)
+            {
+                //var method = new DynamicMethod(Type.FullName + ".Get_" + get.Name, typeof(object), new[] { typeof(object) }, true);
+                //var generator = method.GetILGenerator();
+                //var methodInfo = get.GetGetMethod();
+                //var isValueType = Type.IsValueType();
+                //generator.Emit( isValueType ? OpCodes.Ldarga : OpCodes.Ldarg, 0);
+                //generator.Emit(OpCodes.Castclass, Type);
+                //if (isValueType)
+                //{
+                //    generator.Emit(OpCodes.Unbox, Type);
+                //}
+                //generator.Emit(OpCodes.Call, methodInfo);
+                //if (methodInfo.ReturnType.IsValueType())
+                //{
+                //    generator.Emit(OpCodes.Box, methodInfo.ReturnType);
+                //}
+                //generator.Emit(OpCodes.Ret);
+                //var getter =  (Get)method.CreateDelegate(typeof(Get));
+
+                var targetParamExp= Expression.Parameter(typeof(object), "target");
+                var castExp = Expression.Convert(targetParamExp, Type);
+                var getMethod = get.GetGetMethod();
+                var getExp = Expression.Call(castExp, getMethod);
+                var retExp = Expression.Convert(getExp, typeof(object));
+                var getter = (Func<object, object>) Expression.Lambda(retExp, targetParamExp).Compile();
+                Getters.Add(new Triple<string, Type, Func<object, object>>(get.Name, get.PropertyType, getter));
+            }
+
+            var setters = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => x.CanWrite && x.GetIndexParameters().Length == 0 && x.GetSetMethod(false) != null);
+
+            foreach(var set in setters)
+            {
+                //var method = new DynamicMethod(Type.FullName + ".Set_" + set.Name, null, new[] { typeof(object), typeof(object)}, true);
+                //var generator = method.GetILGenerator();
+                //var methodInfo = set.GetSetMethod();
+                //generator.Emit(OpCodes.Ldarg_0);
+                //generator.Emit(OpCodes.Castclass, Type);
+                //generator.Emit(OpCodes.Ldarg_1);
+                //generator.Emit(OpCodes.Castclass, set.PropertyType);
+                //generator.Emit(OpCodes.Call, methodInfo);
+                //generator.Emit(OpCodes.Ret);
+
+                //var setter =  (Set)method.CreateDelegate(typeof(Set));
+                //Setters.Add(new Triple<string, Type, Set>(set.Name, set.PropertyType, setter));
+                var targetParamExp = Expression.Parameter(typeof(object), "target");
+                var valueParamExp = Expression.Parameter(typeof(object), "val");
+                var setMethod = set.GetSetMethod();
+                var castTargetExp = Expression.Convert(targetParamExp, Type);
+                var testValueExp = Expression.NotEqual(valueParamExp, Expression.Constant(null));
+                var castValueExp = Expression.Convert(valueParamExp, set.PropertyType);
+
+                var setValueExp = Expression.Call(castTargetExp, setMethod, castValueExp);
+                var testExp = Expression.IfThen(testValueExp, setValueExp);
+                var setter = (Action<object, object>)Expression.Lambda(testExp, targetParamExp, valueParamExp).Compile();
+                Setters.Add(new Triple<string, Type, Action<object, object>>(set.Name, set.PropertyType, setter));
+            }
+
+            Constructor = type.GetConstructor(Type.EmptyTypes);
         }
     }
 }

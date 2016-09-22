@@ -67,10 +67,7 @@ namespace Commons.Json.Mapper
                 manager = new TypeManager(cacheType);
                 typeManagers[cacheType] = manager;
 
-                var properties = new List<PropertyInfo>();
-                properties.AddRange(manager.Setters);
-                properties.AddRange(manager.Getters);
-                foreach (var property in properties)
+                foreach (var property in manager.Properties)
                 {
                     var propertyType = property.PropertyType;
                     if (!propertyType.IsJsonPrimitive())

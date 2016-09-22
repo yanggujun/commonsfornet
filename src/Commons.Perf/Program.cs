@@ -14,6 +14,7 @@ namespace Commons.Main
         public static void Main(string[] args)
         {
             TestSmall();
+            //TestStandard();
         }
 
         public static void TestStandard()

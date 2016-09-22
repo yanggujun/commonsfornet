@@ -60,11 +60,11 @@ namespace Commons.Json.Mapper
                 var properties = manager.Setters;
                 foreach (var prop in properties)
                 {
-                    var propType = prop.PropertyType;
+                    var propType = prop.Value2;
                     var propValue = Launch(propType);
                     if (propValue != null)
                     {
-                        prop.SetValue(value, propValue, null);
+                        prop.Value3(value, propValue);
                     }
                 }
             }
