@@ -27,13 +27,16 @@ namespace Commons.Json.Mapper
             var enumBuilder = new EnumerableBuilder(configuration, launcher, builder, mappers);
             var dictBuilder = new DictionaryBuilder(configuration, mappers, launcher);
             var objPropBuilder = new ObjectPropertyBuilder(configuration, mappers, types);
+            var abcolBuilder = new NonConcreteBuilder(configuration, mappers);
 
             nullBuilder.SetSuccessor(primitiveBuilder);
             primitiveBuilder.SetSuccessor(arrayBuilder);
             arrayBuilder.SetSuccessor(enumBuilder);
             enumBuilder.SetSuccessor(dictBuilder);
             dictBuilder.SetSuccessor(objPropBuilder);
-            objPropBuilder.SetSuccessor(nullBuilder);
+            objPropBuilder.SetSuccessor(abcolBuilder);
+            abcolBuilder.SetSuccessor(nullBuilder);
+
 
             return new MapEngine(jsonBuilder, nullBuilder);
         }

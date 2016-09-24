@@ -19,6 +19,8 @@ using System;
 using System.Reflection;
 #endif
 
+using Commons.Utils;
+
 namespace Commons.Json.Mapper
 {
     internal class DictionaryBuilder : ValueBuilderSkeleton
@@ -31,13 +33,19 @@ namespace Commons.Json.Mapper
             this.launcher = launcher;
         }
 
-        protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
+        protected override bool CanProcess(Type targetType, JValue jsonValue)
         {
             return targetType.IsDictionary();
         }
 
-        protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
+        protected override object DoBuild(Type targetType, JValue jsonValue)
         {
+            var mapper = mappers.GetMapper(targetType);
+            if ((targetType.IsInterface() || targetType.IsAbstract()) && mapper.Create == null && mapper.ManualCreate == null)
+            {
+                return null;
+            }
+
             Type keyType;
             Type valueType;
             targetType.IsDictionary(out keyType, out valueType);
@@ -52,6 +60,21 @@ namespace Commons.Json.Mapper
             {
                 throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
             }
+
+
+            object raw = null;
+            if (mapper.Create != null)
+            {
+                raw = mapper.Create();
+            }
+            else if (mapper.ManualCreate != null)
+            {
+                return mapper.ManualCreate(jsonValue);
+            }
+            else
+            {
+                raw = Activator.CreateInstance(targetType);
+            }
             var method = targetType.GetMethod(Messages.AddMethod);
             foreach (var kvp in jsonObj)
             {
@@ -61,7 +84,7 @@ namespace Commons.Json.Mapper
                 {
                     value = launcher.Launch(valueType);
                 }
-                value = Successor.Build(value, valueType, kvp.Value);
+                value = Successor.Build(valueType, kvp.Value);
                 method.Invoke(raw, new[] { key, value });
             }
 

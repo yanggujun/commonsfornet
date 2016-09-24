@@ -19,7 +19,7 @@ namespace Commons.Json.Mapper
 {
     public interface IValueBuilder
     {
-        object Build(object raw, Type targetType, JValue jsonValue);
+        object Build(Type targetType, JValue jsonValue);
         void SetSuccessor(IValueBuilder successor);
     }
 }

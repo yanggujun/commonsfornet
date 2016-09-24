@@ -27,12 +27,12 @@ namespace Commons.Json.Mapper
         {
         }
 
-        protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
+        protected override object DoBuild(Type targetType, JValue jsonValue)
         {
             return ExtractPrimitiveValue(jsonValue, targetType);
         }
 
-        protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
+        protected override bool CanProcess(Type targetType, JValue jsonValue)
         {
             return !targetType.IsArray && (jsonValue.Is<JString>() || jsonValue.Is<JBoolean>()
                 || jsonValue.Is<JInteger>() || jsonValue.Is<JDecimal>());

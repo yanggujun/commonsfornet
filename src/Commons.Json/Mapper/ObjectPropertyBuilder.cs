@@ -29,25 +29,38 @@ namespace Commons.Json.Mapper
             this.types = types;
         }
 
-        protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
+        protected override bool CanProcess(Type targetType, JValue jsonValue)
         {
             return jsonValue.Is<JObject>() && !targetType.IsDictionary();
         }
 
-        protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
+        protected override object DoBuild(Type targetType, JValue jsonValue)
         {
             if (targetType.IsJsonArray() || targetType.IsJsonPrimitive() || targetType == typeof(string))
             {
                 throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
             }
-            PopulateJsonObject(raw, targetType, (JObject)jsonValue);
-            return raw;
+            return PopulateJsonObject(targetType, (JObject)jsonValue);
         }
 
-        private void PopulateJsonObject(object target, Type type, JObject jsonObj)
+        private object PopulateJsonObject(Type type, JObject jsonObj)
         {
             var properties = types[type].Setters;
             MapperImpl mapper = mappers.GetMapper(type);
+            object target;
+            if (mapper.Create != null)
+            {
+                target = mapper.Create();
+            }
+            else if (mapper.ManualCreate != null)
+            {
+                target = mapper.ManualCreate(jsonObj);
+                return target;
+            }
+            else
+            {
+                target = types[type].Launch();
+            }
 
             foreach (var prop in properties)
             {
@@ -61,45 +74,42 @@ namespace Commons.Json.Mapper
                 if (jsonObj.ContainsKey(key))
                 {
                     var jsonValue = jsonObj[key];
+                    var value = Successor.Build(propertyType, jsonValue);
+                    prop.Value3(target, value);
 
-                    if (jsonValue.Is<JNull>())
-                    {
-                        prop.Value3(target, null);
-                    }
-                    else if (propertyType.IsJsonPrimitive())
-                    {
-                        var value = Successor.Build(null, propertyType, jsonValue);
-                        prop.Value3(target, value);
-                    }
-                    else if (propertyType.IsArray)
-                    {
-                        var value = Successor.Build(null, propertyType, jsonValue);
-                        prop.Value3(target, value);
-                    }
-                    else
-                    {
-                        var propMapper = mappers.GetMapper(propertyType);
-                        object propValue = null;
-                        if (propMapper.ManualCreate != null)
-                        {
-                            propValue = propMapper.ManualCreate(jsonValue);
-                            prop.Value3(target, propValue);
-                        }
-                        else
-                        {
-                            propValue = types[type].Getters.Single(x => x.Value1 == prop.Value1).Value3(target);
-                            if (propValue != null)
-                            {
-                                Successor.Build(propValue, propValue.GetType(), jsonValue);
-                                if (propertyType.IsNullable() && !propertyType.IsNullablePrimitive())
-                                {
-                                    prop.Value3(target, propValue);
-                                }
-                            }
-                        }
-                    }
+                    //if (jsonValue.Is<JNull>())
+                    //{
+                    //    prop.Value3(target, null);
+                    //}
+                    //else if (propertyType.IsJsonPrimitive())
+                    //{
+                    //    var value = Successor.Build(propertyType, jsonValue);
+                    //    prop.Value3(target, value);
+                    //}
+                    //else if (propertyType.IsArray)
+                    //{
+                    //    var value = Successor.Build(propertyType, jsonValue);
+                    //    prop.Value3(target, value);
+                    //}
+                    //else
+                    //{
+                    //    var propMapper = mappers.GetMapper(propertyType);
+                    //    object propValue = null;
+                    //    if (propMapper.ManualCreate != null)
+                    //    {
+                    //        propValue = propMapper.ManualCreate(jsonValue);
+                    //        prop.Value3(target, propValue);
+                    //    }
+                    //    else
+                    //    {
+                    //        propValue = Successor.Build(propertyType, jsonValue);
+                    //        prop.Value3(target, propValue);
+                    //    }
+                    //}
                 }
             }
+
+            return target;
         }
     }
 }

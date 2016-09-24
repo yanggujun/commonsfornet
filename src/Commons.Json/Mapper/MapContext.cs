@@ -67,13 +67,7 @@ namespace Commons.Json.Mapper
             var parseEngine = new JsonParseEngine();
             var jsonValue = parseEngine.Parse(json);
 
-            object target = null;
-            if (!type.IsJsonPrimitive() && !type.IsArray)
-            {
-                target = Launcher.Launch(type);
-            }
-
-            return MapEngine.Map(target, type, jsonValue);
+            return MapEngine.Map(type, jsonValue);
         }
 
         public MapperContainer Mappers { get; private set; }

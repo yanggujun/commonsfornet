@@ -29,9 +29,9 @@ namespace Commons.Json.Mapper
             this.valueBuilder = valueBuilder;
         }
 
-        public object Map(object raw, Type type, JValue jsonValue)
+        public object Map(Type type, JValue jsonValue)
         {
-            return valueBuilder.Build(raw, type, jsonValue);
+            return valueBuilder.Build(type, jsonValue);
         }
 
         public string Map(object target)

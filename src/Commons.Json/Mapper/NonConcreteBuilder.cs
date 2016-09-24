@@ -15,28 +15,42 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
+#if NETSTANDARD1_3
+using System.Reflection;
+#endif
+
 using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-    internal class NullBuilder : ValueBuilderSkeleton
+    internal class NonConcreteBuilder : ValueBuilderSkeleton
     {
-        public NullBuilder(ConfigContainer configuration) : base(configuration)
+        private readonly MapperContainer mappers;
+        public NonConcreteBuilder(ConfigContainer configuration, MapperContainer mappers) : base(configuration)
         {
+            this.mappers = mappers;
         }
 
         protected override bool CanProcess(Type targetType, JValue jsonValue)
         {
-            return jsonValue.Is<JNull>();
+            return (targetType.IsInterface() || targetType.IsAbstract()) && typeof(IEnumerable).IsAssignableFrom(targetType);
         }
 
         protected override object DoBuild(Type targetType, JValue jsonValue)
         {
-            if (!targetType.IsClass() && !targetType.IsNullable())
+            var mapper = mappers.GetMapper(targetType);
+            object target = null;
+            if (mapper.Create != null)
             {
-                return Activator.CreateInstance(targetType);
+                target = mapper.Create();
             }
-            return null;
+            else if (mapper.ManualCreate != null)
+            {
+                target = mapper.ManualCreate(jsonValue);
+            }
+
+            return target;
         }
     }
 }

@@ -74,6 +74,21 @@ namespace Commons.Json.Mapper
             get; private set;
         } 
 
+        public object Launch()
+        {
+            if (!Type.IsClass())
+            {
+                return Activator.CreateInstance(Type);
+            }
+            if (Constructor == null)
+            {
+                throw new InvalidOperationException(Messages.NoDefaultConstructor);
+            }
+            return Launcher();
+        }
+
+        private Func<object> Launcher { get; set; }
+
         private void Initialize(Type type)
         {
             Type underlying;
@@ -125,6 +140,12 @@ namespace Commons.Json.Mapper
             }
 
             Constructor = type.GetConstructor(Type.EmptyTypes);
+
+            if (Constructor != null)
+            {
+                var newExp = Expression.New(Constructor);
+                Launcher = (Func<object>) Expression.Lambda(newExp).Compile();
+            }
         }
     }
 }

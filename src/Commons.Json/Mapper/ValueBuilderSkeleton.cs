@@ -28,15 +28,15 @@ namespace Commons.Json.Mapper
             Configuration = configuration;
         }
 
-        public object Build(object raw, Type targetType, JValue jsonValue)
+        public object Build(Type targetType, JValue jsonValue)
         {
-            if (CanProcess(raw, targetType, jsonValue))
+            if (CanProcess(targetType, jsonValue))
             {
-                return DoBuild(raw, targetType, jsonValue);
+                return DoBuild(targetType, jsonValue);
             }
             else
             {
-                return Successor.Build(raw, targetType, jsonValue);
+                return Successor.Build(targetType, jsonValue);
             }
         }
 
@@ -45,8 +45,8 @@ namespace Commons.Json.Mapper
             Successor = successor;
         }
 
-        protected abstract object DoBuild(object raw, Type targetType, JValue jsonValue);
+        protected abstract object DoBuild(Type targetType, JValue jsonValue);
 
-        protected abstract bool CanProcess(object raw, Type targetType, JValue jsonValue);
+        protected abstract bool CanProcess(Type targetType, JValue jsonValue);
     }
 }

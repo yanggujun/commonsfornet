@@ -20,7 +20,7 @@ namespace Commons.Json.Mapper
 {
     public interface IMapEngine
     {
-        object Map(object obj, Type type, JValue jsonValue);
+        object Map(Type type, JValue jsonValue);
         string Map(object target);
     }
 }

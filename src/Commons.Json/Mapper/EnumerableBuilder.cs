@@ -32,21 +32,36 @@ namespace Commons.Json.Mapper
             this.colBuilder = colBuilder;
         }
 
-        protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
+        protected override bool CanProcess(Type targetType, JValue jsonValue)
         {
             return targetType.IsCollection() && !targetType.IsDictionary();
         }
 
-        protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
+        protected override object DoBuild(Type targetType, JValue jsonValue)
         {
-            if (raw != null)
+            //TODO: how about two type arguments?
+            var itemType = targetType.GetGenericArguments()[0];
+            var array = BuildArray(itemType, jsonValue);
+            //TODO: do not use reflection.
+            object raw;
+            var mapper = mappers.GetMapper(targetType);
+
+            if (mapper.Create != null)
             {
-                var itemType = targetType.GetGenericArguments()[0];
-                var array = BuildArray(raw, itemType, jsonValue);
-                foreach (var item in array)
-                {
-                    colBuilder.Build((IEnumerable)raw, item);
-                }
+                raw = mapper.Create();
+            }
+            else if (mapper.ManualCreate != null)
+            {
+                return mapper.ManualCreate(jsonValue);
+            }
+            else
+            {
+                raw = Activator.CreateInstance(targetType);
+            }
+
+            foreach (var item in array)
+            {
+                colBuilder.Build((IEnumerable)raw, item);
             }
 
             return raw;

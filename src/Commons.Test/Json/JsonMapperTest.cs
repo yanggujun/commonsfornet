@@ -952,6 +952,8 @@ namespace Commons.Test.Json
 
             Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SimpleStruct>(json));
 
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SimpleStruct?>(json));
+
             Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
         }
 

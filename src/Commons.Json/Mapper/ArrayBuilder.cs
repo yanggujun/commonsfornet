@@ -21,25 +21,25 @@ namespace Commons.Json.Mapper
     internal class ArrayBuilder : ValueBuilderSkeleton
     {
         private readonly ILauncher launcher;
-        private readonly MapperContainer mappers;
+        protected readonly MapperContainer mappers;
         public ArrayBuilder(ConfigContainer configuration, ILauncher launcher, MapperContainer mappers) : base(configuration)
         {
             this.launcher = launcher;
             this.mappers = mappers;
         }
 
-        protected override object DoBuild(object raw, Type targetType, JValue jsonValue)
+        protected override object DoBuild(Type targetType, JValue jsonValue)
         {
             var itemType = targetType.GetElementType();
-            return BuildArray(raw, itemType, jsonValue);
+            return BuildArray(itemType, jsonValue);
         }
 
-        protected override bool CanProcess(object raw, Type targetType, JValue jsonValue)
+        protected override bool CanProcess(Type targetType, JValue jsonValue)
         {
             return targetType.IsArray;
         }
 
-        protected Array BuildArray(object raw, Type itemType, JValue jsonValue)
+        protected Array BuildArray(Type itemType, JValue jsonValue)
         {
             JArray array;
             if (!jsonValue.Is<JArray>(out array))
@@ -52,10 +52,11 @@ namespace Commons.Json.Mapper
 
         private Array ExtractJsonArray(JArray jsonArray, Type itemType)
         {
+            //TODO: do not use reflection
             var array = Array.CreateInstance(itemType, jsonArray.Length);
             for (var i = 0; i < jsonArray.Length; i++)
             {
-                var jsonValue = GetValueFromJsonArrayItem(jsonArray[i], itemType);
+                var jsonValue = Successor.Build(itemType, jsonArray[i]);
                 if (jsonValue != null)
                 {
                     array.SetValue(jsonValue, i);
@@ -63,37 +64,6 @@ namespace Commons.Json.Mapper
             }
 
             return array;
-        }
-
-        protected object GetValueFromJsonArrayItem(JValue jsonValue, Type itemType)
-        {
-            if (itemType.IsJsonPrimitive())
-            {
-                return Successor.Build(null, itemType, jsonValue);
-            }
-            else if (itemType.IsArray)
-            {
-                return Successor.Build(null, itemType, jsonValue);
-            }
-            else
-            {
-                object itemValue;
-                var mapper = mappers.GetMapper(itemType);
-                if (mapper.ManualCreate != null)
-                {
-                    itemValue = mapper.ManualCreate(jsonValue);
-                }
-                else if (mapper.Create != null)
-                {
-                    itemValue = mapper.Create();
-                }
-                else
-                {
-                    itemValue = launcher.Launch(itemType);
-                }
-                itemValue = Successor.Build(itemValue, itemType, jsonValue);
-                return itemValue;
-            }
         }
     }
 }

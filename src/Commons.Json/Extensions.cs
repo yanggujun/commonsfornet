@@ -115,7 +115,7 @@ namespace Commons.Json
 
         public static bool IsCollection(this Type type, out Type itemType)
         {
-            var isList = false;
+            var isCollection = false;
             itemType = null;
 
             if (!type.IsArray)
@@ -125,18 +125,18 @@ namespace Commons.Json
                     if (interfaceType.IsGenericType() && interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
                     {
                         itemType = interfaceType.GetGenericArguments()[0];
-                        isList = true;
+                        isCollection = true;
                         break;
                     }
                     else if (interfaceType == typeof(ICollection))
                     {
-                        isList = true;
+                        isCollection = true;
                         break;
                     }
                 }
             }
 
-            return isList;
+            return isCollection;
         }
 
         public static bool IsDictionary(this Type type)
@@ -157,14 +157,21 @@ namespace Commons.Json
             var isDict = false;
             keyType = null;
             valueType = null;
-            foreach (var interfaceType in type.GetInterfaces())
+            if (type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
             {
-                if (interfaceType.IsGenericType() && interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                isDict = true;
+            }
+            else
+            {
+                foreach (var interfaceType in type.GetInterfaces())
                 {
-                    isDict = true;
-                    keyType = interfaceType.GetGenericArguments()[0];
-                    valueType = interfaceType.GetGenericArguments()[1];
-                    break;
+                    if (interfaceType.IsGenericType() && interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                    {
+                        isDict = true;
+                        keyType = interfaceType.GetGenericArguments()[0];
+                        valueType = interfaceType.GetGenericArguments()[1];
+                        break;
+                    }
                 }
             }
 
