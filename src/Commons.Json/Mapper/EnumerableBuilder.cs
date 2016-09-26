@@ -26,8 +26,8 @@ namespace Commons.Json.Mapper
     {
         private readonly CollectionBuilder colBuilder;
 
-        public EnumerableBuilder(ConfigContainer configuration, ILauncher launcher, CollectionBuilder colBuilder, MapperContainer mappers) 
-            : base(configuration, launcher, mappers)
+        public EnumerableBuilder(ConfigContainer configuration, CollectionBuilder colBuilder, MapperContainer mappers) 
+            : base(configuration, mappers)
         {
             this.colBuilder = colBuilder;
         }

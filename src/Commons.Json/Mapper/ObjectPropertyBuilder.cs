@@ -16,6 +16,7 @@
 
 using System;
 using System.Linq;
+using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
@@ -64,48 +65,25 @@ namespace Commons.Json.Mapper
 
             foreach (var prop in properties)
             {
-                if (mapper.IsPropertyIgnored(prop.Value1))
+                if (mapper.IsPropertyIgnored(prop.Key.Name))
                 {
                     continue;
                 }
 
-                var key = mapper.GetKey(prop.Value1);
-                var propertyType = prop.Value2;
+                var key = mapper.GetKey(prop.Key.Name);
+                var propertyType = prop.Key.PropertyType;
                 if (jsonObj.ContainsKey(key))
                 {
                     var jsonValue = jsonObj[key];
                     var value = Successor.Build(propertyType, jsonValue);
-                    prop.Value3(target, value);
-
-                    //if (jsonValue.Is<JNull>())
-                    //{
-                    //    prop.Value3(target, null);
-                    //}
-                    //else if (propertyType.IsJsonPrimitive())
-                    //{
-                    //    var value = Successor.Build(propertyType, jsonValue);
-                    //    prop.Value3(target, value);
-                    //}
-                    //else if (propertyType.IsArray)
-                    //{
-                    //    var value = Successor.Build(propertyType, jsonValue);
-                    //    prop.Value3(target, value);
-                    //}
-                    //else
-                    //{
-                    //    var propMapper = mappers.GetMapper(propertyType);
-                    //    object propValue = null;
-                    //    if (propMapper.ManualCreate != null)
-                    //    {
-                    //        propValue = propMapper.ManualCreate(jsonValue);
-                    //        prop.Value3(target, propValue);
-                    //    }
-                    //    else
-                    //    {
-                    //        propValue = Successor.Build(propertyType, jsonValue);
-                    //        prop.Value3(target, propValue);
-                    //    }
-                    //}
+                    if (type.IsClass())
+                    {
+                        prop.Value(target, value);
+                    }
+                    else
+                    {
+                        prop.Key.SetValue(target, value, null);
+                    }
                 }
             }
 

@@ -29,7 +29,6 @@ namespace Commons.Json.Mapper
             Configuration = new ConfigContainer();
             Types = new TypeContainer();
             CollBuilder = new CollectionBuilder();
-            Launcher = new Launcher(Mappers, Types);
             MapEngine = 
                 MapEngineFactory.CreateMapEngine(null, CollBuilder,
                                                  Mappers, Types, Configuration);
@@ -76,8 +75,6 @@ namespace Commons.Json.Mapper
 
         public CollectionBuilder CollBuilder { get; private set; }
 
-        public ILauncher Launcher { get; private set; }
-        
         public ConfigContainer Configuration { get; private set; }
 
         public TypeContainer Types { get; private set; }

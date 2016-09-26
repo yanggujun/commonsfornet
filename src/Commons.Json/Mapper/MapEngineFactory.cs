@@ -19,13 +19,11 @@ namespace Commons.Json.Mapper
     {
         public IMapEngine CreateMapEngine(IJsonBuilder jsonBuilder, CollectionBuilder builder, MapperContainer mappers, TypeContainer types, ConfigContainer configuration)
         {
-            var launcher = new Launcher(mappers, types);
-
             var nullBuilder = new NullBuilder(configuration);
             var primitiveBuilder = new PrimitiveBuilder(configuration);
-            var arrayBuilder = new ArrayBuilder(configuration, launcher, mappers);
-            var enumBuilder = new EnumerableBuilder(configuration, launcher, builder, mappers);
-            var dictBuilder = new DictionaryBuilder(configuration, mappers, launcher);
+            var arrayBuilder = new ArrayBuilder(configuration, mappers);
+            var enumBuilder = new EnumerableBuilder(configuration, builder, mappers);
+            var dictBuilder = new DictionaryBuilder(configuration, mappers);
             var objPropBuilder = new ObjectPropertyBuilder(configuration, mappers, types);
             var abcolBuilder = new NonConcreteBuilder(configuration, mappers);
 

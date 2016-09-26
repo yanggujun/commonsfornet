@@ -20,11 +20,9 @@ namespace Commons.Json.Mapper
 {
     internal class ArrayBuilder : ValueBuilderSkeleton
     {
-        private readonly ILauncher launcher;
         protected readonly MapperContainer mappers;
-        public ArrayBuilder(ConfigContainer configuration, ILauncher launcher, MapperContainer mappers) : base(configuration)
+        public ArrayBuilder(ConfigContainer configuration, MapperContainer mappers) : base(configuration)
         {
-            this.launcher = launcher;
             this.mappers = mappers;
         }
 

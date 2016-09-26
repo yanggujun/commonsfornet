@@ -59,15 +59,15 @@ namespace Commons.Json.Mapper
             set;
         }
 
-        public IList<Triple<string, Type, Func<object, object>>> Getters
+        public IList<KeyValuePair<PropertyInfo, Func<object, object>>> Getters
         {
             get;
-        } = new List<Triple<string, Type, Func<object, object>>>();
+        } = new List<KeyValuePair<PropertyInfo, Func<object, object>>>();
 
-        public IList<Triple<string, Type, Action<object, object>>> Setters
+        public IList<KeyValuePair<PropertyInfo, Action<object, object>>> Setters
         {
             get;
-        } = new List<Triple<string, Type, Action<object, object>>>();
+        } = new List<KeyValuePair<PropertyInfo, Action<object, object>>>();
 
         public IList<PropertyInfo> Properties
         {
@@ -118,7 +118,7 @@ namespace Commons.Json.Mapper
                 var getExp = Expression.Call(castExp, getMethod);
                 var retExp = Expression.Convert(getExp, typeof(object));
                 var getter = (Func<object, object>) Expression.Lambda(retExp, targetParamExp).Compile();
-                Getters.Add(new Triple<string, Type, Func<object, object>>(get.Name, get.PropertyType, getter));
+                Getters.Add(new KeyValuePair<PropertyInfo, Func<object, object>>(get, getter));
             }
 
             var setters = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -136,7 +136,7 @@ namespace Commons.Json.Mapper
                 var setValueExp = Expression.Call(castTargetExp, setMethod, castValueExp);
                 var testExp = Expression.IfThen(testValueExp, setValueExp);
                 var setter = (Action<object, object>)Expression.Lambda(testExp, targetParamExp, valueParamExp).Compile();
-                Setters.Add(new Triple<string, Type, Action<object, object>>(set.Name, set.PropertyType, setter));
+                Setters.Add(new KeyValuePair<PropertyInfo, Action<object, object>>(set, setter));
             }
 
             Constructor = type.GetConstructor(Type.EmptyTypes);

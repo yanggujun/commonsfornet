@@ -150,13 +150,13 @@ namespace Commons.Json.Mapper
                     sb.Append(JsonTokens.LeftBrace);
                     foreach (var prop in manager.Getters)
                     {
-                        if (mapper.IsPropertyIgnored(prop.Value1))
+                        if (mapper.IsPropertyIgnored(prop.Key.Name))
                         {
                             continue;
                         }
-                        var propValue = prop.Value3(target);
+                        var propValue = prop.Value(target);
                         sb.Append(JsonTokens.Quoter);
-                        sb.Append(mapper.GetKey(prop.Value1));
+                        sb.Append(mapper.GetKey(prop.Key.Name));
                         sb.Append(JsonTokens.Quoter);
                         sb.Append(JsonTokens.Colon);
                         sb.Append(Build(propValue));

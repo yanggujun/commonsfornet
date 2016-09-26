@@ -784,10 +784,7 @@ namespace Commons.Test.Json
             var json = "{\"Name\": \"Complex\"}";
             var complicated = JsonMapper.To<Complicated>(json);
             Assert.Equal("Complex", complicated.Name);
-            Assert.NotNull(complicated.Simple);
-            Assert.NotNull(complicated.Simple.Value);
-            Assert.Null(complicated.Simple.Value.Name);
-            Assert.Equal(0, complicated.Simple.Value.Age);
+            Assert.Null(complicated.Simple);
         }
 
         [Fact]
@@ -796,10 +793,7 @@ namespace Commons.Test.Json
             var json = "{\"Name\": \"Complex\"}";
             var complicated = JsonMapper.To<Complicated?>(json);
             Assert.Equal("Complex", complicated.Value.Name);
-            Assert.NotNull(complicated.Value.Simple);
-            Assert.NotNull(complicated.Value.Simple.Value);
-            Assert.Null(complicated.Value.Simple.Value.Name);
-            Assert.Equal(0, complicated.Value.Simple.Value.Age);
+            Assert.Null(complicated.Value.Simple);
         }
 
         [Fact]
@@ -952,7 +946,7 @@ namespace Commons.Test.Json
 
             Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SimpleStruct>(json));
 
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SimpleStruct?>(json));
+            Assert.Null(JsonMapper.To<SimpleStruct?>(json));
 
             Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
         }
