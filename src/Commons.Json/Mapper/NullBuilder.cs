@@ -34,7 +34,7 @@ namespace Commons.Json.Mapper
         {
             if (!targetType.IsClass() && !targetType.IsNullable())
             {
-                return Activator.CreateInstance(targetType);
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             return null;
         }

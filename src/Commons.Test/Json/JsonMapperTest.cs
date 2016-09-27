@@ -102,7 +102,7 @@ namespace Commons.Test.Json
         public void TestMapJsonToObject05()
         {
             var json = "{\"fielde\": null, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
-                       + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+                       + "\"valueA\", \"FieldB\": 0, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
             var nested = JsonMapper.To<Nested>(json);
             Assert.Null(nested.FieldE);
             Assert.Equal(nested.FieldF, 20);
@@ -127,7 +127,7 @@ namespace Commons.Test.Json
         public void TestMapJsonToObject07()
         {
             var json = "{\"fielde\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3, \"Simple\": {\"FieldA\": "
-                       + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+                       + "\"valueA\", \"FieldB\": 0, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
             var nested = JsonMapper.To<Nested>(json);
             Assert.Equal(3, nested.FieldG, 1);
         }
@@ -136,7 +136,7 @@ namespace Commons.Test.Json
         public void TestMapJsonToObject08()
         {
             var json = "{\"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
-                       + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+                       + "\"valueA\", \"FieldB\": 0, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
             var nested = JsonMapper.To<Nested>(json);
             Assert.Null(nested.FieldE);
             Assert.Equal(nested.FieldF, 20);
@@ -1679,6 +1679,19 @@ namespace Commons.Test.Json
             {
                 Assert.Equal(i, (int)jsonObj.Array[i]);
             }
+        }
+
+        [Fact]
+        public void TestMapObjectToJson37()
+        {
+            var anonymous = new { F1 = "V1", F2 = "V2", F3 = 10, F4 = new { F5 = 10.4, F6 = "V6" } };
+            var json = JsonMapper.ToJson(anonymous);
+            var jsonObj = JsonMapper.Parse(json);
+            Assert.Equal("V1", (string)jsonObj.F1);
+            Assert.Equal("V2", (string)jsonObj.F2);
+            Assert.Equal(10, (int)jsonObj.F3);
+            Assert.Equal(10.4, (double)jsonObj.F4.F5);
+            Assert.Equal("V6", (string)jsonObj.F4.F6);
         }
 
         [Fact]
