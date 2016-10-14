@@ -84,11 +84,11 @@ namespace Commons.Main
                 var json = JsonMapper.ToJson(p);
 
                 sw1.Start();
-                JsonMapper.To<SmallPost>(p);
+                JsonMapper.To<SmallPost>(json);
                 sw1.Stop();
 
                 sw2.Start();
-                JsonConvert.DeserializeObject<SmallPost>(p);
+                JsonConvert.DeserializeObject<SmallPost>(json);
                 sw2.Stop();
             }
 
@@ -112,11 +112,11 @@ namespace Commons.Main
                 var json = JsonMapper.ToJson(post);
 
                 sw1.Start();
-                JsonMapper.To<SmallPost>(post);
+                JsonMapper.To<SmallPost>(json);
                 sw1.Stop();
 
                 sw2.Start();
-                JsonConvert.DeserializeObject<SmallPost>(post);
+                JsonConvert.DeserializeObject<SmallPost>(json);
                 sw2.Stop();
             }
 

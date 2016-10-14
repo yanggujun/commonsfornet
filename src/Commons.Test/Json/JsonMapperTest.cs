@@ -1125,14 +1125,6 @@ namespace Commons.Test.Json
         }
 
         [Fact]
-        public void TestMapJsonToObject76()
-        {
-            var json = "5.6";
-            var n = JsonMapper.To<int>(json);
-            Assert.Equal(5, n);
-        }
-
-        [Fact]
         public void TestMapObjectToJson01()
         {
             var simple = new Simple();
