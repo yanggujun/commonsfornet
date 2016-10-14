@@ -1125,6 +1125,14 @@ namespace Commons.Test.Json
         }
 
         [Fact]
+        public void TestMapJsonToObject76()
+        {
+            var json = "5.6";
+            var n = JsonMapper.To<int>(json);
+            Assert.Equal(5, n);
+        }
+
+        [Fact]
         public void TestMapObjectToJson01()
         {
             var simple = new Simple();
@@ -1692,6 +1700,14 @@ namespace Commons.Test.Json
             Assert.Equal(10, (int)jsonObj.F3);
             Assert.Equal(10.4, (double)jsonObj.F4.F5);
             Assert.Equal("V6", (string)jsonObj.F4.F6);
+        }
+
+        [Fact]
+        public void TestMapObjectToJson38()
+        {
+            int? number = 5;
+            var json = JsonMapper.ToJson(number);
+            Assert.Equal("5", json);
         }
 
         [Fact]
@@ -2371,32 +2387,6 @@ namespace Commons.Test.Json
             var engine = new JsonParseEngine();
             var json = "{\"a\": \"b\", \"c\"}";
             Assert.Throws(typeof (ArgumentException), () => engine.Parse(json));
-        }
-
-        public void TestPerformance()
-        {
-            var engine = new JsonParseEngine();
-            var json7 = TestHelper.ReadFrom(@"JsonSample10.txt");
-            engine.Parse(json7);
-            var sw = new Stopwatch();
-            sw.Start();
-            for (var i = 0; i < 10000; i++)
-            {
-                var obj = engine.Parse(json7) as JObject;
-                Assert.Equal("Alpha", obj["a"] as JString);
-            }
-            sw.Stop();
-            Console.WriteLine("Parse Engine: " + sw.ElapsedMilliseconds);
-            sw.Reset();
-            JsonMapper.Parse(json7);
-            sw.Start();
-            for (var i = 0; i < 10000; i++)
-            {
-                dynamic obj = JsonMapper.Parse(json7);
-                Assert.Equal("Alpha", (string)obj["a"]);
-            }
-            sw.Stop();
-            Console.WriteLine("Dynamic Object: " + sw.ElapsedMilliseconds);
         }
     }
 }
