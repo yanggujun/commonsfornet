@@ -14,6 +14,9 @@ namespace Commons.Main
         public static void Main(string[] args)
         {
             TestSmallObjectToJson();
+            TestStandardObjectToJson();
+            TestSmallObjectJsonToObject();
+            TestStandardObjectJsonToObject();
         }
 
         public static void TestStandardObjectToJson()
@@ -101,8 +104,8 @@ namespace Commons.Main
             const int LN = 100000;
             var warm = Post.Factory<Post, Vote, PostState, Comment>((int)(0x0000ffff & DateTime.Now.Ticks), x => (PostState)x);
             var jsonWarm = JsonMapper.ToJson(warm);
-            JsonMapper.To<SmallPost>(jsonWarm);
-            JsonConvert.DeserializeObject<SmallPost>(jsonWarm);
+            JsonMapper.To<Post>(jsonWarm);
+            JsonConvert.DeserializeObject<Post>(jsonWarm);
 
             var sw1 = new Stopwatch();
             var sw2 = new Stopwatch();
@@ -112,20 +115,18 @@ namespace Commons.Main
                 var json = JsonMapper.ToJson(post);
 
                 sw1.Start();
-                JsonMapper.To<SmallPost>(json);
+                JsonMapper.To<Post>(json);
                 sw1.Stop();
 
                 sw2.Start();
-                JsonConvert.DeserializeObject<SmallPost>(json);
+                JsonConvert.DeserializeObject<Post>(json);
                 sw2.Stop();
             }
 
-            Console.WriteLine("Json to small object ----- ");
+            Console.WriteLine("Json to standard object ----- ");
             PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
 
         }
-
-
 
         private static void PrintResult(string test1, long test1Ms, string test2, long test2Ms)
         {
