@@ -41,7 +41,6 @@ namespace Commons.Json.Mapper
         {
             //TODO: how about two type arguments?
             var itemType = targetType.GetGenericArguments()[0];
-            var array = BuildArray(itemType, jsonValue);
             //TODO: do not use reflection.
             object raw;
             var mapper = mappers.GetMapper(targetType);
@@ -56,12 +55,20 @@ namespace Commons.Json.Mapper
             }
             else
             {
-                raw = Activator.CreateInstance(targetType);
+                raw = colBuilder.Construct(targetType);
+            }
+
+            JArray array;
+            if (!jsonValue.Is<JArray>(out array))
+            {
+                array = new JArray();
+                array.Add(jsonValue);
             }
 
             foreach (var item in array)
             {
-                colBuilder.Build((IEnumerable)raw, item);
+                var itemValue = Successor.Build(itemType, item);
+                colBuilder.Build((IEnumerable)raw, itemValue);
             }
 
             return raw;

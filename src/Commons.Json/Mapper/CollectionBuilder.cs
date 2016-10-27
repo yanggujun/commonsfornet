@@ -14,6 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Linq.Expressions;
 using Commons.Collections.Map;
 using Commons.Collections.Queue;
 using Commons.Collections.Set;
@@ -27,11 +30,16 @@ namespace Commons.Json.Mapper
 {
     internal class CollectionBuilder
     {
-        private ReferenceMap<Type, Action<IEnumerable, object>> builders = 
-            new ReferenceMap<Type, Action<IEnumerable, object>>();
+        private readonly HashedMap<Type, Action<IEnumerable, object>> builders = 
+            new HashedMap<Type, Action<IEnumerable, object>>();
+
+	    private readonly HashedMap<Type, Action<IEnumerable, object>> collectionAdders = new HashedMap<Type, Action<IEnumerable, object>>();
+
+	    private readonly HashedMap<Type, Func<object>> constructors = new HashedMap<Type, Func<object>>();
 
         public CollectionBuilder()
         {
+			// TODO: support non-generic collections
             Configure(typeof(IList<>), Add);
             Configure(typeof(ISet<>), Add);
             Configure(typeof(LinkedList<>), AddLast);
@@ -47,6 +55,21 @@ namespace Commons.Json.Mapper
             builders[type] = builder;
         }
 
+	    public IEnumerable Construct(Type type)
+	    {
+		    if (!type.IsCollection())
+		    {
+			    throw new ArgumentException();
+		    }
+
+		    if (!constructors.ContainsKey(type))
+		    {
+			    var newExp = Expression.New(type.GetConstructor(Type.EmptyTypes));
+			    constructors[type] = (Func<object>)Expression.Lambda(newExp).Compile();
+		    }
+			return (IEnumerable)constructors[type]();
+	    }
+
         public void Build(IEnumerable collection, object value)
         {
             var filled = false;
@@ -58,12 +81,16 @@ namespace Commons.Json.Mapper
             }
             else if (type.IsGenericType())
             {
-                var genericType = type.GetGenericTypeDefinition();
-                if (builders.ContainsKey(genericType))
-                {
-                    builders[genericType](collection, value);
-                    filled = true;
-                }
+	            var genericType = type.GetGenericTypeDefinition();
+	            if (builders.ContainsKey(genericType))
+	            {
+		            builders[genericType](collection, value);
+		            filled = true;
+	            }
+            }
+            else
+            {
+	            throw new NotSupportedException();
             }
 
             if (!filled)
@@ -89,32 +116,67 @@ namespace Commons.Json.Mapper
             }
         }
 
+	    private Action<IEnumerable, object> CreateAddDelegate(Type collectionType, string methodName)
+	    {
+	        var colParam = Expression.Parameter(typeof (IEnumerable), "col");
+	        var itemParam = Expression.Parameter(typeof (object), "item");
+
+	        var itemType = collectionType.GetGenericArguments()[0];
+		    var method = collectionType.GetMethod(methodName, new[] {itemType});
+	        var castItemExp = Expression.Convert(itemParam, itemType);
+	        var castColExp = Expression.Convert(colParam, collectionType);
+
+	        var addExp = Expression.Call(castColExp, method, castItemExp);
+		    return Expression.Lambda<Action<IEnumerable, object>>(addExp, colParam, itemParam).Compile();
+	    }
+
+
         private void Add(IEnumerable list, object obj)
         {
-            var type = list.GetType();
-            var method = type.GetMethod(Messages.AddMethod);
-            method.Invoke(list, new[] { obj });
+	        var type = list.GetType();
+	        if (!collectionAdders.ContainsKey(type))
+	        {
+		        var del = CreateAddDelegate(type, Messages.AddMethod);
+		        collectionAdders[type] = del;
+	        }
+
+	        collectionAdders[type](list, obj);
         }
 
         private void AddLast(IEnumerable linkedList, object obj)
         {
-            var type = linkedList.GetType();
-            var method = type.GetMethod(Messages.AddLastMethod, new[] { obj.GetType() });
-            method.Invoke(linkedList, new[] { obj });
+	        var type = linkedList.GetType();
+	        if (!collectionAdders.ContainsKey(type))
+	        {
+		        var del = CreateAddDelegate(type, Messages.AddLastMethod);
+		        collectionAdders[type] = del;
+	        }
+
+	        collectionAdders[type](linkedList, obj);
         }
 
         private void Enqueue(IEnumerable queue, object obj)
         {
-            var type = queue.GetType();
-            var method = type.GetMethod(Messages.EnqueueMethod);
-            method.Invoke(queue, new[] { obj });
+	        var type = queue.GetType();
+	        if (!collectionAdders.ContainsKey(type))
+	        {
+		        var del = CreateAddDelegate(type, Messages.EnqueueMethod);
+		        collectionAdders[type] = del;
+	        }
+
+	        collectionAdders[type](queue, obj);
         }
 
         private void Push(IEnumerable stack, object obj)
         {
-            var type = stack.GetType();
-            var method = type.GetMethod(Messages.PushMethod);
-            method.Invoke(stack, new[] { obj });
+	        var type = stack.GetType();
+	        if (!collectionAdders.ContainsKey(type))
+	        {
+		        var del = CreateAddDelegate(type, Messages.PushMethod);
+		        collectionAdders[type] = del;
+	        }
+
+	        collectionAdders[type](stack, obj);
         }
     }
 }
