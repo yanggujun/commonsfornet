@@ -7,7 +7,7 @@ using Commons.Json;
 using Commons.Test.Json;
 using Newtonsoft.Json;
 
-namespace Commons.Main
+namespace Commons.Perf
 {
     public class Program
     {

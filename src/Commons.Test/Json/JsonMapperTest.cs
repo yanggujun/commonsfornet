@@ -1125,6 +1125,35 @@ namespace Commons.Test.Json
         }
 
         [Fact]
+        public void TestMapJsonToObject76()
+        {
+            var json = "{}";
+            var dict = JsonMapper.To<Dictionary<string, string>>(json);
+            Assert.NotNull(dict);
+            Assert.Equal(0, dict.Count);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject77()
+        {
+            var json = "[]";
+            var array = JsonMapper.To<int[]>(json);
+            Assert.NotNull(array);
+            Assert.Equal(0, array.Length);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject78()
+        {
+            var json = "[{}]";
+            var array = JsonMapper.To<List<Dictionary<string, string>>>(json);
+            Assert.NotNull(array);
+            Assert.Equal(1, array.Count);
+            Assert.NotNull(array[0]);
+            Assert.Equal(0, array[0].Count);
+        }
+
+        [Fact]
         public void TestMapObjectToJson01()
         {
             var simple = new Simple();
