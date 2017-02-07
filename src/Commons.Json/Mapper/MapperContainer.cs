@@ -15,13 +15,14 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Commons.Collections.Map;
 
 namespace Commons.Json.Mapper
 {
     internal class MapperContainer
     {
-        private HashedMap<Type, MapperImpl> mappers = new HashedMap<Type, MapperImpl>();
+        private Dictionary<Type, MapperImpl> mappers = new Dictionary<Type, MapperImpl>();
 
         public bool ContainsMapper(Type type)
         {

@@ -30,12 +30,12 @@ namespace Commons.Json.Mapper
 {
     internal class CollectionBuilder
     {
-        private readonly HashedMap<Type, Action<IEnumerable, object>> builders = 
-            new HashedMap<Type, Action<IEnumerable, object>>();
+        private readonly Dictionary<Type, Action<IEnumerable, object>> builders = 
+            new Dictionary<Type, Action<IEnumerable, object>>();
 
-	    private readonly HashedMap<Type, Action<IEnumerable, object>> collectionAdders = new HashedMap<Type, Action<IEnumerable, object>>();
+	    private readonly Dictionary<Type, Action<IEnumerable, object>> collectionAdders = new Dictionary<Type, Action<IEnumerable, object>>();
 
-	    private readonly HashedMap<Type, Func<object>> constructors = new HashedMap<Type, Func<object>>();
+	    private readonly Dictionary<Type, Func<object>> constructors = new Dictionary<Type, Func<object>>();
 
         public CollectionBuilder()
         {

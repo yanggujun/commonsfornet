@@ -26,7 +26,7 @@ namespace Commons.Json.Mapper
 {
     public class JObject : JValue, IEnumerable<KeyValuePair<string, JValue>>
     {
-        private HashedMap<string, JValue> values = new HashedMap<string, JValue>(new IgnoreCaseStringEquator());
+        private Dictionary<string, JValue> values = new Dictionary<string, JValue>(new IgnoreCaseStringEquator());
 
         private string lastKey;
         public void PutKey(JString key)

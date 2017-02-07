@@ -24,7 +24,7 @@ namespace Commons.Json.Mapper
 {
     internal class TypeContainer
     {
-        private HashedMap<Type, TypeManager> typeManagers = new HashedMap<Type, TypeManager>();
+        private Dictionary<Type, TypeManager> typeManagers = new Dictionary<Type, TypeManager>();
 
         public TypeManager this[Type type]
         {
