@@ -18,6 +18,8 @@ using System;
 using System.Reflection;
 using System.Text;
 using System.Collections;
+using System.Collections.Generic;
+using Commons.Collections.Map;
 using Commons.Utils;
 
 namespace Commons.Json.Mapper
@@ -28,10 +30,12 @@ namespace Commons.Json.Mapper
         private readonly TypeContainer types;
         private readonly ConfigContainer config;
         private readonly StringBuilder localBuffer;
+	    private readonly Dictionary<Type, KeyValuePair<bool, Type>> dictTypeInfoMap;
 
         public JsonBuilder(MapperContainer mappers, TypeContainer types, ConfigContainer config)
         {
-            localBuffer = new StringBuilder();
+	        localBuffer = new StringBuilder(1000);
+	        dictTypeInfoMap = new Dictionary<Type, KeyValuePair<bool, Type>>();
             this.mappers = mappers;
             this.types = types;
             this.config = config;
@@ -77,9 +81,9 @@ namespace Commons.Json.Mapper
                 localBuffer.Append(JsonTokens.Quoter).Append(time).Append(JsonTokens.Quoter);
                 json = localBuffer.ToString();
             }
-            else if (type.IsDictionary(out keyType))
+            else if (IsDictionary(type, out keyType))
             {
-                var sb = new StringBuilder();
+                var sb = new StringBuilder(50);
                 sb.Append(JsonTokens.LeftBrace);
                 if (keyType == typeof(string))
                 {
@@ -104,7 +108,7 @@ namespace Commons.Json.Mapper
             else if (type.IsArray)
             {
                 var array = (Array)target;
-                var sb = new StringBuilder();
+                var sb = new StringBuilder(50);
                 sb.Append(JsonTokens.LeftBracket);
                 var hasValue = false;
                 foreach(var item in array)
@@ -121,7 +125,7 @@ namespace Commons.Json.Mapper
             }
             else if (typeof(IEnumerable).IsInstanceOfType(target))
             {
-                var sb = new StringBuilder();
+                var sb = new StringBuilder(50);
                 sb.Append(JsonTokens.LeftBracket);
                 var hasValue = false;
                 foreach (var item in ((IEnumerable)target))
@@ -146,7 +150,7 @@ namespace Commons.Json.Mapper
                 else
                 {
                     var manager = types[type];
-                    var sb = new StringBuilder();
+                    var sb = new StringBuilder(50);
                     sb.Append(JsonTokens.LeftBrace);
                     foreach (var prop in manager.Getters)
                     {
@@ -171,5 +175,21 @@ namespace Commons.Json.Mapper
             return json;
         }
 
+	    private bool IsDictionary(Type type, out Type keyType)
+	    {
+		    var result = false;
+		    if (dictTypeInfoMap.ContainsKey(type))
+		    {
+			    result = dictTypeInfoMap[type].Key;
+				keyType = dictTypeInfoMap[type].Value;
+		    }
+		    else
+		    {
+			    result = type.IsDictionary(out keyType);
+			    dictTypeInfoMap[type] = new KeyValuePair<bool, Type>(result, keyType);
+		    }
+
+			return result;
+	    }
     }
 }
