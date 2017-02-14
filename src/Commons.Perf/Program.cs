@@ -14,6 +14,7 @@ namespace Commons.Perf
         public static void Main(string[] args)
         {
             TestSmallObjectToJson();
+			TestNormalObjectToJson();
             TestStandardObjectToJson();
             TestSmallObjectJsonToObject();
             TestStandardObjectJsonToObject();
@@ -41,9 +42,10 @@ namespace Commons.Perf
                 sw2.Stop();
             }
 
-
-            Console.WriteLine("Standard object to Json------ ");
+			Console.WriteLine("------------------");
+            Console.WriteLine("Standard object to Json");
             PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+			Console.WriteLine("------------------");
         }
 
         public static void TestSmallObjectToJson()
@@ -67,9 +69,38 @@ namespace Commons.Perf
             }
 
 
-            Console.WriteLine("Small object to Json----- ");
+			Console.WriteLine("------------------");
+            Console.WriteLine("Small object to Json");
             PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+			Console.WriteLine("------------------");
         }
+
+		public static void TestNormalObjectToJson()
+		{
+			const int LN = 1000000;
+			var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
+			var warm = CompletePrimitiveObject.Factory(rand);
+			JsonConvert.SerializeObject(warm);
+			JsonMapper.ToJson(warm);
+
+			var sw1 = new Stopwatch();
+			var sw2 = new Stopwatch();
+			for (var i = 0; i < LN; i++)
+			{
+				var obj = CompletePrimitiveObject.Factory(rand);
+				sw1.Start();
+				JsonMapper.ToJson(obj);
+				sw1.Stop();
+
+				sw2.Start();
+				JsonConvert.SerializeObject(obj);
+				sw2.Stop();
+			}
+			Console.WriteLine("------------------");
+            Console.WriteLine("Complete Primitive Object to Json");
+            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+			Console.WriteLine("------------------");
+		}
 
         public static void TestSmallObjectJsonToObject()
         {
@@ -95,8 +126,10 @@ namespace Commons.Perf
                 sw2.Stop();
             }
 
-            Console.WriteLine("Json to small object ----- ");
+			Console.WriteLine("------------------");
+            Console.WriteLine("Json to small object");
             PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+			Console.WriteLine("------------------");
         }
 
         public static void TestStandardObjectJsonToObject()
@@ -123,8 +156,10 @@ namespace Commons.Perf
                 sw2.Stop();
             }
 
-            Console.WriteLine("Json to standard object ----- ");
+			Console.WriteLine("------------------");
+            Console.WriteLine("Json to standard object");
             PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+			Console.WriteLine("------------------");
 
         }
 

@@ -103,5 +103,40 @@ namespace Commons.Test.Json
         public DateTime F15 { get; set; }
         public Simple F16 { get; set; }
         public Guid F17 { get; set; }
+
+		private static readonly char[] alph = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'};
+
+		public static CompletePrimitiveObject Factory(Random rand)
+		{
+			var next = rand.Next();
+			var nextDouble = rand.Next();
+
+			return new CompletePrimitiveObject
+			{
+				F1 = "sdjgnoqwerghj3eighjigtyjiow3jae'foklm" + next,
+				F2 = next,
+				F3 = nextDouble,
+				F4 = Convert.ToSingle(nextDouble),
+				F5 = Convert.ToInt16(next % 256),
+				F6 = next % 2 == 0,
+				F7 = DateTime.Now.Ticks,
+				F8 = Convert.ToByte(next % 32),
+				F9 = Convert.ToSByte(next % 64),
+				F10 = Convert.ToUInt32(next),
+				F11 = Convert.ToUInt64(next),
+				F12 = Convert.ToUInt16(next % 512),
+				F13 = Convert.ToDecimal(nextDouble),
+				F14 = alph[next % 15],
+				F15 = DateTime.Now,
+				F16 = new Simple
+				{
+					FieldA = next.ToString(),
+					FieldB = next,
+					FieldC = nextDouble,
+					FieldD = DateTime.Now.Ticks % 2 == 0
+				},
+				F17 = Guid.NewGuid()
+			};
+		}
     }
 }

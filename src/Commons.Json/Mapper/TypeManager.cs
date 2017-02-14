@@ -59,17 +59,17 @@ namespace Commons.Json.Mapper
             set;
         }
 
-        public IList<KeyValuePair<PropertyInfo, Func<object, object>>> Getters
+        public List<KeyValuePair<PropertyInfo, Func<object, object>>> Getters
         {
             get;
         } = new List<KeyValuePair<PropertyInfo, Func<object, object>>>();
 
-        public IList<KeyValuePair<PropertyInfo, Action<object, object>>> Setters
+        public List<KeyValuePair<PropertyInfo, Action<object, object>>> Setters
         {
             get;
         } = new List<KeyValuePair<PropertyInfo, Action<object, object>>>();
 
-        public IList<PropertyInfo> Properties
+        public List<PropertyInfo> Properties
         {
             get; private set;
         } 
