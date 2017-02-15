@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Commons.Json</id>
-    <version>0.2.3</version>
+    <version>0.2.4</version>
     <authors>yanggujun</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -18,9 +18,11 @@
     <summary>Work with JSON fluently and dynamically.
     </summary>
     <releaseNotes>
-        Update on 0.2.3.x
+        Update on 0.2.4.x
 
         *. Build against .net core 1.0, into the next era.
+
+        *. Performance tuning.
 
         *. Build and test passed on os: win81, win10, ubuntu14.04 lts.
 
@@ -40,7 +42,7 @@
     <tags>JSON</tags>
     <dependencies>
         <group>
-            <dependency id="Commons" version="0.2.3.508"/>
+            <dependency id="Commons" version="0.2.4.731"/>
         </group>
         <group targetFramework=".NETSTANDARD1.3">
             <dependency id="System.Dynamic.Runtime" version="4.0.11"/>

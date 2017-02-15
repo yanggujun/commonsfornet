@@ -9,7 +9,7 @@ $StartDate = [datetime]::ParseExact("02/15/2015", "MM/dd/yyyy", [System.Globaliz
 $Today = (Get-Date)
 $BuildNo = ($Today - $StartDate).Days
 
-$version = "0.2.3.$BuildNo"
+$version = "0.2.4.$BuildNo"
 
 $BuildInfo = "Building project Commons, version: {0}" -f $version
 

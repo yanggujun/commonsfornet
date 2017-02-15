@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Commons</id>
-    <version>0.2.3</version>
+    <version>0.2.4</version>
     <authors>yanggujun</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -17,7 +17,7 @@
     </description>
     <summary>Atomic Primitives, Hash Functions, Collections</summary>
     <releaseNotes>
-        Update on 0.2.3.x
+        Update on 0.2.4.x
 
         *. Build against .net core 1.0, into the next era.
 

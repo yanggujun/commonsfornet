@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Commons.Pool</id>
-    <version>0.2.3</version>
+    <version>0.2.4</version>
     <authors>yanggujun</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -18,7 +18,7 @@
     <summary>A light weight and thread safe generic object pool.
     </summary>
     <releaseNotes>
-        Update on 0.2.3.x
+        Update on 0.2.4.x
 
         *. Build against .net core 1.0, into the next era.
 
@@ -32,7 +32,7 @@
     <tags>Object Pool</tags>
     <dependencies>
         <group>
-            <dependency id="Commons" version="0.2.3.508"/>
+            <dependency id="Commons" version="0.2.4.731"/>
         </group>
         <group targetFramework=".NETSTANDARD1.3">
             <dependency id="System.Data.Common" version="4.1.0"/>
