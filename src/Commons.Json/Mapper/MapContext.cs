@@ -15,12 +15,12 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Concurrent;
 
 namespace Commons.Json.Mapper
 {
     internal class MapContext : IMapContext
     {
-        private string dateFormat = string.Empty;
         public MapContext(string name)
         {
             Name = name;
@@ -29,6 +29,7 @@ namespace Commons.Json.Mapper
             Configuration = new ConfigContainer();
             Types = new TypeContainer();
             CollBuilder = new CollectionBuilder();
+			SerializerMapper = new ConcurrentDictionary<Type, Func<object, string>>();
             MapEngine = 
                 MapEngineFactory.CreateMapEngine(null, CollBuilder,
                                                  Mappers, Types, Configuration);
@@ -52,7 +53,7 @@ namespace Commons.Json.Mapper
         // TODO: need to parse the actually typeof(T) to JsonBuilder as sometimes, typeof(T) != target.GetType()
         public string ToJson<T>(T target)
         {
-            var jsonBuilder = new JsonBuilder(Mappers, Types, Configuration);
+            var jsonBuilder = new JsonBuilder(Mappers, Types, Configuration, SerializerMapper);
             return jsonBuilder.Build(target);
         }
 
@@ -78,6 +79,8 @@ namespace Commons.Json.Mapper
         public ConfigContainer Configuration { get; private set; }
 
         public TypeContainer Types { get; private set; }
+
+		public ConcurrentDictionary<Type, Func<object, string>> SerializerMapper;
 
         public IMapEngine MapEngine { get; private set; }
 

@@ -65,24 +65,25 @@ namespace Commons.Json.Mapper
 
             foreach (var prop in properties)
             {
-                if (mapper.IsPropertyIgnored(prop.Key.Name))
+				var itemName = prop.Item1.Name;
+                if (mapper.IsPropertyIgnored(itemName))
                 {
                     continue;
                 }
 
-                var key = mapper.GetKey(prop.Key.Name);
-                var propertyType = prop.Key.PropertyType;
+                var key = mapper.GetKey(itemName);
+                var propertyType = prop.Item1.PropertyType;
                 if (jsonObj.ContainsKey(key))
                 {
                     var jsonValue = jsonObj[key];
                     var value = Successor.Build(propertyType, jsonValue);
                     if (type.IsClass())
                     {
-                        prop.Value(target, value);
+                        prop.Item2(target, value);
                     }
                     else
                     {
-                        prop.Key.SetValue(target, value, null);
+                        prop.Item1.SetValue(target, value, null);
                     }
                 }
             }

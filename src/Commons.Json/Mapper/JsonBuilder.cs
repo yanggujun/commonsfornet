@@ -17,7 +17,7 @@
 using Commons.Utils;
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
 
@@ -25,18 +25,19 @@ namespace Commons.Json.Mapper
 {
 	internal class JsonBuilder : IJsonBuilder
     {
+		private const int localBufferSize = 1000;
+		private const int objectSize = 200;
         private readonly MapperContainer mappers;
         private readonly TypeContainer types;
         private readonly ConfigContainer config;
         private readonly StringBuilder localBuffer;
-	    private readonly Dictionary<Type, Tuple<bool, Type>> dictTypeInfoMap;
-		private readonly Dictionary<Type, Func<object, string>> serializers;
+		private readonly ConcurrentDictionary<Type, Func<object, string>> serializers;
 
-        public JsonBuilder(MapperContainer mappers, TypeContainer types, ConfigContainer config)
+        public JsonBuilder(MapperContainer mappers, TypeContainer types, ConfigContainer config, 
+			ConcurrentDictionary<Type, Func<object, string>> serializerMapper)
         {
-	        localBuffer = new StringBuilder(1000);
-	        dictTypeInfoMap = new Dictionary<Type, Tuple<bool, Type>>();
-			serializers = new Dictionary<Type, Func<object, string>>();
+	        localBuffer = new StringBuilder(localBufferSize);
+			serializers = serializerMapper;
             this.mappers = mappers;
             this.types = types;
             this.config = config;
@@ -47,22 +48,6 @@ namespace Commons.Json.Mapper
 			var serializer = GetSerializer(target);
 			return serializer(target);
         }
-
-	    private bool IsDictionary(Type type)
-	    {
-		    var result = false;
-		    if (dictTypeInfoMap.ContainsKey(type))
-		    {
-			    result = dictTypeInfoMap[type].Item1;
-		    }
-		    else
-		    {
-			    result = type.IsDictionary();
-			    dictTypeInfoMap[type] = new Tuple<bool, Type>(result, null);
-		    }
-
-			return result;
-	    }
 
 		private Func<object, string> GetSerializer(object target)
 		{
@@ -94,13 +79,21 @@ namespace Commons.Json.Mapper
 			{
 				serializer = SerializeTime;
 			}
-			else if (IsDictionary(type))
+			else if (type == typeof(byte[]))
+			{
+				serializer = SerializeByteArray;
+			}
+			else if (type.IsDictionary())
 			{
 				serializer = SerializeDict;
 			}
 			else if (type.IsArray)
 			{
 				serializer = SerializeArray;
+			}
+			else if (typeof(IList).IsAssignableFrom(type))
+			{
+				serializer = SerializeList;
 			}
 			else if (target is IEnumerable)
 			{
@@ -116,6 +109,14 @@ namespace Commons.Json.Mapper
 			return serializer;
 		}
 
+		private string SerializeByteArray(object target)
+		{
+			var bytes = (byte[])target;
+			localBuffer.Length = 0;
+			localBuffer.Append(JsonTokens.Quoter).Append(Convert.ToBase64String(bytes)).Append(JsonTokens.Quoter);
+			return localBuffer.ToString();
+		}
+
 		private string SerializeObject(object target)
 		{
 			var type = target.GetType();
@@ -128,19 +129,20 @@ namespace Commons.Json.Mapper
 			else
 			{
 				var manager = types[type];
-				var sb = new StringBuilder(50);
+				var sb = new StringBuilder(objectSize);
 				sb.Append(JsonTokens.LeftBrace);
 				var getters = manager.Getters;
 				for (var i = 0; i < getters.Count; i++)
 				{
 					var prop = getters[i];
-					if (mapper.IsPropertyIgnored(prop.Key.Name))
+					var itemName = prop.Item1.Name;
+					if (mapper.IsPropertyIgnored(itemName))
 					{
 						continue;
 					}
-					var propValue = prop.Value(target);
+					var propValue = prop.Item2(target);
 					sb.Append(JsonTokens.Quoter);
-					sb.Append(mapper.GetKey(prop.Key.Name));
+					sb.Append(mapper.GetKey(itemName));
 					sb.Append(JsonTokens.Quoter);
 					sb.Append(JsonTokens.Colon);
 					var serializer = GetSerializer(propValue);
@@ -157,14 +159,37 @@ namespace Commons.Json.Mapper
 
 		private string SerializeEnumerable(object target)
 		{
-			var sb = new StringBuilder(50);
+			var sb = new StringBuilder(objectSize);
 			sb.Append(JsonTokens.LeftBracket);
 			var hasValue = false;
-			foreach (var item in ((IEnumerable)target))
+			var items = target as IEnumerable;
+			foreach (var item in items)
 			{
+				var itemSerializer = GetSerializer(item);
+				sb.Append(itemSerializer(item)).Append(JsonTokens.Comma);
+				hasValue = true;
+			}
+			if (hasValue)
+			{
+				sb.Remove(sb.Length - 1, 1);
+			}
+			sb.Append(JsonTokens.RightBracket);
+			return sb.ToString();
+		}
+
+		private string SerializeList(object target)
+		{
+			var sb = new StringBuilder(objectSize);
+			sb.Append(JsonTokens.LeftBracket);
+			var hasValue = false;
+			var items = target as IList;
+			for (var i = 0; i < items.Count; i++)
+			{
+				var item = items[i];
 				sb.Append(Build(item)).Append(JsonTokens.Comma);
 				hasValue = true;
 			}
+
 			if (hasValue)
 			{
 				sb.Remove(sb.Length - 1, 1);
@@ -180,7 +205,7 @@ namespace Commons.Json.Mapper
 
 		private string SerializeDict(object target)
 		{
-			var sb = new StringBuilder(50);
+			var sb = new StringBuilder(objectSize);
 			sb.Append(JsonTokens.LeftBrace);
 			// TODO: serialize dict with key type is not string.
 			var type = target.GetType();
@@ -247,11 +272,12 @@ namespace Commons.Json.Mapper
 		private string SerializeArray(object target)
 		{
 			var array = (Array)target;
-			var sb = new StringBuilder(50);
+			var sb = new StringBuilder(objectSize);
 			sb.Append(JsonTokens.LeftBracket);
 			var hasValue = false;
-			foreach(var item in array)
+			for (var i = 0; i < array.Length; i++)
 			{
+				var item = array.GetValue(i);
 				sb.Append(Build(item)).Append(JsonTokens.Comma);
 				hasValue = true;
 			}

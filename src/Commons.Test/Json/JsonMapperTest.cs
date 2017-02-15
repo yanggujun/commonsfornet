@@ -1153,6 +1153,40 @@ namespace Commons.Test.Json
             Assert.Equal(0, array[0].Count);
         }
 
+		[Fact]
+		public void TestMapJsonToObject79()
+		{
+			var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
+			var bytes = new byte[20];
+			rand.NextBytes(bytes);
+			var str = Convert.ToBase64String(bytes);
+			var array = new ByteArray
+			{
+				Bytes = bytes,
+				Name = str
+			};
+
+			var json = JsonMapper.ToJson(array);
+			var result = JsonMapper.To<ByteArray>(json);
+			for (var i = 0; i < bytes.Length; i++)
+			{
+				Assert.Equal(result.Bytes[i], bytes[i]);
+			}
+			Assert.Equal(str, result.Name);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject791()
+		{
+			var json = "{\"Bytes\": [0, 1, 2 ,3 ,4, 5, 6], \"Name\": \"AnArray\"}";
+			var result = JsonMapper.To<ByteArray>(json);
+			for (var i = 0; i < 7; i++)
+			{
+				Assert.Equal(i, result.Bytes[i]);
+			}
+			Assert.Equal("AnArray", result.Name);
+		}
+
         [Fact]
         public void TestMapObjectToJson01()
         {
@@ -1730,6 +1764,24 @@ namespace Commons.Test.Json
             var json = JsonMapper.ToJson(number);
             Assert.Equal("5", json);
         }
+
+		[Fact]
+		public void TestMapObjectToJson39()
+		{
+			var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
+			var bytes = new byte[10];
+			rand.NextBytes(bytes);
+			var str = Convert.ToBase64String(bytes);
+			var array = new ByteArray
+			{
+				Bytes = bytes,
+				Name = str
+			};
+			var json = JsonMapper.ToJson(array);
+			var jsonObj = JsonMapper.Parse(json);
+			Assert.Equal(str, (string)jsonObj.Bytes);
+			Assert.Equal(str, (string)jsonObj.Name);
+		}
 
         [Fact]
         public void TestMapProperty01()

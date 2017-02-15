@@ -4,11 +4,18 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Commons.Json;
+using Commons.Json.Mapper;
 using Commons.Test.Json;
 using Newtonsoft.Json;
 
 namespace Commons.Perf
 {
+	// TODO: 
+	// byte[]
+	//    large byte array buffer
+	// change configuration behavior
+	// Json2Object
+	//    initialize list with an size.
     public class Program
     {
         public static void Main(string[] args)
@@ -16,9 +23,61 @@ namespace Commons.Perf
             TestSmallObjectToJson();
 			TestNormalObjectToJson();
             TestStandardObjectToJson();
+			TestLargeObjectToJson();
             TestSmallObjectJsonToObject();
             TestStandardObjectJsonToObject();
         }
+
+		public static void TestLargeObjectToJson()
+		{
+			const int LN = 10000;
+            //JsonMapper.UseDateFormat("MM/dd/yyyy HH:mm:ss").For<Note>().ConstructWith(x =>
+            //{
+            //    var jsonObj = x as JObject;
+            //    Note note;
+            //    if (jsonObj.ContainsKey("index"))
+            //    {
+            //        var foot = new Footnote();
+            //        foot.note = jsonObj.GetString("note");
+            //        foot.writtenBy = jsonObj.GetString("writtenBy");
+            //        foot.index = jsonObj.GetInt64("index");
+            //        foot.createadAt = DateTime.Parse(jsonObj.GetString("createadAt"));
+            //        note = foot;
+            //    }
+            //    else
+            //    {
+            //        var head = new Headnote();
+            //        head.note = jsonObj.GetString("note");
+            //        head.writtenBy = jsonObj.GetString("writtenBy");
+            //        head.modifiedAt = DateTime.Parse(jsonObj.GetString("modifiedAt"));
+            //        note = head;
+            //    }
+            //    return note;
+            //});
+            var warm = Book.Factory<Book, Genre, Page, Headnote, Footnote>(7, x => (Genre)x);
+			JsonMapper.ToJson(warm);
+			JsonConvert.SerializeObject(warm);
+
+			var sw1 = new Stopwatch();
+			var sw2 = new Stopwatch();
+
+			for (var i = 0; i < LN; i++)
+			{
+				var book = Book.Factory<Book, Genre, Page, Headnote, Footnote>(7, x => (Genre)x);
+				sw1.Start();
+				JsonMapper.ToJson(book);
+				sw1.Stop();
+
+				sw2.Start();
+				JsonConvert.SerializeObject(warm);
+				sw2.Stop();
+			}
+
+			Console.WriteLine("------------------");
+            Console.WriteLine("Large object to Json");
+            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+			Console.WriteLine("------------------");
+		}
 
         public static void TestStandardObjectToJson()
         {

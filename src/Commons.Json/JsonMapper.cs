@@ -14,14 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Commons.Collections.Map;
 using Commons.Json.Mapper;
 using Commons.Utils;
+using System;
 
 namespace Commons.Json
 {
-    [CLSCompliant(true)]
+	[CLSCompliant(true)]
     public static class JsonMapper
     {
         private const string DefaultContext = "default";

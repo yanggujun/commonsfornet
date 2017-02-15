@@ -24,7 +24,7 @@ using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-    internal class NonConcreteBuilder : ValueBuilderSkeleton
+	internal class NonConcreteBuilder : ValueBuilderSkeleton
     {
         private readonly MapperContainer mappers;
         public NonConcreteBuilder(ConfigContainer configuration, MapperContainer mappers) : base(configuration)

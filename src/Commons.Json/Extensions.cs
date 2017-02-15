@@ -176,7 +176,6 @@ namespace Commons.Json
             }
 
             return isDict;
-
         }
 
         public static bool Serializable(this Type type)

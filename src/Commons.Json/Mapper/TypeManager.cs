@@ -26,19 +26,6 @@ using System.Linq.Expressions;
 
 namespace Commons.Json.Mapper
 {
-    internal struct Triple<T1, T2, T3>
-    {
-        public Triple(T1 v1, T2 v2, T3 v3)
-        {
-            Value1 = v1;
-            Value2 = v2;
-            Value3 = v3;
-        }
-
-        public T1 Value1 { get; set; }
-        public T2 Value2 { get; set; }
-        public T3 Value3 { get; set; }
-    }
     internal class TypeManager
     {
 
@@ -59,15 +46,15 @@ namespace Commons.Json.Mapper
             set;
         }
 
-        public List<KeyValuePair<PropertyInfo, Func<object, object>>> Getters
+        public List<Tuple<PropertyInfo, Func<object, object>>> Getters
         {
             get;
-        } = new List<KeyValuePair<PropertyInfo, Func<object, object>>>();
+        } = new List<Tuple<PropertyInfo, Func<object, object>>>();
 
-        public List<KeyValuePair<PropertyInfo, Action<object, object>>> Setters
+        public List<Tuple<PropertyInfo, Action<object, object>>> Setters
         {
             get;
-        } = new List<KeyValuePair<PropertyInfo, Action<object, object>>>();
+        } = new List<Tuple<PropertyInfo, Action<object, object>>>();
 
         public List<PropertyInfo> Properties
         {
@@ -118,7 +105,7 @@ namespace Commons.Json.Mapper
                 var getExp = Expression.Call(castExp, getMethod);
                 var retExp = Expression.Convert(getExp, typeof(object));
                 var getter = (Func<object, object>) Expression.Lambda(retExp, targetParamExp).Compile();
-                Getters.Add(new KeyValuePair<PropertyInfo, Func<object, object>>(get, getter));
+                Getters.Add(new Tuple<PropertyInfo, Func<object, object>>(get, getter));
             }
 
             var setters = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -136,7 +123,7 @@ namespace Commons.Json.Mapper
                 var setValueExp = Expression.Call(castTargetExp, setMethod, castValueExp);
                 var testExp = Expression.IfThen(testValueExp, setValueExp);
                 var setter = (Action<object, object>)Expression.Lambda(testExp, targetParamExp, valueParamExp).Compile();
-                Setters.Add(new KeyValuePair<PropertyInfo, Action<object, object>>(set, setter));
+                Setters.Add(new Tuple<PropertyInfo, Action<object, object>>(set, setter));
             }
 
             Constructor = type.GetConstructor(Type.EmptyTypes);

@@ -16,13 +16,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using Commons.Collections.Map;
-using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-    internal class TypeContainer
+	internal class TypeContainer
     {
         private Dictionary<Type, TypeManager> typeManagers = new Dictionary<Type, TypeManager>();
 
@@ -30,10 +27,6 @@ namespace Commons.Json.Mapper
         {
             get
             {
-                if (type.IsJsonPrimitive() || !type.Deserializable())
-                {
-                    throw new InvalidOperationException(Messages.TypeNotSupported);
-                }
                 TypeManager manager;
                 if (typeManagers.ContainsKey(type))
                 {

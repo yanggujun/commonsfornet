@@ -28,8 +28,27 @@ namespace Commons.Json.Mapper
 
         protected override object DoBuild(Type targetType, JValue jsonValue)
         {
-            var itemType = targetType.GetElementType();
-            return BuildArray(itemType, jsonValue);
+			if (targetType == typeof(byte[]))
+			{
+				JString jsonStr;
+				if (jsonValue.Is<JArray>())
+				{
+					return BuildArray(typeof(byte), jsonValue);
+				}
+				else if (jsonValue.Is<JString>(out jsonStr))
+				{
+					return Convert.FromBase64String(jsonStr.Value);
+				}
+				else
+				{
+					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+				}
+			}
+			else
+			{
+				var itemType = targetType.GetElementType();
+				return BuildArray(itemType, jsonValue);
+			}
         }
 
         protected override bool CanProcess(Type targetType, JValue jsonValue)

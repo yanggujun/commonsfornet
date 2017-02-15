@@ -275,4 +275,10 @@ namespace Commons.Test.Json
         public string Name { get; set; }
         public IEnumerable<double> Numbers { get; set; }
     }
+
+	public class ByteArray
+	{
+		public byte[] Bytes { get; set; }
+		public string Name { get; set; }
+	}
 }

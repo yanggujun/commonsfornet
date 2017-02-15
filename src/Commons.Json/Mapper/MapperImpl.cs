@@ -16,17 +16,14 @@
 
 using System;
 using System.Collections.Generic;
-using Commons.Collections.Map;
-using Commons.Collections.Set;
-using System.Collections;
 
 namespace Commons.Json.Mapper
 {
-    internal class MapperImpl
+	internal class MapperImpl
     {
-        private readonly HashedMap<string, string> keyPropMap = new HashedMap<string, string>(new IgnoreCaseStringEquator());
-        private readonly HashedMap<string, string> propKeyMap = new HashedMap<string, string>(new IgnoreCaseStringEquator());
-        private readonly HashedSet<string> ignoredProps = new HashedSet<string>();
+        private readonly Dictionary<string, string> keyPropMap = new Dictionary<string, string>(new IgnoreCaseStringEquator());
+        private readonly Dictionary<string, string> propKeyMap = new Dictionary<string, string>(new IgnoreCaseStringEquator());
+        private readonly HashSet<string> ignoredProps = new HashSet<string>();
         private bool propMapped;
         private bool propIgnored;
 
@@ -100,7 +97,7 @@ namespace Commons.Json.Mapper
             return keyPropMap.TryGetValue(key, out property);
         }
 
-        private IReadOnlyStrictSet<string> IgnoredProperties
+        private HashSet<string> IgnoredProperties
         {
             get { return ignoredProps; }
         }
