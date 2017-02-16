@@ -25,14 +25,11 @@ namespace Commons.Json.Mapper
         {
             Name = name;
             Mappers = new MapperContainer();
-            MapEngineFactory = new MapEngineFactory();
             Configuration = new ConfigContainer();
             Types = new TypeContainer();
             CollBuilder = new CollectionBuilder();
 			SerializerMapper = new ConcurrentDictionary<Type, Func<object, string>>();
-            MapEngine = 
-                MapEngineFactory.CreateMapEngine(null, CollBuilder,
-                                                 Mappers, Types, Configuration);
+            MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder);
 
         }
 

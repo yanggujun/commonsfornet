@@ -21,6 +21,5 @@ namespace Commons.Json.Mapper
     public interface IMapEngine
     {
         object Map(Type type, JValue jsonValue);
-        string Map(object target);
     }
 }

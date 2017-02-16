@@ -17,5 +17,5 @@ sh ./tools/_test.sh net40
 sh ./tools/_test.sh net45
 
 cd $OUTPUT/netcoreapp1.0
-dotnet run Commons.Perf.dll
+dotnet Commons.Perf.dll
 cd ../../../../

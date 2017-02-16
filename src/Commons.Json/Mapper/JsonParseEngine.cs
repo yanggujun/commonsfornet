@@ -16,28 +16,13 @@
 
 using System;
 using System.Globalization;
+using System.Text;
 
 namespace Commons.Json.Mapper
 {
     public class JsonParseEngine : IParseEngine
     {
         private CultureInfo culture = CultureInfo.InvariantCulture;
-        private IParseEngine objectParser;
-        private IParseEngine arrayParser;
-        private IParseEngine stringParser;
-        private IParseEngine boolParser;
-        private IParseEngine numberParser;
-        private IParseEngine nullParser;
-
-        public JsonParseEngine()
-        {
-            stringParser = new StringParser();
-            boolParser = new BoolParser();
-            numberParser = new NumberParser();
-            nullParser = new NullParser();
-            objectParser = new ObjectParser(this, stringParser);
-            arrayParser = new ArrayParser(this);
-        }
 
         public JValue Parse(string json)
         {
@@ -47,38 +32,307 @@ namespace Commons.Json.Mapper
             }
             var text = json.Trim();
             var firstCh = text[0];
-            IParseEngine parser;
+            JValue result;
             if (firstCh.Equals(JsonTokens.LeftBrace))
             {
-                parser = objectParser;
+                result = ParseObject(json);
             }
             else if (firstCh.Equals(JsonTokens.LeftBracket))
             {
-                parser = arrayParser;
+                result = ParseArray(json);
             }
             else if (firstCh.Equals(JsonTokens.Quoter))
             {
-                parser = stringParser;
+                result = ParseString(json);
             }
             else if (firstCh.Equals('N') || firstCh.Equals('n'))
             {
-                parser = nullParser;
+                result = ParseNull(json);
             }
             else if (firstCh.Equals('T') || firstCh.Equals('t') 
                 || firstCh.Equals('F') || firstCh.Equals('f'))
             {
-                parser = boolParser;
+                result = ParseBool(json);
             }
             else if (Char.IsNumber(firstCh) || firstCh.Equals('-'))
             {
-                parser = numberParser;
+                result = ParseNumber(json);
             }
             else
             {
                 throw new ArgumentException(Messages.InvalidFormat);
             }
 
-            return parser.Parse(text);
+            return result;
+        }
+
+        private JValue ParseString(string json)
+        {
+            var value = json.Trim();
+            if (string.IsNullOrWhiteSpace(value) || value.Length < 2 || !value[0].Equals(JsonTokens.Quoter) || !value[value.Length - 1].Equals(JsonTokens.Quoter))
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+            var str = value.Trim(JsonTokens.Quoter);
+            return new JString(str);
+        }
+
+        private JValue ParseNull(string json)
+        {
+            var text = json.Trim();
+            if (!text.Equals(JsonTokens.Null, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+            return JNull.Value;
+        }
+
+        private JValue ParseArray(string json)
+        {
+            var text = json.Trim();
+            var fragment = new StringBuilder();
+            var quoted = false;
+            var bracketMatch = 0;
+            var braceMatch = 0;
+            var hasComma = false;
+            var array = new JArray();
+
+            for (var i = 0; i < text.Length; i++)
+            {
+                if (bracketMatch < 0)
+                {
+                    throw new ArgumentException();
+                }
+                var ch = text[i];
+                if (ch.Equals(JsonTokens.Quoter))
+                {
+                    quoted = !quoted;
+                }
+                if (quoted)
+                {
+                    fragment.Append(ch);
+                    continue;
+                }
+
+                if (hasComma && !ch.IsEmpty())
+                {
+                    if (ch != JsonTokens.RightBracket 
+                        && ch != JsonTokens.RightBrace 
+                        && ch != JsonTokens.Comma)
+                    {
+                        hasComma = false;
+                    }
+                    else
+                    {
+                        throw new ArgumentException(Messages.InvalidFormat);
+                    }
+                }
+
+                if (ch.Equals(JsonTokens.LeftBracket))
+                {
+                    ++bracketMatch;
+                    if (bracketMatch > 1)
+                    {
+                        fragment.Append(ch);
+                    }
+                }
+                else if (ch.Equals(JsonTokens.LeftBrace))
+                {
+                    ++braceMatch;
+                    fragment.Append(ch);
+                }
+                else if (ch.Equals(JsonTokens.RightBrace))
+                {
+                    --braceMatch;
+                    fragment.Append(ch);
+                }
+                else if (ch.Equals(JsonTokens.Comma) && bracketMatch == 1 && braceMatch == 0)
+                {
+                    if (string.IsNullOrWhiteSpace(fragment.ToString().Trim()))
+                    {
+                        throw new ArgumentException(Messages.InvalidFormat);
+                    }
+                    AppendValue(array, fragment);
+                    hasComma = true;
+                }
+                else if (ch.Equals(JsonTokens.RightBracket))
+                {
+                    --bracketMatch;
+                    if (bracketMatch == 0)
+                    {
+                        AppendValue(array, fragment);
+                        if (i < text.Length - 1)
+                        {
+                            throw new ArgumentException();
+                        }
+                    }
+                    else if (bracketMatch > 0)
+                    {
+                        fragment.Append(ch);
+                    }
+                }
+                else
+                {
+                    fragment.Append(ch);
+                }
+            }
+
+            if (quoted || bracketMatch != 0)
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+
+            return array;
+        }
+
+        private JValue ParseNumber(string json)
+        {
+            JValue value;
+            var number = json.Trim();
+            var dotIndex = number.IndexOf(JsonTokens.Dot);
+            if (dotIndex == number.Length - 1 || dotIndex == 0)
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+            if (dotIndex < 0)
+            {
+                long result;
+                var success = long.TryParse(number, out result);
+                if (!success)
+                {
+                    throw new ArgumentException(Messages.InvalidFormat);
+                }
+                var integer = new JInteger(result);
+                value = integer;
+            }
+            else
+            {
+                decimal result;
+                var success = decimal.TryParse(number, out result);
+                if (!success)
+                {
+                    throw new ArgumentException(Messages.InvalidFormat);
+                }
+                var dec = new JDecimal(result);
+                value = dec;
+            }
+            return value;
+        }
+
+        private JValue ParseBool(string json)
+        {
+            var text = json.Trim();
+            bool result;
+            if (!bool.TryParse(text, out result))
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+            return new JBoolean(result);
+        }
+
+        private JValue ParseObject(string text)
+        {
+            var json = text.Trim();
+            var fragment = new StringBuilder();
+
+            var quoted = false;
+            var jsonObject = new JObject();
+            var braceMatch = 0;
+            var bracketMatch = 0;
+            for (var pos = 0; pos < json.Length; pos++)
+            {
+                if (braceMatch < 0)
+                {
+                    throw new ArgumentException(Messages.InvalidFormat);
+                }
+                var ch = json[pos];
+                if (ch.Equals(JsonTokens.Quoter))
+                {
+                    quoted = !quoted;
+                }
+
+                if (quoted)
+                {
+                    fragment.Append(ch);
+                    continue;
+                }
+
+                if (ch.Equals(JsonTokens.LeftBrace))
+                {
+                    ++braceMatch;
+                    if (braceMatch > 1)
+                    {
+                        fragment.Append(ch);
+                    }
+                }
+                else if (ch.Equals(JsonTokens.LeftBracket))
+                {
+                    ++bracketMatch;
+                    fragment.Append(ch);
+                }
+                else if (ch.Equals(JsonTokens.RightBracket))
+                {
+                    --bracketMatch;
+                    fragment.Append(ch);
+                }
+                else if (ch.Equals(JsonTokens.Colon) && braceMatch == 1 && bracketMatch ==0)
+                {
+                    var key = Parse(fragment.ToString());
+                    jsonObject.PutKey(key as JString);
+                    fragment.Clear();
+                }
+                else if (ch.Equals(JsonTokens.Comma) && braceMatch == 1 && bracketMatch == 0)
+                {
+                    var v = Parse(fragment.ToString());
+                    jsonObject.PutObject(v);
+                    fragment.Clear();
+                }
+                else if (ch.Equals(JsonTokens.RightBrace))
+                {
+                    --braceMatch;
+                    if (braceMatch == 0)
+                    {
+                        var frag = fragment.ToString();
+                        if (!string.IsNullOrWhiteSpace(frag))
+                        {
+                            var v = Parse(frag);
+                            jsonObject.PutObject(v);
+                            if (pos < json.Length - 1)
+                            {
+                                throw new ArgumentException(Messages.InvalidFormat);
+                            }
+                        }
+                    }
+                    else if (braceMatch > 0)
+                    {
+                        fragment.Append(ch);
+                    }
+                }
+                else
+                {
+                    fragment.Append(ch);
+                }
+            }
+            if (quoted || braceMatch != 0)
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+            if (!jsonObject.Validate())
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+            return jsonObject;
+        }
+
+        private void AppendValue(JArray array, StringBuilder jsonFragment)
+        {
+            var text = jsonFragment.ToString();
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                var value = Parse(jsonFragment.ToString());
+                array.Add(value);
+            }
+            jsonFragment.Clear();
         }
     }
 }

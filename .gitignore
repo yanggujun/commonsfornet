@@ -6,7 +6,7 @@ packages*/
 obj*/
 *.pdb
 *.dll
-
+*.TMP
 
 #ignore thumbnails created by windows
 Thumbs.db

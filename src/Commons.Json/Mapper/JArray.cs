@@ -29,6 +29,15 @@ namespace Commons.Json.Mapper
             values.Add(value);
         }
 
+        public int Count
+        {
+            get
+            {
+                return values.Count;
+            }
+        }
+
+
         public JValue this[int index]
         {
             get

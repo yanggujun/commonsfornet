@@ -21,10 +21,10 @@ namespace Commons.Json.Mapper
 {
     internal class ObjectParser : IParseEngine
     {
-        private IParseEngine jsonParser;
-        private IParseEngine stringParser;
+        private JsonParseEngine jsonParser;
+        private StringParser stringParser;
 
-        public ObjectParser(IParseEngine jsonParser, IParseEngine stringParser)
+        public ObjectParser(JsonParseEngine jsonParser, StringParser stringParser)
         {
             this.jsonParser = jsonParser;
             this.stringParser = stringParser;
