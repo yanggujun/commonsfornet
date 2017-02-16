@@ -56,3 +56,6 @@ $nuget = ".\src\.nuget\NuGet.exe"
 &$nuget pack Commons.Json.nuspec -outputdirectory $OUTPUT -version $version
 &$nuget pack Commons.Pool.nuspec -outputdirectory $OUTPUT -version $version
 
+pushd $OUTPUT\netcoreapp1.0
+dotnet Commons.Perf.dll
+popd
