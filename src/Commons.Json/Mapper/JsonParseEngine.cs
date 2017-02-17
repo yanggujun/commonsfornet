@@ -22,8 +22,6 @@ namespace Commons.Json.Mapper
 {
     public class JsonParseEngine : IParseEngine
     {
-        private CultureInfo culture = CultureInfo.InvariantCulture;
-
         public JValue Parse(string json)
         {
             if (string.IsNullOrWhiteSpace(json))
@@ -84,7 +82,7 @@ namespace Commons.Json.Mapper
             {
                 throw new ArgumentException(Messages.InvalidFormat);
             }
-            return JNull.Value;
+			return new JNull();
         }
 
         private JValue ParseArray(string json)
@@ -187,53 +185,25 @@ namespace Commons.Json.Mapper
 
         private JValue ParseNumber(string json)
         {
-            JValue value;
             var number = json.Trim();
             var dotIndex = number.IndexOf(JsonTokens.Dot);
             if (dotIndex == number.Length - 1 || dotIndex == 0)
             {
                 throw new ArgumentException(Messages.InvalidFormat);
             }
-            if (dotIndex < 0)
-            {
-                long result;
-                var success = long.TryParse(number, out result);
-                if (!success)
-                {
-                    throw new ArgumentException(Messages.InvalidFormat);
-                }
-                var integer = new JInteger(result);
-                value = integer;
-            }
-            else
-            {
-                decimal result;
-                var success = decimal.TryParse(number, out result);
-                if (!success)
-                {
-                    throw new ArgumentException(Messages.InvalidFormat);
-                }
-                var dec = new JDecimal(result);
-                value = dec;
-            }
-            return value;
+			return new JPrimitive(number);
         }
 
         private JValue ParseBool(string json)
         {
             var text = json.Trim();
-            bool result;
-            if (!bool.TryParse(text, out result))
-            {
-                throw new ArgumentException(Messages.InvalidFormat);
-            }
-            return new JBoolean(result);
+            return new JPrimitive(text);
         }
 
         private JValue ParseObject(string text)
         {
             var json = text.Trim();
-            var fragment = new StringBuilder();
+            var fragment = new StringBuilder(200);
 
             var quoted = false;
             var jsonObject = new JObject();

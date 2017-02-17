@@ -25,7 +25,7 @@ namespace Commons.Perf
             //TestStandardObjectToJson();
 			//TestLargeObjectToJson();
             TestSmallObjectJsonToObject();
-            //TestStandardObjectJsonToObject();
+            TestStandardObjectJsonToObject();
         }
 
 		public static void TestLargeObjectToJson()

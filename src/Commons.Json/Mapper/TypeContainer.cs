@@ -15,13 +15,13 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Commons.Json.Mapper
 {
 	internal class TypeContainer
     {
-        private Dictionary<Type, TypeManager> typeManagers = new Dictionary<Type, TypeManager>();
+        private ConcurrentDictionary<Type, TypeManager> typeManagers = new ConcurrentDictionary<Type, TypeManager>();
 
         public TypeManager this[Type type]
         {

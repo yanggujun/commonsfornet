@@ -328,7 +328,7 @@ namespace Test.Commons.Json
 	    public void TestCompability046()
 		{
 			var json = "[0.e1]";
-			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<double[]>(json));
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<double[]>(json));
 		}
 
 		[Fact]
@@ -550,7 +550,7 @@ namespace Test.Commons.Json
 	    public void TestCompability080()
 	    {
 			var json = "[\"x\", truth]";
-		    Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		    Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<string[]>(json));
 	    }
 
 		[Fact]

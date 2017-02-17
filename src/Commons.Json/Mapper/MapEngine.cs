@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Reflection;
 using Commons.Utils;
@@ -28,24 +29,20 @@ namespace Commons.Json.Mapper
         private readonly MapperContainer mappers;
         private readonly ConfigContainer configuration;
         private readonly CollectionBuilder colBuilder;
+		private readonly ConcurrentDictionary<Type, Func<Type, JValue, object>> deserializers;
 
-        public MapEngine(TypeContainer types, MapperContainer mappers, ConfigContainer configuration, CollectionBuilder colBuilder)
+        public MapEngine(TypeContainer types, MapperContainer mappers, ConfigContainer configuration, 
+			CollectionBuilder colBuilder, ConcurrentDictionary<Type, Func<Type, JValue, object>> deserializers)
         {
             this.types = types;
             this.mappers = mappers;
             this.configuration = configuration;
             this.colBuilder = colBuilder;
+			this.deserializers = deserializers;
         }
 
-        public object Map(Type type, JValue jsonValue)
-        {
-            JObject jsonObj;
-            JArray jsonArray;
-            JInteger jsonInteger;
-            JDecimal jsonDecimal;
-            JString jsonString;
-            JBoolean jsonBool;
-
+		public object Map(Type type, JValue jsonValue)
+		{
             if (jsonValue.Is<JNull>())
             {
                 if (!type.IsClass() && !type.IsNullable())
@@ -61,60 +58,82 @@ namespace Commons.Json.Mapper
                 return mapper.ManualCreate(jsonValue);
             }
 
-            if (type.IsArray)
-            {
-                return BuildArray(type.GetElementType(), jsonValue);
-            }
+			if ((type.IsInterface() || type.IsAbstract()) && mapper.Create == null)
+			{
+				return null;
+			}
 
-            if (type.IsCollection() && !type.IsDictionary())
-            {
-                return BuildEnumerable(type, jsonValue);
-            }
+			Type underlyingType;
+			var deserializer = GetDeserializer(type, out underlyingType);
+			return deserializer(underlyingType, jsonValue); 
+		}
 
-            if (jsonValue.Is<JObject>(out jsonObj))
-            {
-                return BuildObject(type, jsonObj);
-            }
+		private Func<Type, JValue, object> GetDeserializer(Type type, out Type actualType)
+		{
+			actualType = GetActualType(type);
 
-            if (jsonValue.Is<JArray>(out jsonArray))
-            {
-                if (type.IsArray)
-                {
-                    var itemType = type.GetElementType();
-                    return BuildArray(itemType, jsonArray);
-                }
-                else if (type.IsCollection() && !type.IsDictionary())
-                {
-                    return BuildEnumerable(type, jsonArray);
-                }
-                else
-                {
-                    throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-                }
-            }
-            
-            if (jsonValue.Is<JString>(out jsonString))
-            {
-                return BuildString(type, jsonString);
-            }
+			if (deserializers.ContainsKey(actualType))
+			{
+				return deserializers[actualType];
+			}
+			Func<Type, JValue, object> deserializer;
+			if (actualType == typeof(bool))
+			{
+				deserializer = BuildBool;
+			}
+			else if (actualType == typeof(float) || actualType == typeof(double) || actualType == typeof(decimal))
+			{
+				deserializer = BuildDecimal;
+			}
+			else if (actualType.IsJsonNumber())
+			{
+				deserializer = BuildInteger;
+			}
+			else if (actualType.IsEnum())
+			{
+				deserializer = BuildEnum;
+			}
+			else if (actualType == typeof(Guid))
+			{
+				deserializer = BuildGuid;
+			}
+			else if (actualType == typeof(char))
+			{
+				deserializer = BuildChar;
+			}
+			else if (actualType == typeof(string))
+			{
+				deserializer = BuildString;
+			}
+			else if (actualType == typeof(DateTime))
+			{
+				deserializer = BuildTime;
+			}
+			else if (actualType == typeof(byte[]))
+			{
+				deserializer = BuildByteArray;
+			}
+			else if (actualType.IsDictionary())
+			{
+				deserializer = BuildDict;
+			}
+			else if (actualType.IsArray)
+			{
+				deserializer = BuildArray;
+			}
+			else if (typeof(IEnumerable).IsAssignableFrom(actualType))
+			{
+				deserializer = BuildEnumerable;
+			}
+			else
+			{
+				deserializer = BuildObject;
+			}
 
-            if (jsonValue.Is<JInteger>(out jsonInteger))
-            {
-                return BuildInteger(type, jsonInteger);
-            }
+			deserializers[actualType] = deserializer;
 
-            if (jsonValue.Is<JDecimal>(out jsonDecimal))
-            {
-                return BuildDecimal(type, jsonDecimal);
-            }
-
-            if (jsonValue.Is<JBoolean>(out jsonBool))
-            {
-                return BuildBool(type, jsonBool);
-            }
-
-            return null;
-        }
+			return deserializer;
+		}
 
         private object BuildEnumerable(Type targetType, JValue jsonValue)
         {
@@ -130,7 +149,7 @@ namespace Commons.Json.Mapper
             }
             else
             {
-                raw = colBuilder.Construct(targetType) as IEnumerable;
+				raw = colBuilder.Construct(targetType);
             }
 
             JArray jsonArray;
@@ -152,102 +171,160 @@ namespace Commons.Json.Mapper
             return raw;
         }
 
-        private object BuildBool(Type type, JBoolean jsonBool)
+        private object BuildBool(Type type, JValue jsonValue)
         {
-            if (type != typeof (bool))
+			JPrimitive b;
+            if (!jsonValue.Is<JPrimitive>(out b))
             {
                 throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
             }
-            bool v = jsonBool;
-            return v;
-        }
-        
-        private object BuildDecimal(Type actualType, JDecimal jsonDecimal)
-        {
-            object result;
-            if (actualType != typeof (float) && actualType != typeof (double) && actualType != typeof (decimal))
-            {
-                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-            }
-            if (actualType == typeof (float))
-            {
-                result = jsonDecimal.AsSingle();
-            }
-            else if (actualType == typeof (double))
-            {
-                result = jsonDecimal.AsDouble();
-            }
-            else
-            {
-                result = jsonDecimal.AsDecimal();
-            }
+			bool result;
+			if (!bool.TryParse(b.Value, out result))
+			{
+				throw new ArgumentException(Messages.JsonValueTypeNotMatch);
+			}
             return result;
         }
 
-        private object BuildInteger(Type type, JInteger jsonInteger)
+        private object BuildDecimal(Type type, JValue jsonValue)
         {
-            if (!type.IsJsonNumber())
+			JPrimitive jsonNumber;
+			// TODO: integer could be decimal but not true vice versa
+			if (!jsonValue.Is<JPrimitive>(out jsonNumber))
+			{
+				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+			}
+
+            object result;
+			var success = false;
+            if (type == typeof (float))
             {
-                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+				float num;
+				success = float.TryParse(jsonNumber.Value, out num);
+				result = num;
             }
+            else if (type == typeof (double))
+            {
+				double num;
+				success = double.TryParse(jsonNumber.Value, out num);
+				result = num;
+            }
+            else
+            {
+				decimal num;
+				success = decimal.TryParse(jsonNumber.Value, out num);
+				result = num;
+            }
+			if (!success)
+			{
+				throw new ArgumentException(Messages.InvalidFormat);
+			}
+            return result;
+        }
+
+        private object BuildInteger(Type type, JValue jsonValue)
+        {
+			JPrimitive jsonInteger;
+			if (!jsonValue.Is<JPrimitive>(out jsonInteger))
+			{
+				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+			}
             return GetIntegerPropertyValue(type, jsonInteger);
         }
 
-        private object BuildString(Type actualType, JString jsonString)
-        {
-            object result;
-            var str = jsonString.Value;
-            if (actualType != typeof (string) && actualType != typeof (DateTime) && !actualType.IsEnum() 
-                && actualType != typeof(Guid) && actualType != typeof(char) && actualType != typeof(byte[]))
-            {
-                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-            }
-            if (actualType == typeof (DateTime))
-            {
-                DateTime dt;
-                if (TryParseDate(str, out dt))
-                {
-                    result = dt;
-                }
-                else
-                {
-                    throw new FormatException(Messages.InvalidDateFormat);
-                }
-            }
-            else if (actualType.IsEnum())
-            {
-                result = Enum.Parse(actualType, str);
-            }
-            else if (actualType == typeof(Guid))
-            {
-                Guid guid;
-                if(!Guid.TryParse(str, out guid))
-                {
-                    throw new InvalidCastException(Messages.InvalidDateFormat);
-                }
-                result = guid;
-            }
-            else if (actualType == typeof(char))
-            {
-                result = Convert.ToChar(str);
-            }
-            else if (actualType == typeof(byte[]))
-            {
-                result = Convert.FromBase64String(str);
-            }
-            else
-            {
-                result = str;
-            }
+		private object BuildEnum(Type type, JValue jsonValue)
+		{
+			var str = CheckJsonString(jsonValue);
+			// TODO: what to do when exception.
+			return Enum.Parse(type, str);
+		}
 
-            return result;
+		private object BuildGuid(Type type, JValue jsonValue)
+		{
+			var str = CheckJsonString(jsonValue);
+			Guid guid;
+			if (!Guid.TryParse(str, out guid))
+			{
+				throw new ArgumentException(Messages.InvalidValue);
+			}
+
+			return guid;
+		}
+
+		private object BuildChar(Type type, JValue jsonValue)
+		{
+			var str = CheckJsonString(jsonValue);
+			char result;
+			if (!char.TryParse(str, out result))
+			{
+				throw new ArgumentException(Messages.InvalidValue);
+			}
+			return result;
+		}
+
+		private object BuildTime(Type type, JValue jsonValue)
+		{
+			var str = CheckJsonString(jsonValue);
+			DateTime dt;
+			if (!TryParseDate(str, out dt))
+			{
+				throw new ArgumentException(Messages.InvalidDateFormat);
+			}
+
+			return dt;
+		}
+
+		private object BuildByteArray(Type type, JValue jsonValue)
+		{
+			JString str;
+			byte[] bytes = null;
+			if (jsonValue.Is<JString>(out str))
+			{
+				bytes = Convert.FromBase64String(str.Value);
+			}
+			else
+			{
+				JArray jsonArray;
+				if (jsonValue.Is<JArray>(out jsonArray))
+				{
+					bytes = new byte[jsonArray.Count];
+					for (var i = 0; i < jsonArray.Count; i++)
+					{
+						bytes[i] = (byte)Map(typeof(byte), jsonArray[i]);
+					}
+				}
+				else
+				{
+					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+				}
+			}
+
+			return bytes;
+		}
+
+        private object BuildString(Type type, JValue jsonValue)
+        {
+			var str = CheckJsonString(jsonValue);
+			return str;
         }
 
+		private string CheckJsonString(JValue jsonValue)
+		{
+			JString str;
+			if (!jsonValue.Is<JString>(out str))
+			{
+				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+			}
 
-        private Array BuildArray(Type itemType, JValue jsonValue)
+			return str.Value;
+		}
+
+        private Array BuildArray(Type arrayType, JValue jsonValue)
         {
             JArray jsonArray;
             Array array;
+			var itemType = arrayType.GetElementType();
+			//TODO :do not support array manual create.
             if (jsonValue.Is<JArray>(out jsonArray))
             {
                 array = Array.CreateInstance(itemType, jsonArray.Length);
@@ -270,19 +347,22 @@ namespace Commons.Json.Mapper
             return array;
         }
 
-        private object BuildObject(Type type, JObject jsonObj)
+        private object BuildObject(Type type, JValue jsonValue)
         {
+			var jsonObj = CheckJsonObject(jsonValue);
+
             var properties = types[type].Setters;
-            MapperImpl mapper = mappers.GetMapper(type);
-            object target;
-            if (mapper.Create != null)
-            {
-                target = mapper.Create();
-            }
-            else 
-            {
-                target = types[type].Launch();
-            }
+
+			object target;
+            var mapper = mappers.GetMapper(type);
+			if (mapper.Create != null)
+			{
+				target = mapper.Create();
+			}
+			else
+			{
+				target = types[type].Launch();
+			}
 
             foreach (var prop in properties)
             {
@@ -296,8 +376,8 @@ namespace Commons.Json.Mapper
                 var propertyType = prop.Item1.PropertyType;
                 if (jsonObj.ContainsKey(key))
                 {
-                    var jsonValue = jsonObj[key];
-                    var value = Map(propertyType, jsonValue);
+                    var jv = jsonObj[key];
+                    var value = Map(propertyType, jv);
                     if (type.IsClass())
                     {
                         prop.Item2(target, value);
@@ -311,6 +391,48 @@ namespace Commons.Json.Mapper
 
             return target;
         }
+
+		private JObject CheckJsonObject(JValue jsonValue)
+		{
+			JObject jsonObj;
+			if (!jsonValue.Is<JObject>(out jsonObj))
+			{
+				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+			}
+
+			return jsonObj;
+		}
+
+		private object BuildDict(Type dictType, JValue jsonValue)
+		{
+			var jsonObj = CheckJsonObject(jsonValue);
+			var keyType = dictType.GetGenericArguments()[0];
+			var valueType = dictType.GetGenericArguments()[1];
+			if (keyType != typeof(string))
+			{
+				throw new InvalidOperationException(Messages.JsonValueTypeNotMatch);
+			}
+			object raw;
+			var mapper = mappers.GetMapper(dictType);
+			if (mapper.Create != null)
+			{
+				raw = mapper.Create();
+			}
+			else
+			{
+				raw = Activator.CreateInstance(dictType);
+			}
+
+            var method = dictType.GetMethod(Messages.AddMethod);
+            foreach (var kvp in jsonObj)
+            {
+                var key = kvp.Key;
+                object value = null;
+                value = Map(valueType, kvp.Value);
+                method.Invoke(raw, new[] { key, value });
+            }
+            return raw;
+		}
 
         private bool TryParseDate(string str, out DateTime dt)
         {
@@ -326,55 +448,92 @@ namespace Commons.Json.Mapper
             }
         }
 
-        private static object GetIntegerPropertyValue(Type propertyType, JInteger integer)
+        private static object GetIntegerPropertyValue(Type propertyType, JPrimitive integer)
         {
             object integerObj = null;
+			var success = false;
             if (propertyType == typeof (long))
             {
-                integerObj = integer.AsInt64();
+				long num;
+				success = long.TryParse(integer.Value, out num);
+				integerObj = num;
             }
             else if (propertyType == typeof (int))
             {
-                integerObj = integer.AsInt32();
+				int num;
+				success = int.TryParse(integer.Value, out num);
+				integerObj = num;
             }
             else if (propertyType == typeof (byte))
             {
-                integerObj = integer.AsByte();
+				byte num;
+				success = byte.TryParse(integer.Value, out num);
+				integerObj = num;
             }
             else if (propertyType == typeof (sbyte))
             {
-                integerObj = integer.AsSByte();
+				sbyte num;
+				success = sbyte.TryParse(integer.Value, out num);
+				integerObj = num;
             }
             else if (propertyType == typeof (short))
             {
-                integerObj = integer.AsInt16();
+				short num;
+				success = short.TryParse(integer.Value, out num);
+				integerObj = num;
             }
             else if (propertyType == typeof (double))
             {
-                integerObj = integer.AsDouble();
+				double num;
+				success = double.TryParse(integer.Value, out num);
+				integerObj = num;
             }
             else if (propertyType == typeof (float))
             {
-                integerObj = integer.AsSingle();
+				float num;
+				success = float.TryParse(integer.Value, out num);
+				integerObj = num;
             }
             else if (propertyType == typeof (decimal))
             {
-                integerObj = integer.AsDecimal();
+				decimal num;
+				success = decimal.TryParse(integer.Value, out num);
+				integerObj = num;
             }
             else if (propertyType == typeof (ulong))
             {
-                integerObj = integer.AsUInt64();
+				ulong num;
+				success = ulong.TryParse(integer.Value, out num);
+				integerObj = num;
             }
             else if (propertyType == typeof (uint))
             {
-                integerObj = integer.AsUInt32();
+				uint num;
+				success = uint.TryParse(integer.Value, out num);
+				integerObj = num;
             }
             else if (propertyType == typeof (ushort))
             {
-                integerObj = integer.AsUInt16();
+				ushort num;
+				success = ushort.TryParse(integer.Value, out num);
+				integerObj = num;
             }
 
+			if (!success)
+			{
+				throw new ArgumentException(Messages.InvalidValue);
+			}
             return integerObj;
         }
+
+		private Type GetActualType(Type type)
+		{
+			Type actualType;
+			if (!type.IsNullable(out actualType))
+			{
+				actualType = type;
+			}
+			return actualType;
+		}
     }
 }

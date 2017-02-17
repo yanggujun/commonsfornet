@@ -29,7 +29,8 @@ namespace Commons.Json.Mapper
             Types = new TypeContainer();
             CollBuilder = new CollectionBuilder();
 			SerializerMapper = new ConcurrentDictionary<Type, Func<object, string>>();
-            MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder);
+			DeserializerMapper = new ConcurrentDictionary<Type, Func<Type, JValue, object>>();
+            MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder, DeserializerMapper);
 
         }
 
@@ -78,6 +79,8 @@ namespace Commons.Json.Mapper
         public TypeContainer Types { get; private set; }
 
 		public ConcurrentDictionary<Type, Func<object, string>> SerializerMapper;
+
+		public ConcurrentDictionary<Type, Func<Type, JValue, object>> DeserializerMapper;
 
         public IMapEngine MapEngine { get; private set; }
 

@@ -35,7 +35,7 @@ namespace Commons.Json.Mapper
             {
                 throw new ArgumentNullException("key");
             }
-            lastKey = key;
+            lastKey = key.Value;
         }
 
         public void PutObject(JValue value)
@@ -55,8 +55,8 @@ namespace Commons.Json.Mapper
 
         public JValue this[JString key]
         {
-            get { return values[key]; }
-            set { values[key] = value; }
+            get { return values[key.Value]; }
+            set { values[key.Value] = value; }
         }
 
         public JValue this[string key]
@@ -68,112 +68,6 @@ namespace Commons.Json.Mapper
         public bool ContainsKey(string key)
         {
             return values.ContainsKey(key);
-        }
-
-        public int GetInt32(string key)
-        {
-            return GetInteger(values[key]).AsInt32();
-        }
-
-        public void SetInt32(string key, int integer)
-        {
-            values[key] = new JInteger(integer);
-        }
-
-        [CLSCompliant(false)]
-        public uint GetUInt32(string key)
-        {
-            return GetInteger(values[key]).AsUInt32();
-        }
-
-        [CLSCompliant(false)]
-        public void SetUInt32(string key, uint integer)
-        {
-            values[key] = new JInteger(integer);
-        }
-
-        public short GetInt16(string key)
-        {
-            return GetInteger(values[key]).AsInt16();
-        }
-
-        public void SetInt16(string key, short integer)
-        {
-            values[key] = new JInteger(integer);
-        }
-
-        [CLSCompliant(false)]
-        public ushort GetUInt16(string key)
-        {
-            return GetInteger(values[key]).AsUInt16();
-        }
-
-        [CLSCompliant(false)]
-        public void SetUInt16(string key, ushort integer)
-        {
-            values[key] = new JInteger(integer);
-        }
-
-        public byte GetByte(string key)
-        {
-            return GetInteger(values[key]).AsByte();
-        }
-
-        public void SetByte(string key, byte integer)
-        {
-            values[key] = new JInteger(integer);
-        }
-
-        [CLSCompliant(false)]
-        public sbyte GetSByte(string key)
-        {
-            return GetInteger(values[key]).AsSByte();
-        }
-
-        [CLSCompliant(false)]
-        public void SetSByte(string key, sbyte integer)
-        {
-            values[key] = new JInteger(integer);
-        }
-
-        public long GetInt64(string key)
-        {
-            return GetInteger(values[key]).AsInt64();
-        }
-
-        public void SetInt64(string key, long integer)
-        {
-            values[key] = new JInteger(integer);
-        }
-
-        public float GetSingle(string key)
-        {
-            return GetDecimal(values[key]).AsSingle();
-        }
-
-        public void SetSingle(string key, float dec)
-        {
-            values[key] = new JDecimal(Convert.ToDecimal(dec));
-        }
-
-        public double GetDouble(string key)
-        {
-            return GetDecimal(values[key]).AsDouble();
-        }
-
-        public void SetDouble(string key, double dec)
-        {
-            values[key] = new JDecimal(Convert.ToDecimal(dec));
-        }
-
-        public decimal GetDecimal(string key)
-        {
-            return GetDecimal(values[key]).AsDecimal();
-        }
-
-        public void SetDecimal(string key, decimal dec)
-        {
-            values[key] = new JDecimal(dec);
         }
 
         public string GetString(string key)
@@ -224,21 +118,6 @@ namespace Commons.Json.Mapper
             SetString(key, value.ToString());
         }
 
-        public bool GetBool(string key)
-        {
-            var b = values[key] as JBoolean;
-            if (b == null)
-            {
-                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-            }
-            return b.Value;
-        }
-
-        public void SetBool(string key, bool b)
-        {
-            values[key] = new JBoolean(b);
-        }
-
         public JArray GetArray(string key)
         {
             var array = values[key] as JArray;
@@ -284,28 +163,6 @@ namespace Commons.Json.Mapper
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
-        }
-        
-        private JInteger GetInteger(JValue value)
-        {
-            var integer = value as JInteger;
-            if (integer == null)
-            {
-                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-            }
-
-            return integer;
-        }
-
-        private JDecimal GetDecimal(JValue value)
-        {
-            var dec = value as JDecimal;
-            if (dec == null)
-            {
-                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-            }
-
-            return dec;
         }
     }
 }

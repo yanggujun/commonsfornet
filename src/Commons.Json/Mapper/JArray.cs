@@ -49,58 +49,10 @@ namespace Commons.Json.Mapper
                 return null;
             }
         }
-        
-        public void AddByte(byte integer)
-        {
-            values.Add(new JInteger(integer));
-        }
-        
-        [CLSCompliant(false)]
-        public void AddSByte(sbyte integer)
-        {
-            values.Add(new JInteger(integer));
-        }
-
-        public void AddInt16(short integer)
-        {
-            values.Add(new JInteger(integer));
-        }
-
-        [CLSCompliant(false)]
-        public void AddUInt16(ushort integer)
-        {
-            values.Add(new JInteger(integer));
-        }
-
-        public void AddInt32(int integer)
-        {
-            values.Add(new JInteger(integer));
-        }
-
-        [CLSCompliant(false)]
-        public void AddUInt32(uint integer)
-        {
-            values.Add(new JInteger(integer));
-        }
-
-        public void AddInt64(long integer)
-        {
-            values.Add(new JInteger(integer));
-        }
-
-        public void AddBool(bool b)
-        {
-            values.Add(new JBoolean(b));
-        }
-
-        public void AddString(string str)
-        {
-            values.Add(new JString(str));
-        }
 
         public void AddNull(string key)
         {
-            values.Add(JNull.Value);
+			values.Add(new JNull());
         }
 
         public int Length

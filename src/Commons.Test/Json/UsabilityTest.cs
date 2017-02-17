@@ -219,7 +219,7 @@ namespace Commons.Test.Json
                     var foot = new Footnote();
                     foot.note = jsonObj.GetString("note");
                     foot.writtenBy = jsonObj.GetString("writtenBy");
-                    foot.index = jsonObj.GetInt64("index");
+					foot.index = long.Parse(jsonObj["index"].Value);
                     foot.createadAt = DateTime.Parse(jsonObj.GetString("createadAt"));
                     note = foot;
                 }
