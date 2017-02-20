@@ -54,7 +54,7 @@ namespace Commons.Test.Json
     public class PrimitiveList
     {
         public string FieldJ { get; set; }
-        public List<int> FieldK { get; set; } 
+        public List<int> FieldK { get; set; }
     }
 
     public class SetNested
@@ -247,7 +247,7 @@ namespace Commons.Test.Json
     public class Wonderful
     {
         public string Name { get; set; }
-        public IExcellent Excellent {get;set;}
+        public IExcellent Excellent { get; set; }
     }
 
     public interface IExcellent
@@ -276,9 +276,15 @@ namespace Commons.Test.Json
         public IEnumerable<double> Numbers { get; set; }
     }
 
-	public class ByteArray
-	{
-		public byte[] Bytes { get; set; }
-		public string Name { get; set; }
-	}
+    public class ByteArray
+    {
+        public byte[] Bytes { get; set; }
+        public string Name { get; set; }
+    }
+
+    public abstract class AbstractExcellent
+    {
+        public int Reason { get; set; }
+        public abstract string Name { get; set; }
+    }
 }

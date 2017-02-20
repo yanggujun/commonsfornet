@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Concurrent;
 
+using Commons.Utils;
+
 namespace Commons.Json.Mapper
 {
 	internal class TypeContainer

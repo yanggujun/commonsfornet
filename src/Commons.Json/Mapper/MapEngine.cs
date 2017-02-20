@@ -383,14 +383,14 @@ namespace Commons.Json.Mapper
                 {
                     var jv = jsonObj[key];
                     var value = Map(propertyType, jv);
-                    if (type.IsClass())
-                    {
+                    //if (type.IsClass())
+                    //{
                         prop.Item2(target, value);
-                    }
-                    else
-                    {
-                        prop.Item1.SetValue(target, value, null);
-                    }
+                    //}
+                    //else
+                    //{
+                        //prop.Item1.SetValue(target, value, null);
+                    //}
                 }
             }
 

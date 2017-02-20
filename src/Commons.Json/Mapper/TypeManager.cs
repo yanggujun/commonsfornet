@@ -107,23 +107,22 @@ namespace Commons.Json.Mapper
             var setters = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(x => x.CanWrite && x.GetIndexParameters().Length == 0 && x.GetSetMethod(false) != null);
 
-			foreach (var set in setters)
-			{
-				var targetParamExp = Expression.Parameter(typeof(object), "target");
-				var valueParamExp = Expression.Parameter(typeof(object), "val");
-				var setMethod = set.GetSetMethod();
-				var castTargetExp = Expression.Convert(targetParamExp, Type);
-				var testValueExp = Expression.NotEqual(valueParamExp, Expression.Constant(null));
-				var castValueExp = Expression.Convert(valueParamExp, set.PropertyType);
+            if (!Type.IsValueType())
+            {
+                foreach (var set in setters)
+                {
+                    var targetParamExp = Expression.Parameter(typeof(object), "target");
+                    var valueParamExp = Expression.Parameter(typeof(object), "val");
+                    var setMethod = set.GetSetMethod();
+                    var castTargetExp = Expression.Convert(targetParamExp, Type);
+                    var testValueExp = Expression.NotEqual(valueParamExp, Expression.Constant(null));
+                    var castValueExp = Expression.Convert(valueParamExp, set.PropertyType);
 
-				var setValueExp = Expression.Call(castTargetExp, setMethod, castValueExp);
-				var testExp = Expression.IfThen(testValueExp, setValueExp);
-				var setter = (Action<object, object>)Expression.Lambda(testExp, targetParamExp, valueParamExp).Compile();
-				Setters.Add(new Tuple<PropertyInfo, Action<object, object>>(set, setter));
-			}
-
-			if (Type.IsClass())
-			{
+                    var setValueExp = Expression.Call(castTargetExp, setMethod, castValueExp);
+                    var testExp = Expression.IfThen(testValueExp, setValueExp);
+                    var setter = (Action<object, object>)Expression.Lambda(testExp, targetParamExp, valueParamExp).Compile();
+                    Setters.Add(new Tuple<PropertyInfo, Action<object, object>>(set, setter));
+                }
 				Constructor = Type.GetConstructor(Type.EmptyTypes);
 
 				if (Constructor != null)
@@ -131,11 +130,19 @@ namespace Commons.Json.Mapper
 					var newExp = Expression.New(Constructor);
 					Launcher = (Func<object>)Expression.Lambda(newExp).Compile();
 				}
-			}
-			else
-			{
-				Launcher = () => Activator.CreateInstance(Type);
-			}
+            }
+            else
+            {
+                foreach (var set in setters)
+                {
+                    Action<object, object> setter = (target, val) => set.SetValue(target, val, null);
+                    Setters.Add(new Tuple<PropertyInfo, Action<object, object>>(set, setter));
+                }
+                var newExp = Expression.New(Type);
+                var convertExp = Expression.Convert(newExp, typeof(object));
+                Launcher = (Func<object>)Expression.Lambda(convertExp).Compile();
+            }
+            // TODO: abstract? inherit?
         }
     }
 }

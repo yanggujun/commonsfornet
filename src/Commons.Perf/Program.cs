@@ -25,7 +25,7 @@ namespace Commons.Perf
             //TestStandardObjectToJson();
 			//TestLargeObjectToJson();
             TestSmallObjectJsonToObject();
-            //TestStandardObjectJsonToObject();
+            TestStandardObjectJsonToObject();
         }
 
 		public static void TestMisc()
@@ -184,14 +184,16 @@ namespace Commons.Perf
             for (var i = 0; i < LN; i++)
             {
                 var p = SmallPost.Create(i);
-                var json = JsonMapper.ToJson(p);
+                var json1 = JsonMapper.ToJson(p);
 
                 sw1.Start();
-                JsonMapper.To<SmallPost>(json);
+                JsonMapper.To<SmallPost>(json1);
                 sw1.Stop();
 
+                var json2 = JsonConvert.SerializeObject(p);
+
                 sw2.Start();
-                JsonConvert.DeserializeObject<SmallPost>(json);
+                JsonConvert.DeserializeObject<SmallPost>(json2);
                 sw2.Stop();
             }
 
@@ -214,14 +216,16 @@ namespace Commons.Perf
             for (var i = 0; i < LN; i++)
             {
                 var post = Post.Factory<Post, Vote, PostState, Comment>(i, x => (PostState)x);
-                var json = JsonMapper.ToJson(post);
+                var json1 = JsonMapper.ToJson(post);
 
                 sw1.Start();
-                JsonMapper.To<Post>(json);
+                JsonMapper.To<Post>(json1);
                 sw1.Stop();
 
+                var json2 = JsonConvert.SerializeObject(post);
+
                 sw2.Start();
-                JsonConvert.DeserializeObject<Post>(json);
+                JsonConvert.DeserializeObject<Post>(json2);
                 sw2.Stop();
             }
 
