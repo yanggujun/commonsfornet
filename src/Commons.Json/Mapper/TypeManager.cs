@@ -63,14 +63,10 @@ namespace Commons.Json.Mapper
 
         public object Launch()
         {
-            if (!Type.IsClass())
-            {
-                return Activator.CreateInstance(Type);
-            }
-            if (Constructor == null)
-            {
-                throw new InvalidOperationException(Messages.NoDefaultConstructor);
-            }
+			if (Launcher == null)
+			{
+				throw new InvalidOperationException(Messages.NoDefaultConstructor);
+			}
             return Launcher();
         }
 
@@ -111,28 +107,35 @@ namespace Commons.Json.Mapper
             var setters = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(x => x.CanWrite && x.GetIndexParameters().Length == 0 && x.GetSetMethod(false) != null);
 
-            foreach(var set in setters)
-            {
-                var targetParamExp = Expression.Parameter(typeof(object), "target");
-                var valueParamExp = Expression.Parameter(typeof(object), "val");
-                var setMethod = set.GetSetMethod();
-                var castTargetExp = Expression.Convert(targetParamExp, Type);
-                var testValueExp = Expression.NotEqual(valueParamExp, Expression.Constant(null));
-                var castValueExp = Expression.Convert(valueParamExp, set.PropertyType);
+			foreach (var set in setters)
+			{
+				var targetParamExp = Expression.Parameter(typeof(object), "target");
+				var valueParamExp = Expression.Parameter(typeof(object), "val");
+				var setMethod = set.GetSetMethod();
+				var castTargetExp = Expression.Convert(targetParamExp, Type);
+				var testValueExp = Expression.NotEqual(valueParamExp, Expression.Constant(null));
+				var castValueExp = Expression.Convert(valueParamExp, set.PropertyType);
 
-                var setValueExp = Expression.Call(castTargetExp, setMethod, castValueExp);
-                var testExp = Expression.IfThen(testValueExp, setValueExp);
-                var setter = (Action<object, object>)Expression.Lambda(testExp, targetParamExp, valueParamExp).Compile();
-                Setters.Add(new Tuple<PropertyInfo, Action<object, object>>(set, setter));
-            }
+				var setValueExp = Expression.Call(castTargetExp, setMethod, castValueExp);
+				var testExp = Expression.IfThen(testValueExp, setValueExp);
+				var setter = (Action<object, object>)Expression.Lambda(testExp, targetParamExp, valueParamExp).Compile();
+				Setters.Add(new Tuple<PropertyInfo, Action<object, object>>(set, setter));
+			}
 
-            Constructor = type.GetConstructor(Type.EmptyTypes);
+			if (Type.IsClass())
+			{
+				Constructor = Type.GetConstructor(Type.EmptyTypes);
 
-            if (Constructor != null)
-            {
-                var newExp = Expression.New(Constructor);
-                Launcher = (Func<object>) Expression.Lambda(newExp).Compile();
-            }
+				if (Constructor != null)
+				{
+					var newExp = Expression.New(Constructor);
+					Launcher = (Func<object>)Expression.Lambda(newExp).Compile();
+				}
+			}
+			else
+			{
+				Launcher = () => Activator.CreateInstance(Type);
+			}
         }
     }
 }

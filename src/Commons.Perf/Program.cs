@@ -25,8 +25,18 @@ namespace Commons.Perf
             //TestStandardObjectToJson();
 			//TestLargeObjectToJson();
             TestSmallObjectJsonToObject();
-            TestStandardObjectJsonToObject();
+            //TestStandardObjectJsonToObject();
         }
+
+		public static void TestMisc()
+		{
+			var sw1 = new Stopwatch();
+			sw1.Start();
+			for (var i = 0; i < 1000000; i++)
+			{
+				var h = Guid.NewGuid().ToString().ToLower().GetHashCode();
+			}
+		}
 
 		public static void TestLargeObjectToJson()
 		{

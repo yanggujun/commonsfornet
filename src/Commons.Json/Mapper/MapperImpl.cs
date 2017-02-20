@@ -21,8 +21,8 @@ namespace Commons.Json.Mapper
 {
 	internal class MapperImpl
     {
-        private readonly Dictionary<string, string> keyPropMap = new Dictionary<string, string>(new IgnoreCaseStringEquator());
-        private readonly Dictionary<string, string> propKeyMap = new Dictionary<string, string>(new IgnoreCaseStringEquator());
+        private readonly Dictionary<string, string> keyPropMap = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> propKeyMap = new Dictionary<string, string>();
         private readonly HashSet<string> ignoredProps = new HashSet<string>();
         private bool propMapped;
         private bool propIgnored;

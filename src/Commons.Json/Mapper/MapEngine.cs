@@ -23,7 +23,7 @@ using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-    internal class MapEngine : IMapEngine
+    internal class MapEngine
     {
         private readonly TypeContainer types;
         private readonly MapperContainer mappers;
@@ -52,17 +52,6 @@ namespace Commons.Json.Mapper
                 return null;
             }
 
-            var mapper = mappers.GetMapper(type);
-            if (mapper.ManualCreate != null)
-            {
-                return mapper.ManualCreate(jsonValue);
-            }
-
-			if ((type.IsInterface() || type.IsAbstract()) && mapper.Create == null)
-			{
-				return null;
-			}
-
 			Type underlyingType;
 			var deserializer = GetDeserializer(type, out underlyingType);
 			return deserializer(underlyingType, jsonValue); 
@@ -76,8 +65,20 @@ namespace Commons.Json.Mapper
 			{
 				return deserializers[actualType];
 			}
+
 			Func<Type, JValue, object> deserializer;
-			if (actualType == typeof(bool))
+
+			var mapper = mappers.GetMapper(type);
+			// for manual create now, assuming underlying type == type
+			if (mapper.ManualCreate != null)
+			{
+				deserializer = (t, v) => mapper.ManualCreate(v);
+			}
+			else if ((type.IsInterface() || type.IsAbstract()) && mapper.Create == null)
+			{
+				deserializer = BuildNull;
+			}
+			else if (actualType == typeof(bool))
 			{
 				deserializer = BuildBool;
 			}
@@ -135,6 +136,11 @@ namespace Commons.Json.Mapper
 			return deserializer;
 		}
 
+		private object BuildNull(Type type, JValue jsonValue)
+		{
+			return null;
+		}
+
         private object BuildEnumerable(Type targetType, JValue jsonValue)
         {
             //TODO: how about two type arguments?
@@ -173,46 +179,51 @@ namespace Commons.Json.Mapper
 
         private object BuildBool(Type type, JValue jsonValue)
         {
-			JPrimitive b;
-            if (!jsonValue.Is<JPrimitive>(out b))
-            {
-                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-            }
 			bool result;
-			if (!bool.TryParse(b.Value, out result))
+			var bvalue = jsonValue.Value;
+			if (bvalue == JsonTokens.True)
 			{
-				throw new ArgumentException(Messages.JsonValueTypeNotMatch);
+				result = true;
+			}
+			else if (bvalue == JsonTokens.False)
+			{
+				result = false;
+			}
+			else if (bvalue == JsonTokens.UpperCaseTrue)
+			{
+				result = true;
+			}
+			else if (bvalue == JsonTokens.UpperCaseFalse)
+			{
+				result = false;
+			}
+			else
+			{
+				throw new ArgumentException(Messages.InvalidValue);
 			}
             return result;
         }
 
         private object BuildDecimal(Type type, JValue jsonValue)
         {
-			JPrimitive jsonNumber;
-			// TODO: integer could be decimal but not true vice versa
-			if (!jsonValue.Is<JPrimitive>(out jsonNumber))
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-			}
-
             object result;
 			var success = false;
             if (type == typeof (float))
             {
 				float num;
-				success = float.TryParse(jsonNumber.Value, out num);
+				success = float.TryParse(jsonValue.Value, out num);
 				result = num;
             }
             else if (type == typeof (double))
             {
 				double num;
-				success = double.TryParse(jsonNumber.Value, out num);
+				success = double.TryParse(jsonValue.Value, out num);
 				result = num;
             }
             else
             {
 				decimal num;
-				success = decimal.TryParse(jsonNumber.Value, out num);
+				success = decimal.TryParse(jsonValue.Value, out num);
 				result = num;
             }
 			if (!success)
@@ -224,12 +235,7 @@ namespace Commons.Json.Mapper
 
         private object BuildInteger(Type type, JValue jsonValue)
         {
-			JPrimitive jsonInteger;
-			if (!jsonValue.Is<JPrimitive>(out jsonInteger))
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-			}
-            return GetIntegerPropertyValue(type, jsonInteger);
+            return GetIntegerPropertyValue(type, jsonValue.Value);
         }
 
 		private object BuildEnum(Type type, JValue jsonValue)
@@ -241,9 +247,8 @@ namespace Commons.Json.Mapper
 
 		private object BuildGuid(Type type, JValue jsonValue)
 		{
-			var str = CheckJsonString(jsonValue);
 			Guid guid;
-			if (!Guid.TryParse(str, out guid))
+			if (!Guid.TryParse(jsonValue.Value, out guid))
 			{
 				throw new ArgumentException(Messages.InvalidValue);
 			}
@@ -264,9 +269,8 @@ namespace Commons.Json.Mapper
 
 		private object BuildTime(Type type, JValue jsonValue)
 		{
-			var str = CheckJsonString(jsonValue);
 			DateTime dt;
-			if (!TryParseDate(str, out dt))
+			if (!TryParseDate(jsonValue.Value, out dt))
 			{
 				throw new ArgumentException(Messages.InvalidDateFormat);
 			}
@@ -364,8 +368,9 @@ namespace Commons.Json.Mapper
 				target = types[type].Launch();
 			}
 
-            foreach (var prop in properties)
+			for (var i = 0; i < properties.Count; i++)
             {
+				var prop = properties[i];
 				var itemName = prop.Item1.Name;
                 if (mapper.IsPropertyIgnored(itemName))
                 {
@@ -448,74 +453,74 @@ namespace Commons.Json.Mapper
             }
         }
 
-        private static object GetIntegerPropertyValue(Type propertyType, JPrimitive integer)
+        private static object GetIntegerPropertyValue(Type propertyType, string primitiveValue)
         {
             object integerObj = null;
 			var success = false;
             if (propertyType == typeof (long))
             {
 				long num;
-				success = long.TryParse(integer.Value, out num);
+				success = long.TryParse(primitiveValue, out num);
 				integerObj = num;
             }
             else if (propertyType == typeof (int))
             {
 				int num;
-				success = int.TryParse(integer.Value, out num);
+				success = int.TryParse(primitiveValue, out num);
 				integerObj = num;
             }
             else if (propertyType == typeof (byte))
             {
 				byte num;
-				success = byte.TryParse(integer.Value, out num);
+				success = byte.TryParse(primitiveValue, out num);
 				integerObj = num;
             }
             else if (propertyType == typeof (sbyte))
             {
 				sbyte num;
-				success = sbyte.TryParse(integer.Value, out num);
+				success = sbyte.TryParse(primitiveValue, out num);
 				integerObj = num;
             }
             else if (propertyType == typeof (short))
             {
 				short num;
-				success = short.TryParse(integer.Value, out num);
+				success = short.TryParse(primitiveValue, out num);
 				integerObj = num;
             }
             else if (propertyType == typeof (double))
             {
 				double num;
-				success = double.TryParse(integer.Value, out num);
+				success = double.TryParse(primitiveValue, out num);
 				integerObj = num;
             }
             else if (propertyType == typeof (float))
             {
 				float num;
-				success = float.TryParse(integer.Value, out num);
+				success = float.TryParse(primitiveValue, out num);
 				integerObj = num;
             }
             else if (propertyType == typeof (decimal))
             {
 				decimal num;
-				success = decimal.TryParse(integer.Value, out num);
+				success = decimal.TryParse(primitiveValue, out num);
 				integerObj = num;
             }
             else if (propertyType == typeof (ulong))
             {
 				ulong num;
-				success = ulong.TryParse(integer.Value, out num);
+				success = ulong.TryParse(primitiveValue, out num);
 				integerObj = num;
             }
             else if (propertyType == typeof (uint))
             {
 				uint num;
-				success = uint.TryParse(integer.Value, out num);
+				success = uint.TryParse(primitiveValue, out num);
 				integerObj = num;
             }
             else if (propertyType == typeof (ushort))
             {
 				ushort num;
-				success = ushort.TryParse(integer.Value, out num);
+				success = ushort.TryParse(primitiveValue, out num);
 				integerObj = num;
             }
 

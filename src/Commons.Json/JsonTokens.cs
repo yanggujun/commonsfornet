@@ -38,5 +38,8 @@ namespace Commons.Json
         public const string Tab = "    ";
         public const string True = "true";
         public const string False = "false";
+		public const string UpperCaseTrue = "True";
+		public const string UpperCaseFalse = "False";
+		public const string UpperCaseNull = "Null";
     }
 }

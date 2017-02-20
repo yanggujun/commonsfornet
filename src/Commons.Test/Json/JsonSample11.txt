@@ -16,16 +16,16 @@
             }
         },
         {
-            "fielde": "valueE2",
+            "FieldE": "valueE2",
             "FieldF": 300,
-            "fieldg": 2000.2345,
+            "FieldG": 2000.2345,
             "FieldH": false,
-            "simple": 
+            "Simple": 
             {
-                "FIELDA": "valueA2",
-                "FIELDB": 400,
+                "FieldA": "valueA2",
+                "FieldB": 400,
                 "FieldC": 20000.35985,
-                "fieldd": true
+                "FieldD": true
             }
         }
     ]

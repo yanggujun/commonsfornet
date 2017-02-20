@@ -28,1137 +28,1137 @@ using System.Collections;
 
 namespace Commons.Test.Json
 {
-    public class JsonMapperTest
-    {
-        /// <summary>
-        /// plain object
-        /// </summary>
-        [Fact]
-        public void TestMapJsonToObject01()
-        {
-            var obj = JsonMapper.To<Simple>("{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}");
-            Assert.Equal(obj.FieldA, "valueA");
-            Assert.Equal(obj.FieldB, 10);
-            Assert.Equal(obj.FieldC, 2.3, 2);
-            Assert.True(obj.FieldD);
-        }
-
-        /// <summary>
-        /// complex object.
-        /// </summary>
-        [Fact]
-        public void TestMapJsonToObject02()
-        {
-            var json = "{\"fieldE\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
-                       + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true}";
-            var nested = JsonMapper.To<Nested>(json);
-            Assert.Equal(nested.FieldE, "valueE");
-            Assert.Equal(nested.FieldF, 20);
-            Assert.Equal(nested.FieldG, 3.459, 4);
-            Assert.True(nested.FieldH);
-            Assert.NotNull(nested.Simple);
-            Assert.Equal(nested.Simple.FieldA, "valueA");
-            Assert.Equal(nested.Simple.FieldB, 10);
-            Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
-            Assert.False(nested.Simple.FieldD);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject03()
-        {
-            var json = "{\"fieldE\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
-                       + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-            var nested = JsonMapper.To<Nested>(json);
-            Assert.Equal(nested.FieldE, "valueE");
-            Assert.Equal(nested.FieldF, 20);
-            Assert.Equal(nested.FieldG, 3.459, 4);
-            Assert.True(nested.FieldH);
-            Assert.NotNull(nested.Simple);
-            Assert.Equal(nested.Simple.FieldA, "valueA");
-            Assert.Equal(nested.Simple.FieldB, 10);
-            Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
-            Assert.False(nested.Simple.FieldD);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject04()
-        {
-            var json = "{\"fielde\": null, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
-                       + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-            var nested = JsonMapper.To<Nested>(json);
-            Assert.Null(nested.FieldE);
-            Assert.Equal(nested.FieldF, 20);
-            Assert.Equal(nested.FieldG, 3.459, 4);
-            Assert.True(nested.FieldH);
-            Assert.NotNull(nested.Simple);
-            Assert.Equal(nested.Simple.FieldA, "valueA");
-            Assert.Equal(nested.Simple.FieldB, 10);
-            Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
-            Assert.False(nested.Simple.FieldD);
-            
-        }
-
-        [Fact]
-        public void TestMapJsonToObject05()
-        {
-            var json = "{\"fielde\": null, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
-                       + "\"valueA\", \"FieldB\": 0, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-            var nested = JsonMapper.To<Nested>(json);
-            Assert.Null(nested.FieldE);
-            Assert.Equal(nested.FieldF, 20);
-            Assert.Equal(nested.FieldG, 3.459, 4);
-            Assert.True(nested.FieldH);
-            Assert.NotNull(nested.Simple);
-            Assert.Equal(nested.Simple.FieldA, "valueA");
-            Assert.Equal(nested.Simple.FieldB, 0);
-            Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
-            Assert.False(nested.Simple.FieldD);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject06()
-        {
-            var json = "{\"fielde\": 33, \"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
-                       + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<Nested>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject07()
-        {
-            var json = "{\"fielde\": \"valueE\", \"fieldF\": 20, \"FieldG\": 3, \"Simple\": {\"FieldA\": "
-                       + "\"valueA\", \"FieldB\": 0, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-            var nested = JsonMapper.To<Nested>(json);
-            Assert.Equal(3, nested.FieldG, 1);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject08()
-        {
-            var json = "{\"fieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
-                       + "\"valueA\", \"FieldB\": 0, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-            var nested = JsonMapper.To<Nested>(json);
-            Assert.Null(nested.FieldE);
-            Assert.Equal(nested.FieldF, 20);
-            Assert.Equal(nested.FieldG, 3.459, 4);
-            Assert.True(nested.FieldH);
-            Assert.NotNull(nested.Simple);
-            Assert.Equal(nested.Simple.FieldA, "valueA");
-            Assert.Equal(nested.Simple.FieldB, 0);
-            Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
-            Assert.False(nested.Simple.FieldD);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject09()
-        {
-            var json = "{\"fieldF\": 20.543, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
-                       + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<Nested>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject10()
-        {
-            var json = "[{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}, " 
-                        + "{\"FieldA\": \"valueA1\", \"FieldB\" : 11, \"FieldC\": 3.3, \"FieldD\": false}]";
-            var list = JsonMapper.To<List<Simple>>(json);
-            Assert.Equal(2, list.Count);
-            Assert.Equal("valueA", list[0].FieldA);
-            Assert.Equal(10, list[0].FieldB);
-            Assert.Equal(2.3, list[0].FieldC, 2);
-            Assert.True(list[0].FieldD);
-            Assert.Equal("valueA1", list[1].FieldA);
-            Assert.Equal(11, list[1].FieldB);
-            Assert.Equal(3.3, list[1].FieldC, 2);
-            Assert.False(list[1].FieldD);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject11()
-        {
-            var json = "[1, 2, 3, 4, 5, 6, 7, 8]";
-            var list = JsonMapper.To<List<int>>(json);
-            for (var i = 0; i < list.Count; i++)
-            {
-                Assert.Equal(i + 1, list[i]);
-            }
-        }
-
-        [Fact]
-        public void TestMapJsonToObject12()
-        {
-            var json = "{\"fieldj\": \"valueJ\", \"fieldk\": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]}";
-            var primitiveList = JsonMapper.To<PrimitiveList>(json);
-            Assert.Equal("valueJ", primitiveList.FieldJ);
-            for (var i = 0; i < primitiveList.FieldK.Count; i++)
-            {
-                Assert.Equal(i + 10, primitiveList.FieldK[i]);
-            }
-        }
-
-        [Fact]
-        public void TestMapJsonToObject121()
-        {
-            var json = "{\"fieldj\": \"valueJ\", \"fieldk\": null}";
-            var primitiveList = JsonMapper.To<PrimitiveList>(json);
-            Assert.Equal("valueJ", primitiveList.FieldJ);
-            Assert.Null(primitiveList.FieldK);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject122()
-        {
-            var json = "{\"fieldj\": \"valueJ\", \"fieldk\": []}";
-            var primitiveList = JsonMapper.To<PrimitiveList>(json);
-            Assert.Equal("valueJ", primitiveList.FieldJ);
-            Assert.NotNull(primitiveList.FieldK);
-            Assert.Equal(0, primitiveList.FieldK.Count);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject13()
-        {
-            var json = TestHelper.ReadFrom("JsonSample11.txt");
-            var arrayNested = JsonMapper.To<ArrayNested>(json);
-            Assert.Equal("valueI", arrayNested.FieldI);
-            Assert.NotNull(arrayNested.NestedItems);
-            Assert.Equal(2, arrayNested.NestedItems.Count);
-            Assert.Equal("valueE1", arrayNested.NestedItems[0].FieldE);
-            Assert.Equal(100, arrayNested.NestedItems[0].FieldF);
-            Assert.Equal(1000.2345, arrayNested.NestedItems[0].FieldG);
-            Assert.True(arrayNested.NestedItems[0].FieldH);
-            Assert.NotNull(arrayNested.NestedItems[0].Simple);
-            Assert.Equal("valueA1", arrayNested.NestedItems[0].Simple.FieldA);
-            Assert.Equal(200, arrayNested.NestedItems[0].Simple.FieldB);
-            Assert.Equal(10000.35985, arrayNested.NestedItems[0].Simple.FieldC);
-            Assert.False(arrayNested.NestedItems[0].Simple.FieldD);
-
-            Assert.Equal("valueE2", arrayNested.NestedItems[1].FieldE);
-            Assert.Equal(300, arrayNested.NestedItems[1].FieldF);
-            Assert.Equal(2000.2345, arrayNested.NestedItems[1].FieldG);
-            Assert.False(arrayNested.NestedItems[1].FieldH);
-            Assert.NotNull(arrayNested.NestedItems[1].Simple);
-            Assert.Equal("valueA2", arrayNested.NestedItems[1].Simple.FieldA);
-            Assert.Equal(400, arrayNested.NestedItems[1].Simple.FieldB);
-            Assert.Equal(20000.35985, arrayNested.NestedItems[1].Simple.FieldC);
-            Assert.True(arrayNested.NestedItems[1].Simple.FieldD);
-
-        }
-
-        [Fact]
-        public void TestMapJsonToObject14()
-        {
-            var json = "\"astring\"";
-            var str = JsonMapper.To<string>(json);
-            Assert.Equal("astring", str);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject141()
-        {
-            var guid = Guid.NewGuid();
-            var json = "\"" + guid.ToString() + "\"";
-            var newGuid = JsonMapper.To<Guid>(json);
-            Assert.Equal(guid, newGuid);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject142()
-        {
-            var guid = Guid.NewGuid();
-            var json = "\"" + guid.ToString() + "\"";
-            var newGuid = JsonMapper.To<Guid?>(json);
-            Assert.Equal(guid, newGuid.Value);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject15()
-        {
-            var json = "10";
-            var integer = JsonMapper.To<int>(json);
-            Assert.Equal(10, integer);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject16()
-        {
-            var json = "10.44323";
-            var floating = JsonMapper.To<double>(json);
-            Assert.Equal(10.44323, floating);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject161()
-        {
-            var json = "10.44323";
-            Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject162()
-        {
-            var json = "10";
-            var number = JsonMapper.To<double>(json);
-            Assert.Equal(10, number);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject163()
-        {
-            var json = "10";
-            var number = JsonMapper.To<decimal>(json);
-            Assert.Equal(10, number);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject164()
-        {
-            var json = "11";
-            var number = JsonMapper.To<float>(json);
-            Assert.Equal(11, number);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject17()
-        {
-            var json = "true";
-            var boolean = JsonMapper.To<bool>(json);
-            Assert.True(boolean);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject18()
-        {
-            var json = "null";
-            var simple = JsonMapper.To<Simple>(json);
-            Assert.Null(simple);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject19()
-        {
-            var json = "daddaaadaa";
-            Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<bool>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject20()
-        {
-            var json = "1.4";
-            var number = JsonMapper.To<float>(json);
-            Assert.Equal(1.4, number, 2);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject21()
-        {
-            var json = "5";
-            var number = JsonMapper.To<short>(json);
-            Assert.Equal(5, number);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject211()
-        {
-            var json = "10";
-            var number = JsonMapper.To<byte>(json);
-            Assert.Equal(10, number);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject212()
-        {
-            var json = "10";
-            var number = JsonMapper.To<sbyte>(json);
-            Assert.Equal(10, number);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject22()
-        {
-            var json = "6";
-            var number = JsonMapper.To<uint>(json);
-            Assert.Equal((uint)6, number);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject23()
-        {
-            var json = "-1000";
-            var number = JsonMapper.To<int>(json);
-            Assert.Equal(-1000, number);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject24()
-        {
-            var json = "7";
-            var number = JsonMapper.To<ushort>(json);
-            Assert.Equal((ushort)7, number);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject25()
-        {
-            var json = "800000";
-            var number = JsonMapper.To<long>(json);
-            Assert.Equal(800000, number);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject26()
-        {
-            var json = "800000";
-            var number = JsonMapper.To<ulong>(json);
-            Assert.Equal((ulong)800000, number);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject27()
-        {
-            var json = "{\"fieldb\": 10}";
-            var simple = JsonMapper.To<Simple>(json);
-            Assert.Equal(10, simple.FieldB);
-            Assert.Null(simple.FieldA);
-            Assert.Equal(0, simple.FieldC);
-            Assert.False(simple.FieldD);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject28()
-        {
-            var json = "{\"fieldb\": 10, \"NotExistInObject\": \"aaaa\"}";
-            var simple = JsonMapper.To<Simple>(json);
-            Assert.Equal(10, simple.FieldB);
-            Assert.Null(simple.FieldA);
-            Assert.Equal(0, simple.FieldC);
-            Assert.False(simple.FieldD);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject29()
-        {
-            var json = "{\"fieldl\":\"valuel\", \"fieldm\": [1, 2, 3, 4 ,5 ,6]}";
-            var setNested = JsonMapper.To<SetNested>(json);
-            Assert.Equal("valuel", setNested.FieldL);
-            Assert.NotNull(setNested.FieldM);
-            Assert.Equal(6, setNested.FieldM.Count);
-            for (var i = 0; i < 6; i++)
-            {
-                Assert.True(setNested.FieldM.Contains(i + 1));
-            }
-        }
-
-        [Fact]
-        public void TestMapJsonToObject291()
-        {
-            var json = "{\"fieldl\":\"valuel\", \"fieldm\": null}";
-            var setNested = JsonMapper.To<SetNested>(json);
-            Assert.Equal("valuel", setNested.FieldL);
-            Assert.Null(setNested.FieldM);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject292()
-        {
-            var json = "{\"fieldl\":\"valuel\", \"fieldm\": []}";
-            var setNested = JsonMapper.To<SetNested>(json);
-            Assert.Equal("valuel", setNested.FieldL);
-            Assert.NotNull(setNested.FieldM);
-            Assert.Equal(0, setNested.FieldM.Count);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject30()
-        {
-            var json = "{\"fieldl\": 10, \"fieldm\": [1, 2, 3, 4 ,5 ,6]}";
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SetNested>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject31()
-        {
-            var json = "{\"fieldl\": {}, \"fieldm\": [1, 2, 3, 4 ,5 ,6]}";
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SetNested>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject32()
-        {
-            var json = "{\"Birthday\": \"1990/01/18\", \"name\": \"alan\"}";
-            var hasDate = JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json);
-            Assert.Equal("alan", hasDate.Name);
-            Assert.Equal(1990, hasDate.Birthday.Year);
-            Assert.Equal(1, hasDate.Birthday.Month);
-            Assert.Equal(18, hasDate.Birthday.Day);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject33()
-        {
-            var json = "{\"Birthday\": \"1990/1/5/88\", \"name\": \"alan\"}";
-            Assert.Throws(typeof(ArgumentException), () => JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject34()
-        {
-            var json = "{\"Name\": \"Ben\", \"Numbers\": [0, 1, 2, 4, 5]}";
-            var ilistNested = JsonMapper.To<IListNested>(json);
-            Assert.Equal("Ben", ilistNested.Name);
-            Assert.Null(ilistNested.Numbers);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject35()
-        {
-            var json = "{\"Name\": \"Catherine\", \"Gender\": \"F\", \"Country\": \"UK\", \"Office\": \"London\"}";
-            var dict = JsonMapper.To<Dictionary<string, string>>(json);
-            Assert.Equal("Catherine", dict["Name"]);
-            Assert.Equal("F", dict["Gender"]);
-            Assert.Equal("UK", dict["Country"]);
-            Assert.Equal("London", dict["Office"]);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject36()
-        {
-            var json = "{\"Name\": \"Alan\", \"Age\": 25, \"Score\": 90.5, \"ExamDate\": \"2016/03/01\", \"Pass\": true}";
-            var simple = JsonMapper.UseDateFormat(string.Empty).To<SimpleStruct>(json);
-            Assert.Equal("Alan", simple.Name);
-            Assert.Equal(25, simple.Age);
-            Assert.Equal(90.5, simple.Score);
-            Assert.Equal(2016, simple.ExamDate.Year);
-            Assert.Equal(3, simple.ExamDate.Month);
-            Assert.Equal(1, simple.ExamDate.Day);
-            Assert.True(simple.Pass);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject37()
-        {
-            var json = "{\"Name\": \"John\", \"Age\": 10}";
-            var obj = JsonMapper.To<PrivateSetter>(json);
-            Assert.Equal("John", obj.Name);
-            Assert.Equal(23, obj.Age);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject38()
-        {
-            var json = "{\"Name\": \"Kevin\", \"Age\": 21}";
-            var obj = JsonMapper.To<PrivateGetter>(json);
-            Assert.Equal("Kevin", obj.Name);
-            Assert.Equal(21, obj.ActualAge());
-        }
-
-        [Fact]
-        public void TestMapJsonToObject39()
-        {
-            var json = "{\"Name\": \"Kevin\", \"Age\": 23}";
-            Assert.Throws(typeof(InvalidOperationException), () => JsonMapper.To<NoDefaultConstructor>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject40()
-        {
-            var json = "{\"fieldj\": \"valuej\", \"fieldk\": [1, 2, 4a5, 6]}";
-            Assert.Throws(typeof (ArgumentException), () => JsonMapper.To<PrimitiveList>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject401()
-        {
-            var json = "{\"fieldj\": \"valuej\", \"fieldk\": [1, 2, a5a, 6]}";
-            Assert.Throws(typeof (ArgumentException), () => JsonMapper.To<PrimitiveList>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject41()
-        {
-            var json = "\"Art\"";
-            var major = JsonMapper.To<Major>(json);
-            Assert.Equal(Major.Art, major);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject42()
-        {
-            var json = "[0, 1, 2, 3, 4, 5, 6]";
-            var array = JsonMapper.To<int[]>(json);
-            for (var i = 0; i < 7; i++)
-            {
-                Assert.Equal(i, array[i]);
-            }
-        }
-
-        [Fact]
-        public void TestMapJsonToObject43()
-        {
-            var json = "{\"Name\":\"Ken\", \"Array\":[0, 1, 2, 3, 4, 5, 6]}";
-            var obj = JsonMapper.To<IntArray>(json);
-            Assert.Equal("Ken", obj.Name);
-            Assert.NotNull(obj.Array);
-            for (var i = 0; i < 7; i++)
-            {
-                Assert.Equal(i, obj.Array[i]);
-            }
-        }
-
-        [Fact]
-        public void TestMapJsonToObject431()
-        {
-            var json = "{\"Name\":\"Ken\", \"Array\":[]}";
-            var obj = JsonMapper.To<IntArray>(json);
-            Assert.Equal("Ken", obj.Name);
-            Assert.NotNull(obj.Array);
-            Assert.Equal(0, obj.Array.Length);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject432()
-        {
-            var json = "{\"Name\":\"Ken\", \"Array\":null}";
-            var obj = JsonMapper.To<IntArray>(json);
-            Assert.Equal("Ken", obj.Name);
-            Assert.Null(obj.Array);
-        }
-
-
-
-        [Fact]
-        public void TestMapJsonToObject44()
-        {
-            var json = "[[0, 1, 2], [3, 4, 5], [6, 7, 8]]";
-            var matrix = JsonMapper.To<int[][]>(json);
-            Assert.NotNull(matrix);
-            for (var i = 0; i < 3; i++)
-            {
-                Assert.Equal(i, matrix[0][i]);
-                Assert.Equal(i + 3, matrix[1][i]);
-                Assert.Equal(i + 6, matrix[2][i]);
-            }
-        }
-
-        [Fact]
-        public void TestMapJsonToObject45()
-        {
-            var json = "{\"Name\":\"Sean\", \"Children\": [\"Lynn\", \"Daisy\", \"John\"]}";
-            var sean = JsonMapper.To<PersonArray>(json);
-            Assert.Equal("Sean", sean.Name);
-            Assert.NotNull(sean.Children);
-            Assert.Equal("Lynn", sean.Children[0]);
-            Assert.Equal("Daisy", sean.Children[1]);
-            Assert.Equal("John", sean.Children[2]);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject46()
-        {
-            var json = "{\"Name\":\"Alan\", \"Matrix\": [[0, 1, 2], [3, 4, 5], [6, 7, 8]]}";
-            var alan = JsonMapper.To<MatrixArray>(json);
-            Assert.Equal("Alan", alan.Name);
-            Assert.NotNull(alan.Matrix);
-            for (var i = 0; i < 3; i++)
-            {
-                Assert.Equal(i, alan.Matrix[0][i]);
-                Assert.Equal(i + 3, alan.Matrix[1][i]);
-                Assert.Equal(i + 6, alan.Matrix[2][i]);
-            }
-        }
-
-        [Fact]
-        public void TestMapJsonToObject47()
-        {
-            var json = "{\"companies\": {\"abc\": \"abc company\", \"def\":\"def company\"}}";
-            var dict = JsonMapper.To<Dictionary<string, Dictionary<string, string>>>(json);
-            Assert.Equal(1, dict.Count);
-            Assert.Equal(2, dict["companies"].Count);
-            Assert.Equal("abc company", dict["companies"]["abc"]);
-            Assert.Equal("def company", dict["companies"]["def"]);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject48()
-        {
-            var json =
-                "{\"Name\": \"A History of Europe\", \"Author\": \"Edward\", \"Pages\": 2000, \"PublishDate\": \"1750/7/5\"}";
-            var artical = JsonMapper.UseDateFormat(string.Empty).To<Artical>(json);
-            Assert.Equal("A History of Europe", artical.Name);
-            Assert.Equal("Edward", artical.Author);
-            Assert.Equal(2000, artical.Pages);
-            Assert.Equal(1750, artical.PublishDate.Value.Year);
-            Assert.Equal(7, artical.PublishDate.Value.Month);
-            Assert.Equal(5, artical.PublishDate.Value.Day);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject49()
-        {
-            var json = "5";
-            var number1 = JsonMapper.To<int?>(json);
-            Assert.Equal(5, number1.Value);
-
-            var number2 = JsonMapper.To<short?>(json);
-            Assert.Equal(5, number2.Value);
-
-            var number3 = JsonMapper.To<byte?>(json);
-            Assert.Equal(5, number3.Value);
-
-            var number4 = JsonMapper.To<sbyte?>(json);
-            Assert.Equal(5, number4.Value);
-
-            var number5 = JsonMapper.To<uint?>(json);
-            Assert.Equal((uint)5, number5.Value);
-
-            var number6 = JsonMapper.To<long?>(json);
-            Assert.Equal(5, number6.Value);
-
-            var number7 = JsonMapper.To<ulong?>(json);
-            Assert.Equal((ulong)5, number7.Value);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject50()
-        {
-            var json = "true";
-            var v = JsonMapper.To<bool?>(json);
-            Assert.True(v.Value);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject51()
-        {
-            var json = "\"SH\"";
-            var site = JsonMapper.To<Site?>(json);
-            Assert.Equal(Site.SH, site.Value);
-        }
-
-        public void TestMapJsonToObject52()
-        {
-            var json = 
-                "{\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}";
-            var simple = JsonMapper.UseDateFormat(string.Empty).To<SimpleStruct?>(json);
-            Assert.NotNull(simple);
-            Assert.Equal(50,simple.Value.Age);
-            Assert.Equal("Sam", simple.Value.Name);
-            Assert.Equal(80.5, simple.Value.Score);
-            Assert.Equal(2016, simple.Value.ExamDate.Year);
-            Assert.Equal(4, simple.Value.ExamDate.Month);
-            Assert.Equal(15, simple.Value.ExamDate.Day);
-            Assert.False(simple.Value.Pass);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject53()
-        {
-            var json = 
-                "{\"Name\": \"Complex\", \"Simple\": {\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}}";
-            var complicated = JsonMapper.UseDateFormat(string.Empty).To<Complicated>(json);
-            Assert.Equal("Complex", complicated.Name);
-            Assert.NotNull(complicated.Simple);
-            Assert.Equal("Sam", complicated.Simple.Value.Name);
-            Assert.Equal(50, complicated.Simple.Value.Age);
-            Assert.Equal(80.5, complicated.Simple.Value.Score);
-            Assert.Equal(2016, complicated.Simple.Value.ExamDate.Year);
-            Assert.Equal(4, complicated.Simple.Value.ExamDate.Month);
-            Assert.Equal(15, complicated.Simple.Value.ExamDate.Day);
-            Assert.False(complicated.Simple.Value.Pass);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject54()
-        {
-            var json = 
-                "{\"Name\": \"Complex\", \"Simple\": {\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}}";
-            var complicated = JsonMapper.UseDateFormat(string.Empty).To<Complicated?>(json);
-            Assert.NotNull(complicated);
-            Assert.Equal("Complex", complicated.Value.Name);
-            Assert.NotNull(complicated.Value.Simple);
-            Assert.Equal("Sam", complicated.Value.Simple.Value.Name);
-            Assert.Equal(50, complicated.Value.Simple.Value.Age);
-            Assert.Equal(80.5, complicated.Value.Simple.Value.Score);
-            Assert.Equal(2016, complicated.Value.Simple.Value.ExamDate.Year);
-            Assert.Equal(4, complicated.Value.Simple.Value.ExamDate.Month);
-            Assert.Equal(15, complicated.Value.Simple.Value.ExamDate.Day);
-            Assert.False(complicated.Value.Simple.Value.Pass);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject55()
-        {
-            var json = "{\"Name\": \"Complex\"}";
-            var complicated = JsonMapper.To<Complicated>(json);
-            Assert.Equal("Complex", complicated.Name);
-            Assert.Null(complicated.Simple);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject56()
-        {
-            var json = "{\"Name\": \"Complex\"}";
-            var complicated = JsonMapper.To<Complicated?>(json);
-            Assert.Equal("Complex", complicated.Value.Name);
-            Assert.Null(complicated.Value.Simple);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject57()
-        {
-            var json = "{}";
-            var simple = JsonMapper.To<Simple>(json);
-            Assert.NotNull(simple);
-            Assert.Null(simple.FieldA);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject58()
-        {
-            var json = "[{}]";
-            var simples = JsonMapper.To<Simple[]>(json);
-            Assert.NotNull(simples);
-            Assert.Equal(1, simples.Length);
-            Assert.NotNull(simples[0]);
-            Assert.Null(simples[0].FieldA);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject59()
-        {
-            var json = "{\"Name\": \"Lucy\", \"Children\": \"Gavin\"}";
-            var person = JsonMapper.To<PersonArray>(json);
-            Assert.Equal("Lucy", person.Name);
-            Assert.Equal(1, person.Children.Length);
-            Assert.Equal("Gavin", person.Children[0]);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject60()
-        {
-            var json = "{\"Name\": \"Lucy\", \"Children\": [\"Gavin\", \"Tom\"]}";
-            var person = JsonMapper.To<PersonArray>(json);
-            Assert.Equal("Lucy", person.Name);
-            Assert.Equal(2, person.Children.Length);
-            Assert.Equal("Gavin", person.Children[0]);
-            Assert.Equal("Tom", person.Children[1]);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject61()
-        {
-            var json = "{\"Name\": \"Sam\", \"Array\": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}";
-            var obj = JsonMapper.To<LinkedListNested>(json);
-            Assert.Equal("Sam", obj.Name);
-            Assert.Equal(11, obj.Array.Count);
-            for (var i = 0; i < 11; i++)
-            {
-                Assert.True(obj.Array.Contains(i));
-            }
-        }
-
-        [Fact]
-        public void TestMapJsonToObject62()
-        {
-            var json = "{\"Name\": \"Sam\", \"Array\": []}";
-            var obj = JsonMapper.To<LinkedListNested>(json);
-            Assert.Equal("Sam", obj.Name);
-            Assert.Equal(0, obj.Array.Count);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject63()
-        {
-            var json = "{\"Name\": \"Sam\", \"Array\": null}";
-            var obj = JsonMapper.To<LinkedListNested>(json);
-            Assert.Equal("Sam", obj.Name);
-            Assert.Null(obj.Array);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject64()
-        {
-            var json = "[0, 1, 2, 3, 4, 5, 6, 7]";
-            var queue = JsonMapper.To<Queue<int>>(json);
-            Assert.Equal(8, queue.Count);
-            var i = 0;
-            while (queue.Count > 0)
-            {
-                var value = queue.Dequeue();
-                Assert.Equal(i, value);
-                i++;
-            }
-        }
-
-        [Fact]
-        public void TestMapJsonToObject65()
-        {
-            var json = "null";
-            var queue = JsonMapper.To<Queue<int>>(json);
-            Assert.Null(queue);
-
-            var list = JsonMapper.To<List<int>>(json);
-            Assert.Null(list);
-
-            var ll = JsonMapper.To<LinkedList<int>>(json);
-            Assert.Null(ll);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject66()
-        {
-            var json = "[]";
-            var list = JsonMapper.To<List<int>>(json);
-            Assert.NotNull(list);
-            Assert.Equal(0, list.Count);
-
-            var queue = JsonMapper.To<Queue<int>>(json);
-            Assert.NotNull(queue);
-            Assert.Equal(0, queue.Count);
-
-            var ll = JsonMapper.To<LinkedList<int>>(json);
-            Assert.NotNull(ll);
-            Assert.Equal(0, ll.Count);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject67()
-        {
-            var json = "[0, 1, 2, 3, 4, 5, 6, 7, 8]";
-            var stack = JsonMapper.To<Stack<int>>(json);
-            Assert.NotNull(stack);
-            Assert.Equal(9, stack.Count);
-            var i = 8;
-            while (stack.Count > 0)
-            {
-                Assert.Equal(i, stack.Pop());
-                i--;
-            }
-        }
-
-        [Fact]
-        public void TestMapJsonToObject68()
-        {
-            var json = "null";
-            var str = JsonMapper.To<string>(json);
-            Assert.Equal(null, str);
-            var list = JsonMapper.To<List<int>>(json);
-            Assert.Null(list);
-
-            var array = JsonMapper.To<int[]>(json);
-            Assert.Null(array);
-
-            var obj = JsonMapper.To<Simple>(json);
-            Assert.Null(obj);
-
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SimpleStruct>(json));
-
-            Assert.Null(JsonMapper.To<SimpleStruct?>(json));
-
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject69()
-        {
-            var json = "{\"a\":\"b\"}";
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<string>(json));
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int[]>(json));
-            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<List<int>>(json));
-        }
-
-        [Fact]
-        public void TestMapJsonToObject70()
-        {
-            var json = "[{\"a\":\"b\", \"g\":\"h\"}, {\"c\":\"d\"}, {\"e\":\"f\"}]";
-            var dictArray = JsonMapper.To<Dictionary<string, string>[]>(json);
-            Assert.True(dictArray[0].ContainsKey("a"));
-            Assert.Equal("b", dictArray[0]["a"]);
-
-            Assert.True(dictArray[0].ContainsKey("g"));
-            Assert.Equal("h", dictArray[0]["g"]);
-
-            Assert.True(dictArray[1].ContainsKey("c"));
-            Assert.Equal("d", dictArray[1]["c"]);
-
-            Assert.True(dictArray[2].ContainsKey("e"));
-            Assert.Equal("f", dictArray[2]["e"]);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject71()
-        {
-            var json = "{\"Name\": \"Ben\", \"Excellent\": {\"Reason\": 5}}";
-            JsonMapper.For<IExcellent>().ConstructWith(() => new Excellent());
-            var won = JsonMapper.To<Wonderful>(json);
-            Assert.Equal("Ben", won.Name);
-            Assert.NotNull(won.Excellent);
-            Assert.Equal(5, won.Excellent.Reason);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject72()
-        {
-            var json = "{\"Name\": \"Alex\", \"Numbers\": [0.1, 0.9, 0.1234, 0.569, 0.89]}";
-            JsonMapper.For<IEnumerable<double>>().ConstructWith(() => new List<double>());
-            var obj = JsonMapper.To<HasEnumerable>(json);
-            Assert.Equal("Alex", obj.Name);
-            Assert.NotNull(obj.Numbers);
-            var index = 0;
-            foreach (var i in obj.Numbers)
-            {
-                if (index == 0)
-                {
-                    Assert.Equal(0.1, i);
-                }
-                else if (index == 1)
-                {
-                    Assert.Equal(0.9, i);
-                }
-                else if (index == 2)
-                {
-                    Assert.Equal(0.1234, i);
-                }
-                else if (index ==3)
-                {
-                    Assert.Equal(0.569, i);
-                }
-                else if (index == 4)
-                {
-                    Assert.Equal(0.89, i);
-                }
-                index++;
-            }
-        }
-
-        [Fact]
-        public void TestMapJsonToObject73()
-        {
-            var json = "{\"Name\": \"Ben\", \"SomeAwesomeThing\": {\"TheReason\":\"because it's very nice\"}}";
-            JsonMapper.For<IAwesome>().ConstructWith(x =>
-            {
-                var jsonObj = x as JObject;
-                var reason = jsonObj.GetString("thereason");
-                var a = new Awesome();
-                a.Reason = reason;
-                return a;
-            });
-            var awe = JsonMapper.To<HasInterface>(json);
-            Assert.Equal("Ben", awe.Name);
-            Assert.NotNull(awe.SomeAwesomeThing);
-            Assert.Equal("because it's very nice", awe.SomeAwesomeThing.Reason);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject731()
-        {
-            var json = "[{\"AweReason\":\"nice\"}, {\"AweReason\":\"beautiful\"}, {\"AweReason\":\"elegent\"}]";
-            JsonMapper.For<IAwesome>().ConstructWith(x =>
-            {
-                var jsonObj = x as JObject;
-                var reason = jsonObj.GetString("awereason");
-                var a = new Awesome();
-                a.Reason = reason;
-                return a;
-            });
-
-            var aweArray = JsonMapper.To<IAwesome[]>(json);
-            Assert.Equal(3, aweArray.Length);
-            Assert.Equal("nice", aweArray[0].Reason);
-            Assert.Equal("beautiful", aweArray[1].Reason);
-            Assert.Equal("elegent", aweArray[2].Reason);
-
-            var aweList = JsonMapper.To<List<IAwesome>>(json);
-            Assert.Equal(3, aweList.Count);
-            Assert.Equal("nice", aweList[0].Reason);
-            Assert.Equal("beautiful", aweList[1].Reason);
-            Assert.Equal("elegent", aweList[2].Reason);
-        }
-
-        public void TestMapJsonToObject732()
-        {
-            var json = "[{\"Reason\": 1 }, {\"Reason\": 2 }, {\"Reason\": 3}]";
-            JsonMapper.For<IExcellent>().ConstructWith(x => new Excellent());
-
-            var aweArray = JsonMapper.To<IExcellent[]>(json);
-            Assert.Equal(3, aweArray.Length);
-            Assert.Equal(1, aweArray[0].Reason);
-            Assert.Equal(2, aweArray[1].Reason);
-            Assert.Equal(3, aweArray[2].Reason);
-
-            var aweList = JsonMapper.To<List<IExcellent>>(json);
-            Assert.Equal(3, aweList.Count);
-            Assert.Equal(1, aweList[0].Reason);
-            Assert.Equal(2, aweList[1].Reason);
-            Assert.Equal(3, aweList[2].Reason);
-
-        }
-
-        [Fact]
-        public void TestMapJsonToObject74()
-        {
-            var json = "{\"FieldI\": \"valuei\", \"NestedItems\": [null, null, null]}";
-            var arrayInside = JsonMapper.To<ArrayNested>(json);
-            Assert.Equal("valuei", arrayInside.FieldI);
-            Assert.NotNull(arrayInside.NestedItems);
-            Assert.Equal(3, arrayInside.NestedItems.Count);
-            Assert.Null(arrayInside.NestedItems[0]);
-            Assert.Null(arrayInside.NestedItems[1]);
-            Assert.Null(arrayInside.NestedItems[2]);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject75()
-        {
-            var json = "{\"FieldJ\": \"a broken\nline\", \"FieldK\": [0, 1]}";
-            var obj1 = JsonMapper.To<PrimitiveList>(json);
-            var str = obj1.FieldJ;
-            using (var sr = new StringReader(str))
-            {
-                var line1 = sr.ReadLine();
-                Assert.Equal("a broken", line1);
-                var line2 = sr.ReadLine();
-                Assert.Equal("line", line2);
-            }
-
-            var json2 = "{\"FieldJ\": \"d:\\test\\\", \"FieldK\": [0, 1]}";
-            var obj2 = JsonMapper.To<PrimitiveList>(json2);
-            Assert.Equal("d:\\test\\", obj2.FieldJ);
-
-            var json3 = "{\"FieldJ\": \"~/test/workspace\", \"FieldK\": [0, 1]}";
-            var obj3 = JsonMapper.To<PrimitiveList>(json3);
-            Assert.Equal("~/test/workspace", obj3.FieldJ);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject76()
-        {
-            var json = "{}";
-            var dict = JsonMapper.To<Dictionary<string, string>>(json);
-            Assert.NotNull(dict);
-            Assert.Equal(0, dict.Count);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject77()
-        {
-            var json = "[]";
-            var array = JsonMapper.To<int[]>(json);
-            Assert.NotNull(array);
-            Assert.Equal(0, array.Length);
-        }
-
-        [Fact]
-        public void TestMapJsonToObject78()
-        {
-            var json = "[{}]";
-            var array = JsonMapper.To<List<Dictionary<string, string>>>(json);
-            Assert.NotNull(array);
-            Assert.Equal(1, array.Count);
-            Assert.NotNull(array[0]);
-            Assert.Equal(0, array[0].Count);
-        }
+	public class JsonMapperTest
+	{
+		/// <summary>
+		/// plain object
+		/// </summary>
+		[Fact]
+		public void TestMapJsonToObject01()
+		{
+			var obj = JsonMapper.To<Simple>("{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}");
+			Assert.Equal(obj.FieldA, "valueA");
+			Assert.Equal(obj.FieldB, 10);
+			Assert.Equal(obj.FieldC, 2.3, 2);
+			Assert.True(obj.FieldD);
+		}
+
+		/// <summary>
+		/// complex object.
+		/// </summary>
+		[Fact]
+		public void TestMapJsonToObject02()
+		{
+			var json = "{\"FieldE\": \"valueE\", \"FieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+					   + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true}";
+			var nested = JsonMapper.To<Nested>(json);
+			Assert.Equal(nested.FieldE, "valueE");
+			Assert.Equal(nested.FieldF, 20);
+			Assert.Equal(nested.FieldG, 3.459, 4);
+			Assert.True(nested.FieldH);
+			Assert.NotNull(nested.Simple);
+			Assert.Equal(nested.Simple.FieldA, "valueA");
+			Assert.Equal(nested.Simple.FieldB, 10);
+			Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
+			Assert.False(nested.Simple.FieldD);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject03()
+		{
+			var json = "{\"FieldE\": \"valueE\", \"FieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+					   + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			var nested = JsonMapper.To<Nested>(json);
+			Assert.Equal(nested.FieldE, "valueE");
+			Assert.Equal(nested.FieldF, 20);
+			Assert.Equal(nested.FieldG, 3.459, 4);
+			Assert.True(nested.FieldH);
+			Assert.NotNull(nested.Simple);
+			Assert.Equal(nested.Simple.FieldA, "valueA");
+			Assert.Equal(nested.Simple.FieldB, 10);
+			Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
+			Assert.False(nested.Simple.FieldD);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject04()
+		{
+			var json = "{\"FieldE\": null, \"FieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+					   + "\"valueA\", \"FieldB\": 10, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			var nested = JsonMapper.To<Nested>(json);
+			Assert.Null(nested.FieldE);
+			Assert.Equal(nested.FieldF, 20);
+			Assert.Equal(nested.FieldG, 3.459, 4);
+			Assert.True(nested.FieldH);
+			Assert.NotNull(nested.Simple);
+			Assert.Equal(nested.Simple.FieldA, "valueA");
+			Assert.Equal(nested.Simple.FieldB, 10);
+			Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
+			Assert.False(nested.Simple.FieldD);
+
+		}
+
+		[Fact]
+		public void TestMapJsonToObject05()
+		{
+			var json = "{\"FieldE\": null, \"FieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+					   + "\"valueA\", \"FieldB\": 0, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			var nested = JsonMapper.To<Nested>(json);
+			Assert.Null(nested.FieldE);
+			Assert.Equal(nested.FieldF, 20);
+			Assert.Equal(nested.FieldG, 3.459, 4);
+			Assert.True(nested.FieldH);
+			Assert.NotNull(nested.Simple);
+			Assert.Equal(nested.Simple.FieldA, "valueA");
+			Assert.Equal(nested.Simple.FieldB, 0);
+			Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
+			Assert.False(nested.Simple.FieldD);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject06()
+		{
+			var json = "{\"Fielde\": 33, \"FieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+					   + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<Nested>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject07()
+		{
+			var json = "{\"Fielde\": \"valueE\", \"FieldF\": 20, \"FieldG\": 3, \"Simple\": {\"FieldA\": "
+					   + "\"valueA\", \"FieldB\": 0, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			var nested = JsonMapper.To<Nested>(json);
+			Assert.Equal(3, nested.FieldG, 1);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject08()
+		{
+			var json = "{\"FieldF\": 20, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+					   + "\"valueA\", \"FieldB\": 0, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			var nested = JsonMapper.To<Nested>(json);
+			Assert.Null(nested.FieldE);
+			Assert.Equal(nested.FieldF, 20);
+			Assert.Equal(nested.FieldG, 3.459, 4);
+			Assert.True(nested.FieldH);
+			Assert.NotNull(nested.Simple);
+			Assert.Equal(nested.Simple.FieldA, "valueA");
+			Assert.Equal(nested.Simple.FieldB, 0);
+			Assert.Equal(nested.Simple.FieldC, 1.2997, 5);
+			Assert.False(nested.Simple.FieldD);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject09()
+		{
+			var json = "{\"FieldF\": 20.543, \"FieldG\": 3.459, \"Simple\": {\"FieldA\": "
+					   + "\"valueA\", \"FieldB\": null, \"FieldC\": 1.2997, \"FieldD\": false}, \"FieldH\": true, \"FieldI\": \"valueI\"}";
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<Nested>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject10()
+		{
+			var json = "[{\"FieldA\": \"valueA\", \"FieldB\" : 10, \"FieldC\": 2.3, \"FieldD\": true}, "
+						+ "{\"FieldA\": \"valueA1\", \"FieldB\" : 11, \"FieldC\": 3.3, \"FieldD\": false}]";
+			var list = JsonMapper.To<List<Simple>>(json);
+			Assert.Equal(2, list.Count);
+			Assert.Equal("valueA", list[0].FieldA);
+			Assert.Equal(10, list[0].FieldB);
+			Assert.Equal(2.3, list[0].FieldC, 2);
+			Assert.True(list[0].FieldD);
+			Assert.Equal("valueA1", list[1].FieldA);
+			Assert.Equal(11, list[1].FieldB);
+			Assert.Equal(3.3, list[1].FieldC, 2);
+			Assert.False(list[1].FieldD);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject11()
+		{
+			var json = "[1, 2, 3, 4, 5, 6, 7, 8]";
+			var list = JsonMapper.To<List<int>>(json);
+			for (var i = 0; i < list.Count; i++)
+			{
+				Assert.Equal(i + 1, list[i]);
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject12()
+		{
+			var json = "{\"FieldJ\": \"valueJ\", \"FieldK\": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]}";
+			var primitiveList = JsonMapper.To<PrimitiveList>(json);
+			Assert.Equal("valueJ", primitiveList.FieldJ);
+			for (var i = 0; i < primitiveList.FieldK.Count; i++)
+			{
+				Assert.Equal(i + 10, primitiveList.FieldK[i]);
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject121()
+		{
+			var json = "{\"FieldJ\": \"valueJ\", \"FieldK\": null}";
+			var primitiveList = JsonMapper.To<PrimitiveList>(json);
+			Assert.Equal("valueJ", primitiveList.FieldJ);
+			Assert.Null(primitiveList.FieldK);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject122()
+		{
+			var json = "{\"FieldJ\": \"valueJ\", \"FieldK\": []}";
+			var primitiveList = JsonMapper.To<PrimitiveList>(json);
+			Assert.Equal("valueJ", primitiveList.FieldJ);
+			Assert.NotNull(primitiveList.FieldK);
+			Assert.Equal(0, primitiveList.FieldK.Count);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject13()
+		{
+			var json = TestHelper.ReadFrom("JsonSample11.txt");
+			var arrayNested = JsonMapper.To<ArrayNested>(json);
+			Assert.Equal("valueI", arrayNested.FieldI);
+			Assert.NotNull(arrayNested.NestedItems);
+			Assert.Equal(2, arrayNested.NestedItems.Count);
+			Assert.Equal("valueE1", arrayNested.NestedItems[0].FieldE);
+			Assert.Equal(100, arrayNested.NestedItems[0].FieldF);
+			Assert.Equal(1000.2345, arrayNested.NestedItems[0].FieldG);
+			Assert.True(arrayNested.NestedItems[0].FieldH);
+			Assert.NotNull(arrayNested.NestedItems[0].Simple);
+			Assert.Equal("valueA1", arrayNested.NestedItems[0].Simple.FieldA);
+			Assert.Equal(200, arrayNested.NestedItems[0].Simple.FieldB);
+			Assert.Equal(10000.35985, arrayNested.NestedItems[0].Simple.FieldC);
+			Assert.False(arrayNested.NestedItems[0].Simple.FieldD);
+
+			Assert.Equal("valueE2", arrayNested.NestedItems[1].FieldE);
+			Assert.Equal(300, arrayNested.NestedItems[1].FieldF);
+			Assert.Equal(2000.2345, arrayNested.NestedItems[1].FieldG);
+			Assert.False(arrayNested.NestedItems[1].FieldH);
+			Assert.NotNull(arrayNested.NestedItems[1].Simple);
+			Assert.Equal("valueA2", arrayNested.NestedItems[1].Simple.FieldA);
+			Assert.Equal(400, arrayNested.NestedItems[1].Simple.FieldB);
+			Assert.Equal(20000.35985, arrayNested.NestedItems[1].Simple.FieldC);
+			Assert.True(arrayNested.NestedItems[1].Simple.FieldD);
+
+		}
+
+		[Fact]
+		public void TestMapJsonToObject14()
+		{
+			var json = "\"astring\"";
+			var str = JsonMapper.To<string>(json);
+			Assert.Equal("astring", str);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject141()
+		{
+			var guid = Guid.NewGuid();
+			var json = "\"" + guid.ToString() + "\"";
+			var newGuid = JsonMapper.To<Guid>(json);
+			Assert.Equal(guid, newGuid);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject142()
+		{
+			var guid = Guid.NewGuid();
+			var json = "\"" + guid.ToString() + "\"";
+			var newGuid = JsonMapper.To<Guid?>(json);
+			Assert.Equal(guid, newGuid.Value);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject15()
+		{
+			var json = "10";
+			var integer = JsonMapper.To<int>(json);
+			Assert.Equal(10, integer);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject16()
+		{
+			var json = "10.44323";
+			var floating = JsonMapper.To<double>(json);
+			Assert.Equal(10.44323, floating);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject161()
+		{
+			var json = "10.44323";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject162()
+		{
+			var json = "10";
+			var number = JsonMapper.To<double>(json);
+			Assert.Equal(10, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject163()
+		{
+			var json = "10";
+			var number = JsonMapper.To<decimal>(json);
+			Assert.Equal(10, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject164()
+		{
+			var json = "11";
+			var number = JsonMapper.To<float>(json);
+			Assert.Equal(11, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject17()
+		{
+			var json = "true";
+			var boolean = JsonMapper.To<bool>(json);
+			Assert.True(boolean);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject18()
+		{
+			var json = "null";
+			var simple = JsonMapper.To<Simple>(json);
+			Assert.Null(simple);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject19()
+		{
+			var json = "daddaaadaa";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<bool>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject20()
+		{
+			var json = "1.4";
+			var number = JsonMapper.To<float>(json);
+			Assert.Equal(1.4, number, 2);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject21()
+		{
+			var json = "5";
+			var number = JsonMapper.To<short>(json);
+			Assert.Equal(5, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject211()
+		{
+			var json = "10";
+			var number = JsonMapper.To<byte>(json);
+			Assert.Equal(10, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject212()
+		{
+			var json = "10";
+			var number = JsonMapper.To<sbyte>(json);
+			Assert.Equal(10, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject22()
+		{
+			var json = "6";
+			var number = JsonMapper.To<uint>(json);
+			Assert.Equal((uint)6, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject23()
+		{
+			var json = "-1000";
+			var number = JsonMapper.To<int>(json);
+			Assert.Equal(-1000, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject24()
+		{
+			var json = "7";
+			var number = JsonMapper.To<ushort>(json);
+			Assert.Equal((ushort)7, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject25()
+		{
+			var json = "800000";
+			var number = JsonMapper.To<long>(json);
+			Assert.Equal(800000, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject26()
+		{
+			var json = "800000";
+			var number = JsonMapper.To<ulong>(json);
+			Assert.Equal((ulong)800000, number);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject27()
+		{
+			var json = "{\"FieldB\": 10}";
+			var simple = JsonMapper.To<Simple>(json);
+			Assert.Equal(10, simple.FieldB);
+			Assert.Null(simple.FieldA);
+			Assert.Equal(0, simple.FieldC);
+			Assert.False(simple.FieldD);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject28()
+		{
+			var json = "{\"FieldB\": 10, \"NotExistInObject\": \"aaaa\"}";
+			var simple = JsonMapper.To<Simple>(json);
+			Assert.Equal(10, simple.FieldB);
+			Assert.Null(simple.FieldA);
+			Assert.Equal(0, simple.FieldC);
+			Assert.False(simple.FieldD);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject29()
+		{
+			var json = "{\"FieldL\":\"valuel\", \"FieldM\": [1, 2, 3, 4 ,5 ,6]}";
+			var setNested = JsonMapper.To<SetNested>(json);
+			Assert.Equal("valuel", setNested.FieldL);
+			Assert.NotNull(setNested.FieldM);
+			Assert.Equal(6, setNested.FieldM.Count);
+			for (var i = 0; i < 6; i++)
+			{
+				Assert.True(setNested.FieldM.Contains(i + 1));
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject291()
+		{
+			var json = "{\"FieldL\":\"valuel\", \"FieldM\": null}";
+			var setNested = JsonMapper.To<SetNested>(json);
+			Assert.Equal("valuel", setNested.FieldL);
+			Assert.Null(setNested.FieldM);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject292()
+		{
+			var json = "{\"FieldL\":\"valuel\", \"FieldM\": []}";
+			var setNested = JsonMapper.To<SetNested>(json);
+			Assert.Equal("valuel", setNested.FieldL);
+			Assert.NotNull(setNested.FieldM);
+			Assert.Equal(0, setNested.FieldM.Count);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject30()
+		{
+			var json = "{\"FieldL\": 10, \"FieldM\": [1, 2, 3, 4 ,5 ,6]}";
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SetNested>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject31()
+		{
+			var json = "{\"FieldL\": {}, \"FieldM\": [1, 2, 3, 4 ,5 ,6]}";
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SetNested>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject32()
+		{
+			var json = "{\"Birthday\": \"1990/01/18\", \"Name\": \"alan\"}";
+			var hasDate = JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json);
+			Assert.Equal("alan", hasDate.Name);
+			Assert.Equal(1990, hasDate.Birthday.Year);
+			Assert.Equal(1, hasDate.Birthday.Month);
+			Assert.Equal(18, hasDate.Birthday.Day);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject33()
+		{
+			var json = "{\"Birthday\": \"1990/1/5/88\", \"Name\": \"alan\"}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject34()
+		{
+			var json = "{\"Name\": \"Ben\", \"Numbers\": [0, 1, 2, 4, 5]}";
+			var ilistNested = JsonMapper.To<IListNested>(json);
+			Assert.Equal("Ben", ilistNested.Name);
+			Assert.Null(ilistNested.Numbers);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject35()
+		{
+			var json = "{\"Name\": \"Catherine\", \"Gender\": \"F\", \"Country\": \"UK\", \"Office\": \"London\"}";
+			var dict = JsonMapper.To<Dictionary<string, string>>(json);
+			Assert.Equal("Catherine", dict["Name"]);
+			Assert.Equal("F", dict["Gender"]);
+			Assert.Equal("UK", dict["Country"]);
+			Assert.Equal("London", dict["Office"]);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject36()
+		{
+			var json = "{\"Name\": \"Alan\", \"Age\": 25, \"Score\": 90.5, \"ExamDate\": \"2016/03/01\", \"Pass\": true}";
+			var simple = JsonMapper.UseDateFormat(string.Empty).To<SimpleStruct>(json);
+			Assert.Equal("Alan", simple.Name);
+			Assert.Equal(25, simple.Age);
+			Assert.Equal(90.5, simple.Score);
+			Assert.Equal(2016, simple.ExamDate.Year);
+			Assert.Equal(3, simple.ExamDate.Month);
+			Assert.Equal(1, simple.ExamDate.Day);
+			Assert.True(simple.Pass);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject37()
+		{
+			var json = "{\"Name\": \"John\", \"Age\": 10}";
+			var obj = JsonMapper.To<PrivateSetter>(json);
+			Assert.Equal("John", obj.Name);
+			Assert.Equal(23, obj.Age);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject38()
+		{
+			var json = "{\"Name\": \"Kevin\", \"Age\": 21}";
+			var obj = JsonMapper.To<PrivateGetter>(json);
+			Assert.Equal("Kevin", obj.Name);
+			Assert.Equal(21, obj.ActualAge());
+		}
+
+		[Fact]
+		public void TestMapJsonToObject39()
+		{
+			var json = "{\"Name\": \"Kevin\", \"Age\": 23}";
+			Assert.Throws(typeof(InvalidOperationException), () => JsonMapper.To<NoDefaultConstructor>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject40()
+		{
+			var json = "{\"FieldJ\": \"valuej\", \"FieldK\": [1, 2, 4a5, 6]}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<PrimitiveList>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject401()
+		{
+			var json = "{\"FieldJ\": \"valuej\", \"FieldK\": [1, 2, a5a, 6]}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<PrimitiveList>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject41()
+		{
+			var json = "\"Art\"";
+			var major = JsonMapper.To<Major>(json);
+			Assert.Equal(Major.Art, major);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject42()
+		{
+			var json = "[0, 1, 2, 3, 4, 5, 6]";
+			var array = JsonMapper.To<int[]>(json);
+			for (var i = 0; i < 7; i++)
+			{
+				Assert.Equal(i, array[i]);
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject43()
+		{
+			var json = "{\"Name\":\"Ken\", \"Array\":[0, 1, 2, 3, 4, 5, 6]}";
+			var obj = JsonMapper.To<IntArray>(json);
+			Assert.Equal("Ken", obj.Name);
+			Assert.NotNull(obj.Array);
+			for (var i = 0; i < 7; i++)
+			{
+				Assert.Equal(i, obj.Array[i]);
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject431()
+		{
+			var json = "{\"Name\":\"Ken\", \"Array\":[]}";
+			var obj = JsonMapper.To<IntArray>(json);
+			Assert.Equal("Ken", obj.Name);
+			Assert.NotNull(obj.Array);
+			Assert.Equal(0, obj.Array.Length);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject432()
+		{
+			var json = "{\"Name\":\"Ken\", \"Array\":null}";
+			var obj = JsonMapper.To<IntArray>(json);
+			Assert.Equal("Ken", obj.Name);
+			Assert.Null(obj.Array);
+		}
+
+
+
+		[Fact]
+		public void TestMapJsonToObject44()
+		{
+			var json = "[[0, 1, 2], [3, 4, 5], [6, 7, 8]]";
+			var matrix = JsonMapper.To<int[][]>(json);
+			Assert.NotNull(matrix);
+			for (var i = 0; i < 3; i++)
+			{
+				Assert.Equal(i, matrix[0][i]);
+				Assert.Equal(i + 3, matrix[1][i]);
+				Assert.Equal(i + 6, matrix[2][i]);
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject45()
+		{
+			var json = "{\"Name\":\"Sean\", \"Children\": [\"Lynn\", \"Daisy\", \"John\"]}";
+			var sean = JsonMapper.To<PersonArray>(json);
+			Assert.Equal("Sean", sean.Name);
+			Assert.NotNull(sean.Children);
+			Assert.Equal("Lynn", sean.Children[0]);
+			Assert.Equal("Daisy", sean.Children[1]);
+			Assert.Equal("John", sean.Children[2]);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject46()
+		{
+			var json = "{\"Name\":\"Alan\", \"Matrix\": [[0, 1, 2], [3, 4, 5], [6, 7, 8]]}";
+			var alan = JsonMapper.To<MatrixArray>(json);
+			Assert.Equal("Alan", alan.Name);
+			Assert.NotNull(alan.Matrix);
+			for (var i = 0; i < 3; i++)
+			{
+				Assert.Equal(i, alan.Matrix[0][i]);
+				Assert.Equal(i + 3, alan.Matrix[1][i]);
+				Assert.Equal(i + 6, alan.Matrix[2][i]);
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject47()
+		{
+			var json = "{\"companies\": {\"abc\": \"abc company\", \"def\":\"def company\"}}";
+			var dict = JsonMapper.To<Dictionary<string, Dictionary<string, string>>>(json);
+			Assert.Equal(1, dict.Count);
+			Assert.Equal(2, dict["companies"].Count);
+			Assert.Equal("abc company", dict["companies"]["abc"]);
+			Assert.Equal("def company", dict["companies"]["def"]);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject48()
+		{
+			var json =
+				"{\"Name\": \"A History of Europe\", \"Author\": \"Edward\", \"Pages\": 2000, \"PublishDate\": \"1750/7/5\"}";
+			var artical = JsonMapper.UseDateFormat(string.Empty).To<Artical>(json);
+			Assert.Equal("A History of Europe", artical.Name);
+			Assert.Equal("Edward", artical.Author);
+			Assert.Equal(2000, artical.Pages);
+			Assert.Equal(1750, artical.PublishDate.Value.Year);
+			Assert.Equal(7, artical.PublishDate.Value.Month);
+			Assert.Equal(5, artical.PublishDate.Value.Day);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject49()
+		{
+			var json = "5";
+			var number1 = JsonMapper.To<int?>(json);
+			Assert.Equal(5, number1.Value);
+
+			var number2 = JsonMapper.To<short?>(json);
+			Assert.Equal(5, number2.Value);
+
+			var number3 = JsonMapper.To<byte?>(json);
+			Assert.Equal(5, number3.Value);
+
+			var number4 = JsonMapper.To<sbyte?>(json);
+			Assert.Equal(5, number4.Value);
+
+			var number5 = JsonMapper.To<uint?>(json);
+			Assert.Equal((uint)5, number5.Value);
+
+			var number6 = JsonMapper.To<long?>(json);
+			Assert.Equal(5, number6.Value);
+
+			var number7 = JsonMapper.To<ulong?>(json);
+			Assert.Equal((ulong)5, number7.Value);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject50()
+		{
+			var json = "true";
+			var v = JsonMapper.To<bool?>(json);
+			Assert.True(v.Value);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject51()
+		{
+			var json = "\"SH\"";
+			var site = JsonMapper.To<Site?>(json);
+			Assert.Equal(Site.SH, site.Value);
+		}
+
+		public void TestMapJsonToObject52()
+		{
+			var json =
+				"{\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}";
+			var simple = JsonMapper.UseDateFormat(string.Empty).To<SimpleStruct?>(json);
+			Assert.NotNull(simple);
+			Assert.Equal(50, simple.Value.Age);
+			Assert.Equal("Sam", simple.Value.Name);
+			Assert.Equal(80.5, simple.Value.Score);
+			Assert.Equal(2016, simple.Value.ExamDate.Year);
+			Assert.Equal(4, simple.Value.ExamDate.Month);
+			Assert.Equal(15, simple.Value.ExamDate.Day);
+			Assert.False(simple.Value.Pass);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject53()
+		{
+			var json =
+				"{\"Name\": \"Complex\", \"Simple\": {\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}}";
+			var complicated = JsonMapper.UseDateFormat(string.Empty).To<Complicated>(json);
+			Assert.Equal("Complex", complicated.Name);
+			Assert.NotNull(complicated.Simple);
+			Assert.Equal("Sam", complicated.Simple.Value.Name);
+			Assert.Equal(50, complicated.Simple.Value.Age);
+			Assert.Equal(80.5, complicated.Simple.Value.Score);
+			Assert.Equal(2016, complicated.Simple.Value.ExamDate.Year);
+			Assert.Equal(4, complicated.Simple.Value.ExamDate.Month);
+			Assert.Equal(15, complicated.Simple.Value.ExamDate.Day);
+			Assert.False(complicated.Simple.Value.Pass);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject54()
+		{
+			var json =
+				"{\"Name\": \"Complex\", \"Simple\": {\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}}";
+			var complicated = JsonMapper.UseDateFormat(string.Empty).To<Complicated?>(json);
+			Assert.NotNull(complicated);
+			Assert.Equal("Complex", complicated.Value.Name);
+			Assert.NotNull(complicated.Value.Simple);
+			Assert.Equal("Sam", complicated.Value.Simple.Value.Name);
+			Assert.Equal(50, complicated.Value.Simple.Value.Age);
+			Assert.Equal(80.5, complicated.Value.Simple.Value.Score);
+			Assert.Equal(2016, complicated.Value.Simple.Value.ExamDate.Year);
+			Assert.Equal(4, complicated.Value.Simple.Value.ExamDate.Month);
+			Assert.Equal(15, complicated.Value.Simple.Value.ExamDate.Day);
+			Assert.False(complicated.Value.Simple.Value.Pass);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject55()
+		{
+			var json = "{\"Name\": \"Complex\"}";
+			var complicated = JsonMapper.To<Complicated>(json);
+			Assert.Equal("Complex", complicated.Name);
+			Assert.Null(complicated.Simple);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject56()
+		{
+			var json = "{\"Name\": \"Complex\"}";
+			var complicated = JsonMapper.To<Complicated?>(json);
+			Assert.Equal("Complex", complicated.Value.Name);
+			Assert.Null(complicated.Value.Simple);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject57()
+		{
+			var json = "{}";
+			var simple = JsonMapper.To<Simple>(json);
+			Assert.NotNull(simple);
+			Assert.Null(simple.FieldA);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject58()
+		{
+			var json = "[{}]";
+			var simples = JsonMapper.To<Simple[]>(json);
+			Assert.NotNull(simples);
+			Assert.Equal(1, simples.Length);
+			Assert.NotNull(simples[0]);
+			Assert.Null(simples[0].FieldA);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject59()
+		{
+			var json = "{\"Name\": \"Lucy\", \"Children\": \"Gavin\"}";
+			var person = JsonMapper.To<PersonArray>(json);
+			Assert.Equal("Lucy", person.Name);
+			Assert.Equal(1, person.Children.Length);
+			Assert.Equal("Gavin", person.Children[0]);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject60()
+		{
+			var json = "{\"Name\": \"Lucy\", \"Children\": [\"Gavin\", \"Tom\"]}";
+			var person = JsonMapper.To<PersonArray>(json);
+			Assert.Equal("Lucy", person.Name);
+			Assert.Equal(2, person.Children.Length);
+			Assert.Equal("Gavin", person.Children[0]);
+			Assert.Equal("Tom", person.Children[1]);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject61()
+		{
+			var json = "{\"Name\": \"Sam\", \"Array\": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}";
+			var obj = JsonMapper.To<LinkedListNested>(json);
+			Assert.Equal("Sam", obj.Name);
+			Assert.Equal(11, obj.Array.Count);
+			for (var i = 0; i < 11; i++)
+			{
+				Assert.True(obj.Array.Contains(i));
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject62()
+		{
+			var json = "{\"Name\": \"Sam\", \"Array\": []}";
+			var obj = JsonMapper.To<LinkedListNested>(json);
+			Assert.Equal("Sam", obj.Name);
+			Assert.Equal(0, obj.Array.Count);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject63()
+		{
+			var json = "{\"Name\": \"Sam\", \"Array\": null}";
+			var obj = JsonMapper.To<LinkedListNested>(json);
+			Assert.Equal("Sam", obj.Name);
+			Assert.Null(obj.Array);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject64()
+		{
+			var json = "[0, 1, 2, 3, 4, 5, 6, 7]";
+			var queue = JsonMapper.To<Queue<int>>(json);
+			Assert.Equal(8, queue.Count);
+			var i = 0;
+			while (queue.Count > 0)
+			{
+				var value = queue.Dequeue();
+				Assert.Equal(i, value);
+				i++;
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject65()
+		{
+			var json = "null";
+			var queue = JsonMapper.To<Queue<int>>(json);
+			Assert.Null(queue);
+
+			var list = JsonMapper.To<List<int>>(json);
+			Assert.Null(list);
+
+			var ll = JsonMapper.To<LinkedList<int>>(json);
+			Assert.Null(ll);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject66()
+		{
+			var json = "[]";
+			var list = JsonMapper.To<List<int>>(json);
+			Assert.NotNull(list);
+			Assert.Equal(0, list.Count);
+
+			var queue = JsonMapper.To<Queue<int>>(json);
+			Assert.NotNull(queue);
+			Assert.Equal(0, queue.Count);
+
+			var ll = JsonMapper.To<LinkedList<int>>(json);
+			Assert.NotNull(ll);
+			Assert.Equal(0, ll.Count);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject67()
+		{
+			var json = "[0, 1, 2, 3, 4, 5, 6, 7, 8]";
+			var stack = JsonMapper.To<Stack<int>>(json);
+			Assert.NotNull(stack);
+			Assert.Equal(9, stack.Count);
+			var i = 8;
+			while (stack.Count > 0)
+			{
+				Assert.Equal(i, stack.Pop());
+				i--;
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject68()
+		{
+			var json = "null";
+			var str = JsonMapper.To<string>(json);
+			Assert.Equal(null, str);
+			var list = JsonMapper.To<List<int>>(json);
+			Assert.Null(list);
+
+			var array = JsonMapper.To<int[]>(json);
+			Assert.Null(array);
+
+			var obj = JsonMapper.To<Simple>(json);
+			Assert.Null(obj);
+
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SimpleStruct>(json));
+
+			Assert.Null(JsonMapper.To<SimpleStruct?>(json));
+
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject69()
+		{
+			var json = "{\"a\":\"b\"}";
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<string>(json));
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int>(json));
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<List<int>>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject70()
+		{
+			var json = "[{\"a\":\"b\", \"g\":\"h\"}, {\"c\":\"d\"}, {\"e\":\"f\"}]";
+			var dictArray = JsonMapper.To<Dictionary<string, string>[]>(json);
+			Assert.True(dictArray[0].ContainsKey("a"));
+			Assert.Equal("b", dictArray[0]["a"]);
+
+			Assert.True(dictArray[0].ContainsKey("g"));
+			Assert.Equal("h", dictArray[0]["g"]);
+
+			Assert.True(dictArray[1].ContainsKey("c"));
+			Assert.Equal("d", dictArray[1]["c"]);
+
+			Assert.True(dictArray[2].ContainsKey("e"));
+			Assert.Equal("f", dictArray[2]["e"]);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject71()
+		{
+			var json = "{\"Name\": \"Ben\", \"Excellent\": {\"Reason\": 5}}";
+			JsonMapper.For<IExcellent>().ConstructWith(() => new Excellent());
+			var won = JsonMapper.To<Wonderful>(json);
+			Assert.Equal("Ben", won.Name);
+			Assert.NotNull(won.Excellent);
+			Assert.Equal(5, won.Excellent.Reason);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject72()
+		{
+			var json = "{\"Name\": \"Alex\", \"Numbers\": [0.1, 0.9, 0.1234, 0.569, 0.89]}";
+			JsonMapper.For<IEnumerable<double>>().ConstructWith(() => new List<double>());
+			var obj = JsonMapper.To<HasEnumerable>(json);
+			Assert.Equal("Alex", obj.Name);
+			Assert.NotNull(obj.Numbers);
+			var index = 0;
+			foreach (var i in obj.Numbers)
+			{
+				if (index == 0)
+				{
+					Assert.Equal(0.1, i);
+				}
+				else if (index == 1)
+				{
+					Assert.Equal(0.9, i);
+				}
+				else if (index == 2)
+				{
+					Assert.Equal(0.1234, i);
+				}
+				else if (index == 3)
+				{
+					Assert.Equal(0.569, i);
+				}
+				else if (index == 4)
+				{
+					Assert.Equal(0.89, i);
+				}
+				index++;
+			}
+		}
+
+		[Fact]
+		public void TestMapJsonToObject73()
+		{
+			var json = "{\"Name\": \"Ben\", \"SomeAwesomeThing\": {\"TheReason\":\"because it's very nice\"}}";
+			JsonMapper.For<IAwesome>().ConstructWith(x =>
+			{
+				var jsonObj = x as JObject;
+				var reason = jsonObj.GetString("TheReason");
+				var a = new Awesome();
+				a.Reason = reason;
+				return a;
+			});
+			var awe = JsonMapper.To<HasInterface>(json);
+			Assert.Equal("Ben", awe.Name);
+			Assert.NotNull(awe.SomeAwesomeThing);
+			Assert.Equal("because it's very nice", awe.SomeAwesomeThing.Reason);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject731()
+		{
+			var json = "[{\"AweReason\":\"nice\"}, {\"AweReason\":\"beautiful\"}, {\"AweReason\":\"elegent\"}]";
+			JsonMapper.For<IAwesome>().ConstructWith(x =>
+			{
+				var jsonObj = x as JObject;
+				var reason = jsonObj.GetString("AweReason");
+				var a = new Awesome();
+				a.Reason = reason;
+				return a;
+			});
+
+			var aweArray = JsonMapper.To<IAwesome[]>(json);
+			Assert.Equal(3, aweArray.Length);
+			Assert.Equal("nice", aweArray[0].Reason);
+			Assert.Equal("beautiful", aweArray[1].Reason);
+			Assert.Equal("elegent", aweArray[2].Reason);
+
+			var aweList = JsonMapper.To<List<IAwesome>>(json);
+			Assert.Equal(3, aweList.Count);
+			Assert.Equal("nice", aweList[0].Reason);
+			Assert.Equal("beautiful", aweList[1].Reason);
+			Assert.Equal("elegent", aweList[2].Reason);
+		}
+
+		public void TestMapJsonToObject732()
+		{
+			var json = "[{\"Reason\": 1 }, {\"Reason\": 2 }, {\"Reason\": 3}]";
+			JsonMapper.For<IExcellent>().ConstructWith(x => new Excellent());
+
+			var aweArray = JsonMapper.To<IExcellent[]>(json);
+			Assert.Equal(3, aweArray.Length);
+			Assert.Equal(1, aweArray[0].Reason);
+			Assert.Equal(2, aweArray[1].Reason);
+			Assert.Equal(3, aweArray[2].Reason);
+
+			var aweList = JsonMapper.To<List<IExcellent>>(json);
+			Assert.Equal(3, aweList.Count);
+			Assert.Equal(1, aweList[0].Reason);
+			Assert.Equal(2, aweList[1].Reason);
+			Assert.Equal(3, aweList[2].Reason);
+
+		}
+
+		[Fact]
+		public void TestMapJsonToObject74()
+		{
+			var json = "{\"FieldI\": \"valuei\", \"NestedItems\": [null, null, null]}";
+			var arrayInside = JsonMapper.To<ArrayNested>(json);
+			Assert.Equal("valuei", arrayInside.FieldI);
+			Assert.NotNull(arrayInside.NestedItems);
+			Assert.Equal(3, arrayInside.NestedItems.Count);
+			Assert.Null(arrayInside.NestedItems[0]);
+			Assert.Null(arrayInside.NestedItems[1]);
+			Assert.Null(arrayInside.NestedItems[2]);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject75()
+		{
+			var json = "{\"FieldJ\": \"a broken\nline\", \"FieldK\": [0, 1]}";
+			var obj1 = JsonMapper.To<PrimitiveList>(json);
+			var str = obj1.FieldJ;
+			using (var sr = new StringReader(str))
+			{
+				var line1 = sr.ReadLine();
+				Assert.Equal("a broken", line1);
+				var line2 = sr.ReadLine();
+				Assert.Equal("line", line2);
+			}
+
+			var json2 = "{\"FieldJ\": \"d:\\test\\\", \"FieldK\": [0, 1]}";
+			var obj2 = JsonMapper.To<PrimitiveList>(json2);
+			Assert.Equal("d:\\test\\", obj2.FieldJ);
+
+			var json3 = "{\"FieldJ\": \"~/test/workspace\", \"FieldK\": [0, 1]}";
+			var obj3 = JsonMapper.To<PrimitiveList>(json3);
+			Assert.Equal("~/test/workspace", obj3.FieldJ);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject76()
+		{
+			var json = "{}";
+			var dict = JsonMapper.To<Dictionary<string, string>>(json);
+			Assert.NotNull(dict);
+			Assert.Equal(0, dict.Count);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject77()
+		{
+			var json = "[]";
+			var array = JsonMapper.To<int[]>(json);
+			Assert.NotNull(array);
+			Assert.Equal(0, array.Length);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject78()
+		{
+			var json = "[{}]";
+			var array = JsonMapper.To<List<Dictionary<string, string>>>(json);
+			Assert.NotNull(array);
+			Assert.Equal(1, array.Count);
+			Assert.NotNull(array[0]);
+			Assert.Equal(0, array[0].Count);
+		}
 
 		[Fact]
 		public void TestMapJsonToObject79()
@@ -1192,6 +1192,36 @@ namespace Commons.Test.Json
 				Assert.Equal(i, result.Bytes[i]);
 			}
 			Assert.Equal("AnArray", result.Name);
+		}
+
+		[Fact]
+		public void TestMapJsonToObject80()
+		{
+			var json = "{\"ItemA\": \"123\"}";
+			var dict1 = JsonMapper.To<Dictionary<string, int>>(json);
+			Assert.Equal(123, dict1["ItemA"]);
+
+			var dict2 = JsonMapper.To<Dictionary<string, string>>(json);
+			Assert.Equal("123", dict2["ItemA"]);
+
+		}
+
+		[Fact]
+		public void TestMapJsonToObject801()
+		{
+			var json = "{\"ItemA\": \"AAA\"}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, int>>(json));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject81()
+		{
+			var json = "2.5";
+			Assert.Equal(2.5, JsonMapper.To<double>(json));
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int>(json));
+
+			var another = "2";
+			Assert.Equal(2, JsonMapper.To<double>(another));
 		}
 
         [Fact]
@@ -1899,7 +1929,7 @@ namespace Commons.Test.Json
             JsonMapper.For<Person>().ConstructWith(() => new Person("FR", "Female")).MapProperty(x => x.Name).With("Person Name");
             JsonMapper.For<Student>().MapProperty(x => x.Person).With("Personal Information");
             var json =
-                "{\"personal information\": {\"person NAme\": \"Emily\", \"Age\": 21}, \"Major\": \"CS\", \"grade\": 3}";
+                "{\"Personal Information\": {\"Person Name\": \"Emily\", \"Age\": 21}, \"Major\": \"CS\", \"Grade\": 3}";
             var student = JsonMapper.To<Student>(json);
             Assert.Equal("Emily", student.Person.Name);
             Assert.Equal("FR", student.Person.Nationality);
@@ -1975,7 +2005,7 @@ namespace Commons.Test.Json
                 .ConstructWith(() => new Person("US", "Male"))
                 .MapProperty(x => x.Name).With("Person Name");
             var json =
-                "[{\"person name\": \"Jackson\", \"Age\": 22}, {\"person name\": \"Johnson\", \"Age\": 21}, {\"person name\": \"Hugo\", \"Age\": 23}]";
+                "[{\"Person Name\": \"Jackson\", \"Age\": 22}, {\"Person Name\": \"Johnson\", \"Age\": 21}, {\"Person Name\": \"Hugo\", \"Age\": 23}]";
             var people = JsonMapper.To<List<Person>>(json);
             Assert.Equal(3, people.Count);
             Assert.Equal("Jackson", people[0].Name);

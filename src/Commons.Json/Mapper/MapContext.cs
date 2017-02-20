@@ -19,70 +19,70 @@ using System.Collections.Concurrent;
 
 namespace Commons.Json.Mapper
 {
-    internal class MapContext : IMapContext
-    {
-        public MapContext(string name)
-        {
-            Name = name;
-            Mappers = new MapperContainer();
-            Configuration = new ConfigContainer();
-            Types = new TypeContainer();
-            CollBuilder = new CollectionBuilder();
+	internal class MapContext : IMapContext
+	{
+		public MapContext(string name)
+		{
+			Name = name;
+			Mappers = new MapperContainer();
+			Configuration = new ConfigContainer();
+			Types = new TypeContainer();
+			CollBuilder = new CollectionBuilder();
 			SerializerMapper = new ConcurrentDictionary<Type, Func<object, string>>();
 			DeserializerMapper = new ConcurrentDictionary<Type, Func<Type, JValue, object>>();
-            MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder, DeserializerMapper);
+			MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder, DeserializerMapper);
+			ParseEngine = new JsonParseEngine();
+		}
 
-        }
+		public string Name { get; private set; }
 
-        public string Name { get; private set; }
+		public IJsonObjectMapper<T> For<T>()
+		{
+			var type = typeof(T);
+			if (!Mappers.ContainsMapper(type))
+			{
+				Mappers.PushMapper(type);
+			}
+			var mapper = Mappers.GetMapper(type);
+			var jsonObjMapper = new JsonObjectMapper<T>(mapper, Configuration);
+			return jsonObjMapper;
+		}
 
-        public IJsonObjectMapper<T> For<T>()
-        {
-            var type = typeof(T);
-            if (!Mappers.ContainsMapper(type))
-            {
-                Mappers.PushMapper(type);
-            }
-            var mapper = Mappers.GetMapper(type);
-            var jsonObjMapper = new JsonObjectMapper<T>(mapper, Configuration);
-            return jsonObjMapper;
-        }
+		// TODO: need to parse the actually typeof(T) to JsonBuilder as sometimes, typeof(T) != target.GetType()
+		public string ToJson<T>(T target)
+		{
+			var jsonBuilder = new JsonBuilder(Mappers, Types, Configuration, SerializerMapper);
+			return jsonBuilder.Build(target);
+		}
 
-        // TODO: need to parse the actually typeof(T) to JsonBuilder as sometimes, typeof(T) != target.GetType()
-        public string ToJson<T>(T target)
-        {
-            var jsonBuilder = new JsonBuilder(Mappers, Types, Configuration, SerializerMapper);
-            return jsonBuilder.Build(target);
-        }
+		public T To<T>(string json)
+		{
+			return (T)To(typeof(T), json);
+		}
 
-        public T To<T>(string json)
-        {
-            return (T)To(typeof(T), json);
-        }
+		public object To(Type type, string json)
+		{
+			var jsonValue = ParseEngine.Parse(json);
 
-        public object To(Type type, string json)
-        {
-            var parseEngine = new JsonParseEngine();
-            var jsonValue = parseEngine.Parse(json);
+			return MapEngine.Map(type, jsonValue);
+		}
 
-            return MapEngine.Map(type, jsonValue);
-        }
+		public MapperContainer Mappers { get; private set; }
 
-        public MapperContainer Mappers { get; private set; }
+		public CollectionBuilder CollBuilder { get; private set; }
 
-        public IMapEngineFactory MapEngineFactory { get; private set; }
+		public ConfigContainer Configuration { get; private set; }
 
-        public CollectionBuilder CollBuilder { get; private set; }
-
-        public ConfigContainer Configuration { get; private set; }
-
-        public TypeContainer Types { get; private set; }
+		public TypeContainer Types { get; private set; }
 
 		public ConcurrentDictionary<Type, Func<object, string>> SerializerMapper;
 
 		public ConcurrentDictionary<Type, Func<Type, JValue, object>> DeserializerMapper;
 
-        public IMapEngine MapEngine { get; private set; }
+		public MapEngine MapEngine { get; private set; }
+
+		public JsonParseEngine ParseEngine { get; private set; }
+
 
         public string DateFormat
         {

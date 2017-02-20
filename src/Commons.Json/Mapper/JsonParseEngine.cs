@@ -20,7 +20,7 @@ using System.Text;
 
 namespace Commons.Json.Mapper
 {
-    public class JsonParseEngine : IParseEngine
+    public class JsonParseEngine
     {
         public JValue Parse(string json)
         {
@@ -43,20 +43,20 @@ namespace Commons.Json.Mapper
             {
                 result = ParseString(json);
             }
-            else if (firstCh.Equals('N') || firstCh.Equals('n'))
-            {
-                result = ParseNull(json);
-            }
-            else if (firstCh.Equals('T') || firstCh.Equals('t') 
-                || firstCh.Equals('F') || firstCh.Equals('f'))
-            {
-                result = ParseBool(json);
-            }
-            else if (Char.IsNumber(firstCh) || firstCh.Equals('-'))
-            {
-                result = ParseNumber(json);
-            }
-            else
+			else if (firstCh.Equals('N') || firstCh.Equals('n'))
+			{
+				result = ParseNull(json);
+			}
+			else if (firstCh.Equals('T') || firstCh.Equals('t')
+				|| firstCh.Equals('F') || firstCh.Equals('f'))
+			{
+				result = ParseBool(json);
+			}
+			else if (char.IsNumber(firstCh) || firstCh.Equals('-'))
+			{
+				result = ParseNumber(json);
+			}
+			else
             {
                 throw new ArgumentException(Messages.InvalidFormat);
             }
@@ -71,14 +71,14 @@ namespace Commons.Json.Mapper
             {
                 throw new ArgumentException(Messages.InvalidFormat);
             }
-            var str = value.Trim(JsonTokens.Quoter);
+			var str = value.Substring(1, value.Length - 2);
             return new JString(str);
         }
 
         private JValue ParseNull(string json)
         {
             var text = json.Trim();
-            if (!text.Equals(JsonTokens.Null, StringComparison.OrdinalIgnoreCase))
+			if (text != JsonTokens.Null && text != JsonTokens.UpperCaseNull)
             {
                 throw new ArgumentException(Messages.InvalidFormat);
             }
@@ -203,7 +203,7 @@ namespace Commons.Json.Mapper
         private JValue ParseObject(string text)
         {
             var json = text.Trim();
-            var fragment = new StringBuilder(200);
+            var fragment = new StringBuilder(50);
 
             var quoted = false;
             var jsonObject = new JObject();
