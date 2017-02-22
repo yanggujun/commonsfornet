@@ -14,19 +14,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Commons.Collections.Map;
+using Commons.Utils;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Commons.Collections.Map;
-using Commons.Utils;
 using Xunit;
 
 namespace Commons.Test.Utils
 {
-    public class UtilsTest
+	public class UtilsTest
     {
         private static readonly object locker = new object();
         [Fact]

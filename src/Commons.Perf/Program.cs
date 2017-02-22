@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Commons.Json;
-using Commons.Json.Mapper;
+﻿using Commons.Json;
 using Commons.Test.Json;
 using Commons.Utils;
 using Newtonsoft.Json;
+using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Text;
 
 namespace Commons.Perf
 {
@@ -19,7 +16,7 @@ namespace Commons.Perf
 	// change configuration behavior
 	// Json2Object
 	//    initialize list with an size.
-    public class Program
+	public class Program
     {
         public static void Main(string[] args)
         {
@@ -30,7 +27,7 @@ namespace Commons.Perf
             //TestStandardObjectToJson();
 			//TestLargeObjectToJson();
             TestSmallObjectJsonToObject();
-            //TestStandardObjectJsonToObject();
+            TestStandardObjectJsonToObject();
         }
 
 		public static void TestTrivialObjectToJson()

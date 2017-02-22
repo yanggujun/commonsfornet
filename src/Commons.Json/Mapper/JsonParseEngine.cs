@@ -96,7 +96,7 @@ namespace Commons.Json.Mapper
             JValue jsonValue;
             if (objectStack.Count == 0)
             {
-                jsonValue = ParseJsonValue(currentFragment);
+                jsonValue = ParseJsonValue(currentFragment.ToString().Trim());
             }
             else 
             {
@@ -127,8 +127,8 @@ namespace Commons.Json.Mapper
 				{
 					throw new ArgumentException(Messages.InvalidFormat);
 				}
-				var text = currentFragment.ToString();
-				if (string.IsNullOrWhiteSpace(text))
+				var text = currentFragment.ToString().Trim();
+				if (string.IsNullOrEmpty(text))
 				{
 					value = objectStack.Pop() as JValue;
 					if (value == null)
@@ -138,8 +138,10 @@ namespace Commons.Json.Mapper
 				}
 				else
 				{
-					value = ParseJsonValue(currentFragment);
+					value = ParseJsonValue(text);
+					currentFragment.Length = 0;
 				}
+
 				var key = objectStack.Pop() as string;
 				if (string.IsNullOrWhiteSpace(key))
 				{
@@ -187,8 +189,8 @@ namespace Commons.Json.Mapper
 				{
 					throw new ArgumentException(Messages.InvalidFormat);
 				}
-                var text = currentFragment.ToString();
-                if (string.IsNullOrWhiteSpace(text))
+                var text = currentFragment.ToString().Trim();
+                if (string.IsNullOrEmpty(text))
                 {
                     value = objectStack.Pop() as JValue;
 					if (value == null)
@@ -198,7 +200,8 @@ namespace Commons.Json.Mapper
                 }
                 else
                 {
-                    value = ParseJsonValue(currentFragment);
+                    value = ParseJsonValue(text);
+					currentFragment.Clear();
                 }
 				if (objectStack.Count == 0)
 				{
@@ -234,8 +237,8 @@ namespace Commons.Json.Mapper
 				}
             }
 
-            var text = currentFragment.ToString();
-            if (string.IsNullOrWhiteSpace(text))
+			var text = currentFragment.ToString().Trim();
+            if (string.IsNullOrEmpty(text))
             {
                 value = objectStack.Pop() as JValue;
 				if (value == null)
@@ -245,7 +248,8 @@ namespace Commons.Json.Mapper
             }
             else
             {
-                value = ParseJsonValue(currentFragment);
+                value = ParseJsonValue(text);
+				currentFragment.Clear();
             }
 
             if (ch == JsonTokens.Colon)
@@ -285,7 +289,7 @@ namespace Commons.Json.Mapper
 				throw new ArgumentException(Messages.InvalidFormat);
 			}
 
-			if (string.IsNullOrWhiteSpace(key))
+			if (string.IsNullOrEmpty(key))
 			{
 				throw new ArgumentException(Messages.InvalidFormat);
 			}
@@ -317,10 +321,9 @@ namespace Commons.Json.Mapper
             currentFragment.Append(JsonTokens.Quoter);
         }
 
-        private static JValue ParseJsonValue(StringBuilder currentFragment)
+        private static JValue ParseJsonValue(string value)
         {
             JValue jsonValue;
-            var value = currentFragment.ToString().Trim();
 			// quoter match is already checked.
 			if (value[0] == JsonTokens.Quoter && value[value.Length - 1] == JsonTokens.Quoter)
 			{
@@ -347,7 +350,6 @@ namespace Commons.Json.Mapper
 			{
 				throw new ArgumentException(Messages.InvalidValue);
 			}
-            currentFragment.Clear();
 
             return jsonValue;
         }

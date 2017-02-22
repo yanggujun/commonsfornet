@@ -191,7 +191,7 @@ namespace Commons.Utils
             return new string(timeArray);
         }
 
-		public static void Trim(this StringBuilder buffer)
+		public static StringBuilder Trim(this StringBuilder buffer)
 		{
 			var length = buffer.Length;
 
@@ -234,6 +234,8 @@ namespace Commons.Utils
 			{
 				buffer.Remove(0, frontCount);
 			}
+
+			return buffer;
 		}
     }
 }

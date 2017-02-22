@@ -616,5 +616,35 @@ namespace Test.Commons.Json
 			var json = "{\"a\": }";
 			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
 		}
+
+		[Fact]
+		public void TestCompability090()
+		{
+			var json = "[]";
+			var array = JsonMapper.To<int[]>(json);
+			Assert.Equal(0, array.Length);
+		}
+
+		[Fact]
+		public void TestCompability091()
+		{
+			var json = "{\"a:\"b\"}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability092()
+		{
+			var json = "{\"a\":b\"}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability093()
+		{
+			var json = "{\"a\":\"b}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
 	}
 }
