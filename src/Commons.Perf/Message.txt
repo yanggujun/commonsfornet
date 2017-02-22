@@ -1,0 +1,4 @@
+﻿{
+  "message": "(MESSAGE)",
+  "version": (VERSION)
+}

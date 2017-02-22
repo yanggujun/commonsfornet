@@ -23,7 +23,7 @@ using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-    internal class MapEngine
+    internal sealed class MapEngine
     {
         private readonly TypeContainer types;
         private readonly MapperContainer mappers;
@@ -383,14 +383,7 @@ namespace Commons.Json.Mapper
                 {
                     var jv = jsonObj[key];
                     var value = Map(propertyType, jv);
-                    //if (type.IsClass())
-                    //{
-                        prop.Item2(target, value);
-                    //}
-                    //else
-                    //{
-                        //prop.Item1.SetValue(target, value, null);
-                    //}
+                    prop.Item2(target, value);
                 }
             }
 
@@ -449,7 +442,7 @@ namespace Commons.Json.Mapper
             }
             else
             {
-                return DateTime.TryParse(str, out dt);
+				return DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
             }
         }
 

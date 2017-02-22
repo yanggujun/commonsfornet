@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Commons.Json;
 using Commons.Json.Mapper;
 using Commons.Test.Json;
+using Commons.Utils;
 using Newtonsoft.Json;
 
 namespace Commons.Perf
@@ -20,22 +23,68 @@ namespace Commons.Perf
     {
         public static void Main(string[] args)
         {
+			//TestTrivialObjectToJson();
+			//TestTrivialObjectJsonToObject();
             //TestSmallObjectToJson();
 			//TestNormalObjectToJson();
             //TestStandardObjectToJson();
 			//TestLargeObjectToJson();
             TestSmallObjectJsonToObject();
-            TestStandardObjectJsonToObject();
+            //TestStandardObjectJsonToObject();
         }
 
-		public static void TestMisc()
+		public static void TestTrivialObjectToJson()
 		{
+			const int LN = 10000000;
+			var warm = Message.Create(0);
+			JsonMapper.ToJson(warm);
+			JsonConvert.SerializeObject(warm);
 			var sw1 = new Stopwatch();
-			sw1.Start();
-			for (var i = 0; i < 1000000; i++)
+			var sw2 = new Stopwatch();
+			for (var i = 0; i < LN; i++)
 			{
-				var h = Guid.NewGuid().ToString().ToLower().GetHashCode();
+				var message = Message.Create(i + 1);
+				sw1.Start();
+				JsonMapper.ToJson(message);
+				sw1.Stop();
+
+				sw2.Start();
+				JsonConvert.SerializeObject(message);
+				sw2.Stop();
 			}
+
+			Console.WriteLine("------------------");
+            Console.WriteLine("Trivial object to Json");
+            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+			Console.WriteLine("------------------");
+		}
+
+		public static void TestTrivialObjectJsonToObject()
+		{
+			const int LN = 10000000;
+			var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
+			var template = ReadFile("Message.txt");
+			var warm = GenerateMessageJson(rand, template);
+			JsonMapper.To<Message>(warm);
+			JsonConvert.DeserializeObject<Message>(warm);
+
+			var sw1 = new Stopwatch();
+			var sw2 = new Stopwatch();
+			for (var i = 0; i < LN; i++)
+			{
+				var json = GenerateMessageJson(rand, template);
+				sw1.Start();
+				JsonMapper.To<Message>(json);
+				sw1.Stop();
+
+				sw2.Start();
+				JsonConvert.DeserializeObject<Message>(json);
+				sw2.Stop();
+			}
+			Console.WriteLine("------------------");
+            Console.WriteLine("Trivial object Json To Object");
+            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+			Console.WriteLine("------------------");
 		}
 
 		public static void TestLargeObjectToJson()
@@ -94,7 +143,7 @@ namespace Commons.Perf
             const int LN = 100000;
 
             var warm = Post.Factory<Post, Vote, PostState, Comment>((int)(0x0000ffff & DateTime.Now.Ticks), x => (PostState)x);
-            JsonMapper.ToJson(warm);
+            var warmJson = JsonMapper.ToJson(warm);
             JsonConvert.SerializeObject(warm);
 
             var sw1 = new Stopwatch();
@@ -174,26 +223,25 @@ namespace Commons.Perf
         public static void TestSmallObjectJsonToObject()
         {
             const int LN = 1000000;
-            var warm = SmallPost.Create((int)DateTime.Now.Ticks & 0x0000ffff);
-            var jsonWarm = JsonMapper.ToJson(warm);
-            JsonMapper.To<SmallPost>(jsonWarm);
-            JsonConvert.DeserializeObject<SmallPost>(jsonWarm);
+
+			var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
+
+			var jsonTemplate = ReadFile("SmallPost.txt");
+			var warm = GenerateSmallPostJson(rand, jsonTemplate);
+            JsonMapper.To<SmallPost>(warm);
+            JsonConvert.DeserializeObject<SmallPost>(warm);
 
             var sw1 = new Stopwatch();
             var sw2 = new Stopwatch();
             for (var i = 0; i < LN; i++)
             {
-                var p = SmallPost.Create(i);
-                var json1 = JsonMapper.ToJson(p);
-
+				var json = GenerateSmallPostJson(rand, jsonTemplate);
                 sw1.Start();
-                JsonMapper.To<SmallPost>(json1);
+                JsonMapper.To<SmallPost>(json);
                 sw1.Stop();
 
-                var json2 = JsonConvert.SerializeObject(p);
-
                 sw2.Start();
-                JsonConvert.DeserializeObject<SmallPost>(json2);
+                JsonConvert.DeserializeObject<SmallPost>(json);
                 sw2.Stop();
             }
 
@@ -205,27 +253,22 @@ namespace Commons.Perf
 
         public static void TestStandardObjectJsonToObject()
         {
-            const int LN = 100000;
-            var warm = Post.Factory<Post, Vote, PostState, Comment>((int)(0x0000ffff & DateTime.Now.Ticks), x => (PostState)x);
-            var jsonWarm = JsonMapper.ToJson(warm);
-            JsonMapper.To<Post>(jsonWarm);
-            JsonConvert.DeserializeObject<Post>(jsonWarm);
+			var json = ReadFile("Post.txt");
+			JsonMapper.To<Post>(json);
+			JsonConvert.DeserializeObject<Post>(json);
+
+            const int LN = 10000;
 
             var sw1 = new Stopwatch();
             var sw2 = new Stopwatch();
             for (var i = 0; i < LN; i++)
             {
-                var post = Post.Factory<Post, Vote, PostState, Comment>(i, x => (PostState)x);
-                var json1 = JsonMapper.ToJson(post);
-
                 sw1.Start();
-                JsonMapper.To<Post>(json1);
+                JsonMapper.To<Post>(json);
                 sw1.Stop();
 
-                var json2 = JsonConvert.SerializeObject(post);
-
                 sw2.Start();
-                JsonConvert.DeserializeObject<Post>(json2);
+                JsonConvert.DeserializeObject<Post>(json);
                 sw2.Stop();
             }
 
@@ -261,5 +304,36 @@ namespace Commons.Perf
             Console.WriteLine(comp);
             
         }
+
+		private static string ReadFile(string name)
+		{
+			string result;
+			using (var fs = new FileStream(name, FileMode.Open))
+			{
+				using (var sr = new StreamReader(fs))
+				{
+					result = sr.ReadToEnd();
+				}
+			}
+			return result;
+		}
+
+		private static string GenerateSmallPostJson(Random rand, string template)
+		{
+			var result = template.Replace("(GUID)", Guid.NewGuid().ToString());
+			result = result.Replace("(TITLE)", "Some title" + rand.Next());
+			result = result.Replace("(ACTIVE)", (rand.Next() % 2 == 0).ToString().ToLower());
+			result = result.Replace("(CREATED)", DateTime.Now.ToString(CultureInfo.InvariantCulture));
+			result = result.Replace("(COUNT)", (rand.Next() % 1000).ToString());
+
+			return result;
+		}
+
+		private static string GenerateMessageJson(Random rand, string template)
+		{
+			var result = template.Replace("(MESSAGE)", "Some message " + rand.Next());
+			result = result.Replace("(VERSION)", rand.Next().ToString());
+			return result;
+		}
     }
 }

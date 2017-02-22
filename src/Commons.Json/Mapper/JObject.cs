@@ -44,7 +44,7 @@ namespace Commons.Json.Mapper
             {
                 throw new ArgumentException(Messages.InvalidFormat);
             }
-            values.Add(lastKey, value);
+            values[lastKey] = value;
             lastKey = null;
         }
 

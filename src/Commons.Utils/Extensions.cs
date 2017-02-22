@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 
 namespace Commons.Utils
 {
@@ -189,5 +190,50 @@ namespace Commons.Utils
             timeArray[22] = (char)(ms % 10 + Zero);
             return new string(timeArray);
         }
+
+		public static void Trim(this StringBuilder buffer)
+		{
+			var length = buffer.Length;
+
+			var frontCount = 0;
+			var endCount = 0;
+
+			for (var i = 0; i < length; i++)
+			{
+				var ch = buffer[i];
+				if (char.IsWhiteSpace(ch) || ch == '\n' || ch == '\r')
+				{
+					frontCount++;
+				}
+				else
+				{
+					break;
+				}
+			}
+			if (frontCount < length)
+			{
+				for (var i = length; i > 0; i--)
+				{
+					var ch = buffer[i - 1];
+					if (char.IsWhiteSpace(ch) || ch == '\n' || ch == '\r')
+					{
+						endCount++;
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+
+			if (endCount > 0)
+			{
+				buffer.Remove(length - endCount, endCount);
+			}
+			if (frontCount > 0)
+			{
+				buffer.Remove(0, frontCount);
+			}
+		}
     }
 }

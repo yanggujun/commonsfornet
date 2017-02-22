@@ -550,7 +550,7 @@ namespace Test.Commons.Json
 	    public void TestCompability080()
 	    {
 			var json = "[\"x\", truth]";
-		    Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<string[]>(json));
+		    Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
 	    }
 
 		[Fact]
@@ -601,5 +601,20 @@ namespace Test.Commons.Json
 			var json = "{\"a\" b}";
 			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
 		}// n_object_missing_colon
+
+		[Fact]
+		public void TestCompability088()
+		{
+			var json = "{\"a\": \"\"}";
+			var dict = JsonMapper.To<Dictionary<string, string>>(json);
+			Assert.Equal(string.Empty, dict["a"]);
+		}
+
+		[Fact]
+		public void TestCompability089()
+		{
+			var json = "{\"a\": }";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
 	}
 }

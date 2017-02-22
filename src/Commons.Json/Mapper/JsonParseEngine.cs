@@ -15,108 +15,36 @@
 // limitations under the License.
 
 using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.Text;
+
+using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-    public class JsonParseEngine
+	internal sealed class JsonParseEngine
     {
         public JValue Parse(string json)
         {
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                throw new ArgumentException(Messages.InvalidFormat);
-            }
-            var text = json.Trim();
-            var firstCh = text[0];
-            JValue result;
-            if (firstCh.Equals(JsonTokens.LeftBrace))
-            {
-                result = ParseObject(json);
-            }
-            else if (firstCh.Equals(JsonTokens.LeftBracket))
-            {
-                result = ParseArray(json);
-            }
-            else if (firstCh.Equals(JsonTokens.Quoter))
-            {
-                result = ParseString(json);
-            }
-			else if (firstCh.Equals('N') || firstCh.Equals('n'))
-			{
-				result = ParseNull(json);
-			}
-			else if (firstCh.Equals('T') || firstCh.Equals('t')
-				|| firstCh.Equals('F') || firstCh.Equals('f'))
-			{
-				result = ParseBool(json);
-			}
-			else if (char.IsNumber(firstCh) || firstCh.Equals('-'))
-			{
-				result = ParseNumber(json);
-			}
-			else
-            {
-                throw new ArgumentException(Messages.InvalidFormat);
-            }
-
-            return result;
-        }
-
-        private JValue ParseString(string json)
-        {
-            var value = json.Trim();
-            if (string.IsNullOrWhiteSpace(value) || value.Length < 2 || !value[0].Equals(JsonTokens.Quoter) || !value[value.Length - 1].Equals(JsonTokens.Quoter))
-            {
-                throw new ArgumentException(Messages.InvalidFormat);
-            }
-			var str = value.Substring(1, value.Length - 2);
-            return new JString(str);
-        }
-
-        private JValue ParseNull(string json)
-        {
-            var text = json.Trim();
-			if (text != JsonTokens.Null && text != JsonTokens.UpperCaseNull)
-            {
-                throw new ArgumentException(Messages.InvalidFormat);
-            }
-			return new JNull();
-        }
-
-        private JValue ParseArray(string json)
-        {
-            var text = json.Trim();
-            var fragment = new StringBuilder();
-            var quoted = false;
-            var bracketMatch = 0;
-            var braceMatch = 0;
+            var charStack = new Stack<char>();
+            var objectStack = new Stack<object>();
+            var currentFragment = new StringBuilder();
+            var currentIsQuoted = false;
             var hasComma = false;
-            var array = new JArray();
-
-            for (var i = 0; i < text.Length; i++)
+			var text = json.Trim();
+			for (var i = 0; i < text.Length; i++)
             {
-                if (bracketMatch < 0)
-                {
-                    throw new ArgumentException();
-                }
-                var ch = text[i];
-                if (ch.Equals(JsonTokens.Quoter))
-                {
-                    quoted = !quoted;
-                }
-                if (quoted)
-                {
-                    fragment.Append(ch);
-                    continue;
-                }
+				var ch = text[i];
+
+				if (currentIsQuoted && IsSpecial(ch))
+				{
+					currentFragment.Append(ch);
+					continue;
+				}
 
                 if (hasComma && !ch.IsEmpty())
                 {
-                    if (ch != JsonTokens.RightBracket 
-                        && ch != JsonTokens.RightBrace 
-                        && ch != JsonTokens.Comma)
+                    if (ch != JsonTokens.RightBracket && ch != JsonTokens.RightBrace && ch != JsonTokens.Comma)
                     {
                         hasComma = false;
                     }
@@ -126,183 +54,310 @@ namespace Commons.Json.Mapper
                     }
                 }
 
-                if (ch.Equals(JsonTokens.LeftBracket))
+				switch (ch)
+				{
+					case JsonTokens.LeftBrace:
+						OnLeftBrace(charStack, currentFragment, objectStack);
+						break;
+					case JsonTokens.LeftBracket: //[
+						OnLeftBracket(charStack, currentFragment, objectStack);
+						break;
+					case JsonTokens.RightBracket: //]
+						OnRightBracket(charStack, currentFragment, objectStack);
+						break;
+					case JsonTokens.RightBrace:
+						OnRightBrace(charStack, currentFragment, objectStack);
+						break;
+					case JsonTokens.Comma:
+						OnComma(charStack, currentFragment, objectStack);
+						hasComma = true;
+						break;
+					case JsonTokens.Colon:
+						OnColon(charStack, currentFragment, objectStack);
+						break;
+					case JsonTokens.Quoter:
+						OnQuoter(charStack, currentFragment, objectStack, ref currentIsQuoted);
+						break;
+					default:
+						currentFragment.Append(ch);
+						break;
+				}
+				if (charStack.Count > 0 && charStack.Peek() == JsonTokens.LeftBracket 
+										&& ch != JsonTokens.LeftBracket && !ch.IsEmpty())
+				{
+					charStack.Push(JsonTokens.NonEmptyArrayMark);
+				}
+            }
+
+            if (charStack.Count > 0 || currentIsQuoted)
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
+            JValue jsonValue;
+            if (objectStack.Count == 0)
+            {
+                jsonValue = ParseJsonValue(currentFragment);
+            }
+            else 
+            {
+                jsonValue = objectStack.Pop() as JValue;
+            }
+            return jsonValue;
+        }
+
+        private static void OnLeftBrace(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
+        {
+            charStack.Push(JsonTokens.LeftBrace);
+            objectStack.Push(new JObject());
+        }
+
+        private static void OnRightBrace(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
+        {
+            JValue value;
+            var ch = charStack.Pop();
+
+			if (ch != JsonTokens.LeftBrace && ch != JsonTokens.Colon)
+			{
+				throw new ArgumentException(Messages.InvalidFormat);
+			}
+
+			if (ch == JsonTokens.Colon)
+			{
+				if (charStack.Pop() != JsonTokens.LeftBrace)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+				var text = currentFragment.ToString();
+				if (string.IsNullOrWhiteSpace(text))
+				{
+					value = objectStack.Pop() as JValue;
+					if (value == null)
+					{
+						throw new ArgumentException(Messages.InvalidFormat);
+					}
+				}
+				else
+				{
+					value = ParseJsonValue(currentFragment);
+				}
+				var key = objectStack.Pop() as string;
+				if (string.IsNullOrWhiteSpace(key))
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+				var outer = objectStack.Peek() as JObject;
+				if (outer == null)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+				outer[key] = value;
+			}
+			else
+			{
+				if (!string.IsNullOrEmpty(currentFragment.ToString().Trim()))
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+			}
+        }
+
+        private static void OnLeftBracket(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
+        {
+            charStack.Push(JsonTokens.LeftBracket);
+            objectStack.Push(new JArray());
+        }
+
+        private static void OnRightBracket(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
+        {
+			if (charStack.Count == 0)
+			{
+				throw new ArgumentException(Messages.InvalidFormat);
+			}
+            JValue value;
+
+            var ch = charStack.Pop();
+			if (ch != JsonTokens.NonEmptyArrayMark && ch != JsonTokens.LeftBracket)
+			{
+				throw new ArgumentException(Messages.InvalidFormat);
+			}
+
+            if (ch == JsonTokens.NonEmptyArrayMark)
+            {
+				if (charStack.Pop() != JsonTokens.LeftBracket)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+                var text = currentFragment.ToString();
+                if (string.IsNullOrWhiteSpace(text))
                 {
-                    ++bracketMatch;
-                    if (bracketMatch > 1)
-                    {
-                        fragment.Append(ch);
-                    }
-                }
-                else if (ch.Equals(JsonTokens.LeftBrace))
-                {
-                    ++braceMatch;
-                    fragment.Append(ch);
-                }
-                else if (ch.Equals(JsonTokens.RightBrace))
-                {
-                    --braceMatch;
-                    fragment.Append(ch);
-                }
-                else if (ch.Equals(JsonTokens.Comma) && bracketMatch == 1 && braceMatch == 0)
-                {
-                    if (string.IsNullOrWhiteSpace(fragment.ToString().Trim()))
-                    {
-                        throw new ArgumentException(Messages.InvalidFormat);
-                    }
-                    AppendValue(array, fragment);
-                    hasComma = true;
-                }
-                else if (ch.Equals(JsonTokens.RightBracket))
-                {
-                    --bracketMatch;
-                    if (bracketMatch == 0)
-                    {
-                        AppendValue(array, fragment);
-                        if (i < text.Length - 1)
-                        {
-                            throw new ArgumentException();
-                        }
-                    }
-                    else if (bracketMatch > 0)
-                    {
-                        fragment.Append(ch);
-                    }
+                    value = objectStack.Pop() as JValue;
+					if (value == null)
+					{
+						throw new ArgumentException(Messages.InvalidFormat);
+					}
                 }
                 else
                 {
-                    fragment.Append(ch);
+                    value = ParseJsonValue(currentFragment);
                 }
+				if (objectStack.Count == 0)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+                var outer = objectStack.Peek() as JArray;
+				if (outer == null)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+                outer.Add(value);
             }
-
-            if (quoted || bracketMatch != 0)
-            {
-                throw new ArgumentException(Messages.InvalidFormat);
-            }
-
-            return array;
         }
 
-        private JValue ParseNumber(string json)
+        private static void OnComma(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
         {
-            var number = json.Trim();
-            var dotIndex = number.IndexOf(JsonTokens.Dot);
-            if (dotIndex == number.Length - 1 || dotIndex == 0)
+            JValue value;
+			if (charStack.Count == 0)
+			{
+				throw new ArgumentException(Messages.InvalidFormat);
+			}
+            var ch = charStack.Peek();
+			if (ch != JsonTokens.Colon && ch != JsonTokens.LeftBracket && ch != JsonTokens.NonEmptyArrayMark)
+			{
+				throw new ArgumentException(Messages.InvalidFormat);
+			}
+            if (ch == JsonTokens.Colon)
             {
-                throw new ArgumentException(Messages.InvalidFormat);
+                charStack.Pop();
+				if (charStack.Peek() != JsonTokens.LeftBrace)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
             }
-			return new JPrimitive(number);
-        }
 
-        private JValue ParseBool(string json)
-        {
-            var text = json.Trim();
-            return new JPrimitive(text);
-        }
-
-        private JValue ParseObject(string text)
-        {
-            var json = text.Trim();
-            var fragment = new StringBuilder(50);
-
-            var quoted = false;
-            var jsonObject = new JObject();
-            var braceMatch = 0;
-            var bracketMatch = 0;
-            for (var pos = 0; pos < json.Length; pos++)
+            var text = currentFragment.ToString();
+            if (string.IsNullOrWhiteSpace(text))
             {
-                if (braceMatch < 0)
-                {
-                    throw new ArgumentException(Messages.InvalidFormat);
-                }
-                var ch = json[pos];
-                if (ch.Equals(JsonTokens.Quoter))
-                {
-                    quoted = !quoted;
-                }
-
-                if (quoted)
-                {
-                    fragment.Append(ch);
-                    continue;
-                }
-
-                if (ch.Equals(JsonTokens.LeftBrace))
-                {
-                    ++braceMatch;
-                    if (braceMatch > 1)
-                    {
-                        fragment.Append(ch);
-                    }
-                }
-                else if (ch.Equals(JsonTokens.LeftBracket))
-                {
-                    ++bracketMatch;
-                    fragment.Append(ch);
-                }
-                else if (ch.Equals(JsonTokens.RightBracket))
-                {
-                    --bracketMatch;
-                    fragment.Append(ch);
-                }
-                else if (ch.Equals(JsonTokens.Colon) && braceMatch == 1 && bracketMatch ==0)
-                {
-                    var key = Parse(fragment.ToString());
-                    jsonObject.PutKey(key as JString);
-                    fragment.Clear();
-                }
-                else if (ch.Equals(JsonTokens.Comma) && braceMatch == 1 && bracketMatch == 0)
-                {
-                    var v = Parse(fragment.ToString());
-                    jsonObject.PutObject(v);
-                    fragment.Clear();
-                }
-                else if (ch.Equals(JsonTokens.RightBrace))
-                {
-                    --braceMatch;
-                    if (braceMatch == 0)
-                    {
-                        var frag = fragment.ToString();
-                        if (!string.IsNullOrWhiteSpace(frag))
-                        {
-                            var v = Parse(frag);
-                            jsonObject.PutObject(v);
-                            if (pos < json.Length - 1)
-                            {
-                                throw new ArgumentException(Messages.InvalidFormat);
-                            }
-                        }
-                    }
-                    else if (braceMatch > 0)
-                    {
-                        fragment.Append(ch);
-                    }
-                }
-                else
-                {
-                    fragment.Append(ch);
-                }
+                value = objectStack.Pop() as JValue;
+				if (value == null)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
             }
-            if (quoted || braceMatch != 0)
+            else
             {
-                throw new ArgumentException(Messages.InvalidFormat);
+                value = ParseJsonValue(currentFragment);
             }
-            if (!jsonObject.Validate())
-            {
-                throw new ArgumentException(Messages.InvalidFormat);
-            }
-            return jsonObject;
-        }
 
-        private void AppendValue(JArray array, StringBuilder jsonFragment)
-        {
-            var text = jsonFragment.ToString();
-            if (!string.IsNullOrWhiteSpace(text))
+            if (ch == JsonTokens.Colon)
             {
-                var value = Parse(jsonFragment.ToString());
+                var key = objectStack.Pop() as string;
+
+				if (string.IsNullOrWhiteSpace(key))
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+
+                var outer = objectStack.Peek() as JObject;
+				if (outer == null)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+                outer[key] = value;
+            }
+            else if (ch == JsonTokens.NonEmptyArrayMark)
+            {
+                var array = objectStack.Peek() as JArray;
+				if (array == null)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
                 array.Add(value);
             }
-            jsonFragment.Clear();
         }
+
+        private static void OnColon(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack)
+        {
+            var key = currentFragment.ToString().Trim();
+            //objectStack.Peek().Verify(x => x is JObject);
+
+			if (charStack.Peek() != JsonTokens.LeftBrace)
+			{
+				throw new ArgumentException(Messages.InvalidFormat);
+			}
+
+			if (string.IsNullOrWhiteSpace(key))
+			{
+				throw new ArgumentException(Messages.InvalidFormat);
+			}
+			if (key[0] != JsonTokens.Quoter || key[key.Length - 1] != JsonTokens.Quoter)
+			{
+				throw new ArgumentException(Messages.InvalidFormat);
+			}
+            key = key.Trim(JsonTokens.Quoter);
+            objectStack.Push(key);
+            charStack.Push(JsonTokens.Colon);
+            currentFragment.Clear();
+        }
+
+        private static void OnQuoter(Stack<char> charStack, StringBuilder currentFragment, Stack<object> objectStack, ref bool quoted)
+        {
+            if (!quoted)
+            {
+                charStack.Push(JsonTokens.Quoter);
+                quoted = true;
+            }
+            else
+            {
+				if (charStack.Pop() != JsonTokens.Quoter)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+                quoted = false;
+            }
+            currentFragment.Append(JsonTokens.Quoter);
+        }
+
+        private static JValue ParseJsonValue(StringBuilder currentFragment)
+        {
+            JValue jsonValue;
+            var value = currentFragment.ToString().Trim();
+			// quoter match is already checked.
+			if (value[0] == JsonTokens.Quoter && value[value.Length - 1] == JsonTokens.Quoter)
+			{
+				jsonValue = new JString(value.Substring(1, value.Length - 2));
+			}
+			else if (value == JsonTokens.Null || value == JsonTokens.UpperCaseNull)
+			{
+				jsonValue = new JNull();
+			}
+			else if (value == JsonTokens.True || value == JsonTokens.UpperCaseTrue || value == JsonTokens.False || value == JsonTokens.UpperCaseFalse)
+			{
+				jsonValue = new JPrimitive(value);
+			}
+			else if (value.Length > 0 && (char.IsNumber(value[0]) || value[0] == JsonTokens.Negtive))
+			{
+				var dotIndex = value.IndexOf(JsonTokens.Dot);
+				if (dotIndex == value.Length - 1 || dotIndex == 0)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+				jsonValue = new JPrimitive(value);
+			}
+			else
+			{
+				throw new ArgumentException(Messages.InvalidValue);
+			}
+            currentFragment.Clear();
+
+            return jsonValue;
+        }
+
+		private static bool IsSpecial(char ch)
+		{
+			return ch == JsonTokens.LeftBrace || ch == JsonTokens.LeftBracket || 
+					ch == JsonTokens.RightBrace || ch == JsonTokens.RightBracket || ch == JsonTokens.Comma || 
+					ch == JsonTokens.Colon;
+		}
+
     }
 }

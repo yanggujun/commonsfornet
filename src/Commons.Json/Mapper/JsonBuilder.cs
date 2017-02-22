@@ -23,7 +23,7 @@ using System.Text;
 
 namespace Commons.Json.Mapper
 {
-	internal class JsonBuilder : IJsonBuilder
+	internal sealed class JsonBuilder
     {
 		private const int localBufferSize = 1000;
 		private const int objectSize = 200;
