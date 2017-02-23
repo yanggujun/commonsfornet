@@ -31,11 +31,9 @@ namespace Commons.Json.Mapper
             var currentFragment = new StringBuilder();
             var currentIsQuoted = false;
             var hasComma = false;
-			var text = json.Trim();
-			for (var i = 0; i < text.Length; i++)
+            var text = json.Trim().ToCharArray(); ;
+            foreach (var ch in text)
             {
-				var ch = text[i];
-
 				if (currentIsQuoted && IsSpecial(ch))
 				{
 					currentFragment.Append(ch);
