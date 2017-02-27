@@ -328,7 +328,7 @@ namespace Test.Commons.Json
 	    public void TestCompability046()
 		{
 			var json = "[0.e1]";
-			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<double[]>(json));
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<double[]>(json));
 		}
 
 		[Fact]

@@ -180,27 +180,20 @@ namespace Commons.Json.Mapper
         private object BuildBool(Type type, JValue jsonValue)
         {
 			bool result;
-			var bvalue = jsonValue.Value;
-			if (bvalue == JsonTokens.True)
-			{
-				result = true;
-			}
-			else if (bvalue == JsonTokens.False)
-			{
-				result = false;
-			}
-			else if (bvalue == JsonTokens.UpperCaseTrue)
-			{
-				result = true;
-			}
-			else if (bvalue == JsonTokens.UpperCaseFalse)
-			{
-				result = false;
-			}
-			else
-			{
-				throw new ArgumentException(Messages.InvalidValue);
-			}
+            var bvalue = jsonValue as JPrimitive;
+            if (bvalue.PrimitiveType == PrimitiveType.True)
+            {
+                result = true;
+            }
+            else if (bvalue.PrimitiveType == PrimitiveType.False)
+            {
+                result = false;
+            }
+            else
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+            }
+
             return result;
         }
 
@@ -208,6 +201,11 @@ namespace Commons.Json.Mapper
         {
             object result;
 			var success = false;
+            JPrimitive prim;
+            if (!jsonValue.Is<JPrimitive>(out prim) || (prim.PrimitiveType != PrimitiveType.Decimal && prim.PrimitiveType != PrimitiveType.Integer))
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+            }
             if (type == typeof (float))
             {
 				float num;

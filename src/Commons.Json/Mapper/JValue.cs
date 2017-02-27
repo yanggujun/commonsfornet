@@ -32,12 +32,15 @@ namespace Commons.Json.Mapper
         public string Value { get; protected set; }
     }
 
-    public class JPrimitive: JValue
+    public class JPrimitive : JValue
     {
-		public JPrimitive(string value)
-		{
-			Value = value;
-		}
+        public JPrimitive(string value, PrimitiveType pType)
+        {
+            Value = value;
+            PrimitiveType = pType;
+        }
+
+        public PrimitiveType PrimitiveType { get; private set; }
     }
 
     public class JString : JValue
@@ -51,4 +54,13 @@ namespace Commons.Json.Mapper
     public class JNull : JValue
     {
     }
+
+    public enum PrimitiveType
+    {
+        Decimal,
+        Integer,
+        True,
+        False
+    }
+
 }

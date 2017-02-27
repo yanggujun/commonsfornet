@@ -85,7 +85,7 @@ namespace Commons.Json
                 if (charStack.Count > 0 && charStack.Peek() == JsonTokens.LeftBracket 
                                         && ch != JsonTokens.LeftBracket && !ch.IsEmpty())
                 {
-                    charStack.Push(JsonTokens.NonEmptyArrayMark);
+                    charStack.Push('a');
                 }
             }
 
@@ -152,9 +152,9 @@ namespace Commons.Json
         {
             JsonValue value;
             var ch = charStack.Pop();
-            ch.Verify(x => x == JsonTokens.NonEmptyArrayMark || x == JsonTokens.LeftBracket);
+            ch.Verify(x => x == 'a' || x == JsonTokens.LeftBracket);
 
-            if (ch == JsonTokens.NonEmptyArrayMark)
+            if (ch == 'a')
             {
                 charStack.Pop().Verify(x => x == JsonTokens.LeftBracket);
                 var text = currentFragment.ToString();
@@ -178,7 +178,7 @@ namespace Commons.Json
         {
             JsonValue value;
             var ch = charStack.Peek();
-            ch.Verify(x => x == JsonTokens.Colon || x == JsonTokens.LeftBracket || x == JsonTokens.NonEmptyArrayMark);
+            ch.Verify(x => x == JsonTokens.Colon || x == JsonTokens.LeftBracket || x == 'a');
             if (ch == JsonTokens.Colon)
             {
                 charStack.Pop();
@@ -204,7 +204,7 @@ namespace Commons.Json
                 outer.Verify(x => x != null);
                 outer[key] = value;
             }
-            else if (ch == JsonTokens.NonEmptyArrayMark)
+            else if (ch == 'a')
             {
                 var array = objectStack.Peek() as JsonArray;
                 array.Verify(x => x != null);

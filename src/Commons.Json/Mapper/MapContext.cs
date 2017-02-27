@@ -66,7 +66,9 @@ namespace Commons.Json.Mapper
             {
                 throw new ArgumentException(Messages.InvalidValue);
             }
-			var jsonValue = ParseEngine.Parse(json);
+            var parseEngine = new JsonParseEngine();
+
+			var jsonValue = parseEngine.Parse(json);
 
 			return MapEngine.Map(type, jsonValue);
 		}

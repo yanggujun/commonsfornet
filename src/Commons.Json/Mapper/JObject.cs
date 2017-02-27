@@ -29,6 +29,7 @@ namespace Commons.Json.Mapper
         private Dictionary<string, JValue> values = new Dictionary<string, JValue>();
 
         private string lastKey;
+
         public void PutKey(JString key)
         {
             if (key == null)

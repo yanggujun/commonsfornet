@@ -47,7 +47,7 @@ namespace Commons.Json
         public static bool IsEmpty(this char ch)
         {
             return ch == JsonTokens.Space || ch == JsonTokens.TabChar
-                   || ch == JsonTokens.LineSeparator;
+                   || ch == JsonTokens.LineSeparator || ch == JsonTokens.Carriage;
         }
 
         public static bool IsJsonPrimitive(this Type type)
