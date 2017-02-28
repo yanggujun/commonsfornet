@@ -3,6 +3,7 @@ using Commons.Test.Json;
 using Commons.Utils;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -22,12 +23,12 @@ namespace Commons.Perf
         {
 			//TestTrivialObjectToJson();
 			//TestTrivialObjectJsonToObject();
-            //TestSmallObjectToJson();
+			//TestSmallObjectToJson();
 			//TestNormalObjectToJson();
-            //TestStandardObjectToJson();
+			//TestStandardObjectToJson();
 			//TestLargeObjectToJson();
-            TestSmallObjectJsonToObject();
-            TestStandardObjectJsonToObject();
+			TestSmallObjectJsonToObject();
+			TestStandardObjectJsonToObject();
         }
 
 		public static void TestTrivialObjectToJson()

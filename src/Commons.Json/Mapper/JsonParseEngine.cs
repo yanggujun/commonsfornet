@@ -38,6 +38,7 @@ namespace Commons.Json.Mapper
             }
 
             var result = Parse();
+			WalkThroughEmpty();
             if (pos < len)
             {
                 throw new ArgumentException(Messages.InvalidFormat);
@@ -48,6 +49,11 @@ namespace Commons.Json.Mapper
         private JValue Parse()
         {
             WalkThroughEmpty();
+			if (pos >= len)
+			{
+				throw new ArgumentException(Messages.InvalidFormat);
+			}
+
             var ch = json[pos];
             switch (ch)
             {
@@ -256,6 +262,7 @@ namespace Commons.Json.Mapper
                 {
                     MovePosition();
                 }
+				WalkThroughEmpty();
             }
             if (pos >= len && json[pos - 1] != JsonTokens.RightBracket)
             {
