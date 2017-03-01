@@ -195,7 +195,7 @@ namespace Commons.Test.Json
         {
             var json = "20";
             var parseEngine = new JsonParseEngine();
-            Assert.Equal("20", (parseEngine.Parse(json) as JPrimitive).Value);
+            Assert.Equal("20", (parseEngine.Parse(json) as JNumber).Value);
         }
 
         [Fact]
@@ -203,7 +203,7 @@ namespace Commons.Test.Json
         {
             var json = "21.0002345";
             var parseEngine = new JsonParseEngine();
-            Assert.Equal("21.0002345", (parseEngine.Parse(json) as JPrimitive).Value);
+            Assert.Equal("21.0002345", (parseEngine.Parse(json) as JNumber).Value);
         }
 
         [Fact]
@@ -261,7 +261,7 @@ namespace Commons.Test.Json
             Assert.NotNull(value);
             var jack = (value[0] as JObject)["Jack"] as JObject;
             Assert.NotNull(jack);
-            Assert.Equal("27", (jack["age"] as JPrimitive).Value);
+            Assert.Equal("27", (jack["age"] as JNumber).Value);
             Assert.Equal("usa", jack["country"].Value);
             //var jon = (value[1] as JObject)["Jon"];
             //Assert.NotNull(jon);

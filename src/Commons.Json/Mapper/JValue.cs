@@ -32,9 +32,9 @@ namespace Commons.Json.Mapper
         public string Value { get; protected set; }
     }
 
-    public class JPrimitive : JValue
+    public class JNumber : JValue
     {
-        public JPrimitive(string value, PrimitiveType pType)
+        public JNumber(string value, PrimitiveType pType)
         {
             Value = value;
             PrimitiveType = pType;

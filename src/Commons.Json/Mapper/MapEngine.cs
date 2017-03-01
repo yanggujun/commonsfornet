@@ -218,7 +218,7 @@ namespace Commons.Json.Mapper
         private object BuildBool(Type type, JValue jsonValue)
         {
 			bool result;
-            var bvalue = jsonValue as JPrimitive;
+            var bvalue = jsonValue as JNumber;
             if (jsonValue == JBool.True)
             {
                 result = true;
@@ -282,8 +282,8 @@ namespace Commons.Json.Mapper
 
 		private void CheckDecimalType(JValue jsonValue)
 		{
-			JPrimitive prim;
-            if (!jsonValue.Is<JPrimitive>(out prim) || (prim.PrimitiveType != PrimitiveType.Decimal && prim.PrimitiveType != PrimitiveType.Integer))
+			JNumber prim;
+            if (!jsonValue.Is<JNumber>(out prim) || (prim.PrimitiveType != PrimitiveType.Decimal && prim.PrimitiveType != PrimitiveType.Integer))
             {
                 throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
             }
@@ -411,8 +411,8 @@ namespace Commons.Json.Mapper
 
 		private void CheckIntegerType(JValue jsonValue)
 		{
-			JPrimitive prim;
-			if (!jsonValue.Is<JPrimitive>(out prim) || prim.PrimitiveType != PrimitiveType.Integer)
+			JNumber prim;
+			if (!jsonValue.Is<JNumber>(out prim) || prim.PrimitiveType != PrimitiveType.Integer)
 			{
 				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
 			}
