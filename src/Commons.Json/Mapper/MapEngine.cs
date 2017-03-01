@@ -44,7 +44,7 @@ namespace Commons.Json.Mapper
 
 		public object Map(Type type, JValue jsonValue)
 		{
-            if (jsonValue.Is<JNull>())
+            if (jsonValue == JNull.Null)
             {
                 if (!type.IsClass() && !type.IsNullable())
                 {
@@ -219,11 +219,11 @@ namespace Commons.Json.Mapper
         {
 			bool result;
             var bvalue = jsonValue as JPrimitive;
-            if (bvalue.PrimitiveType == PrimitiveType.True)
+            if (jsonValue == JBool.True)
             {
                 result = true;
             }
-            else if (bvalue.PrimitiveType == PrimitiveType.False)
+            else if (jsonValue == JBool.False)
             {
                 result = false;
             }

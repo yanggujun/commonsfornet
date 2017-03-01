@@ -795,5 +795,12 @@ namespace Test.Commons.Json
 			var json = "0   20   ";
 			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int>(json));
 		}
+
+		[Fact]
+		public void TestCompability114()
+		{
+			var json = "0.b12";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<double>(json));
+		}
 	}
 }

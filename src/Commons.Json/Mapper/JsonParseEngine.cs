@@ -283,7 +283,7 @@ namespace Commons.Json.Mapper
                     if (json[pos] == 'e')
                     {
                         ++pos;
-                        return new JPrimitive(string.Empty, PrimitiveType.True);
+                        return JBool.True;
                     }
                     else
                     {
@@ -316,7 +316,7 @@ namespace Commons.Json.Mapper
                         if (json[pos] == 'e')
                         {
                             ++pos;
-                            return new JPrimitive(string.Empty, PrimitiveType.False);
+                            return JBool.False;
                         }
                         else
                         {
@@ -351,7 +351,7 @@ namespace Commons.Json.Mapper
                     if (json[pos] == 'l')
                     {
                         ++pos;
-                        return new JNull();
+                        return JNull.Null;
                     }
                     else
                     {

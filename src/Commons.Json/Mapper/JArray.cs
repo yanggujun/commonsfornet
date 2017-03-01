@@ -50,11 +50,6 @@ namespace Commons.Json.Mapper
             }
         }
 
-        public void AddNull(string key)
-        {
-			values.Add(new JNull());
-        }
-
         public int Length
         {
             get { return values.Count; }

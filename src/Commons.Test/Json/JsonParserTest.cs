@@ -111,7 +111,7 @@ namespace Commons.Test.Json
             var value = parseEngine.Parse(json);
             Assert.True(value is JObject);
             var obj = value as JObject;
-            Assert.True((obj["married"] as JPrimitive).PrimitiveType == PrimitiveType.False);
+            Assert.True((obj["married"] as JBool) == JBool.False);
         }
 
         [Fact]
@@ -122,7 +122,7 @@ namespace Commons.Test.Json
             var value = parseEngine.Parse(json);
             Assert.True(value is JObject);
             var obj = value as JObject;
-            Assert.True((obj["married"] as JPrimitive).PrimitiveType == PrimitiveType.True);
+            Assert.True((obj["married"] as JBool) == JBool.True);
         }
 
         [Fact]

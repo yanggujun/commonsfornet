@@ -51,16 +51,91 @@ namespace Commons.Json.Mapper
 		}
     }
 
+    public class JBool : JValue
+    {
+        private static object trueLock = new object();
+        private static object falseLock = new object();
+        private static JBool trueValue;
+        private static JBool falseValue;
+
+        private JBool()
+        {
+        }
+
+        public static JBool True
+        {
+            get
+            {
+                if (trueValue == null)
+                {
+                    lock (trueLock)
+                    {
+                        if (trueValue == null)
+                        {
+                            trueValue = new JBool();
+                            trueValue.Value = JsonTokens.True;
+                            return trueValue;
+                        }
+                    }
+                }
+
+                return trueValue;
+            }
+        }
+
+        public static JBool False
+        {
+            get
+            {
+                if (falseValue == null)
+                {
+                    lock (falseLock)
+                    {
+                        if (falseValue == null)
+                        {
+                            falseValue = new JBool();
+                            falseValue.Value = JsonTokens.False;
+                            return falseValue;
+                        }
+                    }
+                }
+                return falseValue;
+            }
+        }
+    }
+
     public class JNull : JValue
     {
+        private static object locker = new object();
+        private static JNull instance;
+        private JNull()
+        {
+        }
+
+        public static JNull Null
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (locker)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new JNull();
+                            return instance;
+                        }
+                    }
+                }
+                return instance;
+            }
+        }
     }
 
     public enum PrimitiveType
     {
         Decimal,
-        Integer,
-        True,
-        False
+        Integer
     }
 
 }
