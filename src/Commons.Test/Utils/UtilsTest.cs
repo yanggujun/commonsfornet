@@ -441,52 +441,5 @@ namespace Commons.Test.Utils
             Assert.Equal(dt.Second, newTime.Second);
             Assert.Equal(dt.Millisecond, newTime.Millisecond);
         }
-
-		[Fact]
-		public void TestTrimStringBuilder()
-		{
-			var buffer = new StringBuilder();
-			var str = "aaaaaaaa";
-			buffer.Append("  ").Append(str).Append("       ");
-			buffer.Trim();
-			Assert.Equal(str, buffer.ToString());
-		}
-
-		[Fact]
-		public void TestTrimStringBuilderFront()
-		{
-			var buffer = new StringBuilder();
-			var str = "adgfegt2345t";
-			buffer.Append("       ").Append(str);
-			buffer.Trim();
-			Assert.Equal(str, buffer.ToString());
-		}
-
-		[Fact]
-		public void TestTrimStringBuilderEnd()
-		{
-			var buffer = new StringBuilder();
-			var str = "ag34j0t7810-";
-			buffer.Append(str).Append("        ");
-			buffer.Trim();
-			Assert.Equal(str, buffer.ToString());
-		}
-
-		[Fact]
-		public void TestTrimStringBuilderWhitespace()
-		{
-			var buffer = new StringBuilder();
-			buffer.Append("       ");
-			buffer.Trim();
-			Assert.Equal(string.Empty, buffer.ToString());
-		}
-
-		[Fact]
-		public void TestTrimStringBuilderEmpty()
-		{
-			var buffer = new StringBuilder();
-			buffer.Trim();
-			Assert.Equal(string.Empty, buffer.ToString());
-		}
     }
 }

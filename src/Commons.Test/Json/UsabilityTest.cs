@@ -17,13 +17,12 @@
 using Commons.Json;
 using Commons.Json.Mapper;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
 namespace Commons.Test.Json
 {
-    public class UsabilityTest
+	public class UsabilityTest
     {
         [Fact]
         public void TestSmall01()

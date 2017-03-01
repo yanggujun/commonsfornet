@@ -15,10 +15,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
@@ -27,7 +23,6 @@ namespace Commons.Json.Mapper
         private int pos;
         private int len;
         private string json;
-        private readonly StringBuilder currentFragment = new StringBuilder(50);
         public JValue Parse(string json)
         {
             this.json = json;
@@ -89,24 +84,33 @@ namespace Commons.Json.Mapper
         private JValue ParseNumber()
         {
             var isFloat = false;
+			var start = pos;
             var ch = json[pos];
-            if (ch == JsonTokens.Negtive)
-            {
-                currentFragment.Append(ch);
-                MovePosition();
-                if (!IsDigit(json[pos]))
-                {
-                    throw new ArgumentException(Messages.InvalidFormat);
-                }
-            }
+			if (ch == JsonTokens.Negtive)
+			{
+				MovePosition();
+				if (!IsDigit(json[pos]) || json[pos] == JsonTokens.Digit0)
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
+			}
+			else if (ch == JsonTokens.Digit0)
+			{
+				if (pos < len - 1)
+				{
+					if (IsDigit(json[++pos]))
+					{
+						throw new ArgumentException(Messages.InvalidFormat);
+					}
+				}
+			}
+
             while (pos < len && IsDigit(json[pos]))
             {
-                currentFragment.Append(json[pos]);
                 ++pos;
             }
             if (pos < len && json[pos] == JsonTokens.Dot)
             {
-                currentFragment.Append(JsonTokens.Dot);
                 isFloat = true;
                 MovePosition();
                 if (!IsDigit(json[pos]))
@@ -116,7 +120,6 @@ namespace Commons.Json.Mapper
             }
             while (pos < len && IsDigit(json[pos]))
             {
-                currentFragment.Append(json[pos]);
                 pos++;
             }
 
@@ -124,7 +127,6 @@ namespace Commons.Json.Mapper
             {
                 // TODO: e+ e-
                 isFloat = true;
-                currentFragment.Append(json[pos]);
                 MovePosition();
                 if (!IsDigit(json[pos]))
                 {
@@ -132,27 +134,28 @@ namespace Commons.Json.Mapper
                 }
                 while (pos < len && IsDigit(json[pos]))
                 {
-                    currentFragment.Append(json[pos]);
                     pos++;
                 }
             }
 
+			var numStr = json.Substring(start, pos - start);
+
             JValue result;
             if (isFloat)
             {
-                result = new JPrimitive(currentFragment.ToString(), PrimitiveType.Decimal);
+                result = new JPrimitive(numStr, PrimitiveType.Decimal);
             }
             else
             {
-                result = new JPrimitive(currentFragment.ToString(), PrimitiveType.Integer);
+                result = new JPrimitive(numStr, PrimitiveType.Integer);
             }
-            currentFragment.Clear();
             return result;
         }
 
         private JValue ParseString()
         {
             ++pos;
+			var start = pos;
             char ch;
             while (pos < len && (ch = json[pos]) != JsonTokens.Quoter)
             {
@@ -160,19 +163,14 @@ namespace Commons.Json.Mapper
                 {
                     //TODO: unescape char
                 }
-                else
-                {
-                    currentFragment.Append(ch);
-                }
                 ++pos;
             }
+			var str = json.Substring(start, pos - start);
             if (pos >= len && json[pos - 1] != JsonTokens.Quoter)
             {
                 throw new ArgumentException(Messages.InvalidFormat);
             }
             ++pos;
-            var str = currentFragment.ToString();
-            currentFragment.Clear();
 
             return new JString(str);
         }

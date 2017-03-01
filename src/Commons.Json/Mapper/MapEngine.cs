@@ -29,10 +29,11 @@ namespace Commons.Json.Mapper
         private readonly MapperContainer mappers;
         private readonly ConfigContainer configuration;
         private readonly CollectionBuilder colBuilder;
-		private readonly ConcurrentDictionary<Type, Func<Type, JValue, object>> deserializers;
+		// (objectType -> (deserializer, actualType)
+		private readonly ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>> deserializers;
 
         public MapEngine(TypeContainer types, MapperContainer mappers, ConfigContainer configuration, 
-			CollectionBuilder colBuilder, ConcurrentDictionary<Type, Func<Type, JValue, object>> deserializers)
+			CollectionBuilder colBuilder, ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>> deserializers)
         {
             this.types = types;
             this.mappers = mappers;
@@ -59,12 +60,13 @@ namespace Commons.Json.Mapper
 
 		private Func<Type, JValue, object> GetDeserializer(Type type, out Type actualType)
 		{
-			actualType = GetActualType(type);
-
-			if (deserializers.ContainsKey(actualType))
+			if (deserializers.ContainsKey(type))
 			{
-				return deserializers[actualType];
+				var tuple = deserializers[type];
+				actualType = tuple.Item2;
+				return tuple.Item1;
 			}
+			actualType = GetActualType(type);
 
 			Func<Type, JValue, object> deserializer;
 
@@ -131,7 +133,7 @@ namespace Commons.Json.Mapper
 				deserializer = BuildObject;
 			}
 
-			deserializers[actualType] = deserializer;
+			deserializers[type] = new Tuple<Func<Type, JValue, object>, Type>(deserializer, actualType);
 
 			return deserializer;
 		}
@@ -200,39 +202,40 @@ namespace Commons.Json.Mapper
         private object BuildDecimal(Type type, JValue jsonValue)
         {
             object result;
-			var success = false;
             JPrimitive prim;
             if (!jsonValue.Is<JPrimitive>(out prim) || (prim.PrimitiveType != PrimitiveType.Decimal && prim.PrimitiveType != PrimitiveType.Integer))
             {
                 throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
             }
-            if (type == typeof (float))
-            {
-				float num;
-				success = float.TryParse(jsonValue.Value, out num);
-				result = num;
-            }
-            else if (type == typeof (double))
-            {
-				double num;
-				success = double.TryParse(jsonValue.Value, out num);
-				result = num;
-            }
-            else
-            {
-				decimal num;
-				success = decimal.TryParse(jsonValue.Value, out num);
-				result = num;
-            }
-			if (!success)
+			try
 			{
-				throw new ArgumentException(Messages.InvalidFormat);
+				if (type == typeof(float))
+				{
+					result = float.Parse(jsonValue.Value);
+				}
+				else if (type == typeof(double))
+				{
+					result = double.Parse(jsonValue.Value);
+				}
+				else
+				{
+					result = decimal.Parse(jsonValue.Value);
+				}
+			}
+			catch (Exception e)
+			{
+				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
 			}
             return result;
         }
 
         private object BuildInteger(Type type, JValue jsonValue)
         {
+			JPrimitive prim;
+			if (!jsonValue.Is<JPrimitive>(out prim) || prim.PrimitiveType != PrimitiveType.Integer)
+			{
+				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+			}
             return GetIntegerPropertyValue(type, jsonValue.Value);
         }
 
@@ -329,7 +332,7 @@ namespace Commons.Json.Mapper
 			//TODO :do not support array manual create.
             if (jsonValue.Is<JArray>(out jsonArray))
             {
-                array = Array.CreateInstance(itemType, jsonArray.Length);
+				array = Array.CreateInstance(itemType, jsonArray.Length);
                 for (var i = 0; i < jsonArray.Length; i++)
                 {
                     var itemValue = Map(itemType, jsonArray[i]);
@@ -440,85 +443,69 @@ namespace Commons.Json.Mapper
             }
             else
             {
-				return DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
+				var success = false;
+				dt = DateTime.MinValue;
+
+				try
+				{
+					success = str.TryFastParseDateInvariantCulture(out dt);
+				}
+				catch (Exception)
+				{
+					success = false;
+				}
+				return success;
             }
         }
 
         private static object GetIntegerPropertyValue(Type propertyType, string primitiveValue)
         {
             object integerObj = null;
-			var success = false;
-            if (propertyType == typeof (long))
-            {
-				long num;
-				success = long.TryParse(primitiveValue, out num);
-				integerObj = num;
-            }
-            else if (propertyType == typeof (int))
-            {
-				int num;
-				success = int.TryParse(primitiveValue, out num);
-				integerObj = num;
-            }
-            else if (propertyType == typeof (byte))
-            {
-				byte num;
-				success = byte.TryParse(primitiveValue, out num);
-				integerObj = num;
-            }
-            else if (propertyType == typeof (sbyte))
-            {
-				sbyte num;
-				success = sbyte.TryParse(primitiveValue, out num);
-				integerObj = num;
-            }
-            else if (propertyType == typeof (short))
-            {
-				short num;
-				success = short.TryParse(primitiveValue, out num);
-				integerObj = num;
-            }
-            else if (propertyType == typeof (double))
-            {
-				double num;
-				success = double.TryParse(primitiveValue, out num);
-				integerObj = num;
-            }
-            else if (propertyType == typeof (float))
-            {
-				float num;
-				success = float.TryParse(primitiveValue, out num);
-				integerObj = num;
-            }
-            else if (propertyType == typeof (decimal))
-            {
-				decimal num;
-				success = decimal.TryParse(primitiveValue, out num);
-				integerObj = num;
-            }
-            else if (propertyType == typeof (ulong))
-            {
-				ulong num;
-				success = ulong.TryParse(primitiveValue, out num);
-				integerObj = num;
-            }
-            else if (propertyType == typeof (uint))
-            {
-				uint num;
-				success = uint.TryParse(primitiveValue, out num);
-				integerObj = num;
-            }
-            else if (propertyType == typeof (ushort))
-            {
-				ushort num;
-				success = ushort.TryParse(primitiveValue, out num);
-				integerObj = num;
-            }
-
-			if (!success)
+			try
 			{
-				throw new ArgumentException(Messages.InvalidValue);
+				if (propertyType == typeof(long))
+				{
+					integerObj = long.Parse(primitiveValue);
+				}
+				else if (propertyType == typeof(int))
+				{
+					integerObj = int.Parse(primitiveValue);
+				}
+				else if (propertyType == typeof(byte))
+				{
+					integerObj = byte.Parse(primitiveValue);
+				}
+				else if (propertyType == typeof(sbyte))
+				{
+					integerObj = sbyte.Parse(primitiveValue);
+				}
+				else if (propertyType == typeof(short))
+				{
+					integerObj = short.Parse(primitiveValue);
+				}
+				else if (propertyType == typeof(ulong))
+				{
+					integerObj = ulong.Parse(primitiveValue);
+				}
+				else if (propertyType == typeof(uint))
+				{
+					integerObj = uint.Parse(primitiveValue);
+				}
+				else if (propertyType == typeof(ushort))
+				{
+					integerObj = ushort.Parse(primitiveValue);
+				}
+				else
+				{
+					// unlikely.
+					throw new InvalidOperationException(Messages.InvalidValue);
+				}
 			}
+			catch (Exception e)
+			{
+				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+			}
+
             return integerObj;
         }
 

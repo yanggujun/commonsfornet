@@ -292,7 +292,7 @@ namespace Commons.Test.Json
 		public void TestMapJsonToObject161()
 		{
 			var json = "10.44323";
-			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int>(json));
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
 		}
 
 		[Fact]
@@ -487,7 +487,7 @@ namespace Commons.Test.Json
 		public void TestMapJsonToObject32()
 		{
 			var json = "{\"Birthday\": \"1990/01/18\", \"Name\": \"alan\"}";
-			var hasDate = JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json);
+			var hasDate = JsonMapper.UseDateFormat("yyyy/MM/dd").To<HasDate>(json);
 			Assert.Equal("alan", hasDate.Name);
 			Assert.Equal(1990, hasDate.Birthday.Year);
 			Assert.Equal(1, hasDate.Birthday.Month);
@@ -525,7 +525,7 @@ namespace Commons.Test.Json
 		public void TestMapJsonToObject36()
 		{
 			var json = "{\"Name\": \"Alan\", \"Age\": 25, \"Score\": 90.5, \"ExamDate\": \"2016/03/01\", \"Pass\": true}";
-			var simple = JsonMapper.UseDateFormat(string.Empty).To<SimpleStruct>(json);
+			var simple = JsonMapper.UseDateFormat("yyyy/MM/dd").To<SimpleStruct>(json);
 			Assert.Equal("Alan", simple.Name);
 			Assert.Equal(25, simple.Age);
 			Assert.Equal(90.5, simple.Score);
@@ -684,7 +684,7 @@ namespace Commons.Test.Json
 		{
 			var json =
 				"{\"Name\": \"A History of Europe\", \"Author\": \"Edward\", \"Pages\": 2000, \"PublishDate\": \"1750/7/5\"}";
-			var artical = JsonMapper.UseDateFormat(string.Empty).To<Artical>(json);
+			var artical = JsonMapper.UseDateFormat("yyyy/M/d").To<Artical>(json);
 			Assert.Equal("A History of Europe", artical.Name);
 			Assert.Equal("Edward", artical.Author);
 			Assert.Equal(2000, artical.Pages);
@@ -755,7 +755,7 @@ namespace Commons.Test.Json
 		{
 			var json =
 				"{\"Name\": \"Complex\", \"Simple\": {\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}}";
-			var complicated = JsonMapper.UseDateFormat(string.Empty).To<Complicated>(json);
+			var complicated = JsonMapper.UseDateFormat("yyyy/M/dd").To<Complicated>(json);
 			Assert.Equal("Complex", complicated.Name);
 			Assert.NotNull(complicated.Simple);
 			Assert.Equal("Sam", complicated.Simple.Value.Name);
@@ -772,7 +772,7 @@ namespace Commons.Test.Json
 		{
 			var json =
 				"{\"Name\": \"Complex\", \"Simple\": {\"Name\":\"Sam\", \"Age\":50,\"Score\":80.5, \"ExamDate\":\"2016/4/15\", \"Pass\":false}}";
-			var complicated = JsonMapper.UseDateFormat(string.Empty).To<Complicated?>(json);
+			var complicated = JsonMapper.UseDateFormat("yyyy/M/dd").To<Complicated?>(json);
 			Assert.NotNull(complicated);
 			Assert.Equal("Complex", complicated.Value.Name);
 			Assert.NotNull(complicated.Value.Simple);
@@ -963,9 +963,9 @@ namespace Commons.Test.Json
 		{
 			var json = "{\"a\":\"b\"}";
 			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<string>(json));
-			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int>(json));
-			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
-			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<List<int>>(json));
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int[]>(json));
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<List<int>>(json));
 		}
 
 		[Fact]
@@ -1198,8 +1198,7 @@ namespace Commons.Test.Json
 		public void TestMapJsonToObject80()
 		{
 			var json = "{\"ItemA\": \"123\"}";
-			var dict1 = JsonMapper.To<Dictionary<string, int>>(json);
-			Assert.Equal(123, dict1["ItemA"]);
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<Dictionary<string, int>>(json));
 
 			var dict2 = JsonMapper.To<Dictionary<string, string>>(json);
 			Assert.Equal("123", dict2["ItemA"]);
@@ -1210,7 +1209,7 @@ namespace Commons.Test.Json
 		public void TestMapJsonToObject801()
 		{
 			var json = "{\"ItemA\": \"AAA\"}";
-			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, int>>(json));
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<Dictionary<string, int>>(json));
 		}
 
 		[Fact]
@@ -1218,10 +1217,25 @@ namespace Commons.Test.Json
 		{
 			var json = "2.5";
 			Assert.Equal(2.5, JsonMapper.To<double>(json));
-			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int>(json));
+			Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
 
 			var another = "2";
 			Assert.Equal(2, JsonMapper.To<double>(another));
+		}
+
+		[Fact]
+		public void TestMapJsonToObject82()
+		{
+			var time = DateTime.Now;
+			var json = JsonMapper.ToJson(time);
+			var result = JsonMapper.To<DateTime>(json);
+			Assert.Equal(time.Year, result.Year);
+			Assert.Equal(time.Month, result.Month);
+			Assert.Equal(time.Day, result.Day);
+			Assert.Equal(time.Hour, result.Hour);
+			Assert.Equal(time.Minute, result.Minute);
+			Assert.Equal(time.Second, result.Second);
+			Assert.Equal(time.Millisecond, result.Millisecond);
 		}
 
         [Fact]
@@ -1892,7 +1906,7 @@ namespace Commons.Test.Json
         [Fact]
         public void TestMapProperty03()
         {
-            JsonMapper.UseDateFormat(string.Empty).For<Photo>().MapProperty(x => x.Location).With("Place").Not.MapProperty(x => x.Model);
+            JsonMapper.UseDateFormat("yyyy/MM/dd").For<Photo>().MapProperty(x => x.Location).With("Place").Not.MapProperty(x => x.Model);
             var json = "{\"Author\": \"Owen\", \"Place\": \"France\", \"Model\": \"EOS 5D Mark II\", \"Time\": \"2011/05/30\"}";
             var photo = JsonMapper.To<Photo>(json);
             Assert.Equal("Owen", photo.Author);
@@ -1943,7 +1957,7 @@ namespace Commons.Test.Json
         public void TestMapProperty06()
         {
             var json = "{\"Birthday\": \"1995-10-05\", \"Name\": \"Joe\"}";
-            var hasDate = JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json);
+            var hasDate = JsonMapper.UseDateFormat("yyyy-MM-dd").To<HasDate>(json);
             Assert.Equal("Joe", hasDate.Name);
             Assert.Equal(1995, hasDate.Birthday.Year);
             Assert.Equal(10, hasDate.Birthday.Month);
