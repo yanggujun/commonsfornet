@@ -21,14 +21,14 @@ namespace Commons.Perf
     {
         public static void Main(string[] args)
         {
-			//TestTrivialObjectToJson();
-			//TestSmallObjectToJson();
-			//TestNormalObjectToJson();
-			//TestStandardObjectToJson();
-			//TestLargeObjectToJson();
+			TestTrivialObjectToJson();
+			TestSmallObjectToJson();
+			TestNormalObjectToJson();
+			TestStandardObjectToJson();
+			TestLargeObjectToJson();
 
-			//TestTrivialObjectJsonToObject();
-			//TestSmallObjectJsonToObject();
+			TestTrivialObjectJsonToObject();
+			TestSmallObjectJsonToObject();
 			TestStandardObjectJsonToObject();
         }
 
