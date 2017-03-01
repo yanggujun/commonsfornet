@@ -1227,7 +1227,7 @@ namespace Commons.Test.Json
 		public void TestMapJsonToObject82()
 		{
 			var time = DateTime.Now;
-			var json = JsonMapper.ToJson(time);
+			var json = JsonMapper.UseDateFormat(string.Empty).ToJson(time);
 			var result = JsonMapper.To<DateTime>(json);
 			Assert.Equal(time.Year, result.Year);
 			Assert.Equal(time.Month, result.Month);
@@ -2046,7 +2046,7 @@ namespace Commons.Test.Json
             Assert.Equal(10, hasDate.Birthday.Month);
             Assert.Equal(5, hasDate.Birthday.Day);
 
-            Assert.Throws(typeof(ArgumentException), () => JsonMapper.UseDateFormat(string.Empty).To<HasDate>(json));
+            Assert.Throws(typeof(ArgumentException), () => JsonMapper.UseDateFormat("yyyy/mm/dd").To<HasDate>(json));
         }
     }
 }

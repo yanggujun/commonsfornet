@@ -263,8 +263,7 @@ namespace Commons.Json.Mapper
 		{
 			localBuffer.Length = 0;
 			var dt = (DateTime) target;
-			object dateFormat;
-			var time = config.TryGetValue(Messages.DateFormat, out dateFormat) ? dt.ToString((string)dateFormat) : dt.FastToStringInvariantCulture();
+			var time = string.IsNullOrEmpty(config.DateFormat) ? dt.FastToStringInvariantCulture() : dt.ToString(config.DateFormat);
 			localBuffer.Append(JsonTokens.Quoter).Append(time).Append(JsonTokens.Quoter);
 			return localBuffer.ToString();
 		}

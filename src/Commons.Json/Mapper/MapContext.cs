@@ -94,7 +94,7 @@ namespace Commons.Json.Mapper
         {
             set
             {
-                Configuration.Add(Messages.DateFormat, value);
+				Configuration.DateFormat = value;
             }
         }
 
