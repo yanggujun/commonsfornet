@@ -283,7 +283,7 @@ namespace Commons.Json.Mapper
 		private void CheckDecimalType(JValue jsonValue)
 		{
 			JNumber prim;
-            if (!jsonValue.Is<JNumber>(out prim) || (prim.PrimitiveType != PrimitiveType.Decimal && prim.PrimitiveType != PrimitiveType.Integer))
+            if (!jsonValue.Is<JNumber>(out prim) || (prim.NumType != NumberType.Decimal && prim.NumType != NumberType.Integer))
             {
                 throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
             }
@@ -412,7 +412,7 @@ namespace Commons.Json.Mapper
 		private void CheckIntegerType(JValue jsonValue)
 		{
 			JNumber prim;
-			if (!jsonValue.Is<JNumber>(out prim) || prim.PrimitiveType != PrimitiveType.Integer)
+			if (!jsonValue.Is<JNumber>(out prim) || prim.NumType != NumberType.Integer)
 			{
 				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
 			}

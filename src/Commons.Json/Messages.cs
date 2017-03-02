@@ -60,6 +60,10 @@ namespace Commons.Json
 
         public const string False = "false";
 
-        public const string CannotAssignNullToStruct = "Cannot assign null to a value type";
+        public const string CannotAssignNullToStruct = "Cannot assign null to a value type.";
+
+		public const string KeyNotExist = "The key does not exist in the JSON.";
+
+		public const string InvalidNumber = "The string represents an invalid number.";
     }
 }

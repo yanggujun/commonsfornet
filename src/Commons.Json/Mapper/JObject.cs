@@ -18,125 +18,257 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Commons.Collections.Map;
-using System.Reflection;
+
 using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-    public class JObject : JValue, IEnumerable<KeyValuePair<string, JValue>>
-    {
-        private Dictionary<string, JValue> values = new Dictionary<string, JValue>();
+	public class JObject : JValue, IEnumerable<KeyValuePair<string, JValue>>
+	{
+		private readonly Dictionary<string, JValue> values = new Dictionary<string, JValue>();
 
-        private string lastKey;
+		public JValue this[string key]
+		{
+			get { return values[key]; }
+			set { values[key] = value; }
+		}
 
-        public void PutKey(JString key)
-        {
-            if (key == null)
-            {
-                throw new ArgumentNullException("key");
-            }
-            lastKey = key.Value;
-        }
+		public bool ContainsKey(string key)
+		{
+			return values.ContainsKey(key);
+		}
 
-        public void PutObject(JValue value)
-        {
-            if (lastKey == null)
-            {
-                throw new ArgumentException(Messages.InvalidFormat);
-            }
-            values[lastKey] = value;
-            lastKey = null;
-        }
+		public string GetString(string key)
+		{
+			if (values.ContainsKey(key))
+			{
+				if (values[key].Is<JNull>())
+				{
+					return null;
+				}
+				var str = values[key] as JString;
+				if (str == null)
+				{
+					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+				}
+				return str.Value;
+			}
+			else
+			{
+				throw new ArgumentException(Messages.KeyNotExist);
+			}
+		}
 
-        public bool Validate()
-        {
-            return lastKey == null;
-        }
+		public void SetString(string key, string str)
+		{
+			values[key] = new JString(str);
+		}
 
-        public JValue this[JString key]
-        {
-            get { return values[key.Value]; }
-            set { values[key.Value] = value; }
-        }
+		public void SetFloat(string key, float v)
+		{
+			values[key] = new JNumber(v);
+		}
 
-        public JValue this[string key]
-        {
-            get { return values[key]; }
-            set { values[key] = value; }
-        }
+		public float GetFloat(string key)
+		{
+			return GetNumber(key).GetFloat();
+		}
 
-        public bool ContainsKey(string key)
-        {
-            return values.ContainsKey(key);
-        }
+		public void SetDouble(string key, double v)
+		{
+			values[key] = new JNumber(v);
+		}
 
-        public string GetString(string key)
-        {
-            if (values[key].Is<JNull>())
-            {
-                return null;
-            }
-            var str = values[key] as JString;
-            if (str == null)
-            {
-                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-            }
-            return str.Value;
-        }
+		public double GetDouble(string key)
+		{
+			return GetNumber(key).GetDouble();
+		}
 
-        public void SetString(string key, string str)
-        {
-            values[key] = new JString(str);
-        }
+		public void SetDecimal(string key, decimal v)
+		{
+			values[key] = new JNumber(v);
+		}
 
-        public T GetEnum<T>(string key) where T : struct
-        {
-            var type = typeof(T);
-            if (!type.IsEnum())
-            {
-                throw new ArgumentException(Messages.NotEnum);
-            }
+		public Decimal GetDecimal(string key)
+		{
+			return GetNumber(key).GetDecimal();
+		}
 
-            var str = GetString(key);
-            T result;
-            if (!Enum.TryParse<T>(str, out result))
-            {
-                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-            }
+		public void SetInt32(string key, int v)
+		{
+			values[key] = new JNumber(v);
+		}
 
-            return result;
-        }
+		public int GetInt32(string key)
+		{
+			return GetNumber(key).GetInt32();
+		}
 
-        public void SetEnum<T>(string key, T value) where T : struct
-        {
-            var type = typeof(T);
-            if (!type.IsEnum())
-            {
-                throw new ArgumentException(Messages.NotEnum);
-            }
+		public void SetInt64(string key, long v)
+		{
+			values[key] = new JNumber(v);
+		}
 
-            SetString(key, value.ToString());
-        }
+		public long GetInt64(string key)
+		{
+			return GetNumber(key).GetInt64();
+		}
 
-        public JArray GetArray(string key)
-        {
-            var array = values[key] as JArray;
-            if (array == null)
-            {
-                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-            }
-            return array;
-        }
+		public void SetInt16(string key, short v)
+		{
+			values[key] = new JNumber(v);
+		}
 
-        public void SetArray(string key, JArray array)
-        {
-            values[key] = array;
-        }
+		public short GetInt16(string key)
+		{
+			return GetNumber(key).GetInt16();
+		}
+
+		public void SetByte(string key, byte v)
+		{
+			values[key] = new JNumber(v);
+		}
+
+		public byte GetByte(string key)
+		{
+			return GetNumber(key).GetByte();
+		}
+
+		public void SetValue(string key, JValue value)
+		{
+			values[key] = value;
+		}
+#pragma warning disable 3001, 3002
+
+		public void SetUInt32(string key, uint v)
+		{
+			values[key] = new JNumber(v);
+		}
+
+		public uint GetUInt32(string key)
+		{
+			return GetNumber(key).GetUInt32();
+		}
+
+		public void SetUInt64(string key, ulong v)
+		{
+			values[key] = new JNumber(v);
+		}
+
+		public ulong GetUInt64(string key)
+		{
+			return GetNumber(key).GetUInt64();
+		}
+
+		public void SetUInt16(string key, ushort v)
+		{
+			values[key] = new JNumber(v);
+		}
+
+		public ushort GetUInt16(string key)
+		{
+			return GetNumber(key).GetUInt16();
+		}
+
+		public void SetSByte(string key, sbyte v)
+		{
+			values[key] = new JNumber(v);
+		}
+
+		public sbyte GetSByte(string key)
+		{
+			return GetNumber(key).GetSByte();
+		}
+
+#pragma warning restore 3001, 3002
+
+		public void SetBool(string key, bool b)
+		{
+			if (b)
+			{
+				values[key] = JBool.True;
+			}
+			else
+			{
+				values[key] = JBool.False;
+			}
+		}
+
+		public bool GetBool(string key)
+		{
+			var value = GetValue(key) as JBool;
+			if (value == null)
+			{
+				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+			}
+
+			return value == JBool.True;
+		}
+
+		public JObject GetObject(string key)
+		{
+			var value = GetValue(key) as JObject;
+			if (value == null)
+			{
+				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+			}
+			return value;
+		}
+
+		public JArray GetArray(string key)
+		{
+			var value = GetValue(key) as JArray;
+			if (value == null)
+			{
+				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+			}
+			return value;
+		}
+
+		public JValue GetValue(string key)
+		{
+			if (values.ContainsKey(key))
+			{
+				return values[key];
+			}
+			else
+			{
+				throw new ArgumentException(Messages.KeyNotExist);
+			}
+		}
+
+		public void SetEnum<T>(string key, T value) where T : struct
+		{
+			if (typeof(T).IsEnum())
+			{
+				SetString(key, value.ToString());
+			}
+			else
+			{
+				throw new InvalidCastException(Messages.NotEnum);
+			}
+		}
+
+		public T GetEnum<T>(string key) where T : struct
+		{
+			if (typeof(T).IsEnum())
+			{
+				T result;
+				if (!Enum.TryParse<T>(GetString(key), out result))
+				{
+					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+				}
+				return result;
+			}
+			else
+			{
+				throw new InvalidCastException(Messages.NotEnum);
+			}
+		}
 
         public bool IsNull(string key)
         {
-            return (values[key] as JNull) == null;
+			return values[key] == JNull.Null;
         }
 
         public override string ToString()
@@ -165,5 +297,15 @@ namespace Commons.Json.Mapper
         {
             return GetEnumerator();
         }
+
+		private JNumber GetNumber(string key)
+		{
+			var number = GetValue(key) as JNumber;
+			if (number == null)
+			{
+				throw new InvalidCastException(Messages.InvalidNumber);
+			}
+			return number;
+		}
     }
 }

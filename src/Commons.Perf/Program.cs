@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using Commons.Json.Mapper;
 
 namespace Commons.Perf
 {
@@ -30,6 +31,7 @@ namespace Commons.Perf
 			TestTrivialObjectJsonToObject();
 			TestSmallObjectJsonToObject();
 			TestStandardObjectJsonToObject();
+			//TestLargeObjectJsonToObject();
         }
 
 		public static void TestTrivialObjectToJson()
@@ -89,29 +91,6 @@ namespace Commons.Perf
 		public static void TestLargeObjectToJson()
 		{
 			const int LN = 10000;
-            //JsonMapper.UseDateFormat("MM/dd/yyyy HH:mm:ss").For<Note>().ConstructWith(x =>
-            //{
-            //    var jsonObj = x as JObject;
-            //    Note note;
-            //    if (jsonObj.ContainsKey("index"))
-            //    {
-            //        var foot = new Footnote();
-            //        foot.note = jsonObj.GetString("note");
-            //        foot.writtenBy = jsonObj.GetString("writtenBy");
-            //        foot.index = jsonObj.GetInt64("index");
-            //        foot.createadAt = DateTime.Parse(jsonObj.GetString("createadAt"));
-            //        note = foot;
-            //    }
-            //    else
-            //    {
-            //        var head = new Headnote();
-            //        head.note = jsonObj.GetString("note");
-            //        head.writtenBy = jsonObj.GetString("writtenBy");
-            //        head.modifiedAt = DateTime.Parse(jsonObj.GetString("modifiedAt"));
-            //        note = head;
-            //    }
-            //    return note;
-            //});
             var warm = Book.Factory<Book, Genre, Page, Headnote, Footnote>(7, x => (Genre)x);
 			JsonMapper.ToJson(warm);
 			JsonConvert.SerializeObject(warm);
@@ -275,8 +254,58 @@ namespace Commons.Perf
             Console.WriteLine("Json to standard object");
             PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
 			Console.WriteLine("------------------");
-
         }
+
+		public static void TestLargeObjectJsonToObject()
+		{
+			var json = ReadFile("Book.txt");
+			JsonMapper.UseDateFormat("MM/dd/yyyy HH:mm:ss.fff").For<Note>().ConstructWith(x =>
+			{
+				var jsonObj = x as JObject;
+				Note note;
+				if (jsonObj.ContainsKey("index"))
+				{
+					var foot = new Footnote();
+					foot.note = jsonObj.GetString("note");
+					foot.writtenBy = jsonObj.GetString("writtenBy");
+					foot.index = jsonObj.GetInt64("index");
+					foot.createadAt = DateTime.Parse(jsonObj.GetString("createadAt"));
+					note = foot;
+				}
+				else
+				{
+					var head = new Headnote();
+					head.note = jsonObj.GetString("note");
+					head.writtenBy = jsonObj.GetString("writtenBy");
+					head.modifiedAt = DateTime.Parse(jsonObj.GetString("modifiedAt"));
+					note = head;
+				}
+				return note;
+			});
+
+			JsonMapper.To<Book>(json);
+			JsonConvert.DeserializeObject<Book>(json);
+
+            const int LN = 1000;
+
+            var sw1 = new Stopwatch();
+            var sw2 = new Stopwatch();
+            for (var i = 0; i < LN; i++)
+            {
+                sw1.Start();
+                JsonMapper.To<Book>(json);
+                sw1.Stop();
+
+                sw2.Start();
+                JsonConvert.DeserializeObject<Book>(json);
+                sw2.Stop();
+            }
+
+			Console.WriteLine("------------------");
+            Console.WriteLine("Json to large object");
+            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+			Console.WriteLine("------------------");
+		}
 
         private static void PrintResult(string test1, long test1Ms, string test2, long test2Ms)
         {

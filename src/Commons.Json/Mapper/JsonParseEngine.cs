@@ -143,11 +143,11 @@ namespace Commons.Json.Mapper
             JValue result;
             if (isFloat)
             {
-                result = new JNumber(numStr, PrimitiveType.Decimal);
+                result = new JNumber(numStr, NumberType.Decimal);
             }
             else
             {
-                result = new JNumber(numStr, PrimitiveType.Integer);
+                result = new JNumber(numStr, NumberType.Integer);
             }
             return result;
         }

@@ -14,7 +14,7 @@ namespace Commons.Test.Json
             var value = parseEngine.Parse(json);
             Assert.True(value is JObject);
             var obj = (JObject)value;
-            Assert.Equal("Jack", (obj[new JString("name")]).Value);
+            Assert.Equal("Jack", obj["name"].Value);
             Assert.Equal("Jack", obj["name"].Value);
             Assert.Equal("Jack", obj["name"].Value);
         }

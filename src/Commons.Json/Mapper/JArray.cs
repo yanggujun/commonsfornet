@@ -14,15 +14,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+
 namespace Commons.Json.Mapper
 {
-    public class JArray : JValue, IEnumerable
+	public class JArray : JValue, IEnumerable
     {
-        private List<JValue> values = new List<JValue>();
+        private readonly List<JValue> values = new List<JValue>();
 
         public void Add(JValue value)
         {
@@ -37,8 +37,82 @@ namespace Commons.Json.Mapper
             }
         }
 
+		public void Add(int i)
+		{
+			values.Add(new JNumber(i));
+		}
 
-        public JValue this[int index]
+		public void Add(long i)
+		{
+			values.Add(new JNumber(i));
+		}
+
+		public void Add(short i)
+		{
+			values.Add(new JNumber(i));
+		}
+
+		public void Add(byte i)
+		{
+			values.Add(new JNumber(i));
+		}
+
+		public void Add(float i)
+		{
+			values.Add(new JNumber(i));
+		}
+
+		public void Add(double i)
+		{
+			values.Add(new JNumber(i));
+		}
+
+		public void Add(decimal i)
+		{
+			values.Add(new JNumber(i));
+		}
+
+#pragma warning disable 3001, 3002
+
+		public void Add(uint i)
+		{
+			values.Add(new JNumber(i));
+		}
+
+		public void Add(ushort i)
+		{
+			values.Add(new JNumber(i));
+		}
+
+		public void Add(ulong i)
+		{
+			values.Add(new JNumber(i));
+		}
+
+		public void Add(sbyte i)
+		{
+			values.Add(new JNumber(i));
+		}
+#pragma warning restore 3001, 3002
+
+		public void AddString(string s)
+		{
+			values.Add(new JString(s));
+		}
+
+		public void AddBool(bool b)
+		{
+			if (b)
+			{
+				values.Add(JBool.True);
+			}
+			else
+			{
+				values.Add(JBool.False);
+			}
+		}
+
+		public JValue this[int index]
         {
             get
             {
