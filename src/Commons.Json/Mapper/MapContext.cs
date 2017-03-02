@@ -16,14 +16,14 @@
 
 using System;
 using System.Collections.Concurrent;
+using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
 	internal class MapContext : IMapContext
 	{
-		public MapContext(string name)
+		public MapContext()
 		{
-			Name = name;
 			Mappers = new MapperContainer();
 			Configuration = new ConfigContainer();
 			Types = new TypeContainer();
@@ -34,10 +34,9 @@ namespace Commons.Json.Mapper
 			ParseEngine = new JsonParseEngine();
 		}
 
-		public string Name { get; private set; }
-
-		public IJsonObjectMapper<T> For<T>()
+		public IMapContext For<T>(Action<IJsonObjectMapper<T>> configure)
 		{
+            Guarder.CheckNull(configure, nameof(configure));
 			var type = typeof(T);
 			if (!Mappers.ContainsMapper(type))
 			{
@@ -45,7 +44,8 @@ namespace Commons.Json.Mapper
 			}
 			var mapper = Mappers.GetMapper(type);
 			var jsonObjMapper = new JsonObjectMapper<T>(mapper, Configuration);
-			return jsonObjMapper;
+            configure(jsonObjMapper);
+            return this;
 		}
 
 		// TODO: need to parse the actually typeof(T) to JsonBuilder as sometimes, typeof(T) != target.GetType()
@@ -90,12 +90,10 @@ namespace Commons.Json.Mapper
 		public JsonParseEngine ParseEngine { get; private set; }
 
 
-        public string DateFormat
+        public IMapContext UseDateFormat(string format)
         {
-            set
-            {
-				Configuration.DateFormat = value;
-            }
+			Configuration.DateFormat = format;
+            return this;
         }
 
     }

@@ -23,33 +23,46 @@ namespace Commons.Json
 	[CLSCompliant(true)]
     public static class JsonMapper
     {
-        private const string DefaultContext = "default";
-        private static readonly IMapContext defaultContext = new MapContext(DefaultContext);
+        private static object locker = new object();
+        private static IMapContext context;
 
-        public static IMapContext UseDateFormat(string format)
+        private static IMapContext DefaultContext
         {
-            defaultContext.DateFormat = format;
-            return defaultContext;
+            get
+            {
+                if (context == null)
+                {
+                    lock (locker)
+                    {
+                        if (context == null)
+                        {
+                            context = new MapContext();
+                        }
+                    }
+                }
+
+                return context;
+            }
         }
 
-        public static IJsonObjectMapper<T> For<T>()
+        public static IMapContext NewContext()
         {
-            return defaultContext.For<T>();
+            return new MapContext();
         }
 
         public static T To<T>(string json)
         {
-            return (T)defaultContext.To(typeof(T), json);
+            return (T)DefaultContext.To(typeof(T), json);
         }
 
         public static object To(Type type, string json)
         {
-            return defaultContext.To(type, json);
+            return DefaultContext.To(type, json);
         }
 
         public static string ToJson<T>(T target)
         {
-            return defaultContext.ToJson<T>(target);
+            return DefaultContext.ToJson<T>(target);
         }
 
         public static T To<T>(string json, Transformer<JValue, T> transform)

@@ -20,9 +20,8 @@ namespace Commons.Json.Mapper
 {
     public interface IMapContext
     {
-        string Name { get; }
-        string DateFormat { set; }
-        IJsonObjectMapper<T> For<T>();
+        IMapContext UseDateFormat(string format);
+        IMapContext For<T>(Action<IJsonObjectMapper<T>> configure);
         string ToJson<T>(T target);
         T To<T>(string json);
         object To(Type type, string json);

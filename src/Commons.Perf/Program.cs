@@ -259,7 +259,7 @@ namespace Commons.Perf
 		public static void TestLargeObjectJsonToObject()
 		{
 			var json = ReadFile("Book.txt");
-			JsonMapper.UseDateFormat("MM/dd/yyyy HH:mm:ss.fff").For<Note>().ConstructWith(x =>
+			var context = JsonMapper.NewContext().UseDateFormat("MM/dd/yyyy HH:mm:ss.fff").For<Note>(y => y.ConstructWith(x =>
 			{
 				var jsonObj = x as JObject;
 				Note note;
@@ -281,9 +281,9 @@ namespace Commons.Perf
 					note = head;
 				}
 				return note;
-			});
+			}));
 
-			JsonMapper.To<Book>(json);
+			context.To<Book>(json);
 			JsonConvert.DeserializeObject<Book>(json);
 
             const int LN = 1000;
@@ -293,7 +293,7 @@ namespace Commons.Perf
             for (var i = 0; i < LN; i++)
             {
                 sw1.Start();
-                JsonMapper.To<Book>(json);
+                context.To<Book>(json);
                 sw1.Stop();
 
                 sw2.Start();

@@ -37,8 +37,8 @@ namespace Commons.Test.Json
             employee.SetBool("Married", true);
             employee.SetString("Position", "manager");
             var json = employee.ToString();
-            JsonMapper.UseDateFormat(string.Empty).For<Employee>().MapProperty(x => x.Dob).With("Birthday");
-            var emp = JsonMapper.To<Employee>(json);
+            var context = JsonMapper.NewContext().UseDateFormat(string.Empty).For<Employee>(y => y.MapProperty(x => x.Dob).With("Birthday"));
+            var emp = context.To<Employee>(json);
             Assert.Equal("Alan", emp.Name);
             Assert.Equal(Site.London, emp.Site);
             Assert.Equal("hardware", emp.Department);
@@ -63,8 +63,8 @@ namespace Commons.Test.Json
                 Site = Site.London,
                 Age = 40
             };
-            JsonMapper.UseDateFormat(string.Empty).For<Employee>().MapProperty(x => x.Dob).With("Birthday");
-            var json = JsonMapper.ToJson(employee);
+            var context = JsonMapper.NewContext().UseDateFormat(string.Empty).For<Employee>(y => y.MapProperty(x => x.Dob).With("Birthday"));
+            var json = context.ToJson(employee);
             var engine = new JsonParseEngine();
             var emp = engine.Parse(json) as JObject;
             Assert.NotNull(emp);
@@ -108,9 +108,9 @@ namespace Commons.Test.Json
             employees.Add(bran);
             company.SetValue("Employees", employees);
             var json = company.ToString();
-            JsonMapper.UseDateFormat(string.Empty).For<Employee>().MapProperty(x => x.Dob).With("Birthday");
-            JsonMapper.For<Company>().MapProperty(x => x.StaffCount).With("Staff Count");
-            var comp = JsonMapper.To<Company>(json);
+            var context = JsonMapper.NewContext().UseDateFormat(string.Empty).For<Employee>(y => y.MapProperty(x => x.Dob).With("Birthday"));
+            context.For<Company>(y => y.MapProperty(x => x.StaffCount).With("Staff Count"));
+            var comp = context.To<Company>(json);
             Assert.Equal("OneTech", comp.Name);
             Assert.Equal("USA", comp.Country);
             Assert.Equal(20000, comp.StaffCount);
@@ -461,13 +461,14 @@ namespace Commons.Test.Json
         [Fact]
         public void TestObjectSerializer01()
         {
-            JsonMapper.For<Member>().SerializeBy(x =>
+            var context = JsonMapper.NewContext().For<Member>(y => y.SerializeBy(x =>
             {
                 var jo = new JObject();
                 jo.SetString("member name", x.Name);
                 jo.SetString("member value", x.Value);
                 return jo;
-            });
+            }));
+
 
             var c = new ComplexMember
             {
@@ -481,7 +482,7 @@ namespace Commons.Test.Json
                 }
             };
 
-            var json = JsonMapper.ToJson(c);
+            var json = context.ToJson(c);
 
             var jsonObj = JsonMapper.Parse(json);
             Assert.Equal("Location", (string)jsonObj.Member["member name"]);
@@ -494,17 +495,17 @@ namespace Commons.Test.Json
         [Fact]
         public void TestObjectSerializer02()
         {
-            JsonMapper.For<Member>().SerializeBy(x =>
+            var context = JsonMapper.NewContext().For<Member>(y => y.SerializeBy(x =>
             {
                 var jo = new JObject();
                 jo.SetString("member name", x.Name);
                 jo.SetString("member value", x.Value);
                 return jo;
-            });
+            }));
 
             var m = new Member { Name = "Club", Value = "Arsenal" };
 
-            var json = JsonMapper.ToJson(m);
+            var json = context.ToJson(m);
             var jsonObj = JsonMapper.Parse(json);
             Assert.Equal("Club", (string)jsonObj["member name"]);
             Assert.Equal("Arsenal", (string)jsonObj["member value"]);
@@ -513,7 +514,7 @@ namespace Commons.Test.Json
         [Fact]
         public void TestObjectSerializer03()
         {
-            JsonMapper.For<Class1>().SerializeBy(new Class1Converter());
+            var context = JsonMapper.NewContext().For<Class1>(y => y.SerializeBy(new Class1Converter()));
 
             var c = new Class2
             {
@@ -525,7 +526,7 @@ namespace Commons.Test.Json
                 }
             };
 
-            var json = JsonMapper.ToJson(c);
+            var json = context.ToJson(c);
 
             var jsonObj = JsonMapper.Parse(json);
             Assert.Equal("value33333", (string)jsonObj.F3);

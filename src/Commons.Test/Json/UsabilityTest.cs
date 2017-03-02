@@ -62,8 +62,8 @@ namespace Commons.Test.Json
         [Fact]
         public void TestSmall04()
         {
-            JsonMapper.For<CompletePrimitiveObject>()
-                    .MapProperty(x => x.F1).With("K1")
+            var context = JsonMapper.NewContext().For<CompletePrimitiveObject>(y =>
+                    y.MapProperty(x => x.F1).With("K1")
                     .MapProperty(x => x.F2).With("K2")
                     .MapProperty(x => x.F3).With("K3")
                     .MapProperty(x => x.F4).With("K4")
@@ -79,7 +79,7 @@ namespace Commons.Test.Json
                     .MapProperty(x => x.F14).With("K14")
                     .MapProperty(x => x.F15).With("K15")
                     .MapProperty(x => x.F16).With("K16")
-                    .MapProperty(x => x.F17).With("K17");
+                    .MapProperty(x => x.F17).With("K17"));
 
             var id = Guid.NewGuid();
             var cpo = new CompletePrimitiveObject
@@ -109,7 +109,7 @@ namespace Commons.Test.Json
                 F17 = id
             };
 
-            var json = JsonMapper.ToJson(cpo);
+            var json = context.ToJson(cpo);
 
             var dj = JsonMapper.Parse(json);
             Assert.Equal("booo", (string)dj.K1);
@@ -133,7 +133,7 @@ namespace Commons.Test.Json
             Assert.False((bool)dj.K16.FieldD);
             Assert.Equal(id, Guid.Parse((string)dj.K17));
 
-            var newCpo = JsonMapper.To<CompletePrimitiveObject>(json);
+            var newCpo = context.To<CompletePrimitiveObject>(json);
             Assert.Equal("booo", newCpo.F1);
             Assert.Equal(20000, newCpo.F2);
             Assert.Equal(3.09769, newCpo.F3);
@@ -200,16 +200,7 @@ namespace Commons.Test.Json
         public void TestLarge01()
         {
             var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
-            for (var i = 0; i < 10; i++)
-            {
-                var n = rand.Next();
-                TestBook(n);
-            }
-        }
-
-        private void TestBook(int n)
-        {
-            JsonMapper.UseDateFormat("MM/dd/yyyy HH:mm:ss").For<Note>().ConstructWith(x =>
+            var context = JsonMapper.NewContext().UseDateFormat("MM/dd/yyyy HH:mm:ss").For<Note>(y => y.ConstructWith(x =>
             {
                 var jsonObj = x as JObject;
                 Note note;
@@ -231,10 +222,19 @@ namespace Commons.Test.Json
                     note = head;
                 }
                 return note;
-            });
+            }));
+            for (var i = 0; i < 10; i++)
+            {
+                var n = rand.Next();
+                TestBook(context, n);
+            }
+        }
+
+        private void TestBook(IMapContext context, int n)
+        {
             var large = Book.Factory<Book, Genre, Page, Headnote, Footnote>(n, x => (Genre)x);
-            var json = JsonMapper.ToJson(large);
-            var newLarge = JsonMapper.To<Book>(json);
+            var json = context.ToJson(large);
+            var newLarge = context.To<Book>(json);
             AssertBook(large, newLarge);
         }
 
