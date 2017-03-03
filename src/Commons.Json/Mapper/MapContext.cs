@@ -31,7 +31,6 @@ namespace Commons.Json.Mapper
 			SerializerMapper = new ConcurrentDictionary<Type, Func<object, string>>();
 			DeserializerMapper = new ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>>();
 			MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder, DeserializerMapper);
-			ParseEngine = new JsonParseEngine();
 		}
 
 		public IMapContext For<T>(Action<IJsonObjectMapper<T>> configure)
@@ -86,9 +85,6 @@ namespace Commons.Json.Mapper
 		public ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>> DeserializerMapper;
 
 		public MapEngine MapEngine { get; private set; }
-
-		public JsonParseEngine ParseEngine { get; private set; }
-
 
         public IMapContext UseDateFormat(string format)
         {

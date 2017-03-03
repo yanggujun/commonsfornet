@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -26,29 +27,16 @@ namespace Commons.Json.Mapper
 {
     internal class CollectionBuilder
     {
-        private readonly Dictionary<Type, Action<IEnumerable, object>> builders = 
-            new Dictionary<Type, Action<IEnumerable, object>>();
+		private const string AddMethod = "Add";
+		private const string AddLastMethod = "AddLast";
+		private const string PushMethod = "Push";
+		private const string EnqueueMethod = "Enqueue";
+	    private readonly ConcurrentDictionary<Type, Action<IEnumerable, object>> collectionAdders = new ConcurrentDictionary<Type, Action<IEnumerable, object>>();
 
-	    private readonly Dictionary<Type, Action<IEnumerable, object>> collectionAdders = new Dictionary<Type, Action<IEnumerable, object>>();
-
-	    private readonly Dictionary<Type, Func<object>> constructors = new Dictionary<Type, Func<object>>();
-
-        public CollectionBuilder()
-        {
-			// TODO: support non-generic collections
-            Configure(typeof(IList<>), Add);
-            Configure(typeof(ISet<>), Add);
-            Configure(typeof(LinkedList<>), AddLast);
-            Configure(typeof(Queue<>), Enqueue);
-            Configure(typeof(Stack<>), Push);
-            Configure(typeof(IStrictSet<>), Add);
-            Configure(typeof(List<>), Add);
-            Configure(typeof(HashSet<>), Add);
-        }
+	    private readonly ConcurrentDictionary<Type, Func<object>> constructors = new ConcurrentDictionary<Type, Func<object>>();
 
         public void Configure(Type type, Action<IEnumerable, object> builder)
         {
-            builders[type] = builder;
         }
 
 	    public IEnumerable Construct(Type type)
@@ -68,48 +56,45 @@ namespace Commons.Json.Mapper
 
         public void Build(IEnumerable collection, object value)
         {
-            var filled = false;
             var type = collection.GetType();
-            if (builders.ContainsKey(type))
-            {
-                builders[type](collection, value);
-                filled = true;
-            }
-            else if (type.IsGenericType())
-            {
-	            var genericType = type.GetGenericTypeDefinition();
-	            if (builders.ContainsKey(genericType))
-	            {
-		            builders[genericType](collection, value);
-		            filled = true;
-	            }
-            }
+			Action<IEnumerable, object> builder;
+			if (collectionAdders.ContainsKey(type))
+			{
+				builder = collectionAdders[type];
+			}
+			else if (type.IsGenericType())
+			{
+				var genericType = type.GetGenericTypeDefinition();
+				if (genericType == typeof(List<>) || genericType == typeof(HashSet<>) || genericType == typeof(HashedSet<>))
+				{
+					builder = CreateAddDelegate(type, AddMethod);
+					collectionAdders[type] = builder;
+				}
+				else if (genericType == typeof(Stack<>))
+				{
+					builder = CreateAddDelegate(type, PushMethod);
+					collectionAdders[type] = builder;
+				}
+				else if (genericType == typeof(Queue<>))
+				{
+					builder = CreateAddDelegate(type, EnqueueMethod);
+					collectionAdders[type] = builder;
+				}
+				else if (genericType == typeof(LinkedList<>))
+				{
+					builder = CreateAddDelegate(type, AddLastMethod);
+					collectionAdders[type] = builder;
+				}
+				else
+				{
+					throw new NotSupportedException();
+				}
+			}
             else
             {
 	            throw new NotSupportedException();
             }
-
-            if (!filled)
-            {
-                foreach (var interfaceType in type.GetInterfaces())
-                {
-                    if (interfaceType.IsGenericType())
-                    {
-                        var genericType = interfaceType.GetGenericTypeDefinition();
-                        if (builders.ContainsKey(genericType))
-                        {
-                            builders[genericType](collection, value);
-                            filled = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (!filled)
-            {
-                throw new InvalidCastException(Messages.TypeNotSupported);
-            }
+			builder(collection, value);
         }
 
 	    private Action<IEnumerable, object> CreateAddDelegate(Type collectionType, string methodName)
@@ -125,54 +110,5 @@ namespace Commons.Json.Mapper
 	        var addExp = Expression.Call(castColExp, method, castItemExp);
 		    return Expression.Lambda<Action<IEnumerable, object>>(addExp, colParam, itemParam).Compile();
 	    }
-
-
-        private void Add(IEnumerable list, object obj)
-        {
-	        var type = list.GetType();
-	        if (!collectionAdders.ContainsKey(type))
-	        {
-		        var del = CreateAddDelegate(type, Messages.AddMethod);
-		        collectionAdders[type] = del;
-	        }
-
-	        collectionAdders[type](list, obj);
-        }
-
-        private void AddLast(IEnumerable linkedList, object obj)
-        {
-	        var type = linkedList.GetType();
-	        if (!collectionAdders.ContainsKey(type))
-	        {
-		        var del = CreateAddDelegate(type, Messages.AddLastMethod);
-		        collectionAdders[type] = del;
-	        }
-
-	        collectionAdders[type](linkedList, obj);
-        }
-
-        private void Enqueue(IEnumerable queue, object obj)
-        {
-	        var type = queue.GetType();
-	        if (!collectionAdders.ContainsKey(type))
-	        {
-		        var del = CreateAddDelegate(type, Messages.EnqueueMethod);
-		        collectionAdders[type] = del;
-	        }
-
-	        collectionAdders[type](queue, obj);
-        }
-
-        private void Push(IEnumerable stack, object obj)
-        {
-	        var type = stack.GetType();
-	        if (!collectionAdders.ContainsKey(type))
-	        {
-		        var del = CreateAddDelegate(type, Messages.PushMethod);
-		        collectionAdders[type] = del;
-	        }
-
-	        collectionAdders[type](stack, obj);
-        }
     }
 }

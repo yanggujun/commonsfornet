@@ -31,7 +31,7 @@ namespace Commons.Perf
 			TestTrivialObjectJsonToObject();
 			TestSmallObjectJsonToObject();
 			TestStandardObjectJsonToObject();
-			//TestLargeObjectJsonToObject();
+			TestLargeObjectJsonToObject();
         }
 
 		public static void TestTrivialObjectToJson()
@@ -258,46 +258,45 @@ namespace Commons.Perf
 
 		public static void TestLargeObjectJsonToObject()
 		{
-			var json = ReadFile("Book.txt");
-			var context = JsonMapper.NewContext().UseDateFormat("MM/dd/yyyy HH:mm:ss.fff").For<Note>(y => y.ConstructWith(x =>
-			{
-				var jsonObj = x as JObject;
-				Note note;
-				if (jsonObj.ContainsKey("index"))
-				{
-					var foot = new Footnote();
-					foot.note = jsonObj.GetString("note");
-					foot.writtenBy = jsonObj.GetString("writtenBy");
-					foot.index = jsonObj.GetInt64("index");
-					foot.createadAt = DateTime.Parse(jsonObj.GetString("createadAt"));
-					note = foot;
-				}
-				else
-				{
-					var head = new Headnote();
-					head.note = jsonObj.GetString("note");
-					head.writtenBy = jsonObj.GetString("writtenBy");
-					head.modifiedAt = DateTime.Parse(jsonObj.GetString("modifiedAt"));
-					note = head;
-				}
-				return note;
-			}));
+			//var context = JsonMapper.NewContext().UseDateFormat("MM/dd/yyyy HH:mm:ss.fff").For<Note>(y => y.ConstructWith(x =>
+			//{
+			//	var jsonObj = x as JObject;
+			//	Note note;
+			//	if (jsonObj.ContainsKey("index"))
+			//	{
+			//		var foot = new Footnote();
+			//		foot.note = jsonObj.GetString("note");
+			//		foot.writtenBy = jsonObj.GetString("writtenBy");
+			//		foot.index = jsonObj.GetInt64("index");
+			//		foot.createadAt = DateTime.Parse(jsonObj.GetString("createadAt"));
+			//		note = foot;
+			//	}
+			//	else
+			//	{
+			//		var head = new Headnote();
+			//		head.note = jsonObj.GetString("note");
+			//		head.writtenBy = jsonObj.GetString("writtenBy");
+			//		head.modifiedAt = DateTime.Parse(jsonObj.GetString("modifiedAt"));
+			//		note = head;
+			//	}
+			//	return note;
+			//}));
+			var json = ReadFile("NewBook.txt");
+			JsonMapper.To<NewBook>(json);
+			JsonConvert.DeserializeObject<NewBook>(json);
 
-			context.To<Book>(json);
-			JsonConvert.DeserializeObject<Book>(json);
-
-            const int LN = 1000;
+            const int LN = 10000;
 
             var sw1 = new Stopwatch();
             var sw2 = new Stopwatch();
             for (var i = 0; i < LN; i++)
             {
                 sw1.Start();
-                context.To<Book>(json);
+                JsonMapper.To<NewBook>(json);
                 sw1.Stop();
 
                 sw2.Start();
-                JsonConvert.DeserializeObject<Book>(json);
+                JsonConvert.DeserializeObject<NewBook>(json);
                 sw2.Stop();
             }
 
