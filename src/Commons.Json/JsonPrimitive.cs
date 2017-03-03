@@ -115,6 +115,18 @@ namespace Commons.Json
                 sb.Append(JsonTokens.Quoter);
                 result = sb.ToString();
             }
+            else if (primitive is bool)
+            {
+                var b = (bool)primitive;
+                if (b)
+                {
+                    result = JsonTokens.True;
+                }
+                else
+                {
+                    result = JsonTokens.False;
+                }
+            }
             else
             {
                 result = primitive.ToString();

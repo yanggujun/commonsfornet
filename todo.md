@@ -1,7 +1,6 @@
-1. GetUnderlyingType, GetGenericType
+1. GetUnderlyingType
 2. Speedup enum
 3. JArray interface refine
-4. JsonObject uses the same parse engine
 6. Commons.Utils.Reflect
 7. Enable perf test on travis ci.
 8. Complete json compability test.
