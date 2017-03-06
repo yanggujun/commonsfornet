@@ -5,8 +5,6 @@ env:
   - CLI_VERSION=latest
 os:
   - linux
-mono:
-  - 4.2.3
 addons:
   apt:
     packages:
