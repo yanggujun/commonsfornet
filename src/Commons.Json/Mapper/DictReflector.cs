@@ -51,6 +51,7 @@ namespace Commons.Json.Mapper
 			var add = dictType.CreateDictAddDelegate(valueType);
 			var create = dictType.CreateNewDelegate();
 			var tuple = new Tuple<Func<object>, Action<object, string, object>>(create, add);
+            deserializeMapper[dictType] = tuple;
 			return tuple;
 		}
     }

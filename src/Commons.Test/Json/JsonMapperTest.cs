@@ -1309,10 +1309,7 @@ namespace Commons.Test.Json
                 {2, new object()},
                 {3, new object()}
             };
-            var json = JsonMapper.ToJson(dict);
-            Assert.True(json.StartsWith("{"));
-            Assert.True(json.EndsWith("}"));
-            Assert.True(string.IsNullOrWhiteSpace(json.Trim('{').Trim('}')));
+            Assert.Throws(typeof(InvalidOperationException), () => JsonMapper.ToJson(dict));
         }
 
         [Fact]

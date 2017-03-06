@@ -205,7 +205,7 @@ namespace Commons.Json.Mapper
 			{
 				var dict = (IEnumerable)target;
 				var hasValue = false;
-				var tuple = dictReflector.GetReadDelegate(type, valueType);
+				var tuple = dictReflector.GetReadDelegate(type, keyType, valueType);
 				var getKey = tuple.Item1;
 				var getValue = tuple.Item2;
 				foreach (var element in dict)

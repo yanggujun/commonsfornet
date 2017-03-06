@@ -14,11 +14,7 @@ using Commons.Json.Mapper;
 namespace Commons.Perf
 {
 	// TODO: 
-	// byte[]
 	//    large byte array buffer
-	// change configuration behavior
-	// Json2Object
-	//    initialize list with an size.
 	public class Program
     {
         public static void Main(string[] args)
