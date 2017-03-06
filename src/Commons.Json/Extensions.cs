@@ -17,7 +17,9 @@
 using Commons.Utils;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Commons.Json
@@ -187,6 +189,52 @@ namespace Commons.Json
         {
             return true;
         }
+
+		public static Func<object, string> CreateGetKeyDelegate(this Type kvpType)
+		{
+			var param = Expression.Parameter(typeof(object), "kvp");
+			var castExp = Expression.Convert(param, kvpType);
+			var getProp = kvpType.GetProperty("Key");
+			var method = getProp.GetGetMethod();
+			var getExp = Expression.Call(castExp, method);
+			var retExp = Expression.Convert(getExp, typeof(string));
+			var methodGetKey = (Func<object, string>)Expression.Lambda(retExp, param).Compile();
+			return methodGetKey;
+		}
+
+		public static Func<object, object> CreateGetValueDelegate(this Type kvpType)
+		{
+			var param = Expression.Parameter(typeof(object), "kvp");
+			var castExp = Expression.Convert(param, kvpType);
+			var getProp = kvpType.GetProperty("Value");
+			var method = getProp.GetGetMethod();
+			var getExp = Expression.Call(castExp, method);
+			var retExp = Expression.Convert(getExp, typeof(object));
+			var methodGetValue = (Func<object, object>)Expression.Lambda(retExp, param).Compile();
+			return methodGetValue;
+		}
+
+		public static Action<object, string, object> CreateDictAddDelegate(this Type dictType, Type valueType)
+		{
+			var dictParam = Expression.Parameter(typeof(object), "dict");
+			var keyParam = Expression.Parameter(typeof(string), "key");
+			var valueParam = Expression.Parameter(typeof(object), "value");
+			var castDictExp = Expression.Convert(dictParam, dictType);
+			var castValueExp = Expression.Convert(valueParam, valueType);
+
+			var addMethod = dictType.GetMethod("Add");
+			var addExp = Expression.Call(castDictExp, addMethod, keyParam, castValueExp);
+			var addDelegate = (Action<object, string, object>)Expression.Lambda(addExp, dictParam, keyParam, valueParam).Compile();
+			return addDelegate;
+		}
+
+		public static Func<object> CreateNewDelegate(this Type dictType)
+		{
+			var constructor = dictType.GetConstructor(Type.EmptyTypes);
+
+			var newExp = Expression.New(constructor);
+			return (Func<object>)Expression.Lambda(newExp).Compile();
+		}
 
 		/// <summary>
 		/// Only recognize the format "MM/dd/yyyy HH:mm:ss.fff"

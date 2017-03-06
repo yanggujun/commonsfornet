@@ -31,7 +31,8 @@ namespace Commons.Json.Mapper
 			CollBuilder = new CollectionBuilder();
 			SerializerMapper = new ConcurrentDictionary<Type, Action<object, StringBuilder>>();
 			DeserializerMapper = new ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>>();
-			MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder, DeserializerMapper);
+			DictReflector = new DictReflector();
+			MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder, DeserializerMapper, DictReflector);
 		}
 
 		public IMapContext For<T>(Action<IJsonObjectMapper<T>> configure)
@@ -51,7 +52,7 @@ namespace Commons.Json.Mapper
 		// TODO: need to parse the actually typeof(T) to JsonBuilder as sometimes, typeof(T) != target.GetType()
 		public string ToJson<T>(T target)
 		{
-			var jsonBuilder = new JsonBuilder(Mappers, Types, Configuration, SerializerMapper);
+			var jsonBuilder = new JsonBuilder(Mappers, Types, Configuration, SerializerMapper, DictReflector);
 			return jsonBuilder.Build(target);
 		}
 
@@ -80,6 +81,8 @@ namespace Commons.Json.Mapper
 		public ConfigContainer Configuration { get; private set; }
 
 		public TypeContainer Types { get; private set; }
+
+		public DictReflector DictReflector { get; private set; }
 
 		public ConcurrentDictionary<Type, Action<object, StringBuilder>> SerializerMapper;
 

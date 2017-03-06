@@ -15,7 +15,11 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq.Expressions;
+using System.Reflection;
+
 using Commons.Json;
 using Xunit;
 
@@ -678,5 +682,63 @@ namespace Commons.Test.Json
             string name = novel.Name;
             Assert.Equal("A Clash of Kings", name);
         }
+
+		[Fact]
+		public void TestDict()
+		{
+			var getKeyMethod = CreateGetKeyDelegate(typeof(KeyValuePair<string, string>));
+			var getValueMethod = CreateGetValueDelegate(typeof(KeyValuePair<string, string>));
+			var addMethod = CreateDictAddDelegate(typeof(Dictionary<string, string>));
+			var dict = new Dictionary<string, string>();
+			addMethod(dict, "a", "b");
+			foreach (var kvp in dict)
+			{
+				var key = getKeyMethod(kvp);
+				var value = getValueMethod(kvp);
+				Assert.Equal("a", key);
+				Assert.Equal("b", value);
+			}
+		}
+
+		public static Func<object, string> CreateGetKeyDelegate(Type kvpType)
+		{
+			var param = Expression.Parameter(typeof(object), "kvp");
+			var castExp = Expression.Convert(param, kvpType);
+			var getProp = kvpType.GetProperty("Key");
+			var method = getProp.GetGetMethod();
+			var getExp = Expression.Call(castExp, method);
+			var retExp = Expression.Convert(getExp, typeof(string));
+			var methodGetKey = (Func<object, string>)Expression.Lambda(retExp, param).Compile();
+			return methodGetKey;
+		}
+
+		public static Func<object, object> CreateGetValueDelegate(Type kvpType)
+		{
+			var param = Expression.Parameter(typeof(object), "kvp");
+			var castExp = Expression.Convert(param, kvpType);
+			var getProp = kvpType.GetProperty("Value");
+			var method = getProp.GetGetMethod();
+			var getExp = Expression.Call(castExp, method);
+			var retExp = Expression.Convert(getExp, typeof(object));
+			var methodGetValue = (Func<object, object>)Expression.Lambda(retExp, param).Compile();
+			return methodGetValue;
+		}
+
+		public static Action<object, string, object> CreateDictAddDelegate(Type dictType)
+		{
+			var keyType = dictType.GetGenericArguments()[0];
+			var valueType = dictType.GetGenericArguments()[1];
+
+			var dictParam = Expression.Parameter(typeof(object), "dict");
+			var keyParam = Expression.Parameter(typeof(string), "key");
+			var valueParam = Expression.Parameter(typeof(object), "value");
+			var castDictExp = Expression.Convert(dictParam, dictType);
+			var castValueExp = Expression.Convert(valueParam, valueType);
+
+			var addMethod = dictType.GetMethod("Add");
+			var addExp = Expression.Call(castDictExp, addMethod, keyParam, castValueExp);
+			var addDelegate = (Action<object, string, object>)Expression.Lambda(addExp, dictParam, keyParam, valueParam).Compile();
+			return addDelegate;
+		}
     }
 }

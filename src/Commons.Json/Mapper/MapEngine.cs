@@ -31,15 +31,17 @@ namespace Commons.Json.Mapper
         private readonly CollectionBuilder colBuilder;
 		// (objectType -> (deserializer, actualType)
 		private readonly ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>> deserializers;
+		private readonly DictReflector dictReflector;
 
         public MapEngine(TypeContainer types, MapperContainer mappers, ConfigContainer configuration, 
-			CollectionBuilder colBuilder, ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>> deserializers)
+			CollectionBuilder colBuilder, ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>> deserializers, DictReflector dictReflector)
         {
             this.types = types;
             this.mappers = mappers;
             this.configuration = configuration;
             this.colBuilder = colBuilder;
 			this.deserializers = deserializers;
+			this.dictReflector = dictReflector;
         }
 
 		public object Map(Type type, JValue jsonValue)
@@ -592,22 +594,24 @@ namespace Commons.Json.Mapper
 			}
 			object raw;
 			var mapper = mappers.GetMapper(dictType);
+			var tuple = dictReflector.GetDeserializeDelegates(dictType, valueType);
 			if (mapper.Create != null)
 			{
 				raw = mapper.Create();
 			}
 			else
 			{
-				raw = Activator.CreateInstance(dictType);
+				var create = tuple.Item1;
+				raw = create();
 			}
 
-            var method = dictType.GetMethod(Messages.AddMethod);
+			var add = tuple.Item2;
             foreach (var kvp in jsonObj)
             {
                 var key = kvp.Key;
                 object value = null;
                 value = Map(valueType, kvp.Value);
-                method.Invoke(raw, new[] { key, value });
+				add(raw, key, value);
             }
             return raw;
 		}

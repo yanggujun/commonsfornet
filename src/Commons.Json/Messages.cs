@@ -34,8 +34,6 @@ namespace Commons.Json
 
         public const string JsonValueTypeNotMatch = "The type of the JSON value does not match the type of the object property.";
 
-        public const string AddMethod = "Add";
-
         public const string TypeNotSupported = "The type mapped is not supported by the JsonMapper.";
 
         public const string InvalidProperty = "The expression does not contain a valid property.";
@@ -48,22 +46,12 @@ namespace Commons.Json
 
         public const string NotEnum = "The type is not an Enum.";
 
-        public const string AddLastMethod = "AddLast";
-
-        public const string EnqueueMethod = "Enqueue";
-
-        public const string PushMethod = "Push";
-
-        public const string DateFormat = "DateFormat";
-
-        public const string True = "true";
-
-        public const string False = "false";
-
         public const string CannotAssignNullToStruct = "Cannot assign null to a value type.";
 
 		public const string KeyNotExist = "The key does not exist in the JSON.";
 
 		public const string InvalidNumber = "The string represents an invalid number.";
+
+		public const string InvalidDictionary = "The dictionary key must be string.";
     }
 }

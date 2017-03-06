@@ -29,14 +29,16 @@ namespace Commons.Json.Mapper
         private readonly TypeContainer types;
         private readonly ConfigContainer config;
 		private readonly ConcurrentDictionary<Type, Action<object, StringBuilder>> serializers;
+		private readonly DictReflector dictReflector;
 
         public JsonBuilder(MapperContainer mappers, TypeContainer types, ConfigContainer config, 
-			ConcurrentDictionary<Type, Action<object, StringBuilder>> serializerMapper)
+			ConcurrentDictionary<Type, Action<object, StringBuilder>> serializerMapper, DictReflector dictReflector)
         {
 			serializers = serializerMapper;
             this.mappers = mappers;
             this.types = types;
             this.config = config;
+			this.dictReflector = dictReflector;
         }
 
         public string Build(object target)
@@ -198,14 +200,18 @@ namespace Commons.Json.Mapper
 			localBuffer.Append(JsonTokens.LeftBrace);
 			var type = target.GetType();
 			var keyType = type.GetGenericArguments()[0];
+			var valueType = type.GetGenericArguments()[1];
 			if (keyType == typeof(string))
 			{
 				var dict = (IEnumerable)target;
 				var hasValue = false;
+				var tuple = dictReflector.GetReadDelegate(type, valueType);
+				var getKey = tuple.Item1;
+				var getValue = tuple.Item2;
 				foreach (var element in dict)
 				{
-					var key = element.GetType().GetProperty("Key").GetValue(element, null) as string;
-					var value = element.GetType().GetProperty("Value").GetValue(element, null);
+					var key = getKey(element);
+					var value = getValue(element);
 					localBuffer.Append(JsonTokens.Quoter).Append(key).Append(JsonTokens.Quoter)
 						.Append(JsonTokens.Colon);
 					var serializer = GetSerializer(value);
@@ -217,6 +223,10 @@ namespace Commons.Json.Mapper
 				{
 					localBuffer.Remove(localBuffer.Length - 1, 1);
 				}
+			}
+			else
+			{
+				throw new InvalidOperationException(Messages.InvalidDictionary);
 			}
 			localBuffer.Append(JsonTokens.RightBrace);
 		}
