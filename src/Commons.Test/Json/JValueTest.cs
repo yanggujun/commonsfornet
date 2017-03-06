@@ -65,7 +65,7 @@ namespace Commons.Test.Json
             };
             var context = JsonMapper.NewContext().UseDateFormat(string.Empty).For<Employee>(y => y.MapProperty(x => x.Dob).With("Birthday"));
             var json = context.ToJson(employee);
-            var engine = new JsonParseEngine();
+            var engine = new ParseEngine();
             var emp = engine.Parse(json) as JObject;
             Assert.NotNull(emp);
             Assert.Equal("Alan", emp.GetString("Name"));
@@ -200,7 +200,7 @@ namespace Commons.Test.Json
         public void TestJArray01()
         {
             var json = "[0, 1, 2, 3, 4, 5, 6, \"value1\", true, 10.5386, 2.12453, 4.3]";
-            var engine = new JsonParseEngine();
+            var engine = new ParseEngine();
             var array = engine.Parse(json) as JArray;
 			var a0 = array[0] as JNumber;
             Assert.NotNull(a0);
@@ -240,7 +240,7 @@ namespace Commons.Test.Json
         public void TestJArray02()
         {
             var json = "{\"key1\": [ 0, 1, 2, 3, 4, 5, 6], \"key2\": null}";
-            var engine = new JsonParseEngine();
+            var engine = new ParseEngine();
             var obj = engine.Parse(json) as JObject;
             Assert.NotNull(obj);
             var array = obj.GetArray("key1");
@@ -258,7 +258,7 @@ namespace Commons.Test.Json
         public void TestJArray03()
         {
             var json = "[\"value1\", \"value2\", \"value3\", \"value4\", true, 4, 2.5]";
-            var engine = new JsonParseEngine();
+            var engine = new ParseEngine();
             var array = engine.Parse(json) as JArray;
             Assert.NotNull(array);
             var str = "value";

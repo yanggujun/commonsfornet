@@ -68,7 +68,7 @@ namespace Commons.Json
         public static T To<T>(string json, Transformer<JValue, T> transform)
         {
             Guarder.CheckNull(transform, "transform");
-            var engine = new JsonParseEngine();
+            var engine = new ParseEngine();
             var value = engine.Parse(json);
             return transform(value);
         }
@@ -76,7 +76,7 @@ namespace Commons.Json
         public static T To<T>(string json, IJsonConverter<T> converter)
         {
             Guarder.CheckNull(converter, "converter");
-            var engine = new JsonParseEngine();
+            var engine = new ParseEngine();
             var value = engine.Parse(json);
             return converter.Convert(value);
         }

@@ -28,7 +28,7 @@ namespace Commons.Json
         public const char SingleQuoter = '\'';
         public const char Dot = '.';
         public const char Space = ' ';
-        public const char Slash = '\\';
+        public const char BackSlash = '\\';
         public const char Negtive = '-';
         public const char TabChar = '\t';
         public const char LineSeparator = '\n';
@@ -47,6 +47,8 @@ namespace Commons.Json
         public const char F = 'f';
         public const char N = 'n';
         public const char Exp = 'e';
+		public const char Plus = '+';
+		public const char Minus = '-';
         public const string Null = "null";
         public const string Tab = "    ";
         public const string True = "true";

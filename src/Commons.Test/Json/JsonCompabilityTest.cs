@@ -802,5 +802,86 @@ namespace Test.Commons.Json
 			var json = "0.b12";
 			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<double>(json));
 		}
+
+		[Fact]
+		public void TestCompability115()
+		{
+			var json = "0.12e+5";
+			double expected = 0.12e+5;
+			var result = JsonMapper.To<double>(json);
+			Assert.Equal(expected, result);
+		}
+
+		[Fact]
+		public void TestCompability116()
+		{
+			var json = "1e5";
+			double expected = 1e5;
+			var result = JsonMapper.To<double>(json);
+			Assert.Equal(expected, result);
+		}
+
+		[Fact]
+		public void TestCompability117()
+		{
+			var json = "1E5";
+			double expected = 1E5;
+			var result = JsonMapper.To<double>(json);
+			Assert.Equal(expected, result);
+		}
+
+		[Fact]
+		public void TestCompability118()
+		{
+			var json = "3.2e2";
+			double expected = 3.2e2;
+			var result = JsonMapper.To<double>(json);
+			Assert.Equal(expected, result);
+		}
+
+		[Fact]
+		public void TestCompability119()
+		{
+			var json = "3.2e+24";
+			double expected = 3.2e+24;
+			var result = JsonMapper.To<double>(json);
+			Assert.Equal(expected, result);
+		}
+
+		[Fact]
+		public void TestCompability120()
+		{
+			var json = "3.2E2";
+			double expected = 3.2E2;
+			var result = JsonMapper.To<double>(json);
+			Assert.Equal(expected, result);
+		}
+
+		[Fact]
+		public void TestCompability121()
+		{
+			var json = "3.2E+24";
+			double expected = 3.2E+24;
+			var result = JsonMapper.To<double>(json);
+			Assert.Equal(expected, result);
+		}
+
+		[Fact]
+		public void TestCompability122()
+		{
+			var json = "3.2E-24";
+			double expected = 3.2E-24;
+			var result = JsonMapper.To<double>(json);
+			Assert.Equal(expected, result);
+		}
+
+		[Fact]
+		public void TestCompability123()
+		{
+			var json = "3.2e-24";
+			double expected = 3.2e-24;
+			var result = JsonMapper.To<double>(json);
+			Assert.Equal(expected, result);
+		}
 	}
 }

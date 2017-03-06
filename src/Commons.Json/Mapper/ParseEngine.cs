@@ -18,7 +18,7 @@ using System;
 
 namespace Commons.Json.Mapper
 {
-	public sealed class JsonParseEngine
+	public sealed class ParseEngine
     {
         private int pos;
         private int len;
@@ -125,17 +125,26 @@ namespace Commons.Json.Mapper
 
             if (pos < len && char.ToLower(json[pos]) == JsonTokens.Exp)
             {
-                // TODO: e+ e-
                 isFloat = true;
                 MovePosition();
-                if (!IsDigit(json[pos]))
-                {
-                    throw new ArgumentException(Messages.InvalidFormat);
-                }
-                while (pos < len && IsDigit(json[pos]))
-                {
-                    pos++;
-                }
+				var next = json[pos];
+				if (IsDigit(next))
+				{
+					while (pos < len && IsDigit(json[pos++])) ;
+				}
+				else if (next == JsonTokens.Plus || next == JsonTokens.Minus)
+				{
+					MovePosition();
+					if (!IsDigit(json[pos]))
+					{
+						throw new ArgumentException(Messages.InvalidFormat);
+					}
+					while (pos < len && IsDigit(json[pos++])) ;
+				}
+				else
+				{
+					throw new ArgumentException(Messages.InvalidFormat);
+				}
             }
 
 			var numStr = json.Substring(start, pos - start);
@@ -159,7 +168,7 @@ namespace Commons.Json.Mapper
             char ch;
             while (pos < len && (ch = json[pos]) != JsonTokens.Quoter)
             {
-                if (ch == JsonTokens.Slash)
+                if (ch == JsonTokens.BackSlash)
                 {
                     //TODO: unescape char
                 }
