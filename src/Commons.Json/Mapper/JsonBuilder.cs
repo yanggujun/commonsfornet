@@ -25,18 +25,14 @@ namespace Commons.Json.Mapper
 {
 	internal sealed class JsonBuilder
     {
-		private const int localBufferSize = 1000;
-		private const int objectSize = 200;
         private readonly MapperContainer mappers;
         private readonly TypeContainer types;
         private readonly ConfigContainer config;
-        private readonly StringBuilder localBuffer;
-		private readonly ConcurrentDictionary<Type, Func<object, string>> serializers;
+		private readonly ConcurrentDictionary<Type, Action<object, StringBuilder>> serializers;
 
         public JsonBuilder(MapperContainer mappers, TypeContainer types, ConfigContainer config, 
-			ConcurrentDictionary<Type, Func<object, string>> serializerMapper)
+			ConcurrentDictionary<Type, Action<object, StringBuilder>> serializerMapper)
         {
-	        localBuffer = new StringBuilder(localBufferSize);
 			serializers = serializerMapper;
             this.mappers = mappers;
             this.types = types;
@@ -45,11 +41,13 @@ namespace Commons.Json.Mapper
 
         public string Build(object target)
         {
+			var buffer = new StringBuilder();
 			var serializer = GetSerializer(target);
-			return serializer(target);
+			serializer(target, buffer);
+			return buffer.ToString();
         }
 
-		private Func<object, string> GetSerializer(object target)
+		private Action<object, StringBuilder> GetSerializer(object target)
 		{
 			if (target == null)
 			{
@@ -62,7 +60,7 @@ namespace Commons.Json.Mapper
 				return serializers[type];
 			}
 			
-			Func<object, string> serializer;
+			Action<object, StringBuilder> serializer;
 			if (type == typeof(bool))
 			{
 				serializer = SerializeBoolean;
@@ -109,28 +107,24 @@ namespace Commons.Json.Mapper
 			return serializer;
 		}
 
-		private string SerializeByteArray(object target)
+		private void SerializeByteArray(object target, StringBuilder localBuffer)
 		{
 			var bytes = (byte[])target;
-			localBuffer.Length = 0;
 			localBuffer.Append(JsonTokens.Quoter).Append(Convert.ToBase64String(bytes)).Append(JsonTokens.Quoter);
-			return localBuffer.ToString();
 		}
 
-		private string SerializeObject(object target)
+		private void SerializeObject(object target, StringBuilder localBuffer)
 		{
 			var type = target.GetType();
 			var mapper = mappers.GetMapper(type);
-			string json;
 			if (mapper.Serializer != null)
 			{
-				json = mapper.Serializer(target).ToString();
+				localBuffer.Append(mapper.Serializer(target).ToString());
 			}
 			else
 			{
 				var manager = types[type];
-				var sb = new StringBuilder(objectSize);
-				sb.Append(JsonTokens.LeftBrace);
+				localBuffer.Append(JsonTokens.LeftBrace);
 				var getters = manager.Getters;
 				for (var i = 0; i < getters.Count; i++)
 				{
@@ -141,73 +135,67 @@ namespace Commons.Json.Mapper
 						continue;
 					}
 					var propValue = prop.Item2(target);
-					sb.Append(JsonTokens.Quoter);
-					sb.Append(mapper.GetKey(itemName));
-					sb.Append(JsonTokens.Quoter);
-					sb.Append(JsonTokens.Colon);
+					localBuffer.Append(JsonTokens.Quoter);
+					localBuffer.Append(mapper.GetKey(itemName));
+					localBuffer.Append(JsonTokens.Quoter);
+					localBuffer.Append(JsonTokens.Colon);
 					var serializer = GetSerializer(propValue);
-					sb.Append(serializer(propValue));
-					sb.Append(JsonTokens.Comma);
+					serializer(propValue, localBuffer);
+					localBuffer.Append(JsonTokens.Comma);
 				}
-				sb.Remove(sb.Length - 1, 1);
-				sb.Append(JsonTokens.RightBrace);
-				json = sb.ToString();
+				localBuffer.Remove(localBuffer.Length - 1, 1);
+				localBuffer.Append(JsonTokens.RightBrace);
 			}
-
-			return json;
 		}
 
-		private string SerializeEnumerable(object target)
+		private void SerializeEnumerable(object target, StringBuilder localBuffer)
 		{
-			var sb = new StringBuilder(objectSize);
-			sb.Append(JsonTokens.LeftBracket);
+			localBuffer.Append(JsonTokens.LeftBracket);
 			var hasValue = false;
 			var items = target as IEnumerable;
 			foreach (var item in items)
 			{
 				var itemSerializer = GetSerializer(item);
-				sb.Append(itemSerializer(item)).Append(JsonTokens.Comma);
+				itemSerializer(item, localBuffer);
+				localBuffer.Append(JsonTokens.Comma);
 				hasValue = true;
 			}
 			if (hasValue)
 			{
-				sb.Remove(sb.Length - 1, 1);
+				localBuffer.Remove(localBuffer.Length - 1, 1);
 			}
-			sb.Append(JsonTokens.RightBracket);
-			return sb.ToString();
+			localBuffer.Append(JsonTokens.RightBracket);
 		}
 
-		private string SerializeList(object target)
+		private void SerializeList(object target, StringBuilder localBuffer)
 		{
-			var sb = new StringBuilder(objectSize);
-			sb.Append(JsonTokens.LeftBracket);
+			localBuffer.Append(JsonTokens.LeftBracket);
 			var hasValue = false;
 			var items = target as IList;
 			for (var i = 0; i < items.Count; i++)
 			{
 				var item = items[i];
-				sb.Append(Build(item)).Append(JsonTokens.Comma);
+				var serializer = GetSerializer(item);
+				serializer(item, localBuffer);
+				localBuffer.Append(JsonTokens.Comma);
 				hasValue = true;
 			}
 
 			if (hasValue)
 			{
-				sb.Remove(sb.Length - 1, 1);
+				localBuffer.Remove(localBuffer.Length - 1, 1);
 			}
-			sb.Append(JsonTokens.RightBracket);
-			return sb.ToString();
+			localBuffer.Append(JsonTokens.RightBracket);
 		}
 
-		private string SerializeNull(object target)
+		private void SerializeNull(object target, StringBuilder localBuffer)
 		{
-			return JsonTokens.Null;
+			localBuffer.Append(JsonTokens.Null);
 		}
 
-		private string SerializeDict(object target)
+		private void SerializeDict(object target, StringBuilder localBuffer)
 		{
-			var sb = new StringBuilder(objectSize);
-			sb.Append(JsonTokens.LeftBrace);
-			// TODO: serialize dict with key type is not string.
+			localBuffer.Append(JsonTokens.LeftBrace);
 			var type = target.GetType();
 			var keyType = type.GetGenericArguments()[0];
 			if (keyType == typeof(string))
@@ -218,74 +206,69 @@ namespace Commons.Json.Mapper
 				{
 					var key = element.GetType().GetProperty("Key").GetValue(element, null) as string;
 					var value = element.GetType().GetProperty("Value").GetValue(element, null);
-					sb.Append(JsonTokens.Quoter).Append(key).Append(JsonTokens.Quoter)
-						.Append(JsonTokens.Colon).Append(Build(value)).Append(JsonTokens.Comma);
+					localBuffer.Append(JsonTokens.Quoter).Append(key).Append(JsonTokens.Quoter)
+						.Append(JsonTokens.Colon);
+					var serializer = GetSerializer(value);
+					serializer(value, localBuffer);
+					localBuffer.Append(JsonTokens.Comma);
 					hasValue = true;
 				}
 				if (hasValue)
 				{
-					sb.Remove(sb.Length - 1, 1);
+					localBuffer.Remove(localBuffer.Length - 1, 1);
 				}
 			}
-			sb.Append(JsonTokens.RightBrace);
-			return sb.ToString();
+			localBuffer.Append(JsonTokens.RightBrace);
 		}
 
-		private string SerializeBoolean(object target)
+		private void SerializeBoolean(object target, StringBuilder localBuffer)
 		{
-			string json;
 			var val = (bool)target;
 			if (val)
 			{
-				json = Messages.True;
+				localBuffer.Append(JsonTokens.True);
 			}
 			else
 			{
-				json = Messages.False;
+				localBuffer.Append(JsonTokens.False);
 			}
-
-			return json;
 		}
 
-		private string SerializeNumber(object target)
+		private void SerializeNumber(object target, StringBuilder localBuffer)
 		{
-			return target.ToString();
+			localBuffer.Append(target);
 		}
 
-		private string SerializeString(object target)
+		private void SerializeString(object target, StringBuilder localBuffer)
 		{
-            localBuffer.Length = 0;
             localBuffer.Append(JsonTokens.Quoter).Append(target).Append(JsonTokens.Quoter);
-            return localBuffer.ToString();
 		}
 
-		private string SerializeTime(object target)
+		private void SerializeTime(object target, StringBuilder localBuffer)
 		{
-			localBuffer.Length = 0;
 			var dt = (DateTime) target;
 			var time = string.IsNullOrEmpty(config.DateFormat) ? dt.FastToStringInvariantCulture() : dt.ToString(config.DateFormat);
 			localBuffer.Append(JsonTokens.Quoter).Append(time).Append(JsonTokens.Quoter);
-			return localBuffer.ToString();
 		}
 
-		private string SerializeArray(object target)
+		private void SerializeArray(object target, StringBuilder localBuffer)
 		{
 			var array = (Array)target;
-			var sb = new StringBuilder(objectSize);
-			sb.Append(JsonTokens.LeftBracket);
+			localBuffer.Append(JsonTokens.LeftBracket);
 			var hasValue = false;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array.GetValue(i);
-				sb.Append(Build(item)).Append(JsonTokens.Comma);
+				var serializer = GetSerializer(item);
+				serializer(item, localBuffer);
+				localBuffer.Append(JsonTokens.Comma);
 				hasValue = true;
 			}
 			if (hasValue)
 			{
-				sb.Remove(sb.Length - 1, 1);
+				localBuffer.Remove(localBuffer.Length - 1, 1);
 			}
-			sb.Append(JsonTokens.RightBracket);
-			return sb.ToString();
+			localBuffer.Append(JsonTokens.RightBracket);
 		}
     }
 

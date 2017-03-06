@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
 using Commons.Json.Mapper;
 
 namespace Commons.Perf
@@ -36,7 +37,7 @@ namespace Commons.Perf
 
 		public static void TestTrivialObjectToJson()
 		{
-			const int LN = 10000000;
+			const int LN = 1000000;
 			var warm = Message.Create(0);
 			JsonMapper.ToJson(warm);
 			JsonConvert.SerializeObject(warm);
@@ -48,7 +49,11 @@ namespace Commons.Perf
 				sw1.Start();
 				JsonMapper.ToJson(message);
 				sw1.Stop();
+			}
 
+			for (var i = 0; i < LN; i++)
+			{
+				var message = Message.Create(i + 1);
 				sw2.Start();
 				JsonConvert.SerializeObject(message);
 				sw2.Stop();
@@ -62,7 +67,7 @@ namespace Commons.Perf
 
 		public static void TestTrivialObjectJsonToObject()
 		{
-			const int LN = 10000000;
+			const int LN = 1000000;
 			var rand = new Random((int)(0x0000ffff & DateTime.Now.Ticks));
 			var template = ReadFile("Message.txt");
 			var warm = GenerateMessageJson(rand, template);
@@ -77,7 +82,11 @@ namespace Commons.Perf
 				sw1.Start();
 				JsonMapper.To<Message>(json);
 				sw1.Stop();
+			}
 
+			for (var i = 0; i < LN; i++)
+			{
+				var json = GenerateMessageJson(rand, template);
 				sw2.Start();
 				JsonConvert.DeserializeObject<Message>(json);
 				sw2.Stop();
@@ -104,9 +113,16 @@ namespace Commons.Perf
 				sw1.Start();
 				JsonMapper.ToJson(book);
 				sw1.Stop();
+			}
 
+			GC.Collect();
+			Thread.Sleep(1000);
+
+			for (var i = 0; i < LN; i++)
+			{
+				var book = Book.Factory<Book, Genre, Page, Headnote, Footnote>(7, x => (Genre)x);
 				sw2.Start();
-				JsonConvert.SerializeObject(warm);
+				JsonConvert.SerializeObject(book);
 				sw2.Stop();
 			}
 
@@ -121,18 +137,22 @@ namespace Commons.Perf
             const int LN = 100000;
 
             var warm = Post.Factory<Post, Vote, PostState, Comment>((int)(0x0000ffff & DateTime.Now.Ticks), x => (PostState)x);
-            var warmJson = JsonMapper.ToJson(warm);
+            JsonMapper.ToJson(warm);
             JsonConvert.SerializeObject(warm);
 
             var sw1 = new Stopwatch();
             var sw2 = new Stopwatch();
+			for (var i = 0; i < LN; i++)
+			{
+				var post = Post.Factory<Post, Vote, PostState, Comment>(i, x => (PostState)x);
+				sw1.Start();
+				JsonMapper.ToJson(post);
+				sw1.Stop();
+			}
+
             for (var i = 0; i < LN; i++)
             {
                 var post = Post.Factory<Post, Vote, PostState, Comment>(i, x => (PostState)x);
-                sw1.Start();
-                JsonMapper.ToJson(post);
-                sw1.Stop();
-
                 sw2.Start();
                 JsonConvert.SerializeObject(post);
                 sw2.Stop();
@@ -152,13 +172,17 @@ namespace Commons.Perf
             JsonConvert.SerializeObject(warm);
             var sw1 = new Stopwatch();
             var sw2 = new Stopwatch();
+			for (var i = 0; i < LN; i++)
+			{
+				var p = SmallPost.Create(i);
+				sw1.Start();
+				JsonMapper.ToJson(p);
+				sw1.Stop();
+			}
+
             for (var i = 0; i < LN; i++)
             {
-                var p = SmallPost.Create(i);
-                sw1.Start();
-                JsonMapper.ToJson(p);
-                sw1.Stop();
-
+				var p = SmallPost.Create(i);
                 sw2.Start();
                 JsonConvert.SerializeObject(p);
                 sw2.Stop();
@@ -187,7 +211,11 @@ namespace Commons.Perf
 				sw1.Start();
 				JsonMapper.ToJson(obj);
 				sw1.Stop();
+			}
 
+			for (var i = 0; i < LN; i++)
+			{
+				var obj = CompletePrimitiveObject.Factory(rand);
 				sw2.Start();
 				JsonConvert.SerializeObject(obj);
 				sw2.Stop();
@@ -211,13 +239,17 @@ namespace Commons.Perf
 
             var sw1 = new Stopwatch();
             var sw2 = new Stopwatch();
+			for (var i = 0; i < LN; i++)
+			{
+				var json = GenerateSmallPostJson(rand, jsonTemplate);
+				sw1.Start();
+				JsonMapper.To<SmallPost>(json);
+				sw1.Stop();
+			}
+
             for (var i = 0; i < LN; i++)
             {
 				var json = GenerateSmallPostJson(rand, jsonTemplate);
-                sw1.Start();
-                JsonMapper.To<SmallPost>(json);
-                sw1.Stop();
-
                 sw2.Start();
                 JsonConvert.DeserializeObject<SmallPost>(json);
                 sw2.Stop();
@@ -239,12 +271,15 @@ namespace Commons.Perf
 
             var sw1 = new Stopwatch();
             var sw2 = new Stopwatch();
+			for (var i = 0; i < LN; i++)
+			{
+				sw1.Start();
+				JsonMapper.To<Post>(json);
+				sw1.Stop();
+			}
+
             for (var i = 0; i < LN; i++)
             {
-                sw1.Start();
-                JsonMapper.To<Post>(json);
-                sw1.Stop();
-
                 sw2.Start();
                 JsonConvert.DeserializeObject<Post>(json);
                 sw2.Stop();
@@ -289,12 +324,18 @@ namespace Commons.Perf
 
             var sw1 = new Stopwatch();
             var sw2 = new Stopwatch();
+			for (var i = 0; i < LN; i++)
+			{
+				sw1.Start();
+				JsonMapper.To<NewBook>(json);
+				sw1.Stop();
+			}
+
+			GC.Collect();
+			Thread.Sleep(1000);
+
             for (var i = 0; i < LN; i++)
             {
-                sw1.Start();
-                JsonMapper.To<NewBook>(json);
-                sw1.Stop();
-
                 sw2.Start();
                 JsonConvert.DeserializeObject<NewBook>(json);
                 sw2.Stop();
