@@ -7,4 +7,6 @@
 9. Multithreading
 10. add unit test for samples.
 11. revisit all the concurrent dictionaries.
+12. escape chars
+13. e+ e-
 
