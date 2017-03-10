@@ -174,11 +174,11 @@ namespace Commons.Json.Mapper
                 }
                 ++pos;
             }
-			var str = json.Substring(start, pos - start);
-            if (pos >= len && json[pos - 1] != JsonTokens.Quoter)
+            if ((pos <= start && pos >= len)  || (pos >= len && json[pos - 1] != JsonTokens.Quoter))
             {
                 throw new ArgumentException(Messages.InvalidFormat);
             }
+			var str = json.Substring(start, pos - start);
             ++pos;
 
             return new JString(str);

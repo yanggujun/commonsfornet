@@ -7,70 +7,70 @@ namespace Test.Commons.Json
 {
 	public class JsonCompabilityTest
 	{
-		[Fact]
+		//[Fact]
 		public void TestCompability001()
 		{
 			var json = "{\"\\uDFAA\": 0}";
 			JsonMapper.To<Dictionary<string, int>>(json);
 		}
 
-		[Fact]
+		//[Fact]
 		public void TestCompability002()
 		{
 			var json = "[\"\\uDADA\"]";
 			JsonMapper.To<string[]>(json);
 		}
 
-		[Fact]
+		//[Fact]
 		public void TestCompability003()
 		{
 			var json = "[\"\\uD888\\u1234\"]";
 			JsonMapper.To<string[]>(json);
 		}
 
-		[Fact]
+		//[Fact]
 		public void TestCompability004()
 		{
 			var json = "[\"\\uD800\\uD800\n\"]";
 			JsonMapper.To<string[]>(json);
 		}
 
-		[Fact]
+		//[Fact]
 		public void TestCompability005()
 		{
 			var json = "[\"\\uDd1ea\"]";
 			JsonMapper.To<string[]>(json);
 		}
 
-		[Fact]
+		//[Fact]
 		public void TestCompability006()
 		{
 			var json = "[\"\\ud800\"]";
 			JsonMapper.To<string[]>(json);
 		}
 
-		[Fact]
+		//[Fact]
 		public void TestCompability007()
 		{
 			var json = "[\"\\ud800abc\"]";
 			JsonMapper.To<string[]>(json);
 		}
 
-		[Fact]
+		//[Fact]
 		public void TestCompability008()
 		{
 			var json = "[\"\\uDd1e\uD834\"]";
 			JsonMapper.To<string[]>(json);
 		}
 
-		[Fact]
+		//[Fact]
 		public void TestCompability009()
 		{
 			var json = "[\"\\\uDFAA\"]";
 			JsonMapper.To<string[]>(json);
 		}
 
-		[Fact]
+		//[Fact]
 		public void TestCompability010()
 		{
 			var json = "[\"\\\uDFAA\"]";
@@ -233,13 +233,6 @@ namespace Test.Commons.Json
 			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<bool[]>(json));
 		}
 
-		//[Fact]
-		//public void TestCompability033()
-		//{
-		//    var json = "123";
-		//    Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int>(json));
-		//}
-
 		[Fact]
 		public void TestCompability034()
 		{
@@ -261,7 +254,7 @@ namespace Test.Commons.Json
 			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
 		}
 
-		//[Fact]
+		[Fact]
 		public void TestCompability037()
 		{
 			var json = "[-01]";
@@ -883,5 +876,504 @@ namespace Test.Commons.Json
 			var result = JsonMapper.To<double>(json);
 			Assert.Equal(expected, result);
 		}
+
+		[Fact]
+		public void TestCompability124()
+		{
+			var json = "{:\"b\"}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability125()
+		{
+			var json = "{\"a\" \"b\"}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability126()
+		{
+			var json = "{\"a\":";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability127()
+		{
+			var json = "{\"a\"";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability128()
+		{
+			var json = "{1:1}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability129()
+		{
+			var json = "{9999E9999:1}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability130()
+		{
+			var json = "{null:null,null:null}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability131()
+		{
+			var json = "{\"id\":0,,,,}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability132()
+		{
+			var json = "{'a':0}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability133()
+		{
+			var json = "{\"a\":0}/**/";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability134()
+		{
+			var json = "{\"a\":0}/**//";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability135()
+		{
+			var json = "{\"a\":0}//";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+		
+		[Fact]
+		public void TestCompability136()
+		{
+			var json = "{\"a\":0}/";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability137()
+		{
+			var json = "{\"a\":b,,\"c\":\"d\"}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability138()
+		{
+			var json = "{a:\"b\"}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+		[Fact]
+		public void TestCompability139()
+		{
+			var json = "{\"a\":0}/**/";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability140()
+		{
+			var json = "{\"a\":\"a";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability141()
+		{
+			var json = "{\"foo\":\"bar\", \"a\"}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability142()
+		{
+			var json = "{\"a\":\"b\"}#";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability143()
+		{
+			var json = " ";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		// TODO: missing from n_string_backslash_00
+		//               to   n_string_no_quotes_with_bad_escape
+
+		[Fact]
+		public void TestCompability144()
+		{
+			var json = "\"";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string>(json));
+		}
+
+		[Fact]
+		public void TestCompability145()
+		{
+			var json = "['single quote']";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability146()
+		{
+			var json = "abc";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string>(json));
+		}
+
+		// missing n_string_start_escape_unclosed
+
+		[Fact]
+		public void TestCompability147()
+		{
+			var json = "\"\"x";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string>(json));
+		}
+
+		[Fact]
+		public void TestCompability148()
+		{
+			var json = "[[[[[[[[[[[[[[[[[[[[[[";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability149()
+		{
+			var json = "<.>";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability150()
+		{
+			var json = "[<null>]";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability151()
+		{
+			var json = "[1]x";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability152()
+		{
+			var json = "[1]]";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability153()
+		{
+			var json = "[\"abc]";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability154()
+		{
+			var json = "[True]";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<bool[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability155()
+		{
+			var json = "]";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability156()
+		{
+			var json = "{\"x\":true,";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, bool>>(json));
+		}
+
+		[Fact]
+		public void TestCompability157()
+		{
+			var json = "[][]";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability158()
+		{
+			var json = "[";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability159()
+		{
+			var json = "2@";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int>(json));
+		}
+
+		[Fact]
+		public void TestCompability160()
+		{
+			var json = "{}}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability161()
+		{
+			var json = "{\"\":";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability162()
+		{
+			var json = "{\"a\":/*coment*/\"b\"}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability163()
+		{
+			var json = "{\"a\":true}\"x\"";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, bool>>(json));
+		}
+
+		[Fact]
+		public void TestCompability164()
+		{
+			var json = "[,";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability165()
+		{
+			var json = "[{ \"\":[{\"\":[{\"\": ";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability167()
+		{
+			var json = "[{";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability168()
+		{
+			var json = "[\"a";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability169()
+		{
+			var json = "[\"a\"";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability170()
+		{
+			var json = "{";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability171()
+		{
+			var json = "{,";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability172()
+		{
+			var json = "{]";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability173()
+		{
+			var json = "{[";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability174()
+		{
+			var json = "\"\"";
+			Assert.Equal(string.Empty, JsonMapper.To<string>(json));
+		}
+
+		[Fact]
+		public void TestCompability175()
+		{
+			var json = "\"    \"";
+			Assert.Equal("    ", JsonMapper.To<string>(json));
+		}
+
+		[Fact]
+		public void TestCompability176()
+		{
+			var json = "{\"a\":\"\"}";
+			var dict = JsonMapper.To<Dictionary<string, string>>(json);
+			Assert.Equal(string.Empty, dict["a"]);
+		}
+
+		[Fact]
+		public void TestCompability177()
+		{
+			var json = "[\"\"]";
+			var array = JsonMapper.To<string[]>(json);
+			Assert.Equal(string.Empty, array[0]);
+		}
+
+		[Fact]
+		public void TestCompability178()
+		{
+			var json = "[\"]";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability179()
+		{
+			var json = "{\"a\":\"}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability180()
+		{
+			var json = "{\"a\":\"  }";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability181()
+		{
+			var json = "[\"  ]";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability182()
+		{
+			var json = "\"  ";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability183()
+		{
+			var json = "[\"";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability184()
+		{
+			var json = "[\"  ";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability185()
+		{
+			var json = "{\"a";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability186()
+		{
+			var json = "{'a'";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability187()
+		{
+			var json = "{\"a\":\"b\"}#{}";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+		}
+
+		[Fact]
+		public void TestCompability188()
+		{
+			var json = "[1";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<int[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability189()
+		{
+			var json = "[ false, null";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<bool[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability190()
+		{
+			var json = "[ false, nul]";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<bool[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability191()
+		{
+			var json = "[ false, tru";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<bool[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability192()
+		{
+			var json = "[ true, fals";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<bool[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability193()
+		{
+			var json = "{\"aaa\":\"bbb\"";
+			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<bool[]>(json));
+		}
+
+		[Fact]
+		public void TestCompability194()
+		{
+			var json = "[[]     ]";
+			var matrix = JsonMapper.To<int[][]>(json);
+			Assert.Equal(1, matrix.Length);
+			Assert.Equal(0, matrix[0].Length);
+		}
+		// y_array_arraysWithSpaces
 	}
 }
