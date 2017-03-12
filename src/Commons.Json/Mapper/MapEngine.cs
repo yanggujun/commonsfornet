@@ -29,12 +29,13 @@ namespace Commons.Json.Mapper
         private readonly MapperContainer mappers;
         private readonly ConfigContainer configuration;
         private readonly CollectionBuilder colBuilder;
-		// (objectType -> (deserializer, actualType)
-		private readonly ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>> deserializers;
+		// objectType -> deserializer
+		private readonly ConcurrentDictionary<Type, Func<Type, JValue, object>> deserializers;
+        private readonly EnumCache enumCache;
 		private readonly DictReflector dictReflector;
 
         public MapEngine(TypeContainer types, MapperContainer mappers, ConfigContainer configuration, 
-			CollectionBuilder colBuilder, ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>> deserializers, DictReflector dictReflector)
+			CollectionBuilder colBuilder, ConcurrentDictionary<Type, Func<Type, JValue, object>> deserializers, EnumCache enumCache, DictReflector dictReflector)
         {
             this.types = types;
             this.mappers = mappers;
@@ -42,136 +43,203 @@ namespace Commons.Json.Mapper
             this.colBuilder = colBuilder;
 			this.deserializers = deserializers;
 			this.dictReflector = dictReflector;
+            this.enumCache = enumCache;
         }
 
 		public object Map(Type type, JValue jsonValue)
 		{
-            if (jsonValue == JNull.Null)
-            {
-                if (!type.IsClass() && !type.IsNullable())
-                {
-                    throw new InvalidCastException(Messages.CannotAssignNullToStruct);
-                }
-                return null;
-            }
-
-			Type underlyingType;
-			var deserializer = GetDeserializer(type, out underlyingType);
-			return deserializer(underlyingType, jsonValue); 
+			var deserializer = GetDeserializer(type);
+			return deserializer(type, jsonValue); 
 		}
 
-		private Func<Type, JValue, object> GetDeserializer(Type type, out Type actualType)
+		private Func<Type, JValue, object> GetDeserializer(Type type)
 		{
 			if (deserializers.ContainsKey(type))
 			{
-				var tuple = deserializers[type];
-				actualType = tuple.Item2;
-				return tuple.Item1;
+				return deserializers[type];
 			}
-			actualType = GetActualType(type);
 
 			Func<Type, JValue, object> deserializer;
 
 			var mapper = mappers.GetMapper(type);
-			// for manual create now, assuming underlying type == type
-			if (mapper.ManualCreate != null)
-			{
-				deserializer = (t, v) => mapper.ManualCreate(v);
-			}
-			else if ((type.IsInterface() || type.IsAbstract()) && mapper.Create == null)
-			{
-				deserializer = BuildNull;
-			}
-			else if (actualType == typeof(bool))
-			{
-				deserializer = BuildBool;
-			}
-			else if (actualType == typeof(double))
-			{
-				deserializer = BuildDouble;
-			}
-			else if (actualType == typeof(decimal))
-			{
-				deserializer = BuildDecimal;
-			}
-			else if (actualType == typeof(float))
-			{
-				deserializer = BuildFloat;
-			}
-			else if (actualType == typeof(int))
-			{
-				deserializer = BuildInt;
-			}
-			else if (actualType == typeof(long))
-			{
-				deserializer = BuildLong;
-			}
-			else if (actualType == typeof(short))
-			{
-				deserializer = BuildShort;
-			}
-			else if (actualType == typeof(uint))
-			{
-				deserializer = BuildUint;
-			}
-			else if (actualType == typeof(ulong))
-			{
-				deserializer = BuildUlong;
-			}
-			else if (actualType == typeof(ushort))
-			{
-				deserializer = BuildUshort;
-			}
-			else if (actualType == typeof(byte))
-			{
-				deserializer = BuildByte;
-			}
-			else if (actualType == typeof(sbyte))
-			{
-				deserializer = BuildSbyte;
-			}
-			else if (actualType.IsEnum())
-			{
-				deserializer = BuildEnum;
-			}
-			else if (actualType == typeof(Guid))
-			{
-				deserializer = BuildGuid;
-			}
-			else if (actualType == typeof(char))
-			{
-				deserializer = BuildChar;
-			}
-			else if (actualType == typeof(string))
-			{
-				deserializer = BuildString;
-			}
-			else if (actualType == typeof(DateTime))
-			{
-				deserializer = BuildTime;
-			}
-			else if (actualType == typeof(byte[]))
-			{
-				deserializer = BuildByteArray;
-			}
-			else if (actualType.IsDictionary())
-			{
-				deserializer = BuildDict;
-			}
-			else if (actualType.IsArray)
-			{
-				deserializer = BuildArray;
-			}
-			else if (typeof(IEnumerable).IsAssignableFrom(actualType))
-			{
-				deserializer = BuildEnumerable;
-			}
-			else
-			{
-				deserializer = BuildObject;
-			}
+            // for manual create now, assuming underlying type == type
+            if (mapper.ManualCreate != null)
+            {
+                deserializer = (t, v) => mapper.ManualCreate(v);
+            }
+            else if ((type.IsInterface() || type.IsAbstract()) && mapper.Create == null)
+            {
+                deserializer = BuildNull;
+            }
+            else if (type == typeof(bool))
+            {
+                deserializer = BuildBool;
+            }
+            else if (type == typeof(bool?))
+            {
+                deserializer = BuildNullableBool;
+            }
+            else if (type == typeof(double))
+            {
+                deserializer = BuildDouble;
+            }
+            else if (type == typeof(double?))
+            {
+                deserializer = BuildNullableDouble;
+            }
+            else if (type == typeof(decimal))
+            {
+                deserializer = BuildDecimal;
+            }
+            else if (type == typeof(decimal?))
+            {
+                deserializer = BuildNullableDecimal;
+            }
+            else if (type == typeof(float))
+            {
+                deserializer = BuildFloat;
+            }
+            else if (type == typeof(float?))
+            {
+                deserializer = BuildNullableFloat;
+            }
+            else if (type == typeof(int))
+            {
+                deserializer = BuildInt;
+            }
+            else if (type == typeof(int?))
+            {
+                deserializer = BuildNullableInt;
+            }
+            else if (type == typeof(long))
+            {
+                deserializer = BuildLong;
+            }
+            else if (type == typeof(long?))
+            {
+                deserializer = BuildNullableLong;
+            }
+            else if (type == typeof(short))
+            {
+                deserializer = BuildShort;
+            }
+            else if (type == typeof(short?))
+            {
+                deserializer = BuildNullableShort;
+            }
+            else if (type == typeof(uint))
+            {
+                deserializer = BuildUint;
+            }
+            else if (type == typeof(uint?))
+            {
+                deserializer = BuildNullableUint;
+            }
+            else if (type == typeof(ulong))
+            {
+                deserializer = BuildUlong;
+            }
+            else if (type == typeof(ulong?))
+            {
+                deserializer = BuildNullableUlong;
+            }
+            else if (type == typeof(ushort))
+            {
+                deserializer = BuildUshort;
+            }
+            else if (type == typeof(ushort?))
+            {
+                deserializer = BuildNullableUshort;
+            }
+            else if (type == typeof(byte))
+            {
+                deserializer = BuildByte;
+            }
+            else if (type == typeof(byte?))
+            {
+                deserializer = BuildNullableByte;
+            }
+            else if (type == typeof(sbyte))
+            {
+                deserializer = BuildSbyte;
+            }
+            else if (type == typeof(sbyte?))
+            {
+                deserializer = BuildNullableSbyte;
+            }
+            else if (type.IsEnum())
+            {
+                deserializer = BuildEnum;
+            }
+            else if (type == typeof(Guid))
+            {
+                deserializer = BuildGuid;
+            }
+            else if (type == typeof(Guid?))
+            {
+                deserializer = BuildNullableGuid;
+            }
+            else if (type == typeof(char))
+            {
+                deserializer = BuildChar;
+            }
+            else if (type == typeof(char?))
+            {
+                deserializer = BuildNullableChar;
+            }
+            else if (type == typeof(string))
+            {
+                deserializer = BuildString;
+            }
+            else if (type == typeof(DateTime))
+            {
+                deserializer = BuildTime;
+            }
+            else if (type == typeof(DateTime?))
+            {
+                deserializer = BuildNullableTime;
+            }
+            else if (type == typeof(byte[]))
+            {
+                deserializer = BuildByteArray;
+            }
+            else if (type.IsDictionary())
+            {
+                deserializer = BuildDict;
+            }
+            else if (type.IsArray)
+            {
+                deserializer = BuildArray;
+            }
+            else if (typeof(IEnumerable).IsAssignableFrom(type))
+            {
+                deserializer = BuildEnumerable;
+            }
+            else if (type.IsClass())
+            {
+                deserializer = BuildObject;
+            }
+            else
+            {
+                var underlying = Nullable.GetUnderlyingType(type);
+                if (underlying != null)
+                {
+                    if (underlying.IsEnum())
+                    {
+                        deserializer = BuildNullableEnum;
+                    }
+                    else
+                    {
+                        deserializer = BuildObject;
+                    }
+                }
+                else
+                {
+                    deserializer = BuildStruct;
+                }
+            }
 
-			deserializers[type] = new Tuple<Func<Type, JValue, object>, Type>(deserializer, actualType);
+            deserializers[type] = deserializer;
 
 			return deserializer;
 		}
@@ -183,9 +251,13 @@ namespace Commons.Json.Mapper
 
         private object BuildEnumerable(Type targetType, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+
             //TODO: how about two type arguments?
             var itemType = targetType.GetGenericArguments()[0];
-            //TODO: do not use reflection.
             IEnumerable raw;
             var mapper = mappers.GetMapper(targetType);
 
@@ -219,6 +291,10 @@ namespace Commons.Json.Mapper
 
         private object BuildBool(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
 			bool result;
             var bvalue = jsonValue as JNumber;
             if (jsonValue == JBool.True)
@@ -237,8 +313,21 @@ namespace Commons.Json.Mapper
             return result;
         }
 
+        private object BuildNullableBool(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildBool(type, jsonValue);
+        }
+
         private object BuildDecimal(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
             object result;
 			CheckDecimalType(jsonValue);
 			try
@@ -252,8 +341,21 @@ namespace Commons.Json.Mapper
             return result;
         }
 
+        private object BuildNullableDecimal(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildDecimal(type, jsonValue);
+        }
+
         private object BuildDouble(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
             object result;
 			CheckDecimalType(jsonValue);
 			try
@@ -267,8 +369,21 @@ namespace Commons.Json.Mapper
             return result;
         }
 
+        private object BuildNullableDouble(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildDouble(type, jsonValue);
+        }
+
         private object BuildFloat(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
             object result;
 			CheckDecimalType(jsonValue);
 			try
@@ -282,6 +397,15 @@ namespace Commons.Json.Mapper
             return result;
         }
 
+        private object BuildNullableFloat(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildFloat(type, jsonValue);
+        }
+
 		private void CheckDecimalType(JValue jsonValue)
 		{
 			JNumber prim;
@@ -293,6 +417,10 @@ namespace Commons.Json.Mapper
 		
         private object BuildInt(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
             object result;
 			CheckIntegerType(jsonValue);
 			try
@@ -305,9 +433,22 @@ namespace Commons.Json.Mapper
 			}
             return result;
         }
+
+        private object BuildNullableInt(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildInt(type, jsonValue);
+        }
 		
         private object BuildLong(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
             object result;
 			CheckIntegerType(jsonValue);
 			try
@@ -320,9 +461,22 @@ namespace Commons.Json.Mapper
 			}
             return result;
         }
+
+        private object BuildNullableLong(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildLong(type, jsonValue);
+        }
 		
         private object BuildShort(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
             object result;
 			CheckIntegerType(jsonValue);
 			try
@@ -335,9 +489,22 @@ namespace Commons.Json.Mapper
 			}
             return result;
         }
+
+        private object BuildNullableShort(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildShort(type, jsonValue);
+        }
 		
         private object BuildUint(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
             object result;
 			CheckIntegerType(jsonValue);
 			try
@@ -350,9 +517,22 @@ namespace Commons.Json.Mapper
 			}
             return result;
         }
+
+        private object BuildNullableUint(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildUint(type, jsonValue);
+        }
 		
         private object BuildUlong(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
             object result;
 			CheckIntegerType(jsonValue);
 			try
@@ -365,9 +545,22 @@ namespace Commons.Json.Mapper
 			}
             return result;
         }
+
+        private object BuildNullableUlong(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildUlong(type, jsonValue);
+        }
 		
         private object BuildUshort(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
             object result;
 			CheckIntegerType(jsonValue);
 			try
@@ -380,9 +573,22 @@ namespace Commons.Json.Mapper
 			}
             return result;
         }
+
+        private object BuildNullableUshort(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildUshort(type, jsonValue);
+        }
 		
         private object BuildByte(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
             object result;
 			CheckIntegerType(jsonValue);
 			try
@@ -395,9 +601,22 @@ namespace Commons.Json.Mapper
 			}
             return result;
         }
+
+        private object BuildNullableByte(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildByte(type, jsonValue);
+        }
 		
         private object BuildSbyte(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
             object result;
 			CheckIntegerType(jsonValue);
 			try
@@ -411,6 +630,15 @@ namespace Commons.Json.Mapper
             return result;
         }
 
+        private object BuildNullableSbyte(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildSbyte(type, jsonValue);
+        }
+
 		private void CheckIntegerType(JValue jsonValue)
 		{
 			JNumber prim;
@@ -422,13 +650,35 @@ namespace Commons.Json.Mapper
 
 		private object BuildEnum(Type type, JValue jsonValue)
 		{
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
 			var str = CheckJsonString(jsonValue);
-			// TODO: what to do when exception.
-			return Enum.Parse(type, str);
+            // TODO: what to do when exception.
+            var enumValue = enumCache.GetValue(type, str);
+            if (enumValue == null)
+            {
+                throw new InvalidCastException(Messages.InvalidEnumValue);
+            }
+            return enumValue;
 		}
+
+        private object BuildNullableEnum(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildEnum(type, jsonValue);
+        }
 
 		private object BuildGuid(Type type, JValue jsonValue)
 		{
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
 			Guid guid;
 			if (!Guid.TryParse(jsonValue.Value, out guid))
 			{
@@ -438,8 +688,21 @@ namespace Commons.Json.Mapper
 			return guid;
 		}
 
+        private object BuildNullableGuid(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildGuid(type, jsonValue);
+        }
+
 		private object BuildChar(Type type, JValue jsonValue)
 		{
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
 			var str = CheckJsonString(jsonValue);
 			char result;
 			if (!char.TryParse(str, out result))
@@ -449,8 +712,21 @@ namespace Commons.Json.Mapper
 			return result;
 		}
 
+        private object BuildNullableChar(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildChar(type, jsonValue);
+        }
+
 		private object BuildTime(Type type, JValue jsonValue)
 		{
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
 			DateTime dt;
 			if (!TryParseDate(jsonValue.Value, out dt))
 			{
@@ -459,6 +735,15 @@ namespace Commons.Json.Mapper
 
 			return dt;
 		}
+
+        private object BuildNullableTime(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+            return BuildTime(type, jsonValue);
+        }
 
 		private object BuildByteArray(Type type, JValue jsonValue)
 		{
@@ -490,6 +775,10 @@ namespace Commons.Json.Mapper
 
         private object BuildString(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
 			var str = CheckJsonString(jsonValue);
 			return str;
         }
@@ -507,6 +796,10 @@ namespace Commons.Json.Mapper
 
         private Array BuildArray(Type arrayType, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
             JArray jsonArray;
             Array array;
 			var itemType = arrayType.GetElementType();
@@ -533,8 +826,23 @@ namespace Commons.Json.Mapper
             return array;
         }
 
+        private object BuildStruct(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
+
+            return BuildObject(type, jsonValue);
+        }
+
         private object BuildObject(Type type, JValue jsonValue)
         {
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
+
 			var jsonObj = CheckJsonObject(jsonValue);
 
             var properties = types[type].Setters;
@@ -585,6 +893,10 @@ namespace Commons.Json.Mapper
 
 		private object BuildDict(Type dictType, JValue jsonValue)
 		{
+            if (jsonValue == JNull.Null)
+            {
+                return null;
+            }
 			var jsonObj = CheckJsonObject(jsonValue);
 			var keyType = dictType.GetGenericArguments()[0];
 			var valueType = dictType.GetGenericArguments()[1];
@@ -638,15 +950,5 @@ namespace Commons.Json.Mapper
 				return success;
             }
         }
-
-		private Type GetActualType(Type type)
-		{
-			Type actualType;
-			if (!type.IsNullable(out actualType))
-			{
-				actualType = type;
-			}
-			return actualType;
-		}
     }
 }

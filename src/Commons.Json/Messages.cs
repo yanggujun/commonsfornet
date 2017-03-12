@@ -53,5 +53,7 @@ namespace Commons.Json
 		public const string InvalidNumber = "The string represents an invalid number.";
 
 		public const string InvalidDictionary = "The dictionary key must be string.";
+
+        public static readonly string InvalidEnumValue = "The Enum value is invalid.";
     }
 }

@@ -30,9 +30,10 @@ namespace Commons.Json.Mapper
 			Types = new TypeContainer();
 			CollBuilder = new CollectionBuilder();
 			SerializerMapper = new ConcurrentDictionary<Type, Action<object, StringBuilder>>();
-			DeserializerMapper = new ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>>();
+			DeserializerMapper = new ConcurrentDictionary<Type, Func<Type, JValue, object>>();
 			DictReflector = new DictReflector();
-			MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder, DeserializerMapper, DictReflector);
+            var enumCache = new EnumCache();
+			MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder, DeserializerMapper, enumCache, DictReflector);
 		}
 
 		public IMapContext For<T>(Action<IJsonObjectMapper<T>> configure)
@@ -86,7 +87,7 @@ namespace Commons.Json.Mapper
 
 		public ConcurrentDictionary<Type, Action<object, StringBuilder>> SerializerMapper;
 
-		public ConcurrentDictionary<Type, Tuple<Func<Type, JValue, object>, Type>> DeserializerMapper;
+		public ConcurrentDictionary<Type, Func<Type, JValue, object>> DeserializerMapper;
 
 		public MapEngine MapEngine { get; private set; }
 

@@ -33,6 +33,11 @@ namespace Commons.Perf
     {
         public static void Main(string[] args)
         {
+            Test();
+        }
+
+        public static void Test()
+        {
 			TestTrivialObjectToJson();
 			TestSmallObjectToJson();
 			TestNormalObjectToJson();
