@@ -19,6 +19,8 @@ using Commons.Json.Mapper;
 using System;
 using System.Linq;
 using Xunit;
+using System.Threading.Tasks;
+using Commons.Utils;
 
 namespace Commons.Test.Json
 {
@@ -194,6 +196,28 @@ namespace Commons.Test.Json
                 var n = rand.Next() % 1000;
                 TestPost(n);
             }
+        }
+
+
+        [Fact]
+        public void TestStandard05()
+        {
+            var tasks = new Task[4];
+            var counter = AtomicInt32.From(0);
+            for (var n = 0; n < 4; n++)
+            {
+                tasks[n] = Task.Factory.StartNew(() =>
+                {
+                    for (var i = 0; i < 100; i++)
+                    {
+                        TestPost(i);
+                        counter.Increment();
+                    }
+                });
+            }
+
+            Task.WaitAll(tasks);
+            Assert.Equal(400, counter.Value);
         }
 
         [Fact]

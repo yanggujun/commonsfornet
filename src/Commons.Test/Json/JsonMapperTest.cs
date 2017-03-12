@@ -717,7 +717,94 @@ namespace Commons.Test.Json
 
 			var number7 = JsonMapper.To<ulong?>(json);
 			Assert.Equal((ulong)5, number7.Value);
+
+			var number8 = JsonMapper.To<ushort?>(json);
+			Assert.Equal(5, number8.Value);
+
+            var number9 = JsonMapper.To<double?>(json);
+            Assert.Equal((double)5, number9.Value);
+
+            var number10 = JsonMapper.To<decimal?>(json);
+            Assert.Equal((decimal)5, number10.Value);
+
+            var number11 = JsonMapper.To<float?>(json);
+            Assert.Equal((float)5, number11.Value);
 		}
+
+        [Fact]
+        public void TestMapJsonToObject491()
+        {
+            var json = "\"a\"";
+            var ch = JsonMapper.To<char>(json);
+            Assert.Equal('a', ch);
+
+            var ch2 = JsonMapper.To<char?>(json);
+            Assert.Equal('a', ch2.Value);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject492()
+        {
+            var json = "\"05/06/2016 13:20:50.324\"";
+            var dt = JsonMapper.To<DateTime>(json);
+            Assert.Equal(2016, dt.Year);
+            Assert.Equal(5, dt.Month);
+            Assert.Equal(6, dt.Day);
+            Assert.Equal(13, dt.Hour);
+            Assert.Equal(20, dt.Minute);
+            Assert.Equal(50, dt.Second);
+            Assert.Equal(324, dt.Millisecond);
+        }
+
+        [Fact]
+        public void TestMapJsonToObject493()
+        {
+            var json = "\"05/06/2016 13:20:50.324\"";
+            var dt = JsonMapper.To<DateTime?>(json);
+            Assert.Equal(2016, dt.Value.Year);
+            Assert.Equal(5, dt.Value.Month);
+            Assert.Equal(6, dt.Value.Day);
+            Assert.Equal(13, dt.Value.Hour);
+            Assert.Equal(20, dt.Value.Minute);
+            Assert.Equal(50, dt.Value.Second);
+            Assert.Equal(324, dt.Value.Millisecond);
+        }
+
+        [Fact]
+        public void TestMapjsonToObject494()
+        {
+            var json = "null";
+            Assert.Null(JsonMapper.To<int?>(json));
+            Assert.Null(JsonMapper.To<uint?>(json));
+            Assert.Null(JsonMapper.To<short?>(json));
+            Assert.Null(JsonMapper.To<ushort?>(json));
+            Assert.Null(JsonMapper.To<long?>(json));
+            Assert.Null(JsonMapper.To<ulong?>(json));
+            Assert.Null(JsonMapper.To<char?>(json));
+            Assert.Null(JsonMapper.To<byte?>(json));
+            Assert.Null(JsonMapper.To<sbyte?>(json));
+            Assert.Null(JsonMapper.To<double?>(json));
+            Assert.Null(JsonMapper.To<float?>(json));
+            Assert.Null(JsonMapper.To<decimal?>(json));
+            Assert.Null(JsonMapper.To<Site?>(json));
+            Assert.Null(JsonMapper.To<SimpleStruct?>(json));
+            Assert.Null(JsonMapper.To<int[]>(json));
+            Assert.Null(JsonMapper.To<Dictionary<string, string>>(json));
+            Assert.Null(JsonMapper.To<bool?>(json));
+
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<int>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<uint>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<long>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<ulong>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<short>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<ushort>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<byte>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<sbyte>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<char>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<Site>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<SimpleStruct>(json));
+            Assert.Throws(typeof(InvalidCastException), () => JsonMapper.To<bool>(json));
+        }
 
 		[Fact]
 		public void TestMapJsonToObject50()
