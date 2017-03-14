@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 using Commons.Json;
@@ -27,16 +27,15 @@ using Commons.Test.Json;
 
 namespace Commons.Perf
 {
-	// TODO: 
-	//    large byte array buffer
 	public class Program
     {
         public static void Main(string[] args)
         {
-            Test();
+			TestSingleThread();
+			TestMultiThread();
         }
 
-        public static void Test()
+        public static void TestSingleThread()
         {
 			TestTrivialObjectToJson();
 			TestSmallObjectToJson();
@@ -49,6 +48,116 @@ namespace Commons.Perf
 			TestStandardObjectJsonToObject();
 			TestLargeObjectJsonToObject();
         }
+
+		public static void TestMultiThread()
+		{
+			TestStandardObjectMultiThreadToJson();
+			TestStandardObjectMultiThreadJsonToObject();
+		}
+
+		public static void TestStandardObjectMultiThreadToJson()
+		{
+			const int LN = 20000;
+            var warm = Post.Factory<Post, Vote, PostState, Comment>((int)(0x0000ffff & DateTime.Now.Ticks), x => (PostState)x);
+            JsonMapper.ToJson(warm);
+            JsonConvert.SerializeObject(warm);
+
+			var sw1 = new Stopwatch();
+			var sw2 = new Stopwatch();
+
+			var jmTasks = new Task[4];
+			var post = Post.Factory<Post, Vote, PostState, Comment>(24123, x => (PostState)x);
+			for (var n = 0; n < 4; n++)
+			{
+				jmTasks[n] = new Task(() =>
+				{
+					for (var i = 0; i < LN; i++)
+					{
+						JsonMapper.ToJson(post);
+					}
+				});
+			}
+			sw1.Start();
+			foreach (var t in jmTasks)
+			{
+				t.Start();
+			}
+			Task.WaitAll(jmTasks);
+			sw1.Stop();
+
+			var jcTasks = new Task[4];
+			for (var n = 0; n < 4; n++)
+			{
+				jcTasks[n] = new Task(() =>
+				{
+					for (var i = 0; i < LN; i++)
+					{
+						JsonConvert.SerializeObject(post);
+					}
+				});
+			}
+			sw2.Start();
+			foreach (var t in jcTasks)
+			{
+				t.Start();
+			}
+
+			Task.WaitAll(jcTasks);
+			sw2.Stop();
+
+			PrintResult("Multi-thread standard object to Json", "JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+		}
+
+		public static void TestStandardObjectMultiThreadJsonToObject()
+		{
+			const int LN = 20000;
+			var json = ReadFile("Post.txt");
+			JsonMapper.To<Post>(json);
+			JsonConvert.DeserializeObject<Post>(json);
+
+			var sw1 = new Stopwatch();
+			var sw2 = new Stopwatch();
+
+			var jmTasks = new Task[4];
+			for (var n = 0; n < 4; n++)
+			{
+				jmTasks[n] = new Task(() =>
+				{
+					for (var i = 0; i < LN; i++)
+					{
+						JsonMapper.To<Post>(json);
+					}
+				});
+			}
+			sw1.Start();
+			foreach (var t in jmTasks)
+			{
+				t.Start();
+			}
+			Task.WaitAll(jmTasks);
+			sw1.Stop();
+
+			var jcTasks = new Task[4];
+			for (var n = 0; n < 4; n++)
+			{
+				jcTasks[n] = new Task(() =>
+				{
+					for (var i = 0; i < LN; i++)
+					{
+						JsonConvert.DeserializeObject<Post>(json);
+					}
+				});
+			}
+			sw2.Start();
+			foreach (var t in jcTasks)
+			{
+				t.Start();
+			}
+			Task.WaitAll(jcTasks);
+			sw2.Stop();
+
+			PrintResult("Multi-thread Json to standard object", "JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+		}
 
 		public static void TestTrivialObjectToJson()
 		{
@@ -74,10 +183,7 @@ namespace Commons.Perf
 				sw2.Stop();
 			}
 
-			Console.WriteLine("------------------");
-            Console.WriteLine("Trivial object to Json");
-            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
-			Console.WriteLine("------------------");
+            PrintResult("Trivial object to Json", "JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
 		}
 
 		public static void TestTrivialObjectJsonToObject()
@@ -106,10 +212,7 @@ namespace Commons.Perf
 				JsonConvert.DeserializeObject<Message>(json);
 				sw2.Stop();
 			}
-			Console.WriteLine("------------------");
-            Console.WriteLine("Trivial object Json To Object");
-            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
-			Console.WriteLine("------------------");
+            PrintResult("Json to trivial object", "JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
 		}
 
 		public static void TestLargeObjectToJson()
@@ -141,10 +244,7 @@ namespace Commons.Perf
 				sw2.Stop();
 			}
 
-			Console.WriteLine("------------------");
-            Console.WriteLine("Large object to Json");
-            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
-			Console.WriteLine("------------------");
+            PrintResult("Large object to Json", "JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
 		}
 
         public static void TestStandardObjectToJson()
@@ -173,10 +273,7 @@ namespace Commons.Perf
                 sw2.Stop();
             }
 
-			Console.WriteLine("------------------");
-            Console.WriteLine("Standard object to Json");
-            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
-			Console.WriteLine("------------------");
+            PrintResult("Standard object to Json", "JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
         }
 
         public static void TestSmallObjectToJson()
@@ -204,10 +301,7 @@ namespace Commons.Perf
             }
 
 
-			Console.WriteLine("------------------");
-            Console.WriteLine("Small object to Json");
-            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
-			Console.WriteLine("------------------");
+            PrintResult("Small object to Json", "JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
         }
 
 		public static void TestNormalObjectToJson()
@@ -235,10 +329,7 @@ namespace Commons.Perf
 				JsonConvert.SerializeObject(obj);
 				sw2.Stop();
 			}
-			Console.WriteLine("------------------");
-            Console.WriteLine("Complete Primitive Object to Json");
-            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
-			Console.WriteLine("------------------");
+            PrintResult("Complete primitive object to Json", "JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
 		}
 
         public static void TestSmallObjectJsonToObject()
@@ -270,10 +361,7 @@ namespace Commons.Perf
                 sw2.Stop();
             }
 
-			Console.WriteLine("------------------");
-            Console.WriteLine("Json to small object");
-            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
-			Console.WriteLine("------------------");
+            PrintResult("Json to small object", "JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
         }
 
         public static void TestStandardObjectJsonToObject()
@@ -300,37 +388,11 @@ namespace Commons.Perf
                 sw2.Stop();
             }
 
-			Console.WriteLine("------------------");
-            Console.WriteLine("Json to standard object");
-            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
-			Console.WriteLine("------------------");
+            PrintResult("Json to standard object", "JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
         }
 
 		public static void TestLargeObjectJsonToObject()
 		{
-			//var context = JsonMapper.NewContext().UseDateFormat("MM/dd/yyyy HH:mm:ss.fff").For<Note>(y => y.ConstructWith(x =>
-			//{
-			//	var jsonObj = x as JObject;
-			//	Note note;
-			//	if (jsonObj.ContainsKey("index"))
-			//	{
-			//		var foot = new Footnote();
-			//		foot.note = jsonObj.GetString("note");
-			//		foot.writtenBy = jsonObj.GetString("writtenBy");
-			//		foot.index = jsonObj.GetInt64("index");
-			//		foot.createadAt = DateTime.Parse(jsonObj.GetString("createadAt"));
-			//		note = foot;
-			//	}
-			//	else
-			//	{
-			//		var head = new Headnote();
-			//		head.note = jsonObj.GetString("note");
-			//		head.writtenBy = jsonObj.GetString("writtenBy");
-			//		head.modifiedAt = DateTime.Parse(jsonObj.GetString("modifiedAt"));
-			//		note = head;
-			//	}
-			//	return note;
-			//}));
 			var json = ReadFile("NewBook.txt");
 			JsonMapper.To<NewBook>(json);
 			JsonConvert.DeserializeObject<NewBook>(json);
@@ -356,9 +418,14 @@ namespace Commons.Perf
                 sw2.Stop();
             }
 
+            PrintResult("Json to large object", "JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+		}
+
+		private static void PrintResult(string title, string test1, long test1Ms, string test2, long test2Ms)
+		{
 			Console.WriteLine("------------------");
-            Console.WriteLine("Json to large object");
-            PrintResult("JsonMapper", sw1.ElapsedMilliseconds, "Json.NET", sw2.ElapsedMilliseconds);
+            Console.WriteLine(title);
+			PrintResult(test1, test1Ms, test2, test2Ms);
 			Console.WriteLine("------------------");
 		}
 
