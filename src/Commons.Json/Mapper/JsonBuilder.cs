@@ -57,12 +57,12 @@ namespace Commons.Json.Mapper
 			}
 
 			var type = target.GetType();
-			if (serializers.ContainsKey(type))
+			Action<object, StringBuilder> serializer;
+			if (serializers.TryGetValue(type, out serializer))
 			{
-				return serializers[type];
+				return serializer;
 			}
 			
-			Action<object, StringBuilder> serializer;
 			if (type == typeof(bool))
 			{
 				serializer = SerializeBoolean;

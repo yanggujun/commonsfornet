@@ -20,6 +20,7 @@ dotnet restore
 
 dotnet build .\src\Commons.Utils -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental --build-profile
 dotnet build .\src\Commons.Collections -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental --build-profile
+dotnet build .\src\Commons.Reflect -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental --build-profile
 dotnet build .\src\Commons.Pool -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental --build-profile
 dotnet build .\src\Commons.Json -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental --build-profile
 dotnet build .\src\Commons.Test -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental --build-profile
@@ -27,12 +28,14 @@ dotnet build .\src\Commons.Test -c Release --no-dependencies -o "$OUTPUT\net40" 
 
 dotnet build .\src\Commons.Utils -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental --build-profile
 dotnet build .\src\Commons.Collections -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental --build-profile
+dotnet build .\src\Commons.Reflect -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental --build-profile
 dotnet build .\src\Commons.Pool -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental --build-profile
 dotnet build .\src\Commons.Json -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental --build-profile
 dotnet build .\src\Commons.Test -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental --build-profile
 
 dotnet build .\src\Commons.Utils -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile
 dotnet build .\src\Commons.Collections -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile
+dotnet build .\src\Commons.Reflect -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile
 dotnet build .\src\Commons.Pool -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile
 dotnet build .\src\Commons.Json -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile
 dotnet build .\src\Commons.Messaging -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental --build-profile

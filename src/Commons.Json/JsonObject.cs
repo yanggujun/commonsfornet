@@ -26,17 +26,6 @@ namespace Commons.Json
     {
         private readonly LinkedHashedMap<string, JsonValue> valueMap = new LinkedHashedMap<string, JsonValue>();
 
-        /// <summary>
-        /// Oops! The method is obsolete from 0.2.2. Use JsonMapper.Parse(json) instead.
-        /// </summary>
-        /// <param name="json"></param>
-        /// <returns></returns>
-        [Obsolete]
-        public static dynamic Parse(string json)
-        {
-            return JsonParser.Parse(json);
-        }
-
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
             var name = binder.Name;

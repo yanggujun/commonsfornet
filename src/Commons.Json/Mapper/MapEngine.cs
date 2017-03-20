@@ -54,12 +54,12 @@ namespace Commons.Json.Mapper
 
 		private Func<Type, JValue, object> GetDeserializer(Type type)
 		{
-			if (deserializers.ContainsKey(type))
+			Func<Type, JValue, object> deserializer;
+			if (deserializers.TryGetValue(type, out deserializer))
 			{
-				return deserializers[type];
+				return deserializer;
 			}
 
-			Func<Type, JValue, object> deserializer;
 
 			var mapper = mappers.GetMapper(type);
             // for manual create now, assuming underlying type == type
@@ -869,9 +869,10 @@ namespace Commons.Json.Mapper
 
                 var key = mapper.GetKey(itemName);
                 var propertyType = prop.Item1.PropertyType;
-                if (jsonObj.ContainsKey(key))
+				JValue jv;
+                if (jsonObj.TryGetValue(key, out jv))
                 {
-                    var jv = jsonObj[key];
+                    jv = jsonObj[key];
                     var value = Map(propertyType, jv);
                     prop.Item2(target, value);
                 }

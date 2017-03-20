@@ -22,6 +22,10 @@
       "target": "project",
       "type": "build"
     },
+    "Commons.Reflect": {
+      "target": "project",
+      "type": "build"  
+    },
     "Newtonsoft.Json": "9.0.1"
   },
 

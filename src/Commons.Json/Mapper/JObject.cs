@@ -38,6 +38,11 @@ namespace Commons.Json.Mapper
 			return values.ContainsKey(key);
 		}
 
+		public bool TryGetValue(string key, out JValue jv)
+		{
+			return values.TryGetValue(key, out jv);
+		}
+
 		public string GetString(string key)
 		{
 			if (values.ContainsKey(key))

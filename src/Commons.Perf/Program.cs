@@ -15,15 +15,20 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 using Commons.Json;
 using Commons.Test.Json;
+using Commons.Test.Reflect;
+using Commons.Reflect;
+using System.Reflection;
 
 namespace Commons.Perf
 {
@@ -31,11 +36,44 @@ namespace Commons.Perf
     {
         public static void Main(string[] args)
         {
-			TestSingleThread();
-			TestMultiThread();
+			//TestCommonsJsonSingleThread();
+			TestCommonsReflect();
         }
 
-        public static void TestSingleThread()
+		public static void TestCommonsReflect()
+		{
+			const int LN = 10000000;
+			var vehicle = new Vehicle
+			{
+				VehicleType = "Car",
+				Color = "White"
+			};
+			vehicle.GetPropertyValue("VehicleType");
+			var prop = typeof(Vehicle).GetProperty("VehicleType");
+			var getter = prop.GetGetMethod();
+			getter.Invoke(vehicle, null);
+
+			var sw1 = new Stopwatch();
+			sw1.Start();
+			for (var i = 0; i < LN; i++)
+			{
+				vehicle.GetPropertyValue("VehicleType");
+			}
+			sw1.Stop();
+
+			var sw2 = new Stopwatch();
+			sw2.Start();
+			for (var i = 0; i < LN; i++)
+			{
+				getter.Invoke(vehicle, null);
+			}
+			sw2.Stop();
+
+			PrintResult("Reflection new instance default constructor", 
+				"Commons.Reflect", sw1.ElapsedMilliseconds, "System.Reflection", sw2.ElapsedMilliseconds);
+		}
+
+	    public static void TestCommonsJsonSingleThread()
         {
 			TestTrivialObjectToJson();
 			TestSmallObjectToJson();

@@ -15,18 +15,15 @@
 // limitations under the License.
 
 using System;
-using System.Linq;
-
 using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-
-using Commons.Utils;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-    internal class TypeManager
+	internal class TypeManager
     {
 
         public TypeManager(Type type)
