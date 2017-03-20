@@ -16,104 +16,22 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Commons.Reflect
 {
-	public class ReflectContext : IReflectContext
+    public class ReflectContext : IReflectContext
     {
-		private readonly ConcurrentDictionary<Type, Func<object>> defaultConstructors = new ConcurrentDictionary<Type, Func<object>>();
-		private readonly ConcurrentDictionary<Type, ConcurrentDictionary<string, Func<object, object>>> typeGetters = new ConcurrentDictionary<Type, ConcurrentDictionary<string, Func<object, object>>>();
-	    public object NewInstance(Type type)
-	    {
-			try
-			{
-				Func<object> ctor;
-				if (defaultConstructors.TryGetValue(type, out ctor))
-				{
-					return ctor();
-				}
-				else
-				{
-					var ctorMethod = type.GetConstructor(Type.EmptyTypes);
-					if (ctorMethod == null)
-					{
-						throw new InvalidOperationException("No default constructor is found from the type.");
-					}
-					var ctorExp = Expression.New(ctorMethod);
-					ctor = (Func<object>)Expression.Lambda(ctorExp).Compile();
-					defaultConstructors[type] = ctor;
-					return ctor();
-				}
-			}
-			catch (Exception e)
-			{
-				throw new TypeLoadException("Cannot load type.", e);
-			}
-	    }
+        private readonly ConcurrentDictionary<Type, IInvoker> invokers = new ConcurrentDictionary<Type, IInvoker>();
 
-	    public object NewInstance(Type type, params object[] args)
-	    {
-			return null;
-	    }
-
-	    public object GetProperty(object target, string name)
-	    {
-			if (target == null)
-			{
-				return null;
-			}
-			var type = target.GetType();
-			ConcurrentDictionary<string, Func<object, object>> getters;
-			if (typeGetters.TryGetValue(type, out getters))
-			{
-				Func<object, object> getter;
-				if (getters.TryGetValue(name, out getter))
-				{
-					return getter(target);
-				}
-				else
-				{
-					getter = CreateGetterDelegate(type, name);
-					getters[name] = getter;
-					return getter(target);
-				}
-			}
-			else
-			{
-				getters = new ConcurrentDictionary<string, Func<object, object>>();
-				var getter = CreateGetterDelegate(type, name);
-				getters[name] = getter;
-				typeGetters[type] = getters;
-				return getter(target);
-			}
-	    }
-
-		private Func<object, object> CreateGetterDelegate(Type type, string propName)
-		{
-			var prop = type.GetProperty(propName);
-			if (prop != null)
-			{
-				var targetParamExp = Expression.Parameter(typeof(object), "target");
-				var castExp = Expression.Convert(targetParamExp, type);
-				var getMethod = prop.GetGetMethod();
-				var getExp = Expression.Call(castExp, getMethod);
-				var retExp = Expression.Convert(getExp, typeof(object));
-				return (Func<object, object>)Expression.Lambda(retExp, targetParamExp).Compile();
-			}
-
-			return null;
-		}
-
-	    public void SetProperty(object target, string name, object value)
-	    {
-		    throw new NotImplementedException();
-	    }
-
-	    public object Invoke(object target, string name, params object[] args)
-	    {
-		    throw new NotImplementedException();
-	    }
+        public IInvoker GetInvoker(Type type)
+        {
+            IInvoker invoker;
+            if (!invokers.TryGetValue(type, out invoker))
+            {
+                invoker = new Invoker(type);
+                invokers[type] = invoker;
+            }
+            return invoker;
+        }
     }
 }

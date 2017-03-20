@@ -26,7 +26,8 @@ namespace Commons.Test.Reflect
 		public void TestReflectNewInstance1()
 		{
 			var vt = typeof(Vehicle);
-			var vehicle = (Vehicle) vt.NewInstance();
+            var invoker = Reflector.GetInvoker(vt);
+            var vehicle = (Vehicle)invoker.NewInstance();
 			Assert.NotNull(vehicle);
 		}
 
@@ -39,8 +40,23 @@ namespace Commons.Test.Reflect
 				Color = "White"
 			};
 
-			var vt = (string)v.GetPropertyValue("VehicleType");
+            var invoker = Reflector.GetInvoker(typeof(Vehicle));
+            var vt = (string)invoker.GetProperty(v, "VehicleType");
 			Assert.Equal("Car", vt);
+
+            var vc = (string)invoker.GetProperty(v, "Color");
+            Assert.Equal("White", vc);
 		}
+
+        [Fact]
+        public void TestSetProperty1()
+        {
+            var v = new Vehicle();
+            var invoker = Reflector.GetInvoker(typeof(Vehicle));
+            invoker.SetProperty(v, "VehicleType", "Truck");
+            invoker.SetProperty(v, "Color", "Yellow");
+            Assert.Equal("Truck", v.VehicleType);
+            Assert.Equal("Yellow", v.Color);
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace Commons.Perf
     {
         public static void Main(string[] args)
         {
-			//TestCommonsJsonSingleThread();
+			TestCommonsJsonSingleThread();
 			TestCommonsReflect();
         }
 
@@ -48,16 +48,24 @@ namespace Commons.Perf
 				VehicleType = "Car",
 				Color = "White"
 			};
-			vehicle.GetPropertyValue("VehicleType");
+            var invoker = Reflector.GetInvoker(typeof(Vehicle));
+            invoker.GetProperty(vehicle, "VehicleType");
+            invoker.GetProperty(vehicle, "Color");
+
 			var prop = typeof(Vehicle).GetProperty("VehicleType");
+            var prop2 = typeof(Vehicle).GetProperty("Color");
 			var getter = prop.GetGetMethod();
 			getter.Invoke(vehicle, null);
+            var getter2 = prop2.GetGetMethod();
+            getter2.Invoke(vehicle, null);
 
 			var sw1 = new Stopwatch();
 			sw1.Start();
 			for (var i = 0; i < LN; i++)
 			{
-				vehicle.GetPropertyValue("VehicleType");
+                var ivk = Reflector.GetInvoker(typeof(Vehicle));
+                ivk.GetProperty(vehicle, "VehicleType");
+                ivk.GetProperty(vehicle, "Color");
 			}
 			sw1.Stop();
 
@@ -66,6 +74,7 @@ namespace Commons.Perf
 			for (var i = 0; i < LN; i++)
 			{
 				getter.Invoke(vehicle, null);
+                getter2.Invoke(vehicle, null);
 			}
 			sw2.Stop();
 

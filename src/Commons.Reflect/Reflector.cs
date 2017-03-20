@@ -18,38 +18,34 @@ using System;
 
 namespace Commons.Reflect
 {
-	public static class Reflector
+    public static class Reflector
     {
-		private static readonly object locker = new object();
-		private static IReflectContext context;
+        private static readonly object locker = new object();
+        private static IReflectContext context;
 
-		private static IReflectContext ContextInstance
-		{
-			get
-			{
-				if (context == null)
-				{
-					lock (locker)
-					{
-						if (context == null)
-						{
-							context = new ReflectContext();
-						}
-					}
-				}
+        private static IReflectContext ContextInstance
+        {
+            get
+            {
+                if (context == null)
+                {
+                    lock (locker)
+                    {
+                        if (context == null)
+                        {
+                            context = new ReflectContext();
+                        }
+                    }
+                }
 
-				return context;
-			}
-		}
+                return context;
+            }
+        }
 
-		public static object NewInstance(this Type type)
-		{
-			return ContextInstance.NewInstance(type);
-		}
+        public static IInvoker GetInvoker(Type type)
+        {
+            return ContextInstance.GetInvoker(type);
+        }
 
-		public static object GetPropertyValue(this object target, string name)
-		{
-			return ContextInstance.GetProperty(target, name);
-		}
     }
 }

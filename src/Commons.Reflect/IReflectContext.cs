@@ -20,14 +20,6 @@ namespace Commons.Reflect
 {
     public interface IReflectContext
     {
-		object NewInstance(Type type);
-
-		object NewInstance(Type type, params object[] args);
-
-		object GetProperty(object target, string name);
-
-		void SetProperty(object target, string name, object value);
-
-		object Invoke(object target, string name, params object[] args);
+        IInvoker GetInvoker(Type type);
     }
 }

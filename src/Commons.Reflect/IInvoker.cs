@@ -18,5 +18,8 @@ namespace Commons.Reflect
 {
 	public interface IInvoker
     {
+        object NewInstance();
+        object GetProperty(object target, string name);
+        void SetProperty(object target, string name, object value);
     }
 }
