@@ -14,6 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Commons.Reflect
 {
 	public interface IInvoker
@@ -21,5 +23,9 @@ namespace Commons.Reflect
         object NewInstance();
         object GetProperty(object target, string name);
         void SetProperty(object target, string name, object value);
+		Func<object, object> GetGetter(string name);
+		Action<object, object> GetSetter(string name);
+		Tuple<string, Func<object, object>>[] Getters { get; }
+		Tuple<string, Action<object, object>>[] Setters { get; }
     }
 }

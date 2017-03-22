@@ -15,6 +15,7 @@
 // limitations under the License.
 
 using System;
+using Commons.Test.Poco;
 
 namespace Commons.Test.Json
 {

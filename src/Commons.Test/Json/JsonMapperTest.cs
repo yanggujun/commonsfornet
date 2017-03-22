@@ -25,6 +25,7 @@ using Xunit;
 using System.Text;
 using System.IO;
 using System.Collections;
+using Commons.Test.Poco;
 
 namespace Commons.Test.Json
 {

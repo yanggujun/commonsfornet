@@ -15,15 +15,17 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Commons.Collections.Set;
 using Commons.Json;
 using Commons.Json.Mapper;
+using Commons.Test.Poco;
 using Xunit;
+
+using EmployeeJson = Commons.Test.Poco.Employee;
+
 namespace Commons.Test.Json
 {
-    public class JValueTest
+	public class JValueTest
     {
         [Fact]
         public void TestJObject01()
@@ -37,8 +39,8 @@ namespace Commons.Test.Json
             employee.SetBool("Married", true);
             employee.SetString("Position", "manager");
             var json = employee.ToString();
-            var context = JsonMapper.NewContext().UseDateFormat(string.Empty).For<Employee>(y => y.MapProperty(x => x.Dob).With("Birthday"));
-            var emp = context.To<Employee>(json);
+            var context = JsonMapper.NewContext().UseDateFormat(string.Empty).For<EmployeeJson>(y => y.MapProperty(x => x.Dob).With("Birthday"));
+            var emp = context.To<EmployeeJson>(json);
             Assert.Equal("Alan", emp.Name);
             Assert.Equal(Site.London, emp.Site);
             Assert.Equal("hardware", emp.Department);
@@ -53,7 +55,7 @@ namespace Commons.Test.Json
         [Fact]
         public void TestJObject02()
         {
-            var employee = new Employee
+            var employee = new EmployeeJson
             {
                 Name = "Alan",
                 Department = "hardware",
@@ -63,7 +65,7 @@ namespace Commons.Test.Json
                 Site = Site.London,
                 Age = 40
             };
-            var context = JsonMapper.NewContext().UseDateFormat(string.Empty).For<Employee>(y => y.MapProperty(x => x.Dob).With("Birthday"));
+            var context = JsonMapper.NewContext().UseDateFormat(string.Empty).For<EmployeeJson>(y => y.MapProperty(x => x.Dob).With("Birthday"));
             var json = context.ToJson(employee);
             var engine = new ParseEngine();
             var emp = engine.Parse(json) as JObject;
@@ -108,7 +110,7 @@ namespace Commons.Test.Json
             employees.Add(bran);
             company.SetValue("Employees", employees);
             var json = company.ToString();
-            var context = JsonMapper.NewContext().UseDateFormat(string.Empty).For<Employee>(y => y.MapProperty(x => x.Dob).With("Birthday"));
+            var context = JsonMapper.NewContext().UseDateFormat(string.Empty).For<EmployeeJson>(y => y.MapProperty(x => x.Dob).With("Birthday"));
             context.For<Company>(y => y.MapProperty(x => x.StaffCount).With("Staff Count"));
             var comp = context.To<Company>(json);
             Assert.Equal("OneTech", comp.Name);
@@ -285,7 +287,7 @@ namespace Commons.Test.Json
         {
             var json =
                 "{\"Name\": \"Ben\", \"Position\": \"Director\", \"Married\": true, \"Dob\": \"1970/4/3\", \"Department\": \"Sales\", \"Age\": 46, \"Site\": \"NY\"}";
-            var employee = JsonMapper.To<Employee>(json, new EmployeeJsonConverter());
+            var employee = JsonMapper.To<EmployeeJson>(json, new EmployeeJsonConverter());
             Assert.Equal(46, employee.Age);
             Assert.Equal("Sales", employee.Department);
             Assert.Equal(1970, employee.Dob.Year);
@@ -301,10 +303,10 @@ namespace Commons.Test.Json
         {
             var jsonStr =
                 "{\"Name\": \"Ben\", \"Position\": \"Director\", \"Married\": true, \"Dob\": \"1970/4/3\", \"Department\": \"Sales\", \"Age\": 46, \"Site\": \"NY\"}";
-            var employee = JsonMapper.To<Employee>(jsonStr, x =>
+            var employee = JsonMapper.To<EmployeeJson>(jsonStr, x =>
             {
                 var json = x as JObject;
-                var emp = new Employee();
+                var emp = new EmployeeJson();
                 emp.Age = json.GetInt32("Age");
                 emp.Department = json.GetString("Department");
                 emp.Dob = DateTime.Parse(json.GetString("Dob"));
@@ -396,7 +398,7 @@ namespace Commons.Test.Json
         [Fact]
         public void TestObjectConverter01()
         {
-            var employee = new Employee
+            var employee = new EmployeeJson
             {
                 Age = 46,
                 Department = "Sales",
@@ -423,7 +425,7 @@ namespace Commons.Test.Json
         [Fact]
         public void TestObjectConverter02()
         {
-            var employee = new Employee
+            var employee = new EmployeeJson
             {
                 Age = 46,
                 Department = "Sales",
@@ -537,9 +539,9 @@ namespace Commons.Test.Json
         }
     }
 
-    public class EmployeeObjectConverter : IObjectConverter<Employee>
+    public class EmployeeObjectConverter : IObjectConverter<EmployeeJson>
     {
-        public JValue Convert(Employee target)
+        public JValue Convert(EmployeeJson target)
         {
             var obj = new JObject();
             obj.SetString("Name", target.Name);
@@ -553,12 +555,12 @@ namespace Commons.Test.Json
         }
     }
 
-    public class EmployeeJsonConverter : IJsonConverter<Employee>
+    public class EmployeeJsonConverter : IJsonConverter<EmployeeJson>
     {
-        public Employee Convert(JValue jsonValue)
+        public EmployeeJson Convert(JValue jsonValue)
         {
             var json = jsonValue as JObject;
-            var employee = new Employee();
+            var employee = new EmployeeJson();
             employee.Age = json.GetInt32("Age");
             employee.Department = json.GetString("Department");
             employee.Dob = DateTime.Parse(json.GetString("Dob"));

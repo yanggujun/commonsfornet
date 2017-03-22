@@ -15,57 +15,51 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-
 using Commons.Json;
-using Commons.Test.Json;
-using Commons.Test.Reflect;
 using Commons.Reflect;
-using System.Reflection;
+using Commons.Test.Json;
+using Commons.Test.Poco;
+using Newtonsoft.Json;
 
 namespace Commons.Perf
 {
 	public class Program
-    {
-        public static void Main(string[] args)
-        {
+	{
+		public static void Main(string[] args)
+		{
 			TestCommonsJsonSingleThread();
 			TestCommonsReflect();
-        }
+		}
 
 		public static void TestCommonsReflect()
 		{
-			const int LN = 10000000;
-			var vehicle = new Vehicle
-			{
-				VehicleType = "Car",
-				Color = "White"
-			};
-            var invoker = Reflector.GetInvoker(typeof(Vehicle));
-            invoker.GetProperty(vehicle, "VehicleType");
-            invoker.GetProperty(vehicle, "Color");
+			TestCommonsReflectNewInstanceCachedInvoker();
+			TestCommonsReflectGetPropertyCachedInvoker();
+			TestCommonsReflectSetPropertyCachedInvoker();
+			TestCommonsReflectNewInstanceNonCachedInvoker();
+			TestCommonsReflectGetPropertyNonCachedInvoker();
+			TestCommonsReflectSetPropertyNonCachedInvoker();
+		} 
 
-			var prop = typeof(Vehicle).GetProperty("VehicleType");
-            var prop2 = typeof(Vehicle).GetProperty("Color");
-			var getter = prop.GetGetMethod();
-			getter.Invoke(vehicle, null);
-            var getter2 = prop2.GetGetMethod();
-            getter2.Invoke(vehicle, null);
+		public static void TestCommonsReflectNewInstanceCachedInvoker()
+		{
+			const int LN = 10000000;
+			var type = typeof(Simple);
+            var invoker = Reflector.GetInvoker(type);
+			invoker.NewInstance();
+			Activator.CreateInstance(type);
 
 			var sw1 = new Stopwatch();
 			sw1.Start();
 			for (var i = 0; i < LN; i++)
 			{
-                var ivk = Reflector.GetInvoker(typeof(Vehicle));
-                ivk.GetProperty(vehicle, "VehicleType");
-                ivk.GetProperty(vehicle, "Color");
+				invoker.NewInstance();
 			}
 			sw1.Stop();
 
@@ -73,12 +67,260 @@ namespace Commons.Perf
 			sw2.Start();
 			for (var i = 0; i < LN; i++)
 			{
-				getter.Invoke(vehicle, null);
-                getter2.Invoke(vehicle, null);
+				Activator.CreateInstance(type);
 			}
 			sw2.Stop();
 
-			PrintResult("Reflection new instance default constructor", 
+			PrintResult("Reflect new instance default constructor cached invoker", 
+				"Commons.Reflect", sw1.ElapsedMilliseconds, "System.Reflection", sw2.ElapsedMilliseconds);
+		}
+
+		public static void TestCommonsReflectNewInstanceNonCachedInvoker()
+		{
+			const int LN = 10000000;
+			var type = typeof(Simple);
+            var invoker = Reflector.GetInvoker(type);
+			invoker.NewInstance();
+			Activator.CreateInstance(type);
+
+			var sw1 = new Stopwatch();
+			sw1.Start();
+			for (var i = 0; i < LN; i++)
+			{
+				var inv = Reflector.GetInvoker(type);
+				inv.NewInstance();
+			}
+			sw1.Stop();
+
+			var sw2 = new Stopwatch();
+			sw2.Start();
+			for (var i = 0; i < LN; i++)
+			{
+				Activator.CreateInstance(type);
+			}
+			sw2.Stop();
+
+			PrintResult("Reflect new instance default constructor non cached invoker", 
+				"Commons.Reflect", sw1.ElapsedMilliseconds, "System.Reflection", sw2.ElapsedMilliseconds);
+		}
+
+		public static void TestCommonsReflectSetPropertyCachedInvoker()
+		{
+			const int LN = 2000000;
+			var simple = new Simple();
+			var type = typeof(Simple);
+            var invoker = Reflector.GetInvoker(type);
+			invoker.SetProperty(simple, "FieldA", "ValueA");
+			invoker.SetProperty(simple, "FieldB", 10);
+			invoker.SetProperty(simple, "FieldC", 10.4);
+			invoker.SetProperty(simple, "FieldD", false);
+
+			var prop1 = type.GetProperty("FieldA");
+            var prop2 = type.GetProperty("FieldB");
+            var prop3 = type.GetProperty("FieldC");
+            var prop4 = type.GetProperty("FieldD");
+
+			var setA = prop1.GetSetMethod();
+			setA.Invoke(simple, new object[] { "ValueA" });
+			var setB = prop2.GetSetMethod();
+			setB.Invoke(simple, new object[] { 10 });
+			var setC = prop3.GetSetMethod();
+			setC.Invoke(simple, new object[] { 10.4 });
+			var setD = prop4.GetSetMethod();
+			setD.Invoke(simple, new object[] { false });
+
+			var sw1 = new Stopwatch();
+			sw1.Start();
+			for (var i = 0; i < LN; i++)
+			{
+				invoker.SetProperty(simple, "FieldA", "ValueA");
+				invoker.SetProperty(simple, "FieldB", 10);
+				invoker.SetProperty(simple, "FieldC", 10.4);
+				invoker.SetProperty(simple, "FieldD", false);
+			}
+			sw1.Stop();
+
+			var sw2 = new Stopwatch();
+			sw2.Start();
+			for (var i = 0; i < LN; i++)
+			{
+				setA.Invoke(simple, new object[] { "ValueA" });
+				setB.Invoke(simple, new object[] { 10 });
+				setC.Invoke(simple, new object[] { 10.4 });
+				setD.Invoke(simple, new object[] { false });
+			}
+			sw2.Stop();
+
+			PrintResult("Reflect new instance set property cached invoker", 
+				"Commons.Reflect", sw1.ElapsedMilliseconds, "System.Reflection", sw2.ElapsedMilliseconds);
+
+		}
+
+		public static void TestCommonsReflectSetPropertyNonCachedInvoker()
+		{
+			const int LN = 2000000;
+			var simple = new Simple();
+			var type = typeof(Simple);
+            var invoker = Reflector.GetInvoker(type);
+			invoker.SetProperty(simple, "FieldA", "ValueA");
+			invoker.SetProperty(simple, "FieldB", 10);
+			invoker.SetProperty(simple, "FieldC", 10.4);
+			invoker.SetProperty(simple, "FieldD", false);
+
+			var prop1 = type.GetProperty("FieldA");
+            var prop2 = type.GetProperty("FieldB");
+            var prop3 = type.GetProperty("FieldC");
+            var prop4 = type.GetProperty("FieldD");
+
+			var setA = prop1.GetSetMethod();
+			setA.Invoke(simple, new object[] { "ValueA" });
+			var setB = prop2.GetSetMethod();
+			setB.Invoke(simple, new object[] { 10 });
+			var setC = prop3.GetSetMethod();
+			setC.Invoke(simple, new object[] { 10.4 });
+			var setD = prop4.GetSetMethod();
+			setD.Invoke(simple, new object[] { false });
+
+			var sw1 = new Stopwatch();
+			sw1.Start();
+			for (var i = 0; i < LN; i++)
+			{
+				var inv = Reflector.GetInvoker(type);
+				inv.SetProperty(simple, "FieldA", "ValueA");
+				inv.SetProperty(simple, "FieldB", 10);
+				inv.SetProperty(simple, "FieldC", 10.4);
+				inv.SetProperty(simple, "FieldD", false);
+			}
+			sw1.Stop();
+
+			var sw2 = new Stopwatch();
+			sw2.Start();
+			for (var i = 0; i < LN; i++)
+			{
+				setA.Invoke(simple, new object[] { "ValueA" });
+				setB.Invoke(simple, new object[] { 10 });
+				setC.Invoke(simple, new object[] { 10.4 });
+				setD.Invoke(simple, new object[] { false });
+			}
+			sw2.Stop();
+
+			PrintResult("Reflect new instance set property non cached invoker", 
+				"Commons.Reflect", sw1.ElapsedMilliseconds, "System.Reflection", sw2.ElapsedMilliseconds);
+
+		}
+
+		public static void TestCommonsReflectGetPropertyCachedInvoker()
+		{
+			const int LN = 10000000;
+			var simple = new Simple
+			{
+				FieldA = "ValueA",
+				FieldB = 10,
+				FieldC = 200.5,
+				FieldD = false
+			};
+			var type = typeof(Simple);
+            var invoker = Reflector.GetInvoker(type);
+            invoker.GetProperty(simple, "FieldA");
+            invoker.GetProperty(simple, "FieldB");
+            invoker.GetProperty(simple, "FieldC");
+            invoker.GetProperty(simple, "FieldD");
+
+			var prop1 = type.GetProperty("FieldA");
+            var prop2 = type.GetProperty("FieldB");
+            var prop3 = type.GetProperty("FieldC");
+            var prop4 = type.GetProperty("FieldD");
+
+			var getA = prop1.GetGetMethod();
+			getA.Invoke(simple, null);
+            var getB = prop2.GetGetMethod();
+            getB.Invoke(simple, null);
+			var getC = prop3.GetGetMethod();
+			getC.Invoke(simple, null);
+			var getD = prop4.GetGetMethod();
+			getD.Invoke(simple, null);
+
+			var sw1 = new Stopwatch();
+			sw1.Start();
+			for (var i = 0; i < LN; i++)
+			{
+                invoker.GetProperty(simple, "FieldA");
+                invoker.GetProperty(simple, "FieldB");
+                invoker.GetProperty(simple, "FieldC");
+                invoker.GetProperty(simple, "FieldD");
+			}
+			sw1.Stop();
+
+			var sw2 = new Stopwatch();
+			sw2.Start();
+			for (var i = 0; i < LN; i++)
+			{
+				getA.Invoke(simple, null);
+				getB.Invoke(simple, null);
+				getC.Invoke(simple, null);
+				getD.Invoke(simple, null);
+			}
+			sw2.Stop();
+
+			PrintResult("Reflect new instance get property cached invoker", 
+				"Commons.Reflect", sw1.ElapsedMilliseconds, "System.Reflection", sw2.ElapsedMilliseconds);
+		}
+
+		public static void TestCommonsReflectGetPropertyNonCachedInvoker()
+		{
+			const int LN = 10000000;
+			var simple = new Simple
+			{
+				FieldA = "ValueA",
+				FieldB = 10,
+				FieldC = 200.5,
+				FieldD = false
+			};
+			var type = typeof(Simple);
+            var invoker = Reflector.GetInvoker(type);
+            invoker.GetProperty(simple, "FieldA");
+            invoker.GetProperty(simple, "FieldB");
+            invoker.GetProperty(simple, "FieldC");
+            invoker.GetProperty(simple, "FieldD");
+
+			var prop1 = type.GetProperty("FieldA");
+            var prop2 = type.GetProperty("FieldB");
+            var prop3 = type.GetProperty("FieldC");
+            var prop4 = type.GetProperty("FieldD");
+
+			var getA = prop1.GetGetMethod();
+			getA.Invoke(simple, null);
+            var getB = prop2.GetGetMethod();
+            getB.Invoke(simple, null);
+			var getC = prop3.GetGetMethod();
+			getC.Invoke(simple, null);
+			var getD = prop4.GetGetMethod();
+			getD.Invoke(simple, null);
+
+			var sw1 = new Stopwatch();
+			sw1.Start();
+			for (var i = 0; i < LN; i++)
+			{
+				var inv = Reflector.GetInvoker(type);
+                inv.GetProperty(simple, "FieldA");
+                inv.GetProperty(simple, "FieldB");
+                inv.GetProperty(simple, "FieldC");
+                inv.GetProperty(simple, "FieldD");
+			}
+			sw1.Stop();
+
+			var sw2 = new Stopwatch();
+			sw2.Start();
+			for (var i = 0; i < LN; i++)
+			{
+				getA.Invoke(simple, null);
+				getB.Invoke(simple, null);
+				getC.Invoke(simple, null);
+				getD.Invoke(simple, null);
+			}
+			sw2.Stop();
+
+			PrintResult("Reflect new instance get property non cache invoker", 
 				"Commons.Reflect", sw1.ElapsedMilliseconds, "System.Reflection", sw2.ElapsedMilliseconds);
 		}
 
@@ -496,7 +738,7 @@ namespace Commons.Perf
             rate = Math.Round(rate, 2);
 
             var result = string.Format("{0}: {1} \n{2}: {3}", test1, test1Ms, test2, test2Ms);
-            var comp = string.Format("{0} is slower than {1} by {2}%", slower, faster, rate);
+            var comp = string.Format("[{0}] is slower than [{1}] by {2}%", slower, faster, rate);
             Console.WriteLine(result);
             Console.WriteLine(comp);
             

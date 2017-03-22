@@ -20,6 +20,7 @@ using System;
 using System.Linq;
 using Xunit;
 using System.Threading.Tasks;
+using Commons.Test.Poco;
 using Commons.Utils;
 
 namespace Commons.Test.Json

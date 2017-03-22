@@ -1,5 +1,5 @@
-1. GetUnderlyingType
-2. Speedup enum
+*1. GetUnderlyingType
+*2. Speedup enum
 3. JArray interface refine
 6. Commons.Utils.Reflect
 8. Complete json compability test.

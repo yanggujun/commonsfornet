@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using Commons.Collections.Set;
 
-namespace Commons.Test.Json
+namespace Commons.Test.Poco
 {
     public class Simple
     {

@@ -17,6 +17,7 @@
 using Xunit;
 
 using Commons.Reflect;
+using Commons.Test.Poco;
 
 namespace Commons.Test.Reflect
 {
@@ -25,38 +26,47 @@ namespace Commons.Test.Reflect
 		[Fact]
 		public void TestReflectNewInstance1()
 		{
-			var vt = typeof(Vehicle);
-            var invoker = Reflector.GetInvoker(vt);
-            var vehicle = (Vehicle)invoker.NewInstance();
-			Assert.NotNull(vehicle);
+			var simpleType = typeof(Simple);
+            var invoker = Reflector.GetInvoker(simpleType);
+            var simple = (Simple)invoker.NewInstance();
+			Assert.NotNull(simple);
 		}
 
 		[Fact]
 		public void TestGetProperty1()
 		{
-			var v = new Vehicle
+			var simple = new Simple
 			{
-				VehicleType = "Car",
-				Color = "White"
+				FieldA = "ValueA",
+				FieldB = 1912,
+				FieldC = 1412.2,
+				FieldD = true
 			};
 
-            var invoker = Reflector.GetInvoker(typeof(Vehicle));
-            var vt = (string)invoker.GetProperty(v, "VehicleType");
-			Assert.Equal("Car", vt);
-
-            var vc = (string)invoker.GetProperty(v, "Color");
-            Assert.Equal("White", vc);
+            var invoker = Reflector.GetInvoker(typeof(Simple));
+            var fa = (string)invoker.GetProperty(simple, "FieldA");
+			Assert.Equal(simple.FieldA, fa);
+			var fb = (int)invoker.GetProperty(simple, "FieldB");
+			Assert.Equal(simple.FieldB, fb);
+			var fc = (double)invoker.GetProperty(simple, "FieldC");
+			Assert.Equal(simple.FieldC, fc);
+			var fd = (bool)invoker.GetProperty(simple, "FieldD");
+			Assert.Equal(simple.FieldD, fd);
 		}
 
         [Fact]
         public void TestSetProperty1()
         {
-            var v = new Vehicle();
-            var invoker = Reflector.GetInvoker(typeof(Vehicle));
-            invoker.SetProperty(v, "VehicleType", "Truck");
-            invoker.SetProperty(v, "Color", "Yellow");
-            Assert.Equal("Truck", v.VehicleType);
-            Assert.Equal("Yellow", v.Color);
+			var simple = new Simple();
+            var invoker = Reflector.GetInvoker(typeof(Simple));
+			invoker.SetProperty(simple, "FieldA", "ValueA");
+			invoker.SetProperty(simple, "FieldB", 10);
+			invoker.SetProperty(simple, "FieldC", 20.45);
+			invoker.SetProperty(simple, "FieldD", false);
+			Assert.Equal("ValueA", simple.FieldA);
+			Assert.Equal(10, simple.FieldB);
+			Assert.Equal(20.45, simple.FieldC);
+			Assert.Equal(false, simple.FieldD);
         }
     }
 }
