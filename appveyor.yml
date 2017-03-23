@@ -9,9 +9,9 @@ environment:
     - CLI_VERSION: 1.0.0-preview2.1
     
 install:
-  - ps: $url = "https://dotnetcli.blob.core.windows.net/dotnet/preview/Binaries/$($env:CLI_VERSION)/dotnet-dev-win-x64.$($env:CLI_VERSION.ToLower()).zip"
+  - ps: $url = "https://dotnetcli.blob.core.windows.net/dotnet/preview/Binaries/Latest/dotnet-dev-win-x64.latest.zip"
 build_script:
   - Build.cmd
-clone_depth: 3
+clone_depth: 1
 test: off
 deploy: off
