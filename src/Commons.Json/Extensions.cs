@@ -106,7 +106,7 @@ namespace Commons.Json
 
         public static bool IsJsonArray(this Type type)
         {
-            return type.IsArray || type == typeof (IList<>) || type == typeof (ArrayList);
+            return type.IsArray || type == typeof (IList<>);
         }
 
         public static bool IsCollection(this Type type)

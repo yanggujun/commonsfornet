@@ -20,7 +20,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Commons.Collections.Set;
 using Commons.Utils;
 
 namespace Commons.Json.Mapper
@@ -65,7 +64,7 @@ namespace Commons.Json.Mapper
 			else if (type.IsGenericType())
 			{
 				var genericType = type.GetGenericTypeDefinition();
-				if (genericType == typeof(List<>) || genericType == typeof(HashSet<>) || genericType == typeof(HashedSet<>))
+				if (genericType == typeof(List<>) || genericType == typeof(HashSet<>))
 				{
 					builder = CreateAddDelegate(type, AddMethod);
 					collectionAdders[type] = builder;

@@ -14,9 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Commons.Collections.Map;
 using System.Reflection;
 using Commons.Utils;
 
@@ -24,7 +24,7 @@ namespace Commons.Json
 {
     internal static class JsonUtils
     {
-        public static string FormatJsonObject(LinkedHashedMap<string, JsonValue> valueMap)
+        public static string FormatJsonObject(Dictionary<string, JsonValue> valueMap)
         {
             var builder = new StringBuilder();
             builder.Append(JsonTokens.LeftBrace).AppendLine();

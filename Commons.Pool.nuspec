@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Commons.Pool</id>
-    <version>0.2.4</version>
+    <version>0.3.0.773</version>
     <authors>yanggujun</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -18,16 +18,7 @@
     <summary>A light weight and thread safe generic object pool.
     </summary>
     <releaseNotes>
-        Update on 0.2.4.x
 
-        *. Build against .net core 1.0, into the next era.
-
-        *. Build and test passed on os: win81, win10, ubuntu14.04 lts
-
-        *. Build and test passed on platform: .NET framework 4.0, 4.5, mono and NETStandard1.3
-
-        *. Change IPoolManager.NewPoolOf to NewPool, and IPoolManager.GetPoolOf to GetPool
-        
     </releaseNotes>
     <tags>Object Pool</tags>
     <dependencies>

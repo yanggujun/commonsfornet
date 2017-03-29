@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>Commons.Json</id>
-    <version>0.2.4</version>
+    <version>0.3.0.773</version>
     <authors>yanggujun</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-        A light weight, simple and fluent JSON - Object converter.
+        A fast, light weight and fluent JSON - Object converter.
 
         For more information, please visit: 
 
@@ -18,32 +18,15 @@
     <summary>Work with JSON fluently and dynamically.
     </summary>
     <releaseNotes>
-        Update on 0.2.4.x
+        Update on 0.3.x
 
-        *. Build against .net core 1.0, into the next era.
+        *  Change configuration interface.
 
-        *. Performance tuning.
-
-        *. Build and test passed on os: win81, win10, ubuntu14.04 lts.
-
-        *. Build and test passed on platform: .NET framework 4.0, 4.5, mono and NETStandard1.3.
-
-        *. Support Nullable primitives and structs.
-
-        *. Support a single JSON object to .net array object.
-
-        *. Support to manually convert a type from JValue and convert JValue to a type.
-
-        *. Support interfaces.
-
-        *. Support GUID.
+        *. Faster, faster and faster.
         
     </releaseNotes>
-    <tags>JSON</tags>
+    <tags>JSON Serialize Deserialize</tags>
     <dependencies>
-        <group>
-            <dependency id="Commons" version="0.2.4.731"/>
-        </group>
         <group targetFramework=".NETSTANDARD1.3">
             <dependency id="System.Dynamic.Runtime" version="4.0.11"/>
             <dependency id="System.Reflection.TypeExtensions" version="4.1.0"/>
@@ -52,7 +35,10 @@
   </metadata>
   <files>
       <file src="src\artifacts\rbin\net45\Commons.Json.dll" target="lib\net45\" />
+      <file src="src\artifacts\rbin\net45\Commons.Utils.dll" target="lib\net45\" />
       <file src="src\artifacts\rbin\net40\Commons.Json.dll" target="lib\net40\" />
+      <file src="src\artifacts\rbin\net40\Commons.Utils.dll" target="lib\net40\" />
       <file src="src\artifacts\rbin\netstandard1.3\Commons.Json.dll" target="lib\netstandard1.3\" />
+      <file src="src\artifacts\rbin\netstandard1.3\Commons.Utils.dll" target="lib\netstandard1.3\" />
   </files>
 </package>

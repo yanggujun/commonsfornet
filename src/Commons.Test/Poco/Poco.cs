@@ -60,7 +60,7 @@ namespace Commons.Test.Poco
     public class SetNested
     {
         public string FieldL { get; set; }
-        public HashedSet<int> FieldM { get; set; }
+        public HashSet<int> FieldM { get; set; }
     }
 
     public class HasDate

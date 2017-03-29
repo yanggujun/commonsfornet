@@ -17,14 +17,13 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using Commons.Collections.Map;
 
 namespace Commons.Json
 {
     [CLSCompliant(true)]
     public class JsonObject : JsonValue
     {
-        private readonly LinkedHashedMap<string, JsonValue> valueMap = new LinkedHashedMap<string, JsonValue>();
+        private readonly Dictionary<string, JsonValue> valueMap = new Dictionary<string, JsonValue>();
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
