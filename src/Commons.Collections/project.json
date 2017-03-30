@@ -1,5 +1,5 @@
-﻿{
-  "version": "0.2.4.773",
+{
+  "version": "0.3.0.773",
   "buildOptions": {
     "emitEntryPoint": false,
     "warningsAsErrors": true,
@@ -16,10 +16,7 @@
       "type": "build",
       "version": ""
     },
-    "NETStandard.Library": {
-      "version": "1.6.0",
-      "type": "platform"
-    }
+    "NETStandard.Library": "1.6.1"
   },
 
   "frameworks": {
@@ -27,8 +24,8 @@
     "net45": {},
     "netstandard1.3": {
       "dependencies": {
-        "System.Collections.NonGeneric": "4.0.1",
-        "System.Threading.Thread": "4.0.0"
+        "System.Collections.NonGeneric": "4.3.0",
+        "System.Threading.Thread": "4.3.0"
       }
     }
   }

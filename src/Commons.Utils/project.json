@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "0.3.0.773",
   "buildOptions": {
     "emitEntryPoint": false,
@@ -12,10 +12,7 @@
   },
 
   "dependencies": {
-    "NETStandard.Library": {
-      "version": "1.6.0",
-      "type": "platform"
-    }
+    "NETStandard.Library": "1.6.1"
   },
 
   "frameworks": {
