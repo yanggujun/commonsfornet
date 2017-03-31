@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Commons.Json</id>
-    <version>0.3.0.773</version>
+    <version>0.3.0.775</version>
     <authors>yanggujun</authors>
     <owners>yanggujun</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -20,9 +20,9 @@
     <releaseNotes>
         Update on 0.3.x
 
-        *  Change configuration interface.
+        * Change configuration interface.
 
-        *. Faster, faster and faster.
+        * Faster, faster and faster.
         
     </releaseNotes>
     <tags>JSON Serialize Deserialize</tags>
