@@ -1,55 +1,54 @@
 ﻿using System;
-using System.Threading;
-using NetMQ;
-using NetMQ.Sockets;
+using System.Collections.Generic;
 
 namespace Commons.Messaging
 {
-    public class ServiceBus : IServiceBus
+	public class ServiceBus : IServiceBus
     {
-        private string serverEndPoint = "tcp://*:5011";
-        private string publishEndPiont = "tcp://*:5012";
-        private string msgType;
-        private string msg;
-        private AutoResetEvent received = new AutoResetEvent(false);
+		private static readonly object locker = new object();
+		private readonly Dictionary<string, IBus> hosts = new Dictionary<string, IBus>();
+		private readonly Dictionary<string, IEndpoint> endpoints = new Dictionary<string, IEndpoint>();
+		private readonly Dictionary<string, IConsumer> consumers = new Dictionary<string, IConsumer>();
 
-        public void Start(Action<IConfigurator> config = null)
+        public void Host(Action<IConfigurator> config = null)
         {
+			var bus = new Bus();
+			bus.Start(config);
+			lock (locker)
+			{
+				hosts.Add(Constants.DefaultServerEndpoint, bus);
+			}
         }
 
-        private void Recv()
-        {
-            using (var server = new ResponseSocket())
-            {
-                server.Bind(serverEndPoint);
-                while(true)
-                {
-                    bool more;
-                    msgType = server.ReceiveFrameString(out more);
-                    if (more)
-                    {
-                        msg = server.ReceiveFrameString(out more);
-                        received.Set();
-                        server.SendFrame("ACK");
-                    }
-                    else
-                    {
-                        server.SendFrame("NACK");
-                    }
-                }
-            }
-        }
+	    public void Send(object msg)
+	    {
+			Send(msg, Constants.DefaultServerEndpoint);
+	    }
 
-        private void Pub()
-        {
-            using (var pub = new PublisherSocket())
-            {
-                pub.Bind(publishEndPiont);
-                while (received.WaitOne())
-                {
-                    pub.SendMoreFrame(msgType).SendFrame(msg);
-                }
-            }
-        }
+	    public void Send(object msg, string address)
+	    {
+			IEndpoint endpoint;
+			if (!endpoints.TryGetValue(address, out endpoint))
+			{
+				endpoint = new TcpEndpoint(address);
+			}
+			endpoint.Send(msg);
+	    }
+
+	    public void Consume<T>(Action<T> handler)
+	    {
+			Consume(handler, Constants.DefaultPublishEndpoint);
+	    }
+
+	    public void Consume<T>(Action<T> handler, string endpoint)
+	    {
+			IConsumer consumer;
+			if (!consumers.TryGetValue(endpoint, out consumer))
+			{
+				consumer = new TcpConsumer<T>(endpoint);
+			}
+			var con = (IConsumer<T>)consumer;
+			con.Subscribe(handler);
+	    }
     }
 }
