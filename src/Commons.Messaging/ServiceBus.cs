@@ -48,7 +48,7 @@ namespace Commons.Messaging
 				consumer = new TcpConsumer<T>(endpoint);
 			}
 			var con = (IConsumer<T>)consumer;
-			con.Subscribe(handler);
+			con.Register(handler);
 	    }
     }
 }

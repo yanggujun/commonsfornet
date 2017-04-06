@@ -15,15 +15,18 @@ namespace Commons.Messaging
 		public TcpEndpoint(string address)
 		{
 			Address = address;
-			req = new RequestSocket(address);
+			req = new RequestSocket();
+            req.Bind(address);
 		}
 
-	    public void Send(object message)
+	    public string Send(object message)
 	    {
 			var type = message.GetType().FullName;
 			var json = JsonMapper.ToJson(message);
 			req.SendFrame(type, true);
 			req.SendFrame(json);
+            var resp = req.ReceiveFrameString();
+            return resp;
 	    }
 
 	    public string Address { get; }

@@ -22,7 +22,6 @@ namespace Commons.Messaging
 			server = new ResponseSocket();
 			publisher = new PublisherSocket();
 
-			server.Bind(serverEndPoint);
 			publisher.Bind(publishEndPiont);
 
 			recvThread = new Thread(Recv);
@@ -38,6 +37,7 @@ namespace Commons.Messaging
 
 	    private void Recv()
         {
+			server.Bind(serverEndPoint);
             while(true)
 			{
 				bool more;
