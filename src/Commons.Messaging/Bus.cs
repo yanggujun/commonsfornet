@@ -8,8 +8,8 @@ namespace Commons.Messaging
 {
 	public class Bus : IBus
     {
-		private string serverEndPoint = Constants.DefaultServerEndpoint;
-		private string publishEndPiont = Constants.DefaultPublishEndpoint;
+		private string serverEndPoint = Constants.DefaultServerBindAddress;
+		private string publishEndPiont = Constants.DefaultPublishBindAddress;
 
 		private Thread recvThread;
 		private MemQueue<Tuple<string, string>> innerq;
@@ -23,9 +23,11 @@ namespace Commons.Messaging
 			publisher = new PublisherSocket();
 
 			publisher.Bind(publishEndPiont);
+			server.Bind(serverEndPoint);
 
 			recvThread = new Thread(Recv);
 			recvThread.Start();
+			innerq.Start();
 	    }
 
 	    public void Shutdown()
@@ -37,7 +39,6 @@ namespace Commons.Messaging
 
 	    private void Recv()
         {
-			server.Bind(serverEndPoint);
             while(true)
 			{
 				bool more;

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Commons.Json;
+﻿using Commons.Json;
 using NetMQ;
 using NetMQ.Sockets;
 
 namespace Commons.Messaging
 {
-    public class TcpEndpoint : IEndpoint
+	public class TcpEndpoint : IEndpoint
     {
 		private readonly RequestSocket req;
 
@@ -16,12 +12,12 @@ namespace Commons.Messaging
 		{
 			Address = address;
 			req = new RequestSocket();
-            req.Bind(address);
+            req.Connect(address);
 		}
 
 	    public string Send(object message)
 	    {
-			var type = message.GetType().FullName;
+			var type = message.GetType().AssemblyQualifiedName;
 			var json = JsonMapper.ToJson(message);
 			req.SendFrame(type, true);
 			req.SendFrame(json);

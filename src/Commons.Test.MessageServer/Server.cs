@@ -17,6 +17,11 @@ namespace Commons.Test.MessageServer
                 Console.WriteLine("order: " + x.Id);
                 Thread.Sleep(100);
             });
+			serviceBus.Consume<Bill>(x =>
+			{
+				Console.WriteLine("bill: " + x.Id);
+				Thread.Sleep(100);
+			});
             Console.WriteLine("Messaging Server started");
             Console.ReadLine();
         }

@@ -12,12 +12,20 @@ namespace Commons.Test.Client
         {
             var serviceBus = new ServiceBus();
             Console.WriteLine("Messaging client: waiting for user input");
-            while (Console.ReadLine() != "exit")
+			string line;
+			var i = 0;
+            while ((line = Console.ReadLine()) != "exit")
             {
-                for (var i = 0; i < 100; i++)
-                {
-                    serviceBus.Send(new Order { Id = i, Name = i.ToString() });
-                }
+				if (line == "order")
+				{
+					serviceBus.Send(new Order { Id = i, Name = i.ToString() });
+					++i;
+				}
+				else
+				{
+					serviceBus.Send(new Bill { Count = 100, Id = i });
+					++i;
+				}
             }
         }
     }

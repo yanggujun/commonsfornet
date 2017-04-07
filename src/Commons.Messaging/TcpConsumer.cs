@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Commons.Json;
 using NetMQ;
 using NetMQ.Sockets;
@@ -11,14 +10,17 @@ namespace Commons.Messaging
 	public class TcpConsumer<T> : IConsumer<T>
     {
 		private readonly SubscriberSocket sub;
-		private readonly Task subThread;
+		private readonly Thread subThread;
         private readonly List<Action<T>> pipe;
+
 		public TcpConsumer(string address)
 		{
-			sub = new SubscriberSocket(address);
-			var type = typeof(T).FullName;
+			Address = address;
+			sub = new SubscriberSocket();
+			sub.Connect(Address);
+			var type = typeof(T).AssemblyQualifiedName;
 			sub.Subscribe(type);
-			subThread = new Task(Consume);
+			subThread = new Thread(Consume);
 			subThread.Start();
             pipe = new List<Action<T>>();
 		}
@@ -32,24 +34,15 @@ namespace Commons.Messaging
 		{
 			while (true)
 			{
-				string msgType, msg;
 				bool more;
-				var received = sub.TryReceiveFrameString(out msgType, out more);
-				if (!received)
-				{
-					break;
-				}
+				var msgType = sub.ReceiveFrameString(out more);
 				if (!more)
 				{
 					// error
 					break;
 				}
 
-				received = sub.TryReceiveFrameString(out msg, out more);
-				if (!received)
-				{
-					break;
-				}
+				var msg =sub.ReceiveFrameString(out more);
 				if (more)
 				{
 					// error
@@ -76,5 +69,7 @@ namespace Commons.Messaging
 	    {
 			sub.Close();
 	    }
+
+	    public string Address { get; }
     }
 }

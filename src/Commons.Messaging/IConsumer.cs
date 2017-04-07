@@ -12,5 +12,6 @@ namespace Commons.Messaging
 
 	public interface IConsumer
 	{
+		string Address { get; }
 	}
 }
