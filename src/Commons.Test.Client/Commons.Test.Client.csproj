@@ -13,6 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="*~"/>
+    <None Remove="*.swp"/>
     <None Remove="project.json" />
     <None Remove="project.lock.json" />
   </ItemGroup>

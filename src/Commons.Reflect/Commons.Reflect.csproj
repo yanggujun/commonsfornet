@@ -16,10 +16,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="*.un~" />
-    <None Remove=".project.json.un~" />
+    <None Remove="*~" />
+    <None Remove="*.swp"/>
     <None Remove="project.json" />
-    <None Remove="project.json~" />
     <None Remove="project.lock.json" />
     <Compile Include="..\AssemblyInfo.cs" />
   </ItemGroup>
