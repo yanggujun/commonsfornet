@@ -1,15 +1,13 @@
+image: visual studio 2015
 init:
   - git config --global core.autocrlf true
 branches:
   only:
     - master
     
-environment:
-  matrix:
-    - CLI_VERSION: Latest
-    
 install:
-  - ps: $url = "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview2.1/scripts/obtain/dotnet-install.ps1"
+  - ps: ri global.json
+  - ps: rni global_appveyor.json global.json
 build_script:
   - Build.cmd
 clone_depth: 1
