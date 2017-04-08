@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <VersionPrefix>0.2.3.506</VersionPrefix>
+    <TargetFrameworks>netcoreapp1.0;net40;net45</TargetFrameworks>
+    <AssemblyName>Commons.Test</AssemblyName>
+    <OutputType>Library</OutputType>
+    <PackageId>Commons.Test</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <RuntimeIdentifiers>win10-x64;win81-x64;ubuntu.14.04-x64;debian.8-x64;osx.10.10-x64</RuntimeIdentifiers>
+    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">$(PackageTargetFallback);netcore50;portable-net45+win8</PackageTargetFallback>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="*.un~" />
+    <None Remove="Commons.Test.csproj.migration_in_place_backup" />
+    <None Remove="project.json" />
+    <None Update="Json\*.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj" />
+    <ProjectReference Include="..\Commons.Collections\Commons.Collections.csproj" />
+    <ProjectReference Include="..\Commons.Json\Commons.Json.csproj" />
+    <ProjectReference Include="..\Commons.Pool\Commons.Pool.csproj" />
+    <ProjectReference Include="..\Commons.Reflect\Commons.Reflect.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170106-08" />
+    <PackageReference Include="xunit" Version="2.2.0-beta5-build3474" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-beta5-build1225" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">
+    <PackageReference Include="Moq" Version="4.6.36-alpha" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <PackageReference Include="Moq" Version="4.2.1506.2515" />
+    <PackageReference Include="xunit.runner.console" Version="2.1.0" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <PackageReference Include="Moq" Version="4.2.1506.2515" />
+    <PackageReference Include="xunit.runner.console" Version="2.1.0" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

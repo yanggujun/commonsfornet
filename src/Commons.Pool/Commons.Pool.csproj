@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <VersionPrefix>0.3.0.775</VersionPrefix>
+    <TargetFrameworks>net40;net45;netstandard1.3</TargetFrameworks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>Commons.Pool</AssemblyName>
+    <OutputType>Library</OutputType>
+    <AssemblyOriginatorKeyFile>../FullKey.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <PackageId>Commons.Pool</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="*.un~" />
+    <None Remove=".project.json.un~" />
+    <None Remove="Commons.Pool.csproj.migration_in_place_backup" />
+    <None Remove="project.json" />
+    <None Remove="project.json~" />
+    <None Remove="project.lock.json" />
+    <Compile Include="..\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj" />
+    <ProjectReference Include="..\Commons.Collections\Commons.Collections.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <Reference Include="System.Data" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="System.Data" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+    <PackageReference Include="System.Data.Common" Version="4.1.0" />
+  </ItemGroup>
+
+</Project>

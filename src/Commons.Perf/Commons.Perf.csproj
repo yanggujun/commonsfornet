@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <AssemblyName>Commons.Perf</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>Commons.Perf</PackageId>
+    <RuntimeIdentifiers>win10-x64;win81-x64;ubuntu.14.04-x64;debian.8-x64</RuntimeIdentifiers>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="project.json" />
+    <None Remove="project.lock.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="*.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj" />
+    <ProjectReference Include="..\Commons.Collections\Commons.Collections.csproj" />
+    <ProjectReference Include="..\Commons.Json\Commons.Json.csproj" />
+    <ProjectReference Include="..\Commons.Test\Commons.Test.csproj" />
+    <ProjectReference Include="..\Commons.Reflect\Commons.Reflect.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
+  </ItemGroup>
+
+</Project>

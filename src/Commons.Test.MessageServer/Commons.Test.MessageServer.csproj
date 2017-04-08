@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <AssemblyName>Commons.Test.MessageServer</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>Commons.Test.MessageServer</PackageId>
+    <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="project.json" />
+    <None Remove="project.lock.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Commons.Messaging\Commons.Messaging.csproj" />
+    <ProjectReference Include="..\Commons.Test\Commons.Test.csproj" />
+    <ProjectReference Include="..\Commons.Collections\Commons.Collections.csproj" />
+    <ProjectReference Include="..\Commons.Json\Commons.Json.csproj" />
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj" />
+  </ItemGroup>
+
+</Project>
