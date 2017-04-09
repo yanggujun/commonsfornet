@@ -6,10 +6,11 @@ branches:
     - master
     
 install:
-  - ps: ri global.json
-  - ps: rni global_appveyor.json global.json
+  - ps: 
+
 build_script:
   - Build.cmd
+
 clone_depth: 1
 test: off
 deploy: off
