@@ -6,10 +6,11 @@ branches:
     - master
     
 install:
-  - ps: 
+  - ps: ri global.json
+  - ps: rni global_ci.json global.json
 
 build_script:
-  - Build.cmd
+  - Build_104LTS.cmd
 
 clone_depth: 1
 test: off
