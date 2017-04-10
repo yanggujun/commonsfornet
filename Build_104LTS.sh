@@ -1,17 +1,14 @@
-$OUTPUT= $PWD/src/artifacts/rbin
-$Artifacts=$PWD/src/artifacts
-$src=$PWD/src
+export OUTPUT=$PWD/src/artifacts/rbin
+export Artifacts=$PWD/src/artifacts
+export src=$PWD/src
 
 if [ -d "$Artifacts" ]; then
     rm -rf $Artifacts
 fi
 
 
-$version = "0.3.0.0"
-
-echo $version
-
 dotnet --info
+
 dotnet restore $src/Commons.Utils/Commons.Utils.csproj
 dotnet restore $src/Commons.Collections/Commons.Collections.csproj
 dotnet restore $src/Commons.Reflect/Commons.Reflect.csproj
@@ -31,11 +28,8 @@ dotnet build $src/Commons.Messaging/Commons.Messaging.csproj -c Release --no-dep
 dotnet build $src/Commons.Test/Commons.Test.csproj -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netcoreapp1.0 --no-incremental 
 dotnet build $src/Commons.Perf/Commons.Perf.csproj -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netcoreapp1.0 --no-incremental 
 
-pushd $OUTPUT/netstandard1.3
+cd $OUTPUT/netstandard1.3
 dotnet test $src/Commons.Test/Commons.Test.csproj -o $OUTPUT/netstandard1.3 --no-build -f netcoreapp1.0
-popd
 
-
-pushd $OUTPUT/netstandard1.3
 dotnet Commons.Perf.dll
 popd
