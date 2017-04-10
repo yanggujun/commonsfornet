@@ -32,4 +32,3 @@ cd $OUTPUT/netstandard1.3
 dotnet test $src/Commons.Test/Commons.Test.csproj -o $OUTPUT/netstandard1.3 --no-build -f netcoreapp1.0
 
 dotnet Commons.Perf.dll
-popd
