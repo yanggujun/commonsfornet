@@ -4,7 +4,7 @@ namespace Commons.Messaging
 {
 	public interface IBus
     {
-		void Start(Action<IConfigurator> config);
+		void Start();
 		void Shutdown();
     }
 }

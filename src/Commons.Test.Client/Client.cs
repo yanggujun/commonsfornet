@@ -18,13 +18,25 @@ namespace Commons.Test.Client
             {
 				if (line == "order")
 				{
-					serviceBus.Send(new Order { Id = i, Name = i.ToString() });
+					serviceBus.Send(new DetailedOrder { Id = i, Name = i.ToString() });
 					++i;
 				}
 				else
 				{
-					serviceBus.Send(new Bill { Count = 100, Id = i });
-					++i;
+					Task[] tasks = new Task[2];
+					for (var k = 0; k < tasks.Length; k++)
+					{
+						tasks[k] = Task.Factory.StartNew(() =>
+						{
+							for (var j = 0; j < 20; j++)
+							{
+								serviceBus.Send(new Bill { Count = j, Id = j });
+							}
+						});
+					}
+
+					Task.WaitAll(tasks);
+					Console.WriteLine("messages are sent");
 				}
             }
         }

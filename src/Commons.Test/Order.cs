@@ -36,6 +36,11 @@ namespace Commons.Test
         }
     }
 
+	public class DetailedOrder : Order
+	{
+		public string Desc { get; set; }
+	}
+
     public class Bill
     {
         public int Id { get; set; }
