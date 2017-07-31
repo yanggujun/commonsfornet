@@ -937,7 +937,8 @@ namespace Test.Commons.Json
 		public void TestCompability132()
 		{
 			var json = "{'a':0}";
-			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<Dictionary<string, string>>(json));
+            var dict = JsonMapper.To<Dictionary<string, int>>(json);
+            Assert.Equal(0, dict["a"]);
 		}
 
 		[Fact]
@@ -1030,7 +1031,9 @@ namespace Test.Commons.Json
 		public void TestCompability145()
 		{
 			var json = "['single quote']";
-			Assert.Throws(typeof(ArgumentException), () => JsonMapper.To<string[]>(json));
+            var strings = JsonMapper.To<string[]>(json);
+            Assert.Equal(1, strings.Length);
+            Assert.Equal("single quote", strings[0]);
 		}
 
 		[Fact]
