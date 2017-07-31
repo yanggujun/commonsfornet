@@ -65,7 +65,8 @@ namespace Commons.Json.Mapper
                 case JsonTokens.Negtive:
                     return ParseNumber();
                 case JsonTokens.Quoter:
-                    return ParseString();
+                case JsonTokens.SingleQuoter:
+                    return ParseString(ch);
                 case JsonTokens.LeftBrace:
                     return ParseObject();
                 case JsonTokens.LeftBracket:
@@ -161,12 +162,12 @@ namespace Commons.Json.Mapper
             return result;
         }
 
-        private JValue ParseString()
+        private JValue ParseString(char quoter)
         {
             ++pos;
 			var start = pos;
             char ch;
-            while (pos < len && (ch = json[pos]) != JsonTokens.Quoter)
+            while (pos < len && (ch = json[pos]) != quoter)
             {
                 if (ch == JsonTokens.BackSlash)
                 {
@@ -174,7 +175,7 @@ namespace Commons.Json.Mapper
                 }
                 ++pos;
             }
-            if ((pos <= start && pos >= len)  || (pos >= len && json[pos - 1] != JsonTokens.Quoter))
+            if ((pos <= start && pos >= len)  || (pos >= len && json[pos - 1] != quoter))
             {
                 throw new ArgumentException(Messages.InvalidFormat);
             }
@@ -200,7 +201,7 @@ namespace Commons.Json.Mapper
                 {
                     throw new ArgumentException(Messages.InvalidFormat);
                 }
-                if (json[pos] != JsonTokens.Quoter)
+                if (json[pos] != JsonTokens.Quoter && json[pos] != JsonTokens.SingleQuoter)
                 {
                     throw new ArgumentException(Messages.InvalidFormat);
                 }

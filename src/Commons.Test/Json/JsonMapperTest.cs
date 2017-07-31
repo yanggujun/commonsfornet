@@ -44,6 +44,16 @@ namespace Commons.Test.Json
 			Assert.True(obj.FieldD);
 		}
 
+		[Fact]
+		public void TestMapJsonToObject011()
+		{
+			var obj = JsonMapper.To<Simple>("{'FieldA': 'valueA', 'FieldB' : 10, 'FieldC': 2.3, 'FieldD': true}");
+			Assert.Equal(obj.FieldA, "valueA");
+			Assert.Equal(obj.FieldB, 10);
+			Assert.Equal(obj.FieldC, 2.3, 2);
+			Assert.True(obj.FieldD);
+		}
+
 		/// <summary>
 		/// complex object.
 		/// </summary>
