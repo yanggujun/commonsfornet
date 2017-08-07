@@ -23,7 +23,7 @@ namespace Commons.Pool
     /// <summary>
     /// The class maintains the object pools created in the application.
     /// For generic object pool, the pool manager does not track it in the runtime. The client 
-    /// shall maitain the instance by itself.
+    /// shall maintain the instance by itself.
     /// For keyed object pool, the client can access it by just providing the key.
     /// When the pool manager is disposed, all of the objects in all the pools are disposed, even if the object is
     /// not returned to the pool yet. 
@@ -36,8 +36,8 @@ namespace Commons.Pool
     [CLSCompliant(true)]
     public class PoolManager : IPoolManager
     {
-        private ConcurrentBag<IDisposable> genericPools = new ConcurrentBag<IDisposable>();
-        private ConcurrentDictionary<string, object> keyedPools = new ConcurrentDictionary<string, object>();
+        private readonly ConcurrentBag<IDisposable> genericPools = new ConcurrentBag<IDisposable>();
+        private readonly ConcurrentDictionary<string, object> keyedPools = new ConcurrentDictionary<string, object>();
 
         public void Destroy(string key)
         {

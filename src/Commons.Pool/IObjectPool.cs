@@ -34,6 +34,11 @@ namespace Commons.Pool
         /// If there is not any idle object in the pool and the pool size has reached the max value, it waits infinitively.
         /// </summary>
         /// <returns>The object</returns>
+        /// <exception cref="InvalidOperationException">
+        /// If this pool is using an <see cref="IPooledObjectValidator{T}"/>, configured to validate on acquire and the pool already had acquired and
+        /// validated <see cref="AcquiredInvalidLimit"/> invalid objects. This effectively prevents a potential infinite blocking call.
+        /// If for any reason all objects become invalid (e.g there is a network issue and all connections to external resource could not be established).
+        /// </exception>
         T Acquire();
 
         /// <summary>
@@ -70,5 +75,22 @@ namespace Commons.Pool
         /// The initial size of the pool. If the pool grows, its size eventually reaches the <see cref="Capacity"/>;
         /// </summary>
         int InitialSize { get; }
+
+        /// <summary>
+        /// Invalidates an object from the pool. The pool must destroy and forget the given instance.
+        /// </summary>
+        /// <remarks>
+        /// By contract, <paramref name="obj"/> must have been obtained using <see cref="Acquire"/> or a related method as defined in an implementation or sub-interface.
+        /// 
+        ///This method should be used when an object that has been borrowed is determined (due to an exception or other problem) to be invalid.
+        /// </remarks>
+        /// <param name="obj">an acquired instance to be disposed.</param>
+        void Invalidate(T obj);
+
+        /// <summary>
+        /// Limit of invalid acquired objects. Use in conjunction with a <see cref="IPooledObjectValidator{T}.ValidateOnAcquire"/> to prevent infinite blocking <see cref="Acquire"/> calls,
+        /// if for any reason all created or pooled objects are invalid.
+        /// </summary>
+        int AcquiredInvalidLimit { get; }
     }
 }

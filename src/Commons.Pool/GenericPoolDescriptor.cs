@@ -23,10 +23,12 @@ namespace Commons.Pool
         private int initialSize;
         private int maxSize;
         private string key;
-        private PoolManager poolManager;
+        private readonly PoolManager poolManager;
         private Func<T> creator;
         private Action<T> destroyer;
-        private IPooledObjectFactory<T> objectFactory; 
+        private IPooledObjectFactory<T> objectFactory;
+        private IPooledObjectValidator<T> validator;
+        private int acquiredInvalidLimit = 10;
 
         public GenericPoolDescriptor(PoolManager poolManager)
         {
@@ -82,6 +84,18 @@ namespace Commons.Pool
             return this;
         }
 
+        public IPoolDescriptor<T> WithValidator(IPooledObjectValidator<T> validator)
+        {
+            this.validator = validator;
+            return this;
+        }
+
+        public IPoolDescriptor<T> AcquiredInvalidLimit(int acquiredInvalidLimit)
+        {
+            this.acquiredInvalidLimit = acquiredInvalidLimit;
+            return this;
+        }
+
         public IObjectPool<T> Instance()
         {
             if (objectFactory == null)
@@ -90,10 +104,11 @@ namespace Commons.Pool
                 {
                     throw new InvalidOperationException("The object pool cannot be instantiated as the object creation method is not defined.");
                 }
+
                 objectFactory = new ObjectFactory<T>
                 {
                     Creator = creator,
-                    Destroyer = destroyer
+                    Destroyer = destroyer ?? new Action<T>((obj) => { (obj as IDisposable)?.Dispose(); })
                 };
             }
 
@@ -102,7 +117,12 @@ namespace Commons.Pool
                 throw new ArgumentException("The maximum size of the pool shall not be smaller than its initial size.");
             }
 
-            var newPool = new GenericObjectPool<T>(initialSize, maxSize, objectFactory);
+            if (acquiredInvalidLimit < 0)
+            {
+                throw new ArgumentException($"The limit of acquired invalid objects must not be negative. Actual value is {acquiredInvalidLimit}.");
+            }
+
+            var newPool = new GenericObjectPool<T>(initialSize, maxSize, objectFactory, validator, acquiredInvalidLimit);
             if (string.IsNullOrWhiteSpace(key))
             {
                 poolManager.AddPool(newPool);

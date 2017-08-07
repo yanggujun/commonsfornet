@@ -14,11 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Commons.Collections.Map;
+using Commons.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using Commons.Collections.Map;
-using Commons.Collections.Set;
 
 namespace Commons.Pool
 {
@@ -28,6 +28,15 @@ namespace Commons.Pool
     /// <typeparam name="T">The type of the pooled object.</typeparam>
     internal class GenericObjectPool<T> : IObjectPool<T> where T : class
     {
+        private class NeverValidateValidator : IPooledObjectValidator<T>
+        {
+            public bool ValidateOnAcquire => false;
+
+            public bool ValidateOnReturn => false;
+
+            public bool Validate(T obj) => false;
+        }
+
         private readonly IPooledObjectFactory<T> factory;
         private readonly ConcurrentQueue<T> objQueue;
         private readonly ReaderWriterLockSlim locker;
@@ -35,7 +44,9 @@ namespace Commons.Pool
         private readonly int maxSize;
         private int createdCount;
         private readonly AutoResetEvent objectReturned;
-        private readonly ReferenceMap<T, bool> idleObjects; 
+        private readonly ReferenceMap<T, bool> idleObjects;
+        private readonly IPooledObjectValidator<T> validator;
+        private readonly int acquiredInvalidLimit;
 
         /// <summary>
         /// Constructor with the intialSize and maxSize. <see cref="ArgumentException"/> is thrown when <paramref name="initialSize"/> is larger than <paramref name="maxSize"/>
@@ -45,7 +56,8 @@ namespace Commons.Pool
         /// <param name="initialSize">The initial object number of the pool.</param>
         /// <param name="maxSize">The max object number of the pool.</param>
         /// <param name="factory">The factory create and destroy the pooled object.</param>
-        public GenericObjectPool(int initialSize, int maxSize, IPooledObjectFactory<T> factory)
+        /// <param name="validator">Validator instance. Can be <see langword="null"/>.</param>
+        public GenericObjectPool(int initialSize, int maxSize, IPooledObjectFactory<T> factory, IPooledObjectValidator<T> validator, int acquiredInvalidLimit)
         {
             if (initialSize < 0)
             {
@@ -62,6 +74,9 @@ namespace Commons.Pool
             this.initialSize = initialSize;
             this.maxSize = maxSize;
             this.factory = factory;
+            this.validator = validator ?? new NeverValidateValidator();
+            this.acquiredInvalidLimit = acquiredInvalidLimit;
+
             createdCount = 0;
             objectReturned = new AutoResetEvent(false);
             locker = new ReaderWriterLockSlim();
@@ -82,12 +97,47 @@ namespace Commons.Pool
         /// <returns>The pooled object</returns>
         public T Acquire()
         {
+            AtomicInt32 acquiredInvalidCounter = AtomicInt32.From(0);
+
             T obj;
             var spin = new SpinWait();
-            while (!TryAcquire(-1, out obj))
+            bool localValidateOnAcquire = validator.ValidateOnAcquire;
+
+            bool acquired = false;
+            TryAcquire(-1, out obj);
+            do
             {
                 spin.SpinOnce();
-            }
+                if (null == obj)
+                {
+                    TryAcquire(-1, out obj);
+                }
+                else
+                {
+                    if (localValidateOnAcquire && !validator.Validate(obj))
+                    {
+                        acquiredInvalidCounter.Increment();
+                        locker.EnterWriteLock();
+                        try
+                        {
+                            DoInvalidateObject(obj);
+                        }
+                        finally
+                        {
+                            obj = null;
+                            locker.ExitWriteLock();
+                        }
+
+                        if (acquiredInvalidCounter.Value >= AcquiredInvalidLimit) {
+                            throw new InvalidOperationException($"Unable to create a valid object after {acquiredInvalidCounter.Value} attempts.");
+                        }
+                    }
+                    else
+                    {
+                        acquired = true;
+                    }
+                }
+            } while (!acquired);
 
             return obj;
         }
@@ -108,6 +158,7 @@ namespace Commons.Pool
         {
             var acquired = false;
             var localTimeout = timeout < 0 ? -1 : timeout;
+
             if (objQueue.TryDequeue(out obj))
             {
                 acquired = true;
@@ -182,8 +233,17 @@ namespace Commons.Pool
                 locker.EnterWriteLock();
                 try
                 {
-                    objQueue.Enqueue(obj);
-                    idleObjects[obj] = true;
+                    bool localValidateOnReturn = validator.ValidateOnReturn;
+
+                    if (localValidateOnReturn && !validator.Validate(obj))
+                    {
+                        DoInvalidateObject(obj);
+                    }
+                    else
+                    {
+                        objQueue.Enqueue(obj);
+                        idleObjects[obj] = true;
+                    }
                 }
                 finally
                 {
@@ -261,6 +321,11 @@ namespace Commons.Pool
             get { return initialSize; }
         }
 
+        public int AcquiredInvalidLimit
+        {
+            get { return acquiredInvalidLimit; }
+        }
+
         /// <summary>
         /// Dispose the pool.
         /// </summary>
@@ -280,6 +345,54 @@ namespace Commons.Pool
             {
                 locker.ExitWriteLock();
             }
+        }
+
+        public void Invalidate(T obj)
+        {
+            locker.EnterUpgradeableReadLock();
+            try
+            {
+                if (!idleObjects.ContainsKey(obj))
+                {
+                    throw new InvalidOperationException("The object was never created by the pool or was previously invalidated.");
+                }
+
+                locker.EnterWriteLock();
+                try
+                {
+                    DoInvalidateObject(obj);
+                }
+                finally
+                {
+                    locker.ExitWriteLock();
+                }
+            }
+            finally
+            {
+                locker.ExitUpgradeableReadLock();
+            }
+            objectReturned.Set();
+        }
+
+        private void DoInvalidateObject(T obj)
+        {
+            if (idleObjects.ContainsKey(obj))
+            {
+                idleObjects.Remove(obj);
+                createdCount -= 1;
+            }
+
+            int actualCount = objQueue.Count;
+            T temp;
+            for (int i = 0; i < actualCount; i++)
+            {
+                if (objQueue.TryDequeue(out temp) && !ReferenceEquals(temp, obj))
+                {
+                    objQueue.Enqueue(temp);
+                }
+            }
+
+            factory.Destroy(obj);
         }
     }
 }
