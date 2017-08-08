@@ -1178,7 +1178,7 @@ namespace Commons.Test.Pool
                     .WithCreator(() => new SelfValidatingPoco(isValid: (ExtractFlag(flags) >= 2)))
                     .WithDesctroyer((obj) => { /* No-Op*/ })
                     .WithValidator(new PocoValidator(validateOnAcquire: true, validateOnReturn: true))
-                    .AcquiredInvalidLimit(10)
+                    .AcquiredInvalidLimit(250)
                     .Instance();
 
                 var objectsBag = new ConcurrentBag<SelfValidatingPoco>();
