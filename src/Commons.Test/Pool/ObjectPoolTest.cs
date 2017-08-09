@@ -14,15 +14,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
-using Commons.Collections.Queue;
 using Commons.Pool;
 using Moq;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Commons.Test.Pool
@@ -791,6 +792,579 @@ namespace Commons.Test.Pool
             Assert.Throws(typeof (ArgumentException), () => poolManager.Destroy("  "));
         }
 
+        [Fact]
+        public void TestInvalidateOutsider()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var pool = poolManager.NewPool<string>()
+                .OfKey("invalidatorPool")
+                .InitialSize(0)
+                .MaxSize(5)
+                .WithCreator(() => "Hello World")
+                .WithDesctroyer((obj) => { /* No-Op*/ })
+                .Instance();
+
+                Assert.Throws<InvalidOperationException>(() => pool.Invalidate("Outsider"));
+            }
+        }
+
+        [Fact]
+        public void TestInvalidateAlreadyReturnedObject()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var pool = poolManager.NewPool<string>()
+                .OfKey("invalidatorPool")
+                .InitialSize(0)
+                .MaxSize(5)
+                .WithCreator(() => Guid.NewGuid().ToString())
+                .WithDesctroyer((obj) => { /* No-Op*/ })
+                .Instance();
+
+                string acquiredObj = pool.Acquire();
+                pool.Return(acquiredObj);
+                pool.Invalidate(acquiredObj);
+
+                Assert.Equal(0, pool.ActiveCount);
+            }
+        }
+
+        [Fact]
+        public void TestInvalidateNull()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var pool = poolManager.NewPool<string>()
+                .OfKey("invalidatorPool")
+                .InitialSize(0)
+                .MaxSize(5)
+                .WithCreator(() => "Hello World")
+                .WithDesctroyer((obj) => { /* No-Op*/ })
+                .Instance();
+
+                Assert.Throws<ArgumentNullException>(() => pool.Invalidate(null));
+            }
+        }
+
+        [Fact]
+        public void TestInvalidateTwice()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var pool = poolManager.NewPool<string>()
+                    .OfKey("invalidatorPool")
+                    .InitialSize(0)
+                    .MaxSize(5)
+                    .WithCreator(() => Guid.NewGuid().ToString())
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .Instance();
+
+                string acquiredObj = pool.Acquire();
+                pool.Invalidate(acquiredObj);
+
+                Assert.Throws<InvalidOperationException>(() => pool.Invalidate(acquiredObj));
+            }
+        }
+
+        [Fact]
+        public void TestInvalidateWithAcquireAndReturn()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var objectPool = poolManager.NewPool<string>()
+                    .InitialSize(0)
+                    .MaxSize(100)
+                    .WithCreator(() => Guid.NewGuid().ToString())
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .Instance();
+
+                const int tasksCount = 50;
+                var objectsBag = new ConcurrentBag<string>();
+                Task[] acquireTasks = CreateAcquireAndStoreTasks(objectPool, tasksCount, objectsBag);
+
+                Parallel.ForEach(acquireTasks, x => x.Start());
+                Task.WaitAll(acquireTasks);
+
+                Assert.Equal(tasksCount, objectsBag.Count);
+                Assert.Equal(0, objectPool.IdleCount);
+                Assert.Equal(tasksCount, objectPool.ActiveCount);
+
+                var returnAndInvalidateTasks = new Task[objectsBag.Count];
+                var objectsArr = objectsBag.ToArray();
+                for (var i = 0; i < objectsBag.Count; i++)
+                {
+                    var obj = objectsArr[i];
+                    returnAndInvalidateTasks[i] = (i % 2 == 0) ? new Task(() => objectPool.Return(obj)) : new Task(() => objectPool.Invalidate(obj));
+                }
+
+                Parallel.ForEach(returnAndInvalidateTasks, x => x.Start());
+                Task.WaitAll(returnAndInvalidateTasks);
+
+                Assert.Equal(25, objectPool.IdleCount);
+                Assert.Equal(0, objectPool.ActiveCount);
+            }
+        }
+
+        [Fact]
+        public void TestNullValidatorShouldBehaveAsDefault()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var objectPool = poolManager.NewPool<string>()
+                    .InitialSize(0)
+                    .MaxSize(10)
+                    .WithCreator(() => Guid.NewGuid().ToString())
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithValidator(null)
+                    .Instance();
+
+
+                const int tasksCount = 10;
+                var objectsBag = new ConcurrentBag<string>();
+                Task[] acquireTasks = CreateAcquireAndStoreTasks(objectPool, tasksCount, objectsBag);
+
+                Parallel.ForEach(acquireTasks, x => x.Start());
+                Task.WaitAll(acquireTasks);
+
+                Assert.Equal(tasksCount, objectsBag.Count);
+                Assert.Equal(0, objectPool.IdleCount);
+                Assert.Equal(tasksCount, objectPool.ActiveCount);
+            }
+        }
+
+        [Fact]
+        public void TestNeverValidatorShouldBehaveAsDefault()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var objectPool = poolManager.NewPool<string>()
+                    .InitialSize(0)
+                    .MaxSize(10)
+                    .WithCreator(() => Guid.NewGuid().ToString())
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithValidator(new NeverValidator())
+                    .Instance();
+
+
+                const int tasksCount = 10;
+                var objectsBag = new ConcurrentBag<string>();
+                Task[] acquireTasks = CreateAcquireAndStoreTasks(objectPool, tasksCount, objectsBag);
+
+                Parallel.ForEach(acquireTasks, x => x.Start());
+                Task.WaitAll(acquireTasks);
+
+                Assert.Equal(tasksCount, objectsBag.Count);
+                Assert.Equal(0, objectPool.IdleCount);
+                Assert.Equal(tasksCount, objectPool.ActiveCount);
+            }
+        }
+
+        [Fact]
+        public void TestValidateOnAcquireExhausted()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var objectPool = poolManager.NewPool<string>()
+                    .InitialSize(0)
+                    .MaxSize(10)
+                    .WithCreator(() => Guid.NewGuid().ToString())
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithValidator(new StringValidator(validateOnAcquire: true, validateOnReturn: false, validateDelegate: (obj) => false))
+                    .Instance();
+
+                var theException = Assert.Throws<InvalidOperationException>(() => objectPool.Acquire());
+
+                const int defaultMaxAttempts = 10;
+                Assert.Contains($"after {defaultMaxAttempts} attempts", theException.Message);
+            }
+        }
+
+        [Fact]
+        public void TestValidateOnAcquireExhaustedWithCustomLimit()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                const int maxAttempts = 5;
+
+                var objectPool = poolManager.NewPool<string>()
+                    .InitialSize(0)
+                    .MaxSize(10)
+                    .WithCreator(() => Guid.NewGuid().ToString())
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithValidator(new StringValidator(validateOnAcquire: true, validateOnReturn: false, validateDelegate: (obj) => false))
+                    .AcquiredInvalidLimit(maxAttempts)
+                    .Instance();
+
+                var theException = Assert.Throws<InvalidOperationException>(() => objectPool.Acquire());
+
+                Assert.Contains($"after {maxAttempts} attempts", theException.Message);
+            }
+        }
+
+        [Fact]
+        public void TestValidateOnAcquireAllValid()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var objectPool = poolManager.NewPool<string>()
+                    .InitialSize(0)
+                    .MaxSize(50)
+                    .WithCreator(() => Guid.NewGuid().ToString())
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithValidator(new StringValidator(validateOnAcquire: true, validateOnReturn: false, validateDelegate: (obj) => true))
+                    .Instance();
+
+                const int tasksCount = 50;
+                var objectsBag = new ConcurrentBag<string>();
+                Task[] acquireTasks = CreateAcquireAndStoreTasks(objectPool, tasksCount, objectsBag);
+
+                Parallel.ForEach(acquireTasks, x => x.Start());
+                Task.WaitAll(acquireTasks);
+
+                Assert.Equal(tasksCount, objectsBag.Count);
+                Assert.Equal(0, objectPool.IdleCount);
+                Assert.Equal(tasksCount, objectPool.ActiveCount);
+            }
+        }
+
+        [Fact]
+        public void TestValidateOnAcquireValidByPattern()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                const string validPattern = "^[a-z].*$";
+                var objectPool = poolManager.NewPool<string>()
+                    .InitialSize(0)
+                    .MaxSize(50)
+                    .WithCreator(() => Guid.NewGuid().ToString())
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithValidator(new StringValidator(validateOnAcquire: true, validateOnReturn: false, validateDelegate: (obj) =>
+                        {
+                            return Regex.IsMatch(obj, validPattern);
+                        }))
+                    .AcquiredInvalidLimit(20)
+                    .Instance();
+
+                const int tasksCount = 50;
+                var acquireTasks = new Task[tasksCount];
+                var objects = new ConcurrentBag<string>();
+                for (var i = 0; i < tasksCount; i++)
+                {
+                    acquireTasks[i] = new Task(() =>
+                    {
+                        string obj = objectPool.Acquire();
+                        objects.Add(obj);
+                    });
+                }
+
+                Parallel.ForEach(acquireTasks, x => x.Start());
+                Task.WaitAll(acquireTasks);
+
+                Assert.True(objects.All(obj => Regex.IsMatch(obj, validPattern)));
+            }
+        }
+
+        [Fact]
+        public void TestValidateOnReturn()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                const string validPattern = "^[a-z].*$";
+                var objectPool = poolManager.NewPool<string>()
+                    .InitialSize(0)
+                    .MaxSize(50)
+                    .WithCreator(() => Guid.NewGuid().ToString())
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithValidator(new StringValidator(validateOnAcquire: false, validateOnReturn: true, validateDelegate: (obj) =>
+                    {
+                        return Regex.IsMatch(obj, validPattern);
+                    }))
+                    .AcquiredInvalidLimit(10)
+                    .Instance();
+
+                const int tasksCount = 50;
+                var objectsBag = new ConcurrentBag<string>();
+                Task[] acquireTasks = CreateAcquireAndStoreTasks(objectPool, tasksCount, objectsBag);
+                Parallel.ForEach(acquireTasks, x => x.Start());
+                Task.WaitAll(acquireTasks);
+
+                Task[] returnTasks = CreateReturnTasks(objectPool, objectsBag);
+                Parallel.ForEach(returnTasks, x => x.Start());
+                Task.WaitAll(returnTasks);
+
+                objectsBag = new ConcurrentBag<string>();
+                var actualIdleCount = objectPool.IdleCount;
+                acquireTasks = CreateAcquireAndStoreTasks(objectPool, actualIdleCount, objectsBag);
+                Parallel.ForEach(acquireTasks, x => x.Start());
+                Task.WaitAll(acquireTasks);
+
+                Assert.True(objectsBag.All(obj => Regex.IsMatch(obj, validPattern)));
+            }
+        }
+
+        [Fact]
+        public void TestValidateOnAcquireAndReturn()
+        {
+            object createLock = new object();
+            object returnLock = new object();
+            Random rnd = new Random();
+
+            using (var poolManager = new PoolManager())
+            {
+                var objectPool = poolManager.NewPool<SelfValidatingPoco>()
+                    .InitialSize(0)
+                    .MaxSize(100)
+                    .WithCreator(() => {
+                        lock (createLock) {
+                            var val = rnd.NextDouble();
+                            return new SelfValidatingPoco(isValid: (val >= 0.5d));
+                        }
+                    })
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithValidator(new PocoValidator(validateOnAcquire: true, validateOnReturn: true))
+                    .AcquiredInvalidLimit(10)
+                    .Instance();
+
+                const int tasksCount = 100;
+                var objectsBag = new ConcurrentBag<SelfValidatingPoco>();
+                Task[] acquireTasks = CreateAcquireAndStoreTasks(objectPool, tasksCount, objectsBag);
+                Parallel.ForEach(acquireTasks, x => x.Start());
+                Task.WaitAll(acquireTasks);
+
+                Task[] returnTasks = CreateReturnTasks(objectPool, objectsBag, (obj) => {
+                    lock (returnLock)
+                    {
+                        double val = rnd.NextDouble();
+
+                        if (val >= 0.5d)
+                        {
+                            obj.MakeMeValid();
+                        }
+                        else
+                        {
+                            obj.MakeMeInvalid();
+                        }
+                    }
+                });
+                Parallel.ForEach(returnTasks, x => x.Start());
+                Task.WaitAll(returnTasks);
+
+                objectsBag = new ConcurrentBag<SelfValidatingPoco>();
+                var actualIdleCount = objectPool.IdleCount;
+                acquireTasks = CreateAcquireAndStoreTasks(objectPool, actualIdleCount, objectsBag);
+                Parallel.ForEach(acquireTasks, x => x.Start());
+                Task.WaitAll(acquireTasks);
+
+                Assert.True(objectsBag.All(obj => obj.IsValid));
+            }
+        }
+
+        [Fact]
+        public void TestInvalidateValidateOnAcquireAndReturnMixed()
+        {
+            const int tasksCount = 500;
+            Random rnd = new Random();
+            ConcurrentQueue<int> flags = new ConcurrentQueue<int>();
+            for (int f = 0; f < tasksCount * 5; f++) {
+                flags.Enqueue(rnd.Next(4));
+            }
+
+            using (var poolManager = new PoolManager())
+            {
+                var objectPool = poolManager.NewPool<SelfValidatingPoco>()
+                    .InitialSize(0)
+                    .MaxSize(250)
+                    .WithCreator(() => new SelfValidatingPoco(isValid: (ExtractFlag(flags) >= 2)))
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithValidator(new PocoValidator(validateOnAcquire: true, validateOnReturn: true))
+                    .AcquiredInvalidLimit(250)
+                    .Instance();
+
+                var objectsBag = new ConcurrentBag<SelfValidatingPoco>();
+                Task[] acquireTasks = new Task[tasksCount];
+
+                for (int i = 0; i < tasksCount; i++) {
+                    acquireTasks[i] = new Task(() =>
+                    {
+                        SelfValidatingPoco obj;
+                        switch (ExtractFlag(flags))
+                        {
+                            case 0: //Acquire, Store
+                                obj = objectPool.Acquire();
+                                objectsBag.Add(obj);
+                                break;
+                            case 1: //Acquire, Wait, Return
+                                obj = objectPool.Acquire();
+                                Thread.Sleep(ExtractFlag(flags) * 100);
+                                objectPool.Return(obj);
+                                break;
+                            case 2: //Acquire, Wait, Invalidate
+                                obj = objectPool.Acquire();
+                                Thread.Sleep(ExtractFlag(flags) * 100);
+                                objectPool.Invalidate(obj);
+                                break;
+                            case 3: //Acquire, Wait, Random State Change, Return
+                                obj = objectPool.Acquire();
+                                Thread.Sleep(ExtractFlag(flags) * 100);
+
+                                if (ExtractFlag(flags) >= 2)
+                                {
+                                    obj.MakeMeInvalid();
+                                }
+
+                                objectPool.Return(obj);
+                                break;
+                        }
+                    });
+                }
+
+                Parallel.ForEach(acquireTasks, x => x.Start());
+                Task.WaitAll(acquireTasks);
+
+                Assert.True(objectsBag.Count > 0);
+                Assert.True(objectPool.ActiveCount > 0);
+                Assert.True(objectPool.IdleCount > 0);
+            }
+        }
+
+        [Fact]
+        public void TestAcquiredInvalidLimitInvalid()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var descriptor = poolManager.NewPool<string>()
+                    .InitialSize(0)
+                    .MaxSize(10)
+                    .WithCreator(() => Guid.NewGuid().ToString())
+                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithValidator(new StringValidator(validateOnAcquire: true, validateOnReturn: false, validateDelegate: (obj) => false))
+                    .AcquiredInvalidLimit(-5);
+
+                Assert.Throws<ArgumentException>(() => descriptor.Instance());
+            }
+        }
+
+        [Fact]
+        public void TestNullDestroyerShouldInvokeDiposeOnIdleDisposables()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var objectPool = poolManager.NewPool<DisposablePoco>()
+                    .InitialSize(0)
+                    .MaxSize(10)
+                    .WithCreator(() => new DisposablePoco())
+                    .WithDesctroyer(null)
+                    .Instance();
+
+                DisposablePoco obj = objectPool.Acquire();
+                objectPool.Return(obj);
+
+                objectPool.Dispose();
+
+                Assert.True(obj.Disposed);
+            }
+        }
+
+        [Fact]
+        public void TestNullDestroyerShouldInvokeDiposeOnActiveDisposables()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var objectPool = poolManager.NewPool<DisposablePoco>()
+                    .InitialSize(0)
+                    .MaxSize(10)
+                    .WithCreator(() => new DisposablePoco())
+                    .WithDesctroyer(null)
+                    .Instance();
+
+                DisposablePoco obj = objectPool.Acquire();
+
+                objectPool.Dispose();
+
+                Assert.True(obj.Disposed);
+            }
+        }
+
+        [Fact]
+        public void TestNullDestroyerShouldInvokeDisposeOnAllActiveAndIdle()
+        {
+            using (var poolManager = new PoolManager())
+            {
+                var objectPool = poolManager.NewPool<DisposablePoco>()
+                    .InitialSize(0)
+                    .MaxSize(10)
+                    .WithCreator(() => new DisposablePoco())
+                    .WithDesctroyer(null)
+                    .Instance();
+
+                List<DisposablePoco> activeInstances = new List<DisposablePoco>();
+                List<DisposablePoco> idleInstances = new List<DisposablePoco>();
+
+                for (int i = 0; i < 5; i++) {
+                    activeInstances.Add(objectPool.Acquire());
+                    idleInstances.Add(objectPool.Acquire());
+                }
+
+                foreach (DisposablePoco toReturn in idleInstances) {
+                    objectPool.Return(toReturn);
+                }
+
+                objectPool.Dispose();
+
+                Assert.True(activeInstances.TrueForAll(obj => obj.Disposed));
+                Assert.True(idleInstances.TrueForAll(obj => obj.Disposed));
+            }
+        }
+
+        private static int ExtractFlag(ConcurrentQueue<int> flags)
+        {
+            int flag;
+            while (!flags.TryDequeue(out flag))
+            {
+                /* try again */
+            }
+
+            return flag;
+        }
+
+        private static Task[] CreateReturnTasks<T>(IObjectPool<T> objectPool, ConcurrentBag<T> objectsBag) where T : class
+        {
+            return CreateReturnTasks(objectPool, objectsBag, null);
+        }
+
+        private static Task[] CreateReturnTasks<T>(IObjectPool<T> objectPool, ConcurrentBag<T> objectsBag, Action<T> preReturnAction) where T : class
+        {
+            var objectsArray = objectsBag.ToArray();
+            var returnTasks = new Task[objectsArray.Length];
+            for (var i = 0; i < returnTasks.Length; i++)
+            {
+                T obj = objectsArray[i];
+                returnTasks[i] = new Task(() =>
+                {
+                    preReturnAction?.Invoke(obj);
+                    objectPool.Return(obj);
+                });
+            }
+
+            return returnTasks;
+        }
+
+        private static Task[] CreateAcquireAndStoreTasks<T>(IObjectPool<T> objectPool, int tasksCount, ConcurrentBag<T> objectsBag) where T : class
+        {
+            var acquireTasks = new Task[tasksCount];
+            for (var i = 0; i < tasksCount; i++)
+            {
+                acquireTasks[i] = new Task(() =>
+                {
+                    T obj = objectPool.Acquire();
+                    objectsBag.Add(obj);
+                });
+            }
+
+            return acquireTasks;
+        }
+
         private void OperateOnPool(IObjectPool<IDbConnection> pool)
         {
             var connectTasks = new Task[10];
@@ -841,5 +1415,96 @@ namespace Commons.Test.Pool
         public void Destroy(IDbConnection obj)
         {
         }
+    }
+
+    class NeverValidator : IPooledObjectValidator<string>
+    {
+        public bool ValidateOnAcquire => false;
+
+        public bool ValidateOnReturn => false;
+
+        public bool Validate(string obj)
+        {
+            throw new InvalidOperationException("I must never be called.");
+        }
+    }
+
+    public class StringValidator : IPooledObjectValidator<string>
+    {
+
+        private readonly bool _validateOnAcquire;
+        private readonly bool _validateOnReturn;
+        private readonly Func<string, bool> _validateDelegate;
+
+        public bool ValidateOnAcquire => _validateOnAcquire;
+        public bool ValidateOnReturn => _validateOnReturn;
+
+        public StringValidator(bool validateOnAcquire, bool validateOnReturn, Func<string, bool> validateDelegate)
+        {
+            _validateOnAcquire = validateOnAcquire;
+            _validateOnReturn = validateOnReturn;
+            _validateDelegate = validateDelegate;
+        }
+
+        public bool Validate(string obj) => _validateDelegate(obj);
+    }
+
+    public sealed class SelfValidatingPoco
+    {
+        public SelfValidatingPoco(bool isValid) {
+            IsValid = isValid;
+        }
+
+        public bool IsValid { get; private set; }
+
+        public void MakeMeInvalid() => IsValid = false;
+
+        public void MakeMeValid() => IsValid = true;
+    }
+
+    public class PocoValidator : IPooledObjectValidator<SelfValidatingPoco>
+    {
+        private readonly bool _validateOnAcquire;
+        private readonly bool _validateOnReturn;
+
+        public bool ValidateOnAcquire => _validateOnAcquire;
+        public bool ValidateOnReturn => _validateOnReturn;
+
+        public PocoValidator(bool validateOnAcquire, bool validateOnReturn)
+        {
+            _validateOnAcquire = validateOnAcquire;
+            _validateOnReturn = validateOnReturn;
+        }
+
+        public bool Validate(SelfValidatingPoco obj) => obj.IsValid;
+    }
+
+    public sealed class DisposablePoco : IDisposable {
+
+        public bool Disposed => disposedValue;
+
+        #region IDisposable Support
+        private bool disposedValue = false;
+
+        void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    /* Do Nothing */
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        #endregion
+
     }
 }
