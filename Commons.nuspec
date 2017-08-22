@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/yanggujun/commonsfornet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-        Atomic primitives, hash functions and collections.
+        Faster reflection;Atomic primitives;hash functions and collections.
 
         For more information please visit: 
 
@@ -20,19 +20,24 @@
     </releaseNotes>
     <dependencies>
       <group targetFramework=".NETSTANDARD1.3">
-          <dependency id="System.Reflection.TypeExtensions" version="4.1.0"/>
-          <dependency id="System.Collections.NonGeneric" version="4.0.1"/>
-          <dependency id="System.Threading.Thread" version="4.0.0"/>
+          <dependency id="System.Reflection.TypeExtensions" version="4.4.0"/>
+          <dependency id="System.Collections.NonGeneric" version="4.3.0"/>
+          <dependency id="System.Threading.Thread" version="4.3.0"/>
       </group>
     </dependencies>
     <tags>Atomics Hashes Collections</tags>
   </metadata>
   <files>
       <file src="src\artifacts\rbin\net45\Commons.Utils.dll" target="lib\net45\" />
+      <file src="src\artifacts\rbin\net45\Commons.Reflect.dll" target="lib\net45\" />
       <file src="src\artifacts\rbin\net45\Commons.Collections.dll" target="lib\net45\" />
+
       <file src="src\artifacts\rbin\net40\Commons.Utils.dll" target="lib\net40\" />
       <file src="src\artifacts\rbin\net40\Commons.Collections.dll" target="lib\net40\" />
+      <file src="src\artifacts\rbin\net40\Commons.Reflect.dll" target="lib\net40\" />
+
       <file src="src\artifacts\rbin\netstandard1.3\Commons.Utils.dll" target="lib\netstandard1.3\" />
       <file src="src\artifacts\rbin\netstandard1.3\Commons.Collections.dll" target="lib\netstandard1.3\" />
+      <file src="src\artifacts\rbin\netstandard1.3\Commons.Reflect.dll" target="lib\netstandard1.3\" />
   </files>
 </package>
