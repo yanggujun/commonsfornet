@@ -12,4 +12,4 @@ git:
   depth: 1
 
 script:
-  - sh ./Build_104LTS.sh
+  - sh ./Build.sh
