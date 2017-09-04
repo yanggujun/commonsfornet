@@ -18,6 +18,7 @@ using Xunit;
 
 using Commons.Reflect;
 using Commons.Test.Poco;
+using System;
 
 namespace Commons.Test.Reflect
 {
@@ -55,6 +56,16 @@ namespace Commons.Test.Reflect
 		}
 
         [Fact]
+        public void TestGetProperty2()
+        {
+            var simple = new Simple();
+            var invoker = Reflector.GetInvoker(typeof(Simple));
+            Assert.Equal(0, (int)invoker.GetProperty(simple, "FieldB"));
+            Assert.Equal(0, (double)invoker.GetProperty(simple, "FieldC"));
+            Assert.False((bool)invoker.GetProperty(simple, "FieldD"));
+        }
+
+        [Fact]
         public void TestSetProperty1()
         {
 			var simple = new Simple();
@@ -67,6 +78,55 @@ namespace Commons.Test.Reflect
 			Assert.Equal(10, simple.FieldB);
 			Assert.Equal(20.45, simple.FieldC);
 			Assert.Equal(false, simple.FieldD);
+        }
+
+        [Fact]
+        public void TestSetProperty2()
+        {
+            var simple = new Simple();
+            var invoker = Reflector.GetInvoker(typeof(Simple));
+            invoker.SetProperty(simple, "FieldA", null);
+            Assert.Null(simple.FieldA);
+        }
+
+        [Fact]
+        public void TestSetProperty3()
+        {
+            var simple = new Simple();
+            var invoker = Reflector.GetInvoker(typeof(Simple));
+            invoker.SetProperty(simple, "FieldB", null);
+            Assert.Equal(0, (int)simple.FieldB);
+        }
+
+        [Fact]
+        public void TestPrimitiveValue()
+        {
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(int)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(long)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(short)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(byte)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(sbyte)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(uint)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(ushort)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(ulong)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(bool)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(decimal)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(double)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(float)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(bool)));
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(char)));
+        }
+
+        [Fact]
+        public void TestStructValue()
+        {
+            Assert.Throws(typeof(NotSupportedException), () => Reflector.GetInvoker(typeof(SimpleStruct)));
+        }
+
+        [Fact]
+        public void TestNullType()
+        {
+            Assert.Throws(typeof(ArgumentNullException), () => Reflector.GetInvoker(null));
         }
     }
 }

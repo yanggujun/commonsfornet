@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <None Remove="*~" />
-    <None Remove="*.swp"/>
+    <None Remove="*.swp" />
     <None Remove="project.json" />
     <None Remove="project.lock.json" />
     <Compile Include="..\AssemblyInfo.cs" />
@@ -35,6 +35,10 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj" />
   </ItemGroup>
 
 </Project>

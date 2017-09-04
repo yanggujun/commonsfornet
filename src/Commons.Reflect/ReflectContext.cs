@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Commons.Utils;
 using System;
 using System.Collections.Concurrent;
 
@@ -28,8 +29,15 @@ namespace Commons.Reflect
             IInvoker invoker;
             if (!invokers.TryGetValue(type, out invoker))
             {
-                invoker = new Invoker(type);
-                invokers[type] = invoker;
+                if (type.IsPrimitive() || !type.IsClass())
+                {
+                    invokers[type] = null;
+                }
+                else
+                {
+                    invoker = new Invoker(type);
+                    invokers[type] = invoker;
+                }
             }
             return invoker;
         }

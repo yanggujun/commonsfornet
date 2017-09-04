@@ -44,7 +44,17 @@ namespace Commons.Reflect
 
         public static IInvoker GetInvoker(Type type)
         {
-            return ContextInstance.GetInvoker(type);
+            if (type == null)
+            {
+                throw new ArgumentNullException(string.Format("The argument {0} cannot be null.", nameof(type)));
+            }
+
+            var invoker = ContextInstance.GetInvoker(type);
+            if (invoker == null)
+            {
+                throw new NotSupportedException("The type cannot be reflected");
+            }
+            return invoker;
         }
 
     }
