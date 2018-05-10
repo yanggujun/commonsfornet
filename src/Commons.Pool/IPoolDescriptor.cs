@@ -72,11 +72,11 @@ namespace Commons.Pool
         /// </summary>
         /// <param name="destroyer">The destroy method.</param>
         /// <returns>The pool descriptor with updated destroyed method.</returns>
-        IPoolDescriptor<T> WithDesctroyer(Action<T> destroyer);
+        IPoolDescriptor<T> WithDestroyer(Action<T> destroyer);
 
         /// <summary>
         /// Defines the factory for creating and destroying the pooled objects. When this method is called, the object creator and
-        /// destroyer set by <see cref="WithCreator"/> and <see cref="WithDesctroyer"/> are ignored.
+        /// destroyer set by <see cref="WithCreator"/> and <see cref="WithDestroyer"/> are ignored.
         /// </summary>
         /// <param name="factory">The object factory.</param>
         /// <returns>The pool descriptor with updated factory.</returns>
