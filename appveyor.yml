@@ -1,4 +1,4 @@
-image: visual studio 2015
+image: visual studio 2017
 init:
   - git config --global core.autocrlf true
 branches:
