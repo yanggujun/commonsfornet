@@ -703,7 +703,7 @@ namespace Commons.Test.Pool
             {
                 mock.Setup(x => x.State).Returns(ConnectionState.Open);
                 return mock.Object;
-            }).WithDesctroyer(x => x.Dispose()).Instance();
+            }).WithDestroyer(x => x.Dispose()).Instance();
             var connection = pool.Acquire();
             Assert.NotNull(poolManager.GetPool<IDbConnection>("mock"));
             poolManager.Destroy("mock");
@@ -802,7 +802,7 @@ namespace Commons.Test.Pool
                 .InitialSize(0)
                 .MaxSize(5)
                 .WithCreator(() => "Hello World")
-                .WithDesctroyer((obj) => { /* No-Op*/ })
+                .WithDestroyer((obj) => { /* No-Op*/ })
                 .Instance();
 
                 Assert.Throws<InvalidOperationException>(() => pool.Invalidate("Outsider"));
@@ -819,7 +819,7 @@ namespace Commons.Test.Pool
                 .InitialSize(0)
                 .MaxSize(5)
                 .WithCreator(() => Guid.NewGuid().ToString())
-                .WithDesctroyer((obj) => { /* No-Op*/ })
+                .WithDestroyer((obj) => { /* No-Op*/ })
                 .Instance();
 
                 string acquiredObj = pool.Acquire();
@@ -840,7 +840,7 @@ namespace Commons.Test.Pool
                 .InitialSize(0)
                 .MaxSize(5)
                 .WithCreator(() => "Hello World")
-                .WithDesctroyer((obj) => { /* No-Op*/ })
+                .WithDestroyer((obj) => { /* No-Op*/ })
                 .Instance();
 
                 Assert.Throws<ArgumentNullException>(() => pool.Invalidate(null));
@@ -857,7 +857,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(5)
                     .WithCreator(() => Guid.NewGuid().ToString())
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .Instance();
 
                 string acquiredObj = pool.Acquire();
@@ -876,7 +876,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(100)
                     .WithCreator(() => Guid.NewGuid().ToString())
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .Instance();
 
                 const int tasksCount = 50;
@@ -915,7 +915,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(10)
                     .WithCreator(() => Guid.NewGuid().ToString())
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .WithValidator(null)
                     .Instance();
 
@@ -942,7 +942,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(10)
                     .WithCreator(() => Guid.NewGuid().ToString())
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .WithValidator(new NeverValidator())
                     .Instance();
 
@@ -969,7 +969,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(10)
                     .WithCreator(() => Guid.NewGuid().ToString())
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .WithValidator(new StringValidator(validateOnAcquire: true, validateOnReturn: false, validateDelegate: (obj) => false))
                     .Instance();
 
@@ -991,7 +991,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(10)
                     .WithCreator(() => Guid.NewGuid().ToString())
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .WithValidator(new StringValidator(validateOnAcquire: true, validateOnReturn: false, validateDelegate: (obj) => false))
                     .AcquiredInvalidLimit(maxAttempts)
                     .Instance();
@@ -1011,7 +1011,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(50)
                     .WithCreator(() => Guid.NewGuid().ToString())
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .WithValidator(new StringValidator(validateOnAcquire: true, validateOnReturn: false, validateDelegate: (obj) => true))
                     .Instance();
 
@@ -1038,7 +1038,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(50)
                     .WithCreator(() => Guid.NewGuid().ToString())
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .WithValidator(new StringValidator(validateOnAcquire: true, validateOnReturn: false, validateDelegate: (obj) =>
                         {
                             return Regex.IsMatch(obj, validPattern);
@@ -1075,7 +1075,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(50)
                     .WithCreator(() => Guid.NewGuid().ToString())
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .WithValidator(new StringValidator(validateOnAcquire: false, validateOnReturn: true, validateDelegate: (obj) =>
                     {
                         return Regex.IsMatch(obj, validPattern);
@@ -1121,7 +1121,7 @@ namespace Commons.Test.Pool
                             return new SelfValidatingPoco(isValid: (val >= 0.5d));
                         }
                     })
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .WithValidator(new PocoValidator(validateOnAcquire: true, validateOnReturn: true))
                     .AcquiredInvalidLimit(10)
                     .Instance();
@@ -1176,7 +1176,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(250)
                     .WithCreator(() => new SelfValidatingPoco(isValid: (ExtractFlag(flags) >= 2)))
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .WithValidator(new PocoValidator(validateOnAcquire: true, validateOnReturn: true))
                     .AcquiredInvalidLimit(250)
                     .Instance();
@@ -1237,7 +1237,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(10)
                     .WithCreator(() => Guid.NewGuid().ToString())
-                    .WithDesctroyer((obj) => { /* No-Op*/ })
+                    .WithDestroyer((obj) => { /* No-Op*/ })
                     .WithValidator(new StringValidator(validateOnAcquire: true, validateOnReturn: false, validateDelegate: (obj) => false))
                     .AcquiredInvalidLimit(-5);
 
@@ -1254,7 +1254,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(10)
                     .WithCreator(() => new DisposablePoco())
-                    .WithDesctroyer(null)
+                    .WithDestroyer(null)
                     .Instance();
 
                 DisposablePoco obj = objectPool.Acquire();
@@ -1275,7 +1275,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(10)
                     .WithCreator(() => new DisposablePoco())
-                    .WithDesctroyer(null)
+                    .WithDestroyer(null)
                     .Instance();
 
                 DisposablePoco obj = objectPool.Acquire();
@@ -1295,7 +1295,7 @@ namespace Commons.Test.Pool
                     .InitialSize(0)
                     .MaxSize(10)
                     .WithCreator(() => new DisposablePoco())
-                    .WithDesctroyer(null)
+                    .WithDestroyer(null)
                     .Instance();
 
                 List<DisposablePoco> activeInstances = new List<DisposablePoco>();

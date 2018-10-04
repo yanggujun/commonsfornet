@@ -72,7 +72,7 @@ namespace Commons.Pool
             return this;
         }
 
-        public IPoolDescriptor<T> WithDesctroyer(Action<T> destroyer)
+        public IPoolDescriptor<T> WithDestroyer(Action<T> destroyer)
         {
             this.destroyer = destroyer;
             return this;
