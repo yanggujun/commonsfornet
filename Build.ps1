@@ -10,7 +10,7 @@ $StartDate = [datetime]::ParseExact("02/15/2015", "MM/dd/yyyy", [System.Globaliz
 $Today = (Get-Date)
 $BuildNo = ($Today - $StartDate).Days
 
-$version = "0.3.0.$BuildNo"
+$version = "0.4.0.$BuildNo"
 
 $BuildInfo = "Building project Commons, version: {0}" -f $version
 
@@ -50,11 +50,11 @@ dotnet build $src\Commons.Reflect\Commons.Reflect.csproj -c Release --no-depende
 dotnet build $src\Commons.Pool\Commons.Pool.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
 dotnet build $src\Commons.Json\Commons.Json.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
 dotnet build $src\Commons.Messaging\Commons.Messaging.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
-dotnet build $src\Commons.Test\Commons.Test.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netcoreapp1.0 --no-incremental 
-dotnet build $src\Commons.Perf\Commons.Perf.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netcoreapp1.0 --no-incremental 
+dotnet build $src\Commons.Test\Commons.Test.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netcoreapp2.1 --no-incremental 
+dotnet build $src\Commons.Perf\Commons.Perf.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netcoreapp2.1 --no-incremental 
 
 pushd $OUTPUT\netstandard1.3
-dotnet test $src\Commons.Test\Commons.Test.csproj -o $OUTPUT\netstandard1.3 --no-build -f netcoreapp1.0
+dotnet test $src\Commons.Test\Commons.Test.csproj -o $OUTPUT\netstandard1.3 --no-build -f netcoreapp2.1
 popd
 
 
