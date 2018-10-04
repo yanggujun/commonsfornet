@@ -8,7 +8,6 @@
     <PackageId>Commons.Test</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <RuntimeIdentifiers>win10-x64;win81-x64;ubuntu.14.04-x64;debian.8-x64;osx.10.10-x64</RuntimeIdentifiers>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp2.1 ' ">$(PackageTargetFallback);netcore50;portable-net45+win8</PackageTargetFallback>
   </PropertyGroup>
 
   <ItemGroup>

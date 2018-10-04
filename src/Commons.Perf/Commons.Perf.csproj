@@ -6,7 +6,6 @@
     <OutputType>Exe</OutputType>
     <PackageId>Commons.Perf</PackageId>
     <RuntimeIdentifiers>win10-x64;win81-x64;ubuntu.14.04-x64;debian.8-x64</RuntimeIdentifiers>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
