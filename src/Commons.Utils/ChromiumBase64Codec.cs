@@ -285,7 +285,7 @@ namespace Commons.Utils
             0x01ffffff, 0x01ffffff, 0x01ffffff, 0x01ffffff
         };
 
-        public string Encode(byte[] bytes)
+        public static string Encode(byte[] bytes)
         {
             if (bytes == null)
             {
@@ -340,7 +340,7 @@ namespace Commons.Utils
             return new string(str);
         }
 
-        public byte[] Decode(string str)
+        public static byte[] Decode(string str)
         {
             if (string.IsNullOrEmpty(str))
             {

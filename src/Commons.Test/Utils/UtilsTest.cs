@@ -441,5 +441,22 @@ namespace Commons.Test.Utils
             Assert.Equal(dt.Second, newTime.Second);
             Assert.Equal(dt.Millisecond, newTime.Millisecond);
         }
+
+        [Fact]
+        public void TestChromiumBase64Codec()
+        {
+            var rand = new Random((int)(DateTime.Now.Ticks & 0x0000ffff));
+            var bytes = new byte[1000];
+            rand.NextBytes(bytes);
+            var chrm = bytes.ToBase64String();
+            var net = Convert.ToBase64String(bytes);
+            Assert.Equal(net, chrm);
+            var back = chrm.FromBase64String();
+            Assert.Equal(1000, back.Length);
+            for (var i = 0; i < 1000; i++)
+            {
+                Assert.Equal(bytes[i], back[i]);
+            }
+        }
     }
 }

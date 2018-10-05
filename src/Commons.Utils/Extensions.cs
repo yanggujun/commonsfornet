@@ -195,5 +195,25 @@ namespace Commons.Utils
             timeArray[22] = (char)(ms % 10 + Zero);
             return new string(timeArray);
         }
+
+        /// <summary>
+        /// A faster alternative for Convert.ToBase64String
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static string ToBase64String(this byte[] bytes)
+        {
+            return ChromiumBase64Codec.Encode(bytes);
+        }
+
+        /// <summary>
+        /// A faster alternative for Convert.FromBase64String
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        public static byte[] FromBase64String(this string origin)
+        {
+            return ChromiumBase64Codec.Decode(origin);
+        }
     }
 }

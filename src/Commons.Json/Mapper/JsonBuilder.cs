@@ -112,7 +112,7 @@ namespace Commons.Json.Mapper
         private void SerializeByteArray(object target, StringBuilder localBuffer)
         {
             var bytes = (byte[])target;
-            localBuffer.Append(JsonTokens.Quoter).Append(Convert.ToBase64String(bytes)).Append(JsonTokens.Quoter);
+            localBuffer.Append(JsonTokens.Quoter).Append(bytes.ToBase64String()).Append(JsonTokens.Quoter);
         }
 
         private void SerializeObject(object target, StringBuilder localBuffer)
