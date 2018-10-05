@@ -156,11 +156,11 @@ namespace Commons.Utils
 #endif
         }
 
-		/// <summary>
-		/// Converts the datetime to string format "MM/dd/yyyy HH:mm:ss.fff"
-		/// </summary>
-		/// <param name="dt"></param>
-		/// <returns></returns>
+        /// <summary>
+        /// Converts the datetime to string format "MM/dd/yyyy HH:mm:ss.fff"
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
         public static string FastToStringInvariantCulture(this DateTime dt)
         {
             var timeArray = new char[23];

@@ -47,14 +47,14 @@ namespace Commons.Json
         public const char F = 'f';
         public const char N = 'n';
         public const char Exp = 'e';
-		public const char Plus = '+';
-		public const char Minus = '-';
+        public const char Plus = '+';
+        public const char Minus = '-';
         public const string Null = "null";
         public const string Tab = "    ";
         public const string True = "true";
         public const string False = "false";
-		public const string UpperCaseTrue = "True";
-		public const string UpperCaseFalse = "False";
-		public const string UpperCaseNull = "Null";
+        public const string UpperCaseTrue = "True";
+        public const string UpperCaseFalse = "False";
+        public const string UpperCaseNull = "Null";
     }
 }

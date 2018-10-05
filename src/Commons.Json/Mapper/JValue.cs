@@ -36,163 +36,163 @@ namespace Commons.Json.Mapper
     {
         public JNumber(string value, NumberType pType)
         {
-			if (string.IsNullOrEmpty(value))
-			{
-				throw new ArgumentException(Messages.InvalidNumber);
-			} 
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException(Messages.InvalidNumber);
+            } 
             Value = value;
             NumType = pType;
         }
 
-		public JNumber(Int32 v)
-		{
-			Value = v.ToString();
-			NumType = NumberType.Integer;
-		}
+        public JNumber(Int32 v)
+        {
+            Value = v.ToString();
+            NumType = NumberType.Integer;
+        }
 
-		public JNumber(Int64 v)
-		{
-			Value = v.ToString();
-			NumType = NumberType.Integer;
-		}
+        public JNumber(Int64 v)
+        {
+            Value = v.ToString();
+            NumType = NumberType.Integer;
+        }
 
-		public JNumber(Int16 v)
-		{
-			Value = v.ToString();
-			NumType = NumberType.Integer;
-		}
+        public JNumber(Int16 v)
+        {
+            Value = v.ToString();
+            NumType = NumberType.Integer;
+        }
 
-		public JNumber(byte v)
-		{
-			Value = v.ToString();
-			NumType = NumberType.Integer;
-		}
+        public JNumber(byte v)
+        {
+            Value = v.ToString();
+            NumType = NumberType.Integer;
+        }
 
-		public JNumber(float v)
-		{
-			Value = v.ToString(CultureInfo.InvariantCulture);
-			NumType = NumberType.Decimal;
-		}
+        public JNumber(float v)
+        {
+            Value = v.ToString(CultureInfo.InvariantCulture);
+            NumType = NumberType.Decimal;
+        }
 
-		public JNumber(double v)
-		{
-			Value = v.ToString(CultureInfo.InvariantCulture);
-			NumType = NumberType.Decimal;
-		}
+        public JNumber(double v)
+        {
+            Value = v.ToString(CultureInfo.InvariantCulture);
+            NumType = NumberType.Decimal;
+        }
 
-		public JNumber(decimal v)
-		{
-			Value = v.ToString(CultureInfo.InvariantCulture);
-			NumType = NumberType.Decimal;
-		}
+        public JNumber(decimal v)
+        {
+            Value = v.ToString(CultureInfo.InvariantCulture);
+            NumType = NumberType.Decimal;
+        }
 
 #pragma warning disable 3001, 3002
 
-		public JNumber(UInt64 v)
-		{
-			Value = v.ToString(CultureInfo.InvariantCulture);
-			NumType = NumberType.Integer;
-		}
+        public JNumber(UInt64 v)
+        {
+            Value = v.ToString(CultureInfo.InvariantCulture);
+            NumType = NumberType.Integer;
+        }
 
-		public JNumber(UInt16 v)
-		{
-			Value = v.ToString(CultureInfo.InvariantCulture);
-			NumType = NumberType.Integer;
-		}
+        public JNumber(UInt16 v)
+        {
+            Value = v.ToString(CultureInfo.InvariantCulture);
+            NumType = NumberType.Integer;
+        }
 
-		public JNumber(UInt32 v)
-		{
-			Value = v.ToString(CultureInfo.InvariantCulture);
-			NumType = NumberType.Integer;
-		}
+        public JNumber(UInt32 v)
+        {
+            Value = v.ToString(CultureInfo.InvariantCulture);
+            NumType = NumberType.Integer;
+        }
 
-		public JNumber(sbyte v)
-		{
-			Value = v.ToString(CultureInfo.InvariantCulture);
-			NumType = NumberType.Integer;
-		}
+        public JNumber(sbyte v)
+        {
+            Value = v.ToString(CultureInfo.InvariantCulture);
+            NumType = NumberType.Integer;
+        }
 #pragma warning restore 3001, 3002
 
-		public NumberType NumType { get; private set; }
+        public NumberType NumType { get; private set; }
 
-		public float GetFloat()
-		{
-			return float.Parse(Value);
-		}
+        public float GetFloat()
+        {
+            return float.Parse(Value);
+        }
 
-		public double GetDouble()
-		{
-			return double.Parse(Value);
-		}
+        public double GetDouble()
+        {
+            return double.Parse(Value);
+        }
 
-		public decimal GetDecimal()
-		{
-			return decimal.Parse(Value);
-		}
+        public decimal GetDecimal()
+        {
+            return decimal.Parse(Value);
+        }
 
-		public int GetInt32()
-		{
-			return int.Parse(Value);
-		}
+        public int GetInt32()
+        {
+            return int.Parse(Value);
+        }
 
-		public long GetInt64()
-		{
-			return long.Parse(Value);
-		}
+        public long GetInt64()
+        {
+            return long.Parse(Value);
+        }
 
-		public short GetInt16()
-		{
-			return short.Parse(Value);
-		}
+        public short GetInt16()
+        {
+            return short.Parse(Value);
+        }
 
-		public byte GetByte()
-		{
-			return byte.Parse(Value);
-		}
+        public byte GetByte()
+        {
+            return byte.Parse(Value);
+        }
 
 #pragma warning disable 3002
-		public uint GetUInt32()
-		{
-			return uint.Parse(Value);
-		}
+        public uint GetUInt32()
+        {
+            return uint.Parse(Value);
+        }
 
-		public ulong GetUInt64()
-		{
-			return ulong.Parse(Value);
-		}
+        public ulong GetUInt64()
+        {
+            return ulong.Parse(Value);
+        }
 
-		public ushort GetUInt16()
-		{
-			return ushort.Parse(Value);
-		}
+        public ushort GetUInt16()
+        {
+            return ushort.Parse(Value);
+        }
 
-		public sbyte GetSByte()
-		{
-			return sbyte.Parse(Value);
-		}
+        public sbyte GetSByte()
+        {
+            return sbyte.Parse(Value);
+        }
 #pragma warning restore 3002
 
-		public override string ToString()
-		{
-			return Value;
-		}
-	}
+        public override string ToString()
+        {
+            return Value;
+        }
+    }
 
     public class JString : JValue
     {
-		public JString(string value)
-		{
-			Value = value;
-		}
+        public JString(string value)
+        {
+            Value = value;
+        }
 
-		public override string ToString()
-		{
-			if (string.IsNullOrEmpty(Value))
-			{
-				return new StringBuilder().Append(JsonTokens.Quoter).Append(JsonTokens.Quoter).ToString();
-			}
-			return new StringBuilder().Append(JsonTokens.Quoter).Append(Value).Append(JsonTokens.Quoter).ToString();
-		}
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(Value))
+            {
+                return new StringBuilder().Append(JsonTokens.Quoter).Append(JsonTokens.Quoter).ToString();
+            }
+            return new StringBuilder().Append(JsonTokens.Quoter).Append(Value).Append(JsonTokens.Quoter).ToString();
+        }
     }
 
     public class JBool : JValue
@@ -247,11 +247,11 @@ namespace Commons.Json.Mapper
             }
         }
 
-		public override string ToString()
-		{
-			return Value;
-		}
-	}
+        public override string ToString()
+        {
+            return Value;
+        }
+    }
 
     public class JNull : JValue
     {
@@ -280,11 +280,11 @@ namespace Commons.Json.Mapper
             }
         }
 
-		public override string ToString()
-		{
-			return JsonTokens.Null;
-		}
-	}
+        public override string ToString()
+        {
+            return JsonTokens.Null;
+        }
+    }
 
     public enum NumberType
     {

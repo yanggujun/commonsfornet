@@ -19,7 +19,7 @@ using System.Collections.Concurrent;
 
 namespace Commons.Json.Mapper
 {
-	internal class MapperContainer
+    internal class MapperContainer
     {
         private ConcurrentDictionary<Type, MapperImpl> mappers = new ConcurrentDictionary<Type, MapperImpl>();
 

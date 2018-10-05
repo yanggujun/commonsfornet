@@ -25,7 +25,7 @@ using EmployeeJson = Commons.Test.Poco.Employee;
 
 namespace Commons.Test.Json
 {
-	public class JValueTest
+    public class JValueTest
     {
         [Fact]
         public void TestJObject01()
@@ -35,7 +35,7 @@ namespace Commons.Test.Json
             employee.SetString("Site", "London");
             employee.SetString("Department", "hardware");
             employee.SetInt32("Age", 40);
-			employee.SetString("Birthday", new DateTime(1975, 10, 2).ToString("MM/dd/yyyy"));
+            employee.SetString("Birthday", new DateTime(1975, 10, 2).ToString("MM/dd/yyyy"));
             employee.SetBool("Married", true);
             employee.SetString("Position", "manager");
             var json = employee.ToString();
@@ -204,7 +204,7 @@ namespace Commons.Test.Json
             var json = "[0, 1, 2, 3, 4, 5, 6, \"value1\", true, 10.5386, 2.12453, 4.3]";
             var engine = new ParseEngine();
             var array = engine.Parse(json) as JArray;
-			var a0 = array[0] as JNumber;
+            var a0 = array[0] as JNumber;
             Assert.NotNull(a0);
             Assert.Equal(0, a0.GetByte());
             var a1 = array[1] as JNumber;
@@ -225,7 +225,7 @@ namespace Commons.Test.Json
             var a6 = array[6] as JNumber;
             Assert.NotNull(a6);
             Assert.Equal(6, a6.GetInt64());
-			Assert.Equal("value1", array[7].Value);
+            Assert.Equal("value1", array[7].Value);
             Assert.True((array[8] as JBool) == JBool.True);
             var a9 = array[9] as JNumber;
             Assert.NotNull(a9);
@@ -277,8 +277,8 @@ namespace Commons.Test.Json
         [Fact]
         public void TestJBoolean()
         {
-			var b1 = JBool.False;
-			var b2 = JBool.False;
+            var b1 = JBool.False;
+            var b2 = JBool.False;
             Assert.True(b1.Equals(b2));
         }
 

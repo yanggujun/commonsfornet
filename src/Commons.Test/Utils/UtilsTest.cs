@@ -25,7 +25,7 @@ using Xunit;
 
 namespace Commons.Test.Utils
 {
-	public class UtilsTest
+    public class UtilsTest
     {
         private static readonly object locker = new object();
         [Fact]

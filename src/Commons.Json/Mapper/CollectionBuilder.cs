@@ -26,88 +26,88 @@ namespace Commons.Json.Mapper
 {
     internal class CollectionBuilder
     {
-		private const string AddMethod = "Add";
-		private const string AddLastMethod = "AddLast";
-		private const string PushMethod = "Push";
-		private const string EnqueueMethod = "Enqueue";
-	    private readonly ConcurrentDictionary<Type, Action<IEnumerable, object>> collectionAdders = new ConcurrentDictionary<Type, Action<IEnumerable, object>>();
+        private const string AddMethod = "Add";
+        private const string AddLastMethod = "AddLast";
+        private const string PushMethod = "Push";
+        private const string EnqueueMethod = "Enqueue";
+        private readonly ConcurrentDictionary<Type, Action<IEnumerable, object>> collectionAdders = new ConcurrentDictionary<Type, Action<IEnumerable, object>>();
 
-	    private readonly ConcurrentDictionary<Type, Func<object>> constructors = new ConcurrentDictionary<Type, Func<object>>();
+        private readonly ConcurrentDictionary<Type, Func<object>> constructors = new ConcurrentDictionary<Type, Func<object>>();
 
         public void Configure(Type type, Action<IEnumerable, object> builder)
         {
         }
 
-	    public IEnumerable Construct(Type type)
-	    {
-		    if (!type.IsCollection())
-		    {
-			    throw new ArgumentException();
-		    }
+        public IEnumerable Construct(Type type)
+        {
+            if (!type.IsCollection())
+            {
+                throw new ArgumentException();
+            }
 
-		    if (!constructors.ContainsKey(type))
-		    {
-			    var newExp = Expression.New(type.GetConstructor(Type.EmptyTypes));
-			    constructors[type] = (Func<object>)Expression.Lambda(newExp).Compile();
-		    }
-			return (IEnumerable)constructors[type]();
-	    }
+            if (!constructors.ContainsKey(type))
+            {
+                var newExp = Expression.New(type.GetConstructor(Type.EmptyTypes));
+                constructors[type] = (Func<object>)Expression.Lambda(newExp).Compile();
+            }
+            return (IEnumerable)constructors[type]();
+        }
 
         public void Build(IEnumerable collection, object value)
         {
             var type = collection.GetType();
-			Action<IEnumerable, object> builder;
-			if (collectionAdders.ContainsKey(type))
-			{
-				builder = collectionAdders[type];
-			}
-			else if (type.IsGenericType())
-			{
-				var genericType = type.GetGenericTypeDefinition();
-				if (genericType == typeof(List<>) || genericType == typeof(HashSet<>))
-				{
-					builder = CreateAddDelegate(type, AddMethod);
-					collectionAdders[type] = builder;
-				}
-				else if (genericType == typeof(Stack<>))
-				{
-					builder = CreateAddDelegate(type, PushMethod);
-					collectionAdders[type] = builder;
-				}
-				else if (genericType == typeof(Queue<>))
-				{
-					builder = CreateAddDelegate(type, EnqueueMethod);
-					collectionAdders[type] = builder;
-				}
-				else if (genericType == typeof(LinkedList<>))
-				{
-					builder = CreateAddDelegate(type, AddLastMethod);
-					collectionAdders[type] = builder;
-				}
-				else
-				{
-					throw new NotSupportedException();
-				}
-			}
+            Action<IEnumerable, object> builder;
+            if (collectionAdders.ContainsKey(type))
+            {
+                builder = collectionAdders[type];
+            }
+            else if (type.IsGenericType())
+            {
+                var genericType = type.GetGenericTypeDefinition();
+                if (genericType == typeof(List<>) || genericType == typeof(HashSet<>))
+                {
+                    builder = CreateAddDelegate(type, AddMethod);
+                    collectionAdders[type] = builder;
+                }
+                else if (genericType == typeof(Stack<>))
+                {
+                    builder = CreateAddDelegate(type, PushMethod);
+                    collectionAdders[type] = builder;
+                }
+                else if (genericType == typeof(Queue<>))
+                {
+                    builder = CreateAddDelegate(type, EnqueueMethod);
+                    collectionAdders[type] = builder;
+                }
+                else if (genericType == typeof(LinkedList<>))
+                {
+                    builder = CreateAddDelegate(type, AddLastMethod);
+                    collectionAdders[type] = builder;
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
             else
             {
-	            throw new NotSupportedException();
+                throw new NotSupportedException();
             }
-			builder(collection, value);
+            builder(collection, value);
         }
 
-	    private Action<IEnumerable, object> CreateAddDelegate(Type collectionType, string methodName)
-	    {
-	        var colParam = Expression.Parameter(typeof (IEnumerable), "col");
-	        var itemParam = Expression.Parameter(typeof (object), "item");
+        private Action<IEnumerable, object> CreateAddDelegate(Type collectionType, string methodName)
+        {
+            var colParam = Expression.Parameter(typeof (IEnumerable), "col");
+            var itemParam = Expression.Parameter(typeof (object), "item");
 
-	        var itemType = collectionType.GetGenericArguments()[0];
-		    var method = collectionType.GetMethod(methodName, new[] {itemType});
-	        var castItemExp = Expression.Convert(itemParam, itemType);
-	        var castColExp = Expression.Convert(colParam, collectionType);
+            var itemType = collectionType.GetGenericArguments()[0];
+            var method = collectionType.GetMethod(methodName, new[] {itemType});
+            var castItemExp = Expression.Convert(itemParam, itemType);
+            var castColExp = Expression.Convert(colParam, collectionType);
 
-	        var addExp = Expression.Call(castColExp, method, castItemExp);
-		    return Expression.Lambda<Action<IEnumerable, object>>(addExp, colParam, itemParam).Compile();
-	    }
+            var addExp = Expression.Call(castColExp, method, castItemExp);
+            return Expression.Lambda<Action<IEnumerable, object>>(addExp, colParam, itemParam).Compile();
+        }
     }
 }

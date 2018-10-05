@@ -20,7 +20,7 @@ using System;
 
 namespace Commons.Json
 {
-	[CLSCompliant(true)]
+    [CLSCompliant(true)]
     public static class JsonMapper
     {
         private static object locker = new object();

@@ -7,6 +7,6 @@ namespace Commons.Messaging
 {
     public interface IMessageConfig
     {
-		IMessageConfig BindTo(string address);
+        IMessageConfig BindTo(string address);
     }
 }

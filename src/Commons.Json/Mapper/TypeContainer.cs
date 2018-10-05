@@ -21,7 +21,7 @@ using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-	internal class TypeContainer
+    internal class TypeContainer
     {
         private ConcurrentDictionary<Type, TypeManager> typeManagers = new ConcurrentDictionary<Type, TypeManager>();
 

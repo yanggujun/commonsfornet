@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Commons.Json.Mapper
 {
-	internal class ConfigContainer
+    internal class ConfigContainer
     {
-		public string DateFormat { get; set; }
+        public string DateFormat { get; set; }
     }
 }

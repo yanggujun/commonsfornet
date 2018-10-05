@@ -7,11 +7,11 @@ namespace Commons.Messaging
 {
     public interface IConsumer<T> : IConsumer, IDisposable
     {
-		void Register(Action<T> handler);
+        void Register(Action<T> handler);
     }
 
-	public interface IConsumer
-	{
-		string Address { get; }
-	}
+    public interface IConsumer
+    {
+        string Address { get; }
+    }
 }

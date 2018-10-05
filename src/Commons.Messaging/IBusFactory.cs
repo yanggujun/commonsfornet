@@ -7,6 +7,6 @@ namespace Commons.Messaging
 {
     public interface IBusFactory
     {
-		IBus CreateHost(Action<IConfigurator> configure);
+        IBus CreateHost(Action<IConfigurator> configure);
     }
 }

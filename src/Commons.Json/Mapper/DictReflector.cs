@@ -22,37 +22,37 @@ namespace Commons.Json.Mapper
 {
     public class DictReflector
     {
-		private readonly ConcurrentDictionary<Type, Tuple<Func<object, string>, Func<object, object>>> serializeMapper = 
-			new ConcurrentDictionary<Type, Tuple<Func<object, string>, Func<object, object>>>();
-		private readonly ConcurrentDictionary<Type, Tuple<Func<object>, Action<object, string, object>>> deserializeMapper = new ConcurrentDictionary<Type, Tuple<Func<object>, Action<object, string, object>>>();
+        private readonly ConcurrentDictionary<Type, Tuple<Func<object, string>, Func<object, object>>> serializeMapper = 
+            new ConcurrentDictionary<Type, Tuple<Func<object, string>, Func<object, object>>>();
+        private readonly ConcurrentDictionary<Type, Tuple<Func<object>, Action<object, string, object>>> deserializeMapper = new ConcurrentDictionary<Type, Tuple<Func<object>, Action<object, string, object>>>();
 
-		public Tuple<Func<object, string>, Func<object, object>> GetReadDelegate(Type dictType, Type keyType, Type valueType)
-		{
-			if (serializeMapper.ContainsKey(dictType))
-			{
-				return serializeMapper[dictType];
-			}
-			var kvpGenericType = typeof(KeyValuePair<,>);
-			var kvpType = kvpGenericType.MakeGenericType(keyType, valueType);
-			
-			var getKey = kvpType.CreateGetKeyDelegate();
-			var getValue = kvpType.CreateGetValueDelegate();
-			var tuple = new Tuple<Func<object, string>, Func<object, object>>(getKey, getValue);
-			serializeMapper[dictType] = tuple;
-			return tuple;
-		}
+        public Tuple<Func<object, string>, Func<object, object>> GetReadDelegate(Type dictType, Type keyType, Type valueType)
+        {
+            if (serializeMapper.ContainsKey(dictType))
+            {
+                return serializeMapper[dictType];
+            }
+            var kvpGenericType = typeof(KeyValuePair<,>);
+            var kvpType = kvpGenericType.MakeGenericType(keyType, valueType);
+            
+            var getKey = kvpType.CreateGetKeyDelegate();
+            var getValue = kvpType.CreateGetValueDelegate();
+            var tuple = new Tuple<Func<object, string>, Func<object, object>>(getKey, getValue);
+            serializeMapper[dictType] = tuple;
+            return tuple;
+        }
 
-		public Tuple<Func<object>, Action<object, string, object>> GetDeserializeDelegates(Type dictType, Type valueType)
-		{
-			if (deserializeMapper.ContainsKey(dictType))
-			{
-				return deserializeMapper[dictType];
-			}
-			var add = dictType.CreateDictAddDelegate(valueType);
-			var create = dictType.CreateNewDelegate();
-			var tuple = new Tuple<Func<object>, Action<object, string, object>>(create, add);
+        public Tuple<Func<object>, Action<object, string, object>> GetDeserializeDelegates(Type dictType, Type valueType)
+        {
+            if (deserializeMapper.ContainsKey(dictType))
+            {
+                return deserializeMapper[dictType];
+            }
+            var add = dictType.CreateDictAddDelegate(valueType);
+            var create = dictType.CreateNewDelegate();
+            var tuple = new Tuple<Func<object>, Action<object, string, object>>(create, add);
             deserializeMapper[dictType] = tuple;
-			return tuple;
-		}
+            return tuple;
+        }
     }
 }

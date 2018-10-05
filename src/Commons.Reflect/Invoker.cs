@@ -67,8 +67,8 @@ namespace Commons.Reflect
                 setters[set.Name] = setter;
             }
 
-			Getters = getters.Select(x => new Tuple<string, Func<object, object>>(x.Key, x.Value)).ToArray();
-			Setters = setters.Select(x => new Tuple<string, Action<object, object>>(x.Key, x.Value)).ToArray();
+            Getters = getters.Select(x => new Tuple<string, Func<object, object>>(x.Key, x.Value)).ToArray();
+            Setters = setters.Select(x => new Tuple<string, Action<object, object>>(x.Key, x.Value)).ToArray();
         }
 
         public object GetProperty(object target, string name)
@@ -100,34 +100,34 @@ namespace Commons.Reflect
             setter(target, value);
         }
 
-	    public Func<object, object> GetGetter(string name)
-	    {
-			Func<object, object> getter;
-			if (!getters.TryGetValue(name, out getter))
-			{
-				getter = null;
-			}
-			return getter;
-	    }
+        public Func<object, object> GetGetter(string name)
+        {
+            Func<object, object> getter;
+            if (!getters.TryGetValue(name, out getter))
+            {
+                getter = null;
+            }
+            return getter;
+        }
 
-	    public Action<object, object> GetSetter(string name)
-	    {
-			Action<object, object> setter;
-			if (!setters.TryGetValue(name, out setter))
-			{
-				setter = null;
-			}
-			return setter;
-	    }
+        public Action<object, object> GetSetter(string name)
+        {
+            Action<object, object> setter;
+            if (!setters.TryGetValue(name, out setter))
+            {
+                setter = null;
+            }
+            return setter;
+        }
 
-		public Tuple<string, Func<object, object>>[] Getters
-		{
-			get; private set;
-		}
+        public Tuple<string, Func<object, object>>[] Getters
+        {
+            get; private set;
+        }
 
-		public Tuple<string, Action<object, object>>[] Setters
-		{
-			get; private set;
-		}
+        public Tuple<string, Action<object, object>>[] Setters
+        {
+            get; private set;
+        }
     }
 }

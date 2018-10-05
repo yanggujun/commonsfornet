@@ -2,11 +2,11 @@
 
 namespace Commons.Messaging
 {
-	public class BusFactory : IBusFactory
+    public class BusFactory : IBusFactory
     {
-	    public IBus CreateHost(Action<IConfigurator> configure)
-	    {
-		    throw new NotImplementedException();
-	    }
+        public IBus CreateHost(Action<IConfigurator> configure)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

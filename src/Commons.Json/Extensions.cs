@@ -67,8 +67,8 @@ namespace Commons.Json
 
         public static bool IsNullable(this Type type, out Type underlyingType)
         {
-			underlyingType = Nullable.GetUnderlyingType(type);
-			return underlyingType != null;
+            underlyingType = Nullable.GetUnderlyingType(type);
+            return underlyingType != null;
         }
 
         public static bool IsNullablePrimitive(this Type type)
@@ -190,141 +190,141 @@ namespace Commons.Json
             return true;
         }
 
-		public static Func<object, string> CreateGetKeyDelegate(this Type kvpType)
-		{
-			var param = Expression.Parameter(typeof(object), "kvp");
-			var castExp = Expression.Convert(param, kvpType);
-			var getProp = kvpType.GetProperty("Key");
-			var method = getProp.GetGetMethod();
-			var getExp = Expression.Call(castExp, method);
-			var retExp = Expression.Convert(getExp, typeof(string));
-			var methodGetKey = (Func<object, string>)Expression.Lambda(retExp, param).Compile();
-			return methodGetKey;
-		}
+        public static Func<object, string> CreateGetKeyDelegate(this Type kvpType)
+        {
+            var param = Expression.Parameter(typeof(object), "kvp");
+            var castExp = Expression.Convert(param, kvpType);
+            var getProp = kvpType.GetProperty("Key");
+            var method = getProp.GetGetMethod();
+            var getExp = Expression.Call(castExp, method);
+            var retExp = Expression.Convert(getExp, typeof(string));
+            var methodGetKey = (Func<object, string>)Expression.Lambda(retExp, param).Compile();
+            return methodGetKey;
+        }
 
-		public static Func<object, object> CreateGetValueDelegate(this Type kvpType)
-		{
-			var param = Expression.Parameter(typeof(object), "kvp");
-			var castExp = Expression.Convert(param, kvpType);
-			var getProp = kvpType.GetProperty("Value");
-			var method = getProp.GetGetMethod();
-			var getExp = Expression.Call(castExp, method);
-			var retExp = Expression.Convert(getExp, typeof(object));
-			var methodGetValue = (Func<object, object>)Expression.Lambda(retExp, param).Compile();
-			return methodGetValue;
-		}
+        public static Func<object, object> CreateGetValueDelegate(this Type kvpType)
+        {
+            var param = Expression.Parameter(typeof(object), "kvp");
+            var castExp = Expression.Convert(param, kvpType);
+            var getProp = kvpType.GetProperty("Value");
+            var method = getProp.GetGetMethod();
+            var getExp = Expression.Call(castExp, method);
+            var retExp = Expression.Convert(getExp, typeof(object));
+            var methodGetValue = (Func<object, object>)Expression.Lambda(retExp, param).Compile();
+            return methodGetValue;
+        }
 
-		public static Action<object, string, object> CreateDictAddDelegate(this Type dictType, Type valueType)
-		{
-			var dictParam = Expression.Parameter(typeof(object), "dict");
-			var keyParam = Expression.Parameter(typeof(string), "key");
-			var valueParam = Expression.Parameter(typeof(object), "value");
-			var castDictExp = Expression.Convert(dictParam, dictType);
-			var castValueExp = Expression.Convert(valueParam, valueType);
+        public static Action<object, string, object> CreateDictAddDelegate(this Type dictType, Type valueType)
+        {
+            var dictParam = Expression.Parameter(typeof(object), "dict");
+            var keyParam = Expression.Parameter(typeof(string), "key");
+            var valueParam = Expression.Parameter(typeof(object), "value");
+            var castDictExp = Expression.Convert(dictParam, dictType);
+            var castValueExp = Expression.Convert(valueParam, valueType);
 
-			var addMethod = dictType.GetMethod("Add");
-			var addExp = Expression.Call(castDictExp, addMethod, keyParam, castValueExp);
-			var addDelegate = (Action<object, string, object>)Expression.Lambda(addExp, dictParam, keyParam, valueParam).Compile();
-			return addDelegate;
-		}
+            var addMethod = dictType.GetMethod("Add");
+            var addExp = Expression.Call(castDictExp, addMethod, keyParam, castValueExp);
+            var addDelegate = (Action<object, string, object>)Expression.Lambda(addExp, dictParam, keyParam, valueParam).Compile();
+            return addDelegate;
+        }
 
-		public static Func<object> CreateNewDelegate(this Type dictType)
-		{
-			var constructor = dictType.GetConstructor(Type.EmptyTypes);
+        public static Func<object> CreateNewDelegate(this Type dictType)
+        {
+            var constructor = dictType.GetConstructor(Type.EmptyTypes);
 
-			var newExp = Expression.New(constructor);
-			return (Func<object>)Expression.Lambda(newExp).Compile();
-		}
+            var newExp = Expression.New(constructor);
+            return (Func<object>)Expression.Lambda(newExp).Compile();
+        }
 
-		/// <summary>
-		/// Only recognize the format "MM/dd/yyyy HH:mm:ss.fff"
-		/// </summary>
-		/// <param name="str"></param>
-		/// <param name="dt"></param>
-		/// <returns></returns>
-		public static bool TryFastParseDateInvariantCulture(this string str, out DateTime dt)
-		{
-			const string format = "MM/dd/yyyy HH:mm:ss.fff";
-			if (str.Length > format.Length)
-			{
-				dt = DateTime.MinValue;
-				return false;
-			}
-			int year = 0;
-			int month = 0;
-			int day = 0;
-			int hour = 0;
-			int min = 0;
-			int second = 0;
-			int ms = 0;
-			for (var i = 0; i < str.Length; i++)
-			{
-				var f = format[i];
-				switch (f)
-				{
-					case 'M':
-						month = Multiply10(month) + DigitTable(str[i]);
-						break;
-					case 'd':
-						day = Multiply10(day) + DigitTable(str[i]);
-						break;
-					case 'y':
-						year = Multiply10(year) + DigitTable(str[i]);
-						break;
-					case 'H':
-						hour = Multiply10(hour) + DigitTable(str[i]);
-						break;
-					case 'm':
-						min = Multiply10(min) + DigitTable(str[i]);
-						break;
-					case 's':
-						second = Multiply10(second) + DigitTable(str[i]);
-						break;
-					case 'f':
-						ms = Multiply10(ms) + DigitTable(str[i]);
-						break;
-					case ':':
-					case '/':
-					case '.':
-					case ' ':
-					case '-':
-						break;
-					default:
-						dt = DateTime.MinValue;
-						return false;
-				}
-			}
+        /// <summary>
+        /// Only recognize the format "MM/dd/yyyy HH:mm:ss.fff"
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public static bool TryFastParseDateInvariantCulture(this string str, out DateTime dt)
+        {
+            const string format = "MM/dd/yyyy HH:mm:ss.fff";
+            if (str.Length > format.Length)
+            {
+                dt = DateTime.MinValue;
+                return false;
+            }
+            int year = 0;
+            int month = 0;
+            int day = 0;
+            int hour = 0;
+            int min = 0;
+            int second = 0;
+            int ms = 0;
+            for (var i = 0; i < str.Length; i++)
+            {
+                var f = format[i];
+                switch (f)
+                {
+                    case 'M':
+                        month = Multiply10(month) + DigitTable(str[i]);
+                        break;
+                    case 'd':
+                        day = Multiply10(day) + DigitTable(str[i]);
+                        break;
+                    case 'y':
+                        year = Multiply10(year) + DigitTable(str[i]);
+                        break;
+                    case 'H':
+                        hour = Multiply10(hour) + DigitTable(str[i]);
+                        break;
+                    case 'm':
+                        min = Multiply10(min) + DigitTable(str[i]);
+                        break;
+                    case 's':
+                        second = Multiply10(second) + DigitTable(str[i]);
+                        break;
+                    case 'f':
+                        ms = Multiply10(ms) + DigitTable(str[i]);
+                        break;
+                    case ':':
+                    case '/':
+                    case '.':
+                    case ' ':
+                    case '-':
+                        break;
+                    default:
+                        dt = DateTime.MinValue;
+                        return false;
+                }
+            }
 
-			dt = new DateTime(year, month, day, hour, min, second, ms);
-			return true;
-		}
+            dt = new DateTime(year, month, day, hour, min, second, ms);
+            return true;
+        }
 
-		private static int Multiply10(int i)
-		{
-			if (i == 0)
-			{
-				return 0;
-			}
-			return (i << 3) + (i << 1);
-		}
+        private static int Multiply10(int i)
+        {
+            if (i == 0)
+            {
+                return 0;
+            }
+            return (i << 3) + (i << 1);
+        }
 
-		private static int DigitTable(char ch)
-		{
-			switch (ch)
-			{
-				case '0': return 0;
-				case '1': return 1;
-				case '2': return 2;
-				case '3': return 3;
-				case '4': return 4;
-				case '5': return 5;
-				case '6': return 6;
-				case '7': return 7;
-				case '8': return 8;
-				case '9': return 9;
-				default:
-					throw new ArgumentException();
-			}
-		}
+        private static int DigitTable(char ch)
+        {
+            switch (ch)
+            {
+                case '0': return 0;
+                case '1': return 1;
+                case '2': return 2;
+                case '3': return 3;
+                case '4': return 4;
+                case '5': return 5;
+                case '6': return 6;
+                case '7': return 7;
+                case '8': return 8;
+                case '9': return 9;
+                default:
+                    throw new ArgumentException();
+            }
+        }
     }
 }

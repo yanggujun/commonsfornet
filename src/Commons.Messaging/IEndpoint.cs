@@ -2,9 +2,9 @@
 
 namespace Commons.Messaging
 {
-	public interface IEndpoint : IDisposable
+    public interface IEndpoint : IDisposable
     {
-		string Send(object message);
-		string Address { get; }
+        string Send(object message);
+        string Address { get; }
     }
 }

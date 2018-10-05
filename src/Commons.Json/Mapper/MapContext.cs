@@ -21,79 +21,79 @@ using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-	internal class MapContext : IMapContext
-	{
-		public MapContext()
-		{
-			Mappers = new MapperContainer();
-			Configuration = new ConfigContainer();
-			Types = new TypeContainer();
-			CollBuilder = new CollectionBuilder();
-			SerializerMapper = new ConcurrentDictionary<Type, Action<object, StringBuilder>>();
-			DeserializerMapper = new ConcurrentDictionary<Type, Func<Type, JValue, object>>();
-			DictReflector = new DictReflector();
+    internal class MapContext : IMapContext
+    {
+        public MapContext()
+        {
+            Mappers = new MapperContainer();
+            Configuration = new ConfigContainer();
+            Types = new TypeContainer();
+            CollBuilder = new CollectionBuilder();
+            SerializerMapper = new ConcurrentDictionary<Type, Action<object, StringBuilder>>();
+            DeserializerMapper = new ConcurrentDictionary<Type, Func<Type, JValue, object>>();
+            DictReflector = new DictReflector();
             var enumCache = new EnumCache();
-			MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder, DeserializerMapper, enumCache, DictReflector);
-		}
+            MapEngine = new MapEngine(Types, Mappers, Configuration, CollBuilder, DeserializerMapper, enumCache, DictReflector);
+        }
 
-		public IMapContext For<T>(Action<IJsonObjectMapper<T>> configure)
-		{
+        public IMapContext For<T>(Action<IJsonObjectMapper<T>> configure)
+        {
             Guarder.CheckNull(configure, nameof(configure));
-			var type = typeof(T);
-			if (!Mappers.ContainsMapper(type))
-			{
-				Mappers.PushMapper(type);
-			}
-			var mapper = Mappers.GetMapper(type);
-			var jsonObjMapper = new JsonObjectMapper<T>(mapper, Configuration);
+            var type = typeof(T);
+            if (!Mappers.ContainsMapper(type))
+            {
+                Mappers.PushMapper(type);
+            }
+            var mapper = Mappers.GetMapper(type);
+            var jsonObjMapper = new JsonObjectMapper<T>(mapper, Configuration);
             configure(jsonObjMapper);
             return this;
-		}
+        }
 
-		// TODO: need to parse the actually typeof(T) to JsonBuilder as sometimes, typeof(T) != target.GetType()
-		public string ToJson<T>(T target)
-		{
-			var jsonBuilder = new JsonBuilder(Mappers, Types, Configuration, SerializerMapper, DictReflector);
-			return jsonBuilder.Build(target);
-		}
+        // TODO: need to parse the actually typeof(T) to JsonBuilder as sometimes, typeof(T) != target.GetType()
+        public string ToJson<T>(T target)
+        {
+            var jsonBuilder = new JsonBuilder(Mappers, Types, Configuration, SerializerMapper, DictReflector);
+            return jsonBuilder.Build(target);
+        }
 
-		public T To<T>(string json)
-		{
-			return (T)To(typeof(T), json);
-		}
+        public T To<T>(string json)
+        {
+            return (T)To(typeof(T), json);
+        }
 
-		public object To(Type type, string json)
-		{
+        public object To(Type type, string json)
+        {
             if (json == null)
             {
                 throw new ArgumentException(Messages.InvalidValue);
             }
             var parseEngine = new ParseEngine();
 
-			var jsonValue = parseEngine.Parse(json);
+            var jsonValue = parseEngine.Parse(json);
 
-			return MapEngine.Map(type, jsonValue);
-		}
+            return MapEngine.Map(type, jsonValue);
+        }
 
-		public MapperContainer Mappers { get; private set; }
+        public MapperContainer Mappers { get; private set; }
 
-		public CollectionBuilder CollBuilder { get; private set; }
+        public CollectionBuilder CollBuilder { get; private set; }
 
-		public ConfigContainer Configuration { get; private set; }
+        public ConfigContainer Configuration { get; private set; }
 
-		public TypeContainer Types { get; private set; }
+        public TypeContainer Types { get; private set; }
 
-		public DictReflector DictReflector { get; private set; }
+        public DictReflector DictReflector { get; private set; }
 
-		public ConcurrentDictionary<Type, Action<object, StringBuilder>> SerializerMapper;
+        public ConcurrentDictionary<Type, Action<object, StringBuilder>> SerializerMapper;
 
-		public ConcurrentDictionary<Type, Func<Type, JValue, object>> DeserializerMapper;
+        public ConcurrentDictionary<Type, Func<Type, JValue, object>> DeserializerMapper;
 
-		public MapEngine MapEngine { get; private set; }
+        public MapEngine MapEngine { get; private set; }
 
         public IMapContext UseDateFormat(string format)
         {
-			Configuration.DateFormat = format;
+            Configuration.DateFormat = format;
             return this;
         }
 

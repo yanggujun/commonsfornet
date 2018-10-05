@@ -18,14 +18,14 @@ using System;
 
 namespace Commons.Reflect
 {
-	public interface IInvoker
+    public interface IInvoker
     {
         object NewInstance();
         object GetProperty(object target, string name);
         void SetProperty(object target, string name, object value);
-		Func<object, object> GetGetter(string name);
-		Action<object, object> GetSetter(string name);
-		Tuple<string, Func<object, object>>[] Getters { get; }
-		Tuple<string, Action<object, object>>[] Setters { get; }
+        Func<object, object> GetGetter(string name);
+        Action<object, object> GetSetter(string name);
+        Tuple<string, Func<object, object>>[] Getters { get; }
+        Tuple<string, Action<object, object>>[] Setters { get; }
     }
 }

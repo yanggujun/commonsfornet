@@ -48,11 +48,11 @@ namespace Commons.Json
 
         public const string CannotAssignNullToStruct = "Cannot assign null to a value type.";
 
-		public const string KeyNotExist = "The key does not exist in the JSON.";
+        public const string KeyNotExist = "The key does not exist in the JSON.";
 
-		public const string InvalidNumber = "The string represents an invalid number.";
+        public const string InvalidNumber = "The string represents an invalid number.";
 
-		public const string InvalidDictionary = "The dictionary key must be string.";
+        public const string InvalidDictionary = "The dictionary key must be string.";
 
         public static readonly string InvalidEnumValue = "The Enum value is invalid.";
     }

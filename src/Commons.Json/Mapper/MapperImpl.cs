@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace Commons.Json.Mapper
 {
-	internal class MapperImpl
+    internal class MapperImpl
     {
         private readonly Dictionary<string, string> keyPropMap = new Dictionary<string, string>();
         private readonly Dictionary<string, string> propKeyMap = new Dictionary<string, string>();

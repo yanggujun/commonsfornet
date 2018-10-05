@@ -25,7 +25,7 @@ using Commons.Utils;
 
 namespace Commons.Test.Json
 {
-	public class UsabilityTest
+    public class UsabilityTest
     {
         [Fact]
         public void TestSmall01()
@@ -234,7 +234,7 @@ namespace Commons.Test.Json
                     var foot = new Footnote();
                     foot.note = jsonObj.GetString("note");
                     foot.writtenBy = jsonObj.GetString("writtenBy");
-					foot.index = long.Parse(jsonObj["index"].Value);
+                    foot.index = long.Parse(jsonObj["index"].Value);
                     foot.createadAt = DateTime.Parse(jsonObj.GetString("createadAt"));
                     note = foot;
                 }
@@ -265,14 +265,14 @@ namespace Commons.Test.Json
 
         private void AssertBook(Book book1, Book book2)
         {
-			var otherChanges = book2 != null ? book2.changes.ToList() : null;
-			var thisChanges = book1.changes.ToList();
-			if (otherChanges != null) otherChanges.Sort();
-			thisChanges.Sort();
-			var otherKeys = book2 != null ? book2.metadata.Keys.ToList() : null;
-			var thisKeys = book1.metadata.Keys.ToList();
-			if (otherKeys != null) otherKeys.Sort();
-			thisKeys.Sort();
+            var otherChanges = book2 != null ? book2.changes.ToList() : null;
+            var thisChanges = book1.changes.ToList();
+            if (otherChanges != null) otherChanges.Sort();
+            thisChanges.Sort();
+            var otherKeys = book2 != null ? book2.metadata.Keys.ToList() : null;
+            var thisKeys = book1.metadata.Keys.ToList();
+            if (otherKeys != null) otherKeys.Sort();
+            thisKeys.Sort();
             Assert.True(book2 != null && book2.ID == book1.ID && book2.title == book1.title);
             Assert.True(book2.authorId == book1.authorId);
             Assert.True(book2.pages != null && Enumerable.SequenceEqual(book2.pages, book1.pages));

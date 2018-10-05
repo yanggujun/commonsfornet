@@ -19,71 +19,71 @@ using Commons.Test.Poco;
 
 namespace Commons.Test.Json
 {
-	public class Message : IEquatable<Message>
-	{
-		public string message { get; set; }
-		public int version { get; set; }
-		public override int GetHashCode() { return version; }
-		public override bool Equals(object obj) { return base.Equals(obj as Message); }
-		public bool Equals(Message other)
-		{
-			return other != null && other.message == this.message && other.version == this.version;
-		}
-		public static Message Create(int i)
-		{
+    public class Message : IEquatable<Message>
+    {
+        public string message { get; set; }
+        public int version { get; set; }
+        public override int GetHashCode() { return version; }
+        public override bool Equals(object obj) { return base.Equals(obj as Message); }
+        public bool Equals(Message other)
+        {
+            return other != null && other.message == this.message && other.version == this.version;
+        }
+        public static Message Create(int i)
+        {
             var instance = new Message();
-			instance.message = "some message " + i;
-			instance.version = i;
-			return instance;
-		}
-	}
-	public class Complex : IEquatable<Complex>
-	{
-		public decimal x { get; set; }
-		public float y { get; set; }
-		public long z { get; set; }
-		public override int GetHashCode() { return (int)z; }
-		public override bool Equals(object obj) { return Equals(obj as Complex); }
-		public bool Equals(Complex other)
-		{
-			return other != null && other.x == this.x && other.y == this.y && other.z == this.z;
-		}
-		public static Complex Create(int i)
-		{
+            instance.message = "some message " + i;
+            instance.version = i;
+            return instance;
+        }
+    }
+    public class Complex : IEquatable<Complex>
+    {
+        public decimal x { get; set; }
+        public float y { get; set; }
+        public long z { get; set; }
+        public override int GetHashCode() { return (int)z; }
+        public override bool Equals(object obj) { return Equals(obj as Complex); }
+        public bool Equals(Complex other)
+        {
+            return other != null && other.x == this.x && other.y == this.y && other.z == this.z;
+        }
+        public static Complex Create(int i)
+        {
             var instance = new Complex();
-			instance.x = i / 1000m;
-			instance.y = -i / 1000f;
-			instance.z = i;
-			return instance;
-		}
-	}
-	public class SmallPost : IEquatable<SmallPost>
-	{
-		private static DateTime NOW = DateTime.UtcNow;
+            instance.x = i / 1000m;
+            instance.y = -i / 1000f;
+            instance.z = i;
+            return instance;
+        }
+    }
+    public class SmallPost : IEquatable<SmallPost>
+    {
+        private static DateTime NOW = DateTime.UtcNow;
 
-		public Guid ID { get; set; }
-		public string title { get; set; }
-		public bool active { get; set; }
-		public DateTime created { get; set; }
+        public Guid ID { get; set; }
+        public string title { get; set; }
+        public bool active { get; set; }
+        public DateTime created { get; set; }
         public int Count { get; set; }
-		public override int GetHashCode() { return ID.GetHashCode(); }
-		public override bool Equals(object obj) { return Equals(obj as SmallPost); }
-		public bool Equals(SmallPost other)
-		{
-			return other != null && other.ID == this.ID && other.title == this.title
-				&& other.active == this.active && other.created == this.created;
-		}
+        public override int GetHashCode() { return ID.GetHashCode(); }
+        public override bool Equals(object obj) { return Equals(obj as SmallPost); }
+        public bool Equals(SmallPost other)
+        {
+            return other != null && other.ID == this.ID && other.title == this.title
+                && other.active == this.active && other.created == this.created;
+        }
         public static SmallPost Create(int i)
-		{
+        {
             var instance = new SmallPost();
-			instance.ID = Guid.NewGuid();
-			instance.title = "some title " + i;
-			instance.active = i % 2 == 0;
-			instance.created = NOW.AddMinutes(i).Date;
+            instance.ID = Guid.NewGuid();
+            instance.title = "some title " + i;
+            instance.active = i % 2 == 0;
+            instance.created = NOW.AddMinutes(i).Date;
             instance.Count = NOW.Millisecond;
-			return instance;
-		}
-	}
+            return instance;
+        }
+    }
 
     public class CompletePrimitiveObject
     {
@@ -105,39 +105,39 @@ namespace Commons.Test.Json
         public Simple F16 { get; set; }
         public Guid F17 { get; set; }
 
-		private static readonly char[] alph = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'};
+        private static readonly char[] alph = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'};
 
-		public static CompletePrimitiveObject Factory(Random rand)
-		{
-			var next = rand.Next();
-			var nextDouble = rand.Next();
+        public static CompletePrimitiveObject Factory(Random rand)
+        {
+            var next = rand.Next();
+            var nextDouble = rand.Next();
 
-			return new CompletePrimitiveObject
-			{
-				F1 = "sdjgnoqwerghj3eighjigtyjiow3jae'foklm" + next,
-				F2 = next,
-				F3 = nextDouble,
-				F4 = Convert.ToSingle(nextDouble),
-				F5 = Convert.ToInt16(next % 256),
-				F6 = next % 2 == 0,
-				F7 = DateTime.Now.Ticks,
-				F8 = Convert.ToByte(next & 0x000000ff),
-				F9 = Convert.ToSByte(next % 64),
-				F10 = Convert.ToUInt32(next),
-				F11 = Convert.ToUInt64(next),
-				F12 = Convert.ToUInt16(next & 0x0000ffff),
-				F13 = Convert.ToDecimal(nextDouble),
-				F14 = alph[next % 15],
-				F15 = DateTime.Now,
-				F16 = new Simple
-				{
-					FieldA = next.ToString(),
-					FieldB = next,
-					FieldC = nextDouble,
-					FieldD = DateTime.Now.Ticks % 2 == 0
-				},
-				F17 = Guid.NewGuid()
-			};
-		}
+            return new CompletePrimitiveObject
+            {
+                F1 = "sdjgnoqwerghj3eighjigtyjiow3jae'foklm" + next,
+                F2 = next,
+                F3 = nextDouble,
+                F4 = Convert.ToSingle(nextDouble),
+                F5 = Convert.ToInt16(next % 256),
+                F6 = next % 2 == 0,
+                F7 = DateTime.Now.Ticks,
+                F8 = Convert.ToByte(next & 0x000000ff),
+                F9 = Convert.ToSByte(next % 64),
+                F10 = Convert.ToUInt32(next),
+                F11 = Convert.ToUInt64(next),
+                F12 = Convert.ToUInt16(next & 0x0000ffff),
+                F13 = Convert.ToDecimal(nextDouble),
+                F14 = alph[next % 15],
+                F15 = DateTime.Now,
+                F16 = new Simple
+                {
+                    FieldA = next.ToString(),
+                    FieldB = next,
+                    FieldC = nextDouble,
+                    FieldD = DateTime.Now.Ticks % 2 == 0
+                },
+                F17 = Guid.NewGuid()
+            };
+        }
     }
 }

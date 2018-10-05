@@ -2,9 +2,9 @@
 
 namespace Commons.Messaging
 {
-	public interface IBus
+    public interface IBus
     {
-		void Start();
-		void Shutdown();
+        void Start();
+        void Shutdown();
     }
 }

@@ -397,9 +397,9 @@ namespace Commons.Test.Json
         {
             var engine = new ParseEngine();
             var json = "[\"a\", ]";
-			var value = engine.Parse(json);
-			Assert.True(value is JArray);
-			Assert.Equal("a", (value as JArray)[0].Value);
+            var value = engine.Parse(json);
+            Assert.True(value is JArray);
+            Assert.Equal("a", (value as JArray)[0].Value);
         }
 
         [Fact]

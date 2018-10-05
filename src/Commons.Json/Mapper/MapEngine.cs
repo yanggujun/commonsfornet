@@ -29,39 +29,39 @@ namespace Commons.Json.Mapper
         private readonly MapperContainer mappers;
         private readonly ConfigContainer configuration;
         private readonly CollectionBuilder colBuilder;
-		// objectType -> deserializer
-		private readonly ConcurrentDictionary<Type, Func<Type, JValue, object>> deserializers;
+        // objectType -> deserializer
+        private readonly ConcurrentDictionary<Type, Func<Type, JValue, object>> deserializers;
         private readonly EnumCache enumCache;
-		private readonly DictReflector dictReflector;
+        private readonly DictReflector dictReflector;
 
         public MapEngine(TypeContainer types, MapperContainer mappers, ConfigContainer configuration, 
-			CollectionBuilder colBuilder, ConcurrentDictionary<Type, Func<Type, JValue, object>> deserializers, EnumCache enumCache, DictReflector dictReflector)
+            CollectionBuilder colBuilder, ConcurrentDictionary<Type, Func<Type, JValue, object>> deserializers, EnumCache enumCache, DictReflector dictReflector)
         {
             this.types = types;
             this.mappers = mappers;
             this.configuration = configuration;
             this.colBuilder = colBuilder;
-			this.deserializers = deserializers;
-			this.dictReflector = dictReflector;
+            this.deserializers = deserializers;
+            this.dictReflector = dictReflector;
             this.enumCache = enumCache;
         }
 
-		public object Map(Type type, JValue jsonValue)
-		{
-			var deserializer = GetDeserializer(type);
-			return deserializer(type, jsonValue); 
-		}
+        public object Map(Type type, JValue jsonValue)
+        {
+            var deserializer = GetDeserializer(type);
+            return deserializer(type, jsonValue); 
+        }
 
-		private Func<Type, JValue, object> GetDeserializer(Type type)
-		{
-			Func<Type, JValue, object> deserializer;
-			if (deserializers.TryGetValue(type, out deserializer))
-			{
-				return deserializer;
-			}
+        private Func<Type, JValue, object> GetDeserializer(Type type)
+        {
+            Func<Type, JValue, object> deserializer;
+            if (deserializers.TryGetValue(type, out deserializer))
+            {
+                return deserializer;
+            }
 
 
-			var mapper = mappers.GetMapper(type);
+            var mapper = mappers.GetMapper(type);
             // for manual create now, assuming underlying type == type
             if (mapper.ManualCreate != null)
             {
@@ -241,13 +241,13 @@ namespace Commons.Json.Mapper
 
             deserializers[type] = deserializer;
 
-			return deserializer;
-		}
+            return deserializer;
+        }
 
-		private object BuildNull(Type type, JValue jsonValue)
-		{
-			return null;
-		}
+        private object BuildNull(Type type, JValue jsonValue)
+        {
+            return null;
+        }
 
         private object BuildEnumerable(Type targetType, JValue jsonValue)
         {
@@ -267,7 +267,7 @@ namespace Commons.Json.Mapper
             }
             else
             {
-				raw = colBuilder.Construct(targetType);
+                raw = colBuilder.Construct(targetType);
             }
 
             JArray jsonArray;
@@ -295,7 +295,7 @@ namespace Commons.Json.Mapper
             {
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
-			bool result;
+            bool result;
             var bvalue = jsonValue as JNumber;
             if (jsonValue == JBool.True)
             {
@@ -329,15 +329,15 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             object result;
-			CheckDecimalType(jsonValue);
-			try
-			{
-				result = decimal.Parse(jsonValue.Value);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
-			}
+            CheckDecimalType(jsonValue);
+            try
+            {
+                result = decimal.Parse(jsonValue.Value);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+            }
             return result;
         }
 
@@ -357,15 +357,15 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             object result;
-			CheckDecimalType(jsonValue);
-			try
-			{
-				result = double.Parse(jsonValue.Value);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
-			}
+            CheckDecimalType(jsonValue);
+            try
+            {
+                result = double.Parse(jsonValue.Value);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+            }
             return result;
         }
 
@@ -385,15 +385,15 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             object result;
-			CheckDecimalType(jsonValue);
-			try
-			{
-				result = float.Parse(jsonValue.Value);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
-			}
+            CheckDecimalType(jsonValue);
+            try
+            {
+                result = float.Parse(jsonValue.Value);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+            }
             return result;
         }
 
@@ -406,15 +406,15 @@ namespace Commons.Json.Mapper
             return BuildFloat(type, jsonValue);
         }
 
-		private void CheckDecimalType(JValue jsonValue)
-		{
-			JNumber prim;
+        private void CheckDecimalType(JValue jsonValue)
+        {
+            JNumber prim;
             if (!jsonValue.Is<JNumber>(out prim) || (prim.NumType != NumberType.Decimal && prim.NumType != NumberType.Integer))
             {
                 throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
             }
-		}
-		
+        }
+        
         private object BuildInt(Type type, JValue jsonValue)
         {
             if (jsonValue == JNull.Null)
@@ -422,15 +422,15 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             object result;
-			CheckIntegerType(jsonValue);
-			try
-			{
-				result = int.Parse(jsonValue.Value);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
-			}
+            CheckIntegerType(jsonValue);
+            try
+            {
+                result = int.Parse(jsonValue.Value);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+            }
             return result;
         }
 
@@ -442,7 +442,7 @@ namespace Commons.Json.Mapper
             }
             return BuildInt(type, jsonValue);
         }
-		
+        
         private object BuildLong(Type type, JValue jsonValue)
         {
             if (jsonValue == JNull.Null)
@@ -450,15 +450,15 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             object result;
-			CheckIntegerType(jsonValue);
-			try
-			{
-				result = long.Parse(jsonValue.Value);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
-			}
+            CheckIntegerType(jsonValue);
+            try
+            {
+                result = long.Parse(jsonValue.Value);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+            }
             return result;
         }
 
@@ -470,7 +470,7 @@ namespace Commons.Json.Mapper
             }
             return BuildLong(type, jsonValue);
         }
-		
+        
         private object BuildShort(Type type, JValue jsonValue)
         {
             if (jsonValue == JNull.Null)
@@ -478,15 +478,15 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             object result;
-			CheckIntegerType(jsonValue);
-			try
-			{
-				result = short.Parse(jsonValue.Value);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
-			}
+            CheckIntegerType(jsonValue);
+            try
+            {
+                result = short.Parse(jsonValue.Value);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+            }
             return result;
         }
 
@@ -498,7 +498,7 @@ namespace Commons.Json.Mapper
             }
             return BuildShort(type, jsonValue);
         }
-		
+        
         private object BuildUint(Type type, JValue jsonValue)
         {
             if (jsonValue == JNull.Null)
@@ -506,15 +506,15 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             object result;
-			CheckIntegerType(jsonValue);
-			try
-			{
-				result = uint.Parse(jsonValue.Value);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
-			}
+            CheckIntegerType(jsonValue);
+            try
+            {
+                result = uint.Parse(jsonValue.Value);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+            }
             return result;
         }
 
@@ -526,7 +526,7 @@ namespace Commons.Json.Mapper
             }
             return BuildUint(type, jsonValue);
         }
-		
+        
         private object BuildUlong(Type type, JValue jsonValue)
         {
             if (jsonValue == JNull.Null)
@@ -534,15 +534,15 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             object result;
-			CheckIntegerType(jsonValue);
-			try
-			{
-				result = ulong.Parse(jsonValue.Value);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
-			}
+            CheckIntegerType(jsonValue);
+            try
+            {
+                result = ulong.Parse(jsonValue.Value);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+            }
             return result;
         }
 
@@ -554,7 +554,7 @@ namespace Commons.Json.Mapper
             }
             return BuildUlong(type, jsonValue);
         }
-		
+        
         private object BuildUshort(Type type, JValue jsonValue)
         {
             if (jsonValue == JNull.Null)
@@ -562,15 +562,15 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             object result;
-			CheckIntegerType(jsonValue);
-			try
-			{
-				result = ushort.Parse(jsonValue.Value);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
-			}
+            CheckIntegerType(jsonValue);
+            try
+            {
+                result = ushort.Parse(jsonValue.Value);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+            }
             return result;
         }
 
@@ -582,7 +582,7 @@ namespace Commons.Json.Mapper
             }
             return BuildUshort(type, jsonValue);
         }
-		
+        
         private object BuildByte(Type type, JValue jsonValue)
         {
             if (jsonValue == JNull.Null)
@@ -590,15 +590,15 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             object result;
-			CheckIntegerType(jsonValue);
-			try
-			{
-				result = byte.Parse(jsonValue.Value);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
-			}
+            CheckIntegerType(jsonValue);
+            try
+            {
+                result = byte.Parse(jsonValue.Value);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+            }
             return result;
         }
 
@@ -610,7 +610,7 @@ namespace Commons.Json.Mapper
             }
             return BuildByte(type, jsonValue);
         }
-		
+        
         private object BuildSbyte(Type type, JValue jsonValue)
         {
             if (jsonValue == JNull.Null)
@@ -618,15 +618,15 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
             object result;
-			CheckIntegerType(jsonValue);
-			try
-			{
-				result = sbyte.Parse(jsonValue.Value);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
-			}
+            CheckIntegerType(jsonValue);
+            try
+            {
+                result = sbyte.Parse(jsonValue.Value);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch, e);
+            }
             return result;
         }
 
@@ -639,22 +639,22 @@ namespace Commons.Json.Mapper
             return BuildSbyte(type, jsonValue);
         }
 
-		private void CheckIntegerType(JValue jsonValue)
-		{
-			JNumber prim;
-			if (!jsonValue.Is<JNumber>(out prim) || prim.NumType != NumberType.Integer)
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-			}
-		}
+        private void CheckIntegerType(JValue jsonValue)
+        {
+            JNumber prim;
+            if (!jsonValue.Is<JNumber>(out prim) || prim.NumType != NumberType.Integer)
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+            }
+        }
 
-		private object BuildEnum(Type type, JValue jsonValue)
-		{
+        private object BuildEnum(Type type, JValue jsonValue)
+        {
             if (jsonValue == JNull.Null)
             {
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
-			var str = CheckJsonString(jsonValue);
+            var str = CheckJsonString(jsonValue);
             // TODO: what to do when exception.
             var enumValue = enumCache.GetValue(type, str);
             if (enumValue == null)
@@ -662,7 +662,7 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.InvalidEnumValue);
             }
             return enumValue;
-		}
+        }
 
         private object BuildNullableEnum(Type type, JValue jsonValue)
         {
@@ -673,20 +673,20 @@ namespace Commons.Json.Mapper
             return BuildEnum(type, jsonValue);
         }
 
-		private object BuildGuid(Type type, JValue jsonValue)
-		{
+        private object BuildGuid(Type type, JValue jsonValue)
+        {
             if (jsonValue == JNull.Null)
             {
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
-			Guid guid;
-			if (!Guid.TryParse(jsonValue.Value, out guid))
-			{
-				throw new ArgumentException(Messages.InvalidValue);
-			}
+            Guid guid;
+            if (!Guid.TryParse(jsonValue.Value, out guid))
+            {
+                throw new ArgumentException(Messages.InvalidValue);
+            }
 
-			return guid;
-		}
+            return guid;
+        }
 
         private object BuildNullableGuid(Type type, JValue jsonValue)
         {
@@ -697,20 +697,20 @@ namespace Commons.Json.Mapper
             return BuildGuid(type, jsonValue);
         }
 
-		private object BuildChar(Type type, JValue jsonValue)
-		{
+        private object BuildChar(Type type, JValue jsonValue)
+        {
             if (jsonValue == JNull.Null)
             {
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
-			var str = CheckJsonString(jsonValue);
-			char result;
-			if (!char.TryParse(str, out result))
-			{
-				throw new ArgumentException(Messages.InvalidValue);
-			}
-			return result;
-		}
+            var str = CheckJsonString(jsonValue);
+            char result;
+            if (!char.TryParse(str, out result))
+            {
+                throw new ArgumentException(Messages.InvalidValue);
+            }
+            return result;
+        }
 
         private object BuildNullableChar(Type type, JValue jsonValue)
         {
@@ -721,20 +721,20 @@ namespace Commons.Json.Mapper
             return BuildChar(type, jsonValue);
         }
 
-		private object BuildTime(Type type, JValue jsonValue)
-		{
+        private object BuildTime(Type type, JValue jsonValue)
+        {
             if (jsonValue == JNull.Null)
             {
                 throw new InvalidCastException(Messages.CannotAssignNullToStruct);
             }
-			DateTime dt;
-			if (!TryParseDate(jsonValue.Value, out dt))
-			{
-				throw new ArgumentException(Messages.InvalidDateFormat);
-			}
+            DateTime dt;
+            if (!TryParseDate(jsonValue.Value, out dt))
+            {
+                throw new ArgumentException(Messages.InvalidDateFormat);
+            }
 
-			return dt;
-		}
+            return dt;
+        }
 
         private object BuildNullableTime(Type type, JValue jsonValue)
         {
@@ -745,33 +745,33 @@ namespace Commons.Json.Mapper
             return BuildTime(type, jsonValue);
         }
 
-		private object BuildByteArray(Type type, JValue jsonValue)
-		{
-			JString str;
-			byte[] bytes = null;
-			if (jsonValue.Is<JString>(out str))
-			{
-				bytes = Convert.FromBase64String(str.Value);
-			}
-			else
-			{
-				JArray jsonArray;
-				if (jsonValue.Is<JArray>(out jsonArray))
-				{
-					bytes = new byte[jsonArray.Count];
-					for (var i = 0; i < jsonArray.Count; i++)
-					{
-						bytes[i] = (byte)Map(typeof(byte), jsonArray[i]);
-					}
-				}
-				else
-				{
-					throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-				}
-			}
+        private object BuildByteArray(Type type, JValue jsonValue)
+        {
+            JString str;
+            byte[] bytes = null;
+            if (jsonValue.Is<JString>(out str))
+            {
+                bytes = Convert.FromBase64String(str.Value);
+            }
+            else
+            {
+                JArray jsonArray;
+                if (jsonValue.Is<JArray>(out jsonArray))
+                {
+                    bytes = new byte[jsonArray.Count];
+                    for (var i = 0; i < jsonArray.Count; i++)
+                    {
+                        bytes[i] = (byte)Map(typeof(byte), jsonArray[i]);
+                    }
+                }
+                else
+                {
+                    throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+                }
+            }
 
-			return bytes;
-		}
+            return bytes;
+        }
 
         private object BuildString(Type type, JValue jsonValue)
         {
@@ -779,20 +779,20 @@ namespace Commons.Json.Mapper
             {
                 return null;
             }
-			var str = CheckJsonString(jsonValue);
-			return str;
+            var str = CheckJsonString(jsonValue);
+            return str;
         }
 
-		private string CheckJsonString(JValue jsonValue)
-		{
-			JString str;
-			if (!jsonValue.Is<JString>(out str))
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-			}
+        private string CheckJsonString(JValue jsonValue)
+        {
+            JString str;
+            if (!jsonValue.Is<JString>(out str))
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+            }
 
-			return str.Value;
-		}
+            return str.Value;
+        }
 
         private Array BuildArray(Type arrayType, JValue jsonValue)
         {
@@ -802,11 +802,11 @@ namespace Commons.Json.Mapper
             }
             JArray jsonArray;
             Array array;
-			var itemType = arrayType.GetElementType();
-			//TODO :do not support array manual create.
+            var itemType = arrayType.GetElementType();
+            //TODO :do not support array manual create.
             if (jsonValue.Is<JArray>(out jsonArray))
             {
-				array = Array.CreateInstance(itemType, jsonArray.Length);
+                array = Array.CreateInstance(itemType, jsonArray.Length);
                 for (var i = 0; i < jsonArray.Length; i++)
                 {
                     var itemValue = Map(itemType, jsonArray[i]);
@@ -843,25 +843,25 @@ namespace Commons.Json.Mapper
                 return null;
             }
 
-			var jsonObj = CheckJsonObject(jsonValue);
+            var jsonObj = CheckJsonObject(jsonValue);
 
             var properties = types[type].Setters;
 
-			object target;
+            object target;
             var mapper = mappers.GetMapper(type);
-			if (mapper.Create != null)
-			{
-				target = mapper.Create();
-			}
-			else
-			{
-				target = types[type].Launch();
-			}
-
-			for (var i = 0; i < properties.Count; i++)
+            if (mapper.Create != null)
             {
-				var prop = properties[i];
-				var itemName = prop.Item1.Name;
+                target = mapper.Create();
+            }
+            else
+            {
+                target = types[type].Launch();
+            }
+
+            for (var i = 0; i < properties.Count; i++)
+            {
+                var prop = properties[i];
+                var itemName = prop.Item1.Name;
                 if (mapper.IsPropertyIgnored(itemName))
                 {
                     continue;
@@ -869,7 +869,7 @@ namespace Commons.Json.Mapper
 
                 var key = mapper.GetKey(itemName);
                 var propertyType = prop.Item1.PropertyType;
-				JValue jv;
+                JValue jv;
                 if (jsonObj.TryGetValue(key, out jv))
                 {
                     jv = jsonObj[key];
@@ -881,53 +881,53 @@ namespace Commons.Json.Mapper
             return target;
         }
 
-		private JObject CheckJsonObject(JValue jsonValue)
-		{
-			JObject jsonObj;
-			if (!jsonValue.Is<JObject>(out jsonObj))
-			{
-				throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
-			}
+        private JObject CheckJsonObject(JValue jsonValue)
+        {
+            JObject jsonObj;
+            if (!jsonValue.Is<JObject>(out jsonObj))
+            {
+                throw new InvalidCastException(Messages.JsonValueTypeNotMatch);
+            }
 
-			return jsonObj;
-		}
+            return jsonObj;
+        }
 
-		private object BuildDict(Type dictType, JValue jsonValue)
-		{
+        private object BuildDict(Type dictType, JValue jsonValue)
+        {
             if (jsonValue == JNull.Null)
             {
                 return null;
             }
-			var jsonObj = CheckJsonObject(jsonValue);
-			var keyType = dictType.GetGenericArguments()[0];
-			var valueType = dictType.GetGenericArguments()[1];
-			if (keyType != typeof(string))
-			{
-				throw new InvalidOperationException(Messages.JsonValueTypeNotMatch);
-			}
-			object raw;
-			var mapper = mappers.GetMapper(dictType);
-			var tuple = dictReflector.GetDeserializeDelegates(dictType, valueType);
-			if (mapper.Create != null)
-			{
-				raw = mapper.Create();
-			}
-			else
-			{
-				var create = tuple.Item1;
-				raw = create();
-			}
+            var jsonObj = CheckJsonObject(jsonValue);
+            var keyType = dictType.GetGenericArguments()[0];
+            var valueType = dictType.GetGenericArguments()[1];
+            if (keyType != typeof(string))
+            {
+                throw new InvalidOperationException(Messages.JsonValueTypeNotMatch);
+            }
+            object raw;
+            var mapper = mappers.GetMapper(dictType);
+            var tuple = dictReflector.GetDeserializeDelegates(dictType, valueType);
+            if (mapper.Create != null)
+            {
+                raw = mapper.Create();
+            }
+            else
+            {
+                var create = tuple.Item1;
+                raw = create();
+            }
 
-			var add = tuple.Item2;
+            var add = tuple.Item2;
             foreach (var kvp in jsonObj)
             {
                 var key = kvp.Key;
                 object value = null;
                 value = Map(valueType, kvp.Value);
-				add(raw, key, value);
+                add(raw, key, value);
             }
             return raw;
-		}
+        }
 
         private bool TryParseDate(string str, out DateTime dt)
         {
@@ -937,18 +937,18 @@ namespace Commons.Json.Mapper
             }
             else
             {
-				var success = false;
-				dt = DateTime.MinValue;
+                var success = false;
+                dt = DateTime.MinValue;
 
-				try
-				{
-					success = str.TryFastParseDateInvariantCulture(out dt);
-				}
-				catch (Exception)
-				{
-					success = false;
-				}
-				return success;
+                try
+                {
+                    success = str.TryFastParseDateInvariantCulture(out dt);
+                }
+                catch (Exception)
+                {
+                    success = false;
+                }
+                return success;
             }
         }
     }

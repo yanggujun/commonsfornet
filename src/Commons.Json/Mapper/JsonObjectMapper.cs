@@ -215,7 +215,7 @@ namespace Commons.Json.Mapper
 
         public IFormatMapper UseDateFormat(string format)
         {
-			configuration.DateFormat = format;
+            configuration.DateFormat = format;
             return this;
         }
     }

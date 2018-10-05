@@ -18,7 +18,7 @@ using System;
 
 namespace Commons.Json.Mapper
 {
-	public sealed class ParseEngine
+    public sealed class ParseEngine
     {
         private int pos;
         private int len;
@@ -33,7 +33,7 @@ namespace Commons.Json.Mapper
             }
 
             var result = Parse();
-			WalkThroughEmpty();
+            WalkThroughEmpty();
             if (pos < len)
             {
                 throw new ArgumentException(Messages.InvalidFormat);
@@ -44,10 +44,10 @@ namespace Commons.Json.Mapper
         private JValue Parse()
         {
             WalkThroughEmpty();
-			if (pos >= len)
-			{
-				throw new ArgumentException(Messages.InvalidFormat);
-			}
+            if (pos >= len)
+            {
+                throw new ArgumentException(Messages.InvalidFormat);
+            }
 
             var ch = json[pos];
             switch (ch)
@@ -85,26 +85,26 @@ namespace Commons.Json.Mapper
         private JValue ParseNumber()
         {
             var isFloat = false;
-			var start = pos;
+            var start = pos;
             var ch = json[pos];
-			if (ch == JsonTokens.Negtive)
-			{
-				MovePosition();
-				if (!IsDigit(json[pos]) || json[pos] == JsonTokens.Digit0)
-				{
-					throw new ArgumentException(Messages.InvalidFormat);
-				}
-			}
-			else if (ch == JsonTokens.Digit0)
-			{
-				if (pos < len - 1)
-				{
-					if (IsDigit(json[++pos]))
-					{
-						throw new ArgumentException(Messages.InvalidFormat);
-					}
-				}
-			}
+            if (ch == JsonTokens.Negtive)
+            {
+                MovePosition();
+                if (!IsDigit(json[pos]) || json[pos] == JsonTokens.Digit0)
+                {
+                    throw new ArgumentException(Messages.InvalidFormat);
+                }
+            }
+            else if (ch == JsonTokens.Digit0)
+            {
+                if (pos < len - 1)
+                {
+                    if (IsDigit(json[++pos]))
+                    {
+                        throw new ArgumentException(Messages.InvalidFormat);
+                    }
+                }
+            }
 
             while (pos < len && IsDigit(json[pos]))
             {
@@ -128,27 +128,27 @@ namespace Commons.Json.Mapper
             {
                 isFloat = true;
                 MovePosition();
-				var next = json[pos];
-				if (IsDigit(next))
-				{
-					while (pos < len && IsDigit(json[pos++])) ;
-				}
-				else if (next == JsonTokens.Plus || next == JsonTokens.Minus)
-				{
-					MovePosition();
-					if (!IsDigit(json[pos]))
-					{
-						throw new ArgumentException(Messages.InvalidFormat);
-					}
-					while (pos < len && IsDigit(json[pos++])) ;
-				}
-				else
-				{
-					throw new ArgumentException(Messages.InvalidFormat);
-				}
+                var next = json[pos];
+                if (IsDigit(next))
+                {
+                    while (pos < len && IsDigit(json[pos++])) ;
+                }
+                else if (next == JsonTokens.Plus || next == JsonTokens.Minus)
+                {
+                    MovePosition();
+                    if (!IsDigit(json[pos]))
+                    {
+                        throw new ArgumentException(Messages.InvalidFormat);
+                    }
+                    while (pos < len && IsDigit(json[pos++])) ;
+                }
+                else
+                {
+                    throw new ArgumentException(Messages.InvalidFormat);
+                }
             }
 
-			var numStr = json.Substring(start, pos - start);
+            var numStr = json.Substring(start, pos - start);
 
             JValue result;
             if (isFloat)
@@ -165,7 +165,7 @@ namespace Commons.Json.Mapper
         private JValue ParseString(char quoter)
         {
             ++pos;
-			var start = pos;
+            var start = pos;
             char ch;
             while (pos < len && (ch = json[pos]) != quoter)
             {
@@ -179,7 +179,7 @@ namespace Commons.Json.Mapper
             {
                 throw new ArgumentException(Messages.InvalidFormat);
             }
-			var str = json.Substring(start, pos - start);
+            var str = json.Substring(start, pos - start);
             ++pos;
 
             return new JString(str);
@@ -270,7 +270,7 @@ namespace Commons.Json.Mapper
                 {
                     MovePosition();
                 }
-				WalkThroughEmpty();
+                WalkThroughEmpty();
             }
             if (pos >= len && json[pos - 1] != JsonTokens.RightBracket)
             {

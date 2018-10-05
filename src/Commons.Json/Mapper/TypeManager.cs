@@ -23,7 +23,7 @@ using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
-	internal class TypeManager
+    internal class TypeManager
     {
 
         public TypeManager(Type type)
@@ -60,10 +60,10 @@ namespace Commons.Json.Mapper
 
         public object Launch()
         {
-			if (Launcher == null)
-			{
-				throw new InvalidOperationException(Messages.NoDefaultConstructor);
-			}
+            if (Launcher == null)
+            {
+                throw new InvalidOperationException(Messages.NoDefaultConstructor);
+            }
             return Launcher();
         }
 
@@ -120,13 +120,13 @@ namespace Commons.Json.Mapper
                     var setter = (Action<object, object>)Expression.Lambda(testExp, targetParamExp, valueParamExp).Compile();
                     Setters.Add(new Tuple<PropertyInfo, Action<object, object>>(set, setter));
                 }
-				Constructor = Type.GetConstructor(Type.EmptyTypes);
+                Constructor = Type.GetConstructor(Type.EmptyTypes);
 
-				if (Constructor != null)
-				{
-					var newExp = Expression.New(Constructor);
-					Launcher = (Func<object>)Expression.Lambda(newExp).Compile();
-				}
+                if (Constructor != null)
+                {
+                    var newExp = Expression.New(Constructor);
+                    Launcher = (Func<object>)Expression.Lambda(newExp).Compile();
+                }
             }
             else
             {
