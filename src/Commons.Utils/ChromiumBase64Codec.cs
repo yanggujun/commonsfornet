@@ -20,7 +20,96 @@ namespace Commons.Utils
 {
     public class ChromiumBase64Codec
     {
-        private static readonly string Base64Set = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        private static char CHARPAD = '=';
+        private static uint BADCHAR = 0x01FFFFFF;
+
+        private static readonly char[] e0 = {
+            'A',  'A',  'A',  'A',  'B',  'B',  'B',  'B',  'C',  'C',
+            'C',  'C',  'D',  'D',  'D',  'D',  'E',  'E',  'E',  'E',
+            'F',  'F',  'F',  'F',  'G',  'G',  'G',  'G',  'H',  'H',
+            'H',  'H',  'I',  'I',  'I',  'I',  'J',  'J',  'J',  'J',
+            'K',  'K',  'K',  'K',  'L',  'L',  'L',  'L',  'M',  'M',
+            'M',  'M',  'N',  'N',  'N',  'N',  'O',  'O',  'O',  'O',
+            'P',  'P',  'P',  'P',  'Q',  'Q',  'Q',  'Q',  'R',  'R',
+            'R',  'R',  'S',  'S',  'S',  'S',  'T',  'T',  'T',  'T',
+            'U',  'U',  'U',  'U',  'V',  'V',  'V',  'V',  'W',  'W',
+            'W',  'W',  'X',  'X',  'X',  'X',  'Y',  'Y',  'Y',  'Y',
+            'Z',  'Z',  'Z',  'Z',  'a',  'a',  'a',  'a',  'b',  'b',
+            'b',  'b',  'c',  'c',  'c',  'c',  'd',  'd',  'd',  'd',
+            'e',  'e',  'e',  'e',  'f',  'f',  'f',  'f',  'g',  'g',
+            'g',  'g',  'h',  'h',  'h',  'h',  'i',  'i',  'i',  'i',
+            'j',  'j',  'j',  'j',  'k',  'k',  'k',  'k',  'l',  'l',
+            'l',  'l',  'm',  'm',  'm',  'm',  'n',  'n',  'n',  'n',
+            'o',  'o',  'o',  'o',  'p',  'p',  'p',  'p',  'q',  'q',
+            'q',  'q',  'r',  'r',  'r',  'r',  's',  's',  's',  's',
+            't',  't',  't',  't',  'u',  'u',  'u',  'u',  'v',  'v',
+            'v',  'v',  'w',  'w',  'w',  'w',  'x',  'x',  'x',  'x',
+            'y',  'y',  'y',  'y',  'z',  'z',  'z',  'z',  '0',  '0',
+            '0',  '0',  '1',  '1',  '1',  '1',  '2',  '2',  '2',  '2',
+            '3',  '3',  '3',  '3',  '4',  '4',  '4',  '4',  '5',  '5',
+            '5',  '5',  '6',  '6',  '6',  '6',  '7',  '7',  '7',  '7',
+            '8',  '8',  '8',  '8',  '9',  '9',  '9',  '9',  '+',  '+',
+            '+',  '+',  '/',  '/',  '/',  '/'
+        };
+
+        private static readonly char[] e1 = {
+            'A',  'B',  'C',  'D',  'E',  'F',  'G',  'H',  'I',  'J',
+            'K',  'L',  'M',  'N',  'O',  'P',  'Q',  'R',  'S',  'T',
+            'U',  'V',  'W',  'X',  'Y',  'Z',  'a',  'b',  'c',  'd',
+            'e',  'f',  'g',  'h',  'i',  'j',  'k',  'l',  'm',  'n',
+            'o',  'p',  'q',  'r',  's',  't',  'u',  'v',  'w',  'x',
+            'y',  'z',  '0',  '1',  '2',  '3',  '4',  '5',  '6',  '7',
+            '8',  '9',  '+',  '/',  'A',  'B',  'C',  'D',  'E',  'F',
+            'G',  'H',  'I',  'J',  'K',  'L',  'M',  'N',  'O',  'P',
+            'Q',  'R',  'S',  'T',  'U',  'V',  'W',  'X',  'Y',  'Z',
+            'a',  'b',  'c',  'd',  'e',  'f',  'g',  'h',  'i',  'j',
+            'k',  'l',  'm',  'n',  'o',  'p',  'q',  'r',  's',  't',
+            'u',  'v',  'w',  'x',  'y',  'z',  '0',  '1',  '2',  '3',
+            '4',  '5',  '6',  '7',  '8',  '9',  '+',  '/',  'A',  'B',
+            'C',  'D',  'E',  'F',  'G',  'H',  'I',  'J',  'K',  'L',
+            'M',  'N',  'O',  'P',  'Q',  'R',  'S',  'T',  'U',  'V',
+            'W',  'X',  'Y',  'Z',  'a',  'b',  'c',  'd',  'e',  'f',
+            'g',  'h',  'i',  'j',  'k',  'l',  'm',  'n',  'o',  'p',
+            'q',  'r',  's',  't',  'u',  'v',  'w',  'x',  'y',  'z',
+            '0',  '1',  '2',  '3',  '4',  '5',  '6',  '7',  '8',  '9',
+            '+',  '/',  'A',  'B',  'C',  'D',  'E',  'F',  'G',  'H',
+            'I',  'J',  'K',  'L',  'M',  'N',  'O',  'P',  'Q',  'R',
+            'S',  'T',  'U',  'V',  'W',  'X',  'Y',  'Z',  'a',  'b',
+            'c',  'd',  'e',  'f',  'g',  'h',  'i',  'j',  'k',  'l',
+            'm',  'n',  'o',  'p',  'q',  'r',  's',  't',  'u',  'v',
+            'w',  'x',  'y',  'z',  '0',  '1',  '2',  '3',  '4',  '5',
+            '6',  '7',  '8',  '9',  '+',  '/'
+        };
+
+        private static readonly char[] e2 = {
+            'A',  'B',  'C',  'D',  'E',  'F',  'G',  'H',  'I',  'J',
+            'K',  'L',  'M',  'N',  'O',  'P',  'Q',  'R',  'S',  'T',
+            'U',  'V',  'W',  'X',  'Y',  'Z',  'a',  'b',  'c',  'd',
+            'e',  'f',  'g',  'h',  'i',  'j',  'k',  'l',  'm',  'n',
+            'o',  'p',  'q',  'r',  's',  't',  'u',  'v',  'w',  'x',
+            'y',  'z',  '0',  '1',  '2',  '3',  '4',  '5',  '6',  '7',
+            '8',  '9',  '+',  '/',  'A',  'B',  'C',  'D',  'E',  'F',
+            'G',  'H',  'I',  'J',  'K',  'L',  'M',  'N',  'O',  'P',
+            'Q',  'R',  'S',  'T',  'U',  'V',  'W',  'X',  'Y',  'Z',
+            'a',  'b',  'c',  'd',  'e',  'f',  'g',  'h',  'i',  'j',
+            'k',  'l',  'm',  'n',  'o',  'p',  'q',  'r',  's',  't',
+            'u',  'v',  'w',  'x',  'y',  'z',  '0',  '1',  '2',  '3',
+            '4',  '5',  '6',  '7',  '8',  '9',  '+',  '/',  'A',  'B',
+            'C',  'D',  'E',  'F',  'G',  'H',  'I',  'J',  'K',  'L',
+            'M',  'N',  'O',  'P',  'Q',  'R',  'S',  'T',  'U',  'V',
+            'W',  'X',  'Y',  'Z',  'a',  'b',  'c',  'd',  'e',  'f',
+            'g',  'h',  'i',  'j',  'k',  'l',  'm',  'n',  'o',  'p',
+            'q',  'r',  's',  't',  'u',  'v',  'w',  'x',  'y',  'z',
+            '0',  '1',  '2',  '3',  '4',  '5',  '6',  '7',  '8',  '9',
+            '+',  '/',  'A',  'B',  'C',  'D',  'E',  'F',  'G',  'H',
+            'I',  'J',  'K',  'L',  'M',  'N',  'O',  'P',  'Q',  'R',
+            'S',  'T',  'U',  'V',  'W',  'X',  'Y',  'Z',  'a',  'b',
+            'c',  'd',  'e',  'f',  'g',  'h',  'i',  'j',  'k',  'l',
+            'm',  'n',  'o',  'p',  'q',  'r',  's',  't',  'u',  'v',
+            'w',  'x',  'y',  'z',  '0',  '1',  '2',  '3',  '4',  '5',
+            '6',  '7',  '8',  '9',  '+',  '/'
+        };
+
 
         private static readonly uint[] d0 =
         {
@@ -198,56 +287,65 @@ namespace Commons.Utils
 
         public string Encode(byte[] bytes)
         {
-            var i = 0;
-            var len = bytes.Length;
-            var size = len % 3 == 0 ? len / 3 : len / 3 + 1;
-            var buffer = new char[size * 4];
-            var pos = 0;
-
-            /* unsigned here is important! */
-            byte t1, t2, t3;
-            int combined;
-
-            if (len > 2)
+            if (bytes == null)
             {
-                for (; i < len - 2; i += 3)
+                return null;
+            }
+            byte t1, t2, t3;
+            var len = bytes.Length;
+            var i = 0;
+            var num = len / 3 * 4;
+
+            if (len % 3 != 0)
+            {
+                num += 4;
+            }
+            var str = new char[num];
+            
+            var index = 0;
+            if (len > 2) 
+            {
+                for (; i < len - 2; i+=3)
                 {
-                    t1 = bytes[i]; t2 = bytes[i + 1]; t3 = bytes[i + 2];
-                    combined = (t1 << 16) | (t2 << 8) | t3;
-                    buffer[pos++] = Base64Set[combined >> 18];
-                    buffer[pos++] = Base64Set[(combined >> 12) & 0x3F];
-                    buffer[pos++] = Base64Set[(combined >> 6) & 0x3F];
-                    buffer[pos++] = Base64Set[combined & 0x3F];
+                    t1 = bytes[i];
+                    t2 = bytes[i + 1];
+                    t3 = bytes[i + 2];
+                    str[index++] = e0[t1];
+                    str[index++] = e1[((t1 & 0x03) << 4) | ((t2 >> 4) & 0x0F)];
+                    str[index++] = e2[((t2 & 0x0F) << 2) | ((t3 >> 6) & 0x03)];
+                    str[index++] = e2[t3];
                 }
             }
-
             switch (len - i)
             {
-                case 0:
-                    break;
-                case 1:
+                case 1: 
                     t1 = bytes[i];
-                    combined = t1 << 16;
-                    buffer[pos++] = Base64Set[combined >> 18];
-                    buffer[pos++] = Base64Set[(combined >> 12) & 0x3F];
-                    buffer[pos++] = CommonConstants.CHARPAD;
-                    buffer[pos++] = CommonConstants.CHARPAD;
+                    str[index++] = e0[t1];
+                    str[index++] = e1[(t1 & 0x03) << 4];
+                    str[index++] = CHARPAD;
+                    str[index++] = CHARPAD;
                     break;
-                default: /* case 2 */
-                    t1 = bytes[i]; t2 = bytes[i + 1];
-                    combined = (t1 << 16) | (t2 << 8);
-                    buffer[pos++] = Base64Set[combined >> 18];
-                    buffer[pos++] = Base64Set[(combined >> 12) & 0x3F];
-                    buffer[pos++] = Base64Set[(combined >> 6) & 0x3F];
-                    buffer[pos++] = CommonConstants.CHARPAD;
+                case 2:
+                    t1 = bytes[i];
+                    t2 = bytes[i + 1];
+                    str[index++] = e0[t1];
+                    str[index++] = e1[((t1 & 0x03) << 4) | ((t2>>4) & 0x0F)];
+                    str[index++] = e2[(t2 & 0x0F) << 2];
+                    str[index++] = CHARPAD;
+                    break;
+                default:
                     break;
             }
 
-            return new string(buffer);
+            return new string(str);
         }
 
         public byte[] Decode(string str)
         {
+            if (string.IsNullOrEmpty(str))
+            {
+                return null;
+            }
             var len = str.Length;
             if (len == 0)
             {
@@ -263,10 +361,10 @@ namespace Commons.Utils
                 throw new FormatException("The Base64 string format is incorrect.");
             }
             /* there can be at most 2 pad chars at the end */
-            if (str[len - 1] == CommonConstants.CHARPAD)
+            if (str[len - 1] == CHARPAD)
             {
                 len--;
-                if (str[len - 1] == CommonConstants.CHARPAD)
+                if (str[len - 1] == CHARPAD)
                 {
                     len--;
                 }
@@ -301,7 +399,7 @@ namespace Commons.Utils
             for (i = 0; i < chunks; ++i, y += 4)
             {
                 x = d0[str[y]] | d1[str[y + 1]] | d2[str[y + 2]] | d3[str[y + 3]];
-                if (x >= CommonConstants.BADCHAR)
+                if (x >= BADCHAR)
                 {
                     throw new FormatException("The base 64 string format is incorrect");
                 }
@@ -315,7 +413,7 @@ namespace Commons.Utils
                 case 0:
                     x = d0[str[y]] | d1[str[y + 1]] | d2[str[y + 2]] | d3[str[y + 3]];
 
-                    if (x >= CommonConstants.BADCHAR)
+                    if (x >= BADCHAR)
                     {
                         throw new FormatException("The base 64 string format is incorrect");
                     }
@@ -336,7 +434,7 @@ namespace Commons.Utils
                     break;
             }
 
-            if (x >= CommonConstants.BADCHAR) throw new FormatException();
+            if (x >= BADCHAR) throw new FormatException();
 
             return byteArray;
         }
