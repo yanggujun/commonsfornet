@@ -448,10 +448,10 @@ namespace Commons.Test.Utils
             var rand = new Random((int)(DateTime.Now.Ticks & 0x0000ffff));
             var bytes = new byte[1000];
             rand.NextBytes(bytes);
-            var chrm = bytes.ToBase64String();
+            var chrm = bytes.Base64Encode();
             var net = Convert.ToBase64String(bytes);
             Assert.Equal(net, chrm);
-            var back = chrm.FromBase64String();
+            var back = chrm.Base64Decode();
             Assert.Equal(1000, back.Length);
             for (var i = 0; i < 1000; i++)
             {

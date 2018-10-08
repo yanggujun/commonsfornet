@@ -751,7 +751,7 @@ namespace Commons.Json.Mapper
             byte[] bytes = null;
             if (jsonValue.Is<JString>(out str))
             {
-                bytes = str.Value.FromBase64String();
+                bytes = str.Value.Base64Decode();
             }
             else
             {

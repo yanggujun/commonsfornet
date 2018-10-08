@@ -201,7 +201,7 @@ namespace Commons.Utils
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        public static string ToBase64String(this byte[] bytes)
+        public static string Base64Encode(this byte[] bytes)
         {
             return ChromiumBase64Codec.Encode(bytes);
         }
@@ -211,7 +211,7 @@ namespace Commons.Utils
         /// </summary>
         /// <param name="origin"></param>
         /// <returns></returns>
-        public static byte[] FromBase64String(this string origin)
+        public static byte[] Base64Decode(this string origin)
         {
             return ChromiumBase64Codec.Decode(origin);
         }

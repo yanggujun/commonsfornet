@@ -26,6 +26,7 @@ using Commons.Reflect;
 using Commons.Test.Json;
 using Commons.Test.Poco;
 using Newtonsoft.Json;
+using Commons.Utils;
 
 namespace Commons.Perf
 {
@@ -35,6 +36,7 @@ namespace Commons.Perf
         {
             TestCommonsJsonSingleThread();
             TestCommonsReflect();
+            TestBase64Codec();
         }
 
         public static void TestCommonsReflect()
@@ -46,6 +48,111 @@ namespace Commons.Perf
             TestCommonsReflectGetPropertyNonCachedInvoker();
             TestCommonsReflectSetPropertyNonCachedInvoker();
         } 
+
+        private static void TestBase64Codec()
+        {
+            TestBase64EncodeSmall();
+            TestBase64EncodeStandard();
+            TestBase64EncodeLarge();
+            TestBase64DecodeSmall();
+            TestBase64DecodeStandard();
+            TestBase64DecodeLarge();
+        }
+
+        private static void TestBase64EncodeSmall()
+        {
+            var str = ReadFile("SmallPost.txt");
+            var bytes = str.ToBytes();
+            TestBase64Encode(bytes, "Base64 Encode Small Object");
+        }
+
+        private static void TestBase64EncodeStandard()
+        {
+            var str = ReadFile("Post.txt");
+            var bytes = str.ToBytes();
+            TestBase64Encode(bytes, "Base64 Encode Standard Object");
+        }
+
+        private static void TestBase64EncodeLarge()
+        {
+            var str = ReadFile("NewBook.txt");
+            var bytes = str.ToBytes();
+            TestBase64Encode(bytes, "Base64 Encode Large Object");
+        }
+
+        private static void TestBase64DecodeSmall()
+        {
+            var str = ReadFile("SmallPost.txt");
+            var bytes = str.ToBytes();
+            var src = Convert.ToBase64String(bytes);
+            TestBase64Decode(src, "Base64 Decode Small Object");
+        }
+
+        private static void TestBase64DecodeStandard()
+        {
+            var str = ReadFile("Post.txt");
+            var bytes = str.ToBytes();
+            var src = Convert.ToBase64String(bytes);
+            TestBase64Decode(src, "Base64 Decode Standard Object");
+        }
+
+        private static void  TestBase64DecodeLarge()
+        {
+             var str = ReadFile("NewBook.txt");
+            var bytes = str.ToBytes();
+            var src = Convert.ToBase64String(bytes);
+            TestBase64Decode(src, "Base64 Decode Large Object");       
+        }
+
+        private static void TestBase64Decode(string src, string title)
+        {
+            const int LN = 10000;
+            var bytes1 = src.Base64Decode();
+            var bytes2 = Convert.FromBase64String(src);
+
+            var sw1 = new Stopwatch();
+            sw1.Start();
+            for (var i = 0; i < LN; i++)
+            {
+                src.Base64Decode();
+            }
+            sw1.Stop();
+
+            var sw2 = new Stopwatch();
+            sw2.Start();
+            for (var i = 0; i < LN; i++)
+            {
+                Convert.FromBase64String(src);
+            }
+            sw2.Stop();
+
+            PrintResult(title, "Commons.Utils - Base64Decode", sw1.ElapsedMilliseconds, "Convert.FromBase64String", sw2.ElapsedMilliseconds);
+
+        }
+
+        private static void TestBase64Encode(byte[] src, string title)
+        {
+            const int LN = 10000;
+            var str1 = src.Base64Encode();
+            var str2 = Convert.ToBase64String(src);
+            var sw1 = new Stopwatch();
+            sw1.Start();
+            for (var i = 0; i < LN; i++)
+            {
+                src.Base64Encode();
+            }
+            sw1.Stop();
+
+            var sw2 = new Stopwatch();
+            sw2.Start();
+            for (var i = 0;i < LN; i++)
+            {
+                Convert.ToBase64String(src);
+            }
+            sw2.Stop();
+
+            PrintResult(title, "Commons.Utils - Base64Encode", sw1.ElapsedMilliseconds, "Convert.ToBase64String", sw2.ElapsedMilliseconds);
+        }
 
         public static void TestCommonsReflectNewInstanceCachedInvoker()
         {
