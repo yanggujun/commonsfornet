@@ -128,7 +128,8 @@ namespace Commons.Pool
                             locker.ExitWriteLock();
                         }
 
-                        if (acquiredInvalidCounter.Value >= AcquiredInvalidLimit) {
+                        if (acquiredInvalidCounter.Value >= AcquiredInvalidLimit)
+                        {
                             throw new InvalidOperationException($"Unable to create a valid object after {acquiredInvalidCounter.Value} attempts.");
                         }
                     }

@@ -29,6 +29,6 @@ dotnet build $src/Commons.Test/Commons.Test.csproj -c Release --no-dependencies 
 dotnet build $src/Commons.Perf/Commons.Perf.csproj -c Release --no-dependencies -o "$OUTPUT/netstandard1.3" -f netcoreapp2.1 --no-incremental 
 
 cd $OUTPUT/netstandard1.3
-dotnet test $src/Commons.Test/Commons.Test.csproj -o $OUTPUT/netstandard1.3 --no-build -f netcoreapp2.1
+dotnet test $src/Commons.Test/Commons.Test.csproj -o $OUTPUT/netstandard1.3 --no-build -f netcoreapp2.1 -p:ParallelizeTestCollections=false
 
 dotnet Commons.Perf.dll

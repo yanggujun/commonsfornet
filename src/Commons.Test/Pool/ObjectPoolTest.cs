@@ -1132,7 +1132,8 @@ namespace Commons.Test.Pool
                 Parallel.ForEach(acquireTasks, x => x.Start());
                 Task.WaitAll(acquireTasks);
 
-                Task[] returnTasks = CreateReturnTasks(objectPool, objectsBag, (obj) => {
+                Task[] returnTasks = CreateReturnTasks(objectPool, objectsBag, (obj) => 
+                {
                     lock (returnLock)
                     {
                         double val = rnd.NextDouble();
