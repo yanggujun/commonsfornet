@@ -18,11 +18,7 @@
     <summary>Work with JSON fluently and dynamically.
     </summary>
     <releaseNotes>
-        Update on 0.3.x
-
-        * Change configuration interface.
-
-        * Faster, faster and faster.
+        bug fixes
         
     </releaseNotes>
     <tags>JSON Serialize Deserialize</tags>

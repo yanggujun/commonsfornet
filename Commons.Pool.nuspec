@@ -18,7 +18,7 @@
     <summary>A light weight and thread safe generic object pool.
     </summary>
     <releaseNotes>
-
+        Add object validation on acquire and return.
     </releaseNotes>
     <tags>Object Pool</tags>
     <dependencies>

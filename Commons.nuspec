@@ -17,6 +17,7 @@
     </description>
     <summary>Atomic Primitives, Hash Functions, Collections</summary>
     <releaseNotes>
+        Add chromium base64 string encoder and decoder.
     </releaseNotes>
     <dependencies>
       <group targetFramework=".NETSTANDARD1.3">
