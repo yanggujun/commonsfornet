@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>0.3.0.775</VersionPrefix>
+    <VersionPrefix>0.4.0.1347</VersionPrefix>
     <TargetFrameworks>net40;net45;netstandard1.3</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>Commons.Collections</AssemblyName>
