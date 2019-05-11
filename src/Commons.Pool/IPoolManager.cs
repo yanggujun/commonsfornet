@@ -27,13 +27,21 @@ namespace Commons.Pool
     [CLSCompliant(true)]
     public interface IPoolManager : IDisposable
     {
-
         /// <summary>
-        /// Attempts to instantiate a new object pool by creating a <see cref="IPoolDescriptor{T}"/>.
+        /// Attempts to instantiate a new object pool by creating a <see cref="IPoolDescriptor{T}"/>. 
+        /// This is no longer the suggested way to create a new pool. This method will be decrecated in a future version.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         IPoolDescriptor<T> NewPool<T>() where T : class;
+
+        /// <summary>
+        /// This is a fluent interface to create a new pool with <see cref="IPoolConfigurator{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the object in the pool.</typeparam>
+        /// <param name="configurator">The configurator action</param>
+        /// <returns>A new object pool which is managed by the <see cref="IPoolManager"/></returns>
+        IObjectPool<T> NewPool<T>(Action<IPoolConfigurator<T>> configurator) where T : class;
 
         /// <summary>
         /// Retrieves an object pool with the <paramref name="key"/>. When the key does not exist in the pool manager,

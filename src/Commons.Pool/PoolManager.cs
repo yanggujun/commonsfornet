@@ -102,5 +102,25 @@ namespace Commons.Pool
                 throw new InvalidOperationException("The keyed object pool cannot be added to the pool manager.");
             }
         }
+
+        public IObjectPool<T> NewPool<T>(Action<IPoolConfigurator<T>> configurator) where T : class
+        {
+            if (configurator == null)
+            {
+                throw new ArgumentNullException("The configurator reference cannot be null");
+            }
+            var config = new PoolConfigurator<T>();
+            configurator(config);
+            var descriptor = new GenericPoolDescriptor<T>(this)
+                .WithCreator(config.ObjectCreator)
+                .WithDestroyer(config.ObjectDestroyer)
+                .WithFactory(config.ObjectFactory)
+                .WithValidator(config.ObjectValidator)
+                .AcquiredInvalidLimit(config.AcquiredInvalidLimit)
+                .InitialSize(config.InitialSize)
+                .MaxSize(config.MaxSize)
+                .OfKey(config.Key);
+            return descriptor.Instance();
+        }
     }
 }
