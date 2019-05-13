@@ -14,8 +14,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Commons.Pool;
-using Moq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,7 +22,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Moq;
 using Xunit;
+
+using Commons.Pool;
 
 namespace Commons.Test.Pool
 {
@@ -86,52 +88,22 @@ namespace Commons.Test.Pool
                                         .MaxSize(100)
                                         .WithFactory(mockObjFactory)
                                         .Instance();
-
-            var tasks1 = new Task[30];
-            var connections = new List<IDbConnection>();
-            for (var i = 0; i < 30; i++)
-            {
-                tasks1[i] = new Task(() => Do(connections, objectPool));
-            }
-            Parallel.ForEach(tasks1, x => x.Start());
-            Task.WaitAll(tasks1);
-
-            Assert.Equal(0, objectPool.IdleCount);
-            Assert.Equal(30, objectPool.ActiveCount);
-            Assert.Equal(0, objectPool.InitialSize);
-            Assert.Equal(100, objectPool.Capacity);
-
-            var tasks2 = new Task[30];
-            for (var i = 0; i < 30; i++)
-            {
-                tasks2[i] = new Task(() => Do(connections, objectPool));
-            }
-            Parallel.ForEach(tasks2, x => x.Start());
-            Task.WaitAll(tasks2);
-
-            Assert.Equal(0, objectPool.IdleCount);
-            Assert.Equal(60, objectPool.ActiveCount);
+            DoTestAcquireAgain(objectPool);
+        }
 
 
-            var tasks3 = new Task[40];
-            for (var i = 0; i < 40; i++)
-            {
-                var conn = connections[i];
-                tasks3[i] = new Task(() => objectPool.Return(conn));
-            }
-            Parallel.ForEach(tasks3, x => x.Start());
-            Task.WaitAll(tasks3);
-
-            Assert.Equal(40, objectPool.IdleCount);
-            Assert.Equal(20, objectPool.ActiveCount);
-
-            for (var i = 0; i < 20; i++)
-            {
-                objectPool.Return(connections[i + 40]);
-            }
-            Assert.Equal(60, objectPool.IdleCount);
-            Assert.Equal(0, objectPool.ActiveCount);
-            objectPool.Dispose();
+        [Fact]
+        public void TestAcquireAgainWithFluentConfig()
+        {
+            Setup();
+            var poolManager = new PoolManager();
+            var objectPool = poolManager.NewPool<IDbConnection>(x => 
+                {
+                    x.InitialSize = 0;
+                    x.MaxSize = 100;
+                    x.ByFactory(mockObjFactory);
+                });
+            DoTestAcquireAgain(objectPool);
         }
 
         [Fact]
@@ -424,7 +396,7 @@ namespace Commons.Test.Pool
         public void TestInitialSizeLessThanZero()
         {
             Setup();
-            Assert.Throws(typeof (ArgumentException), () =>
+            Assert.Throws<ArgumentException>(() =>
             {
                 var poolManager = new PoolManager();
                 var pool =
@@ -440,7 +412,7 @@ namespace Commons.Test.Pool
         public void TestMaxSizeLessThanZero()
         {
             Setup();
-            Assert.Throws(typeof (ArgumentException),
+            Assert.Throws<ArgumentException>(
                 () =>
                     new PoolManager().NewPool<IDbConnection>()
                         .InitialSize(0)
@@ -453,7 +425,7 @@ namespace Commons.Test.Pool
         public void TestMaxSizeLessThanInitialSize()
         {
             Setup();
-            Assert.Throws((typeof (ArgumentException)),
+            Assert.Throws<ArgumentException>(
                 () =>
                     new PoolManager().NewPool<IDbConnection>()
                         .InitialSize(10)
@@ -480,7 +452,7 @@ namespace Commons.Test.Pool
             Parallel.ForEach(tasks, x => x.Start());
             Task.WaitAll(tasks);
             var fake = new Mock<IDbConnection>().Object;
-            Assert.Throws(typeof (InvalidOperationException), () => pool.Return(fake));
+            Assert.Throws<InvalidOperationException>(() => pool.Return(fake));
         }
 
         [Fact]
@@ -652,16 +624,16 @@ namespace Commons.Test.Pool
         {
             Setup();
             var poolManager = new PoolManager();
-            Assert.Throws(typeof (ArgumentException), () =>
-                poolManager.NewPool<IDbConnection>().MaxSize(1).InitialSize(5).WithFactory(mockObjFactory).Instance());
+            Assert.Throws<ArgumentException>(
+                () => poolManager.NewPool<IDbConnection>().MaxSize(1).InitialSize(5).WithFactory(mockObjFactory).Instance());
         }
 
         [Fact]
         public void TestWithoutFactory()
         {
             var poolManager = new PoolManager();
-            Assert.Throws(typeof (InvalidOperationException), () =>
-                poolManager.NewPool<IDbConnection>().InitialSize(0).MaxSize(10).Instance());
+            Assert.Throws<InvalidOperationException>(
+                () => poolManager.NewPool<IDbConnection>().InitialSize(0).MaxSize(10).Instance());
         }
 
         [Fact]
@@ -676,7 +648,7 @@ namespace Commons.Test.Pool
                 return mock.Object;
             }).Instance();
             var connection = pool.Acquire();
-            Assert.Equal(connection.State, ConnectionState.Open);
+            Assert.Equal(ConnectionState.Open, connection.State);
         }
 
         [Fact]
@@ -691,7 +663,7 @@ namespace Commons.Test.Pool
                 return mock.Object;
             }).WithFactory(mockObjFactory).Instance();
             var connection = pool.Acquire();
-            Assert.Equal(connection.State, ConnectionState.Executing);
+            Assert.Equal(ConnectionState.Executing, connection.State);
         }
 
         [Fact]
@@ -704,6 +676,30 @@ namespace Commons.Test.Pool
                 mock.Setup(x => x.State).Returns(ConnectionState.Open);
                 return mock.Object;
             }).WithDestroyer(x => x.Dispose()).Instance();
+            var connection = pool.Acquire();
+            Assert.NotNull(poolManager.GetPool<IDbConnection>("mock"));
+            poolManager.Destroy("mock");
+            Assert.Null(poolManager.GetPool<IDbConnection>("mock"));
+            mock.Verify(x => x.Dispose());
+        }
+
+        [Fact]
+        public void TestDestroyWithFluentConfig()
+        {
+            var poolManager = new PoolManager();
+            var mock = new Mock<IDbConnection>();
+            var pool = poolManager.NewPool<IDbConnection>(x =>
+            {
+                x.Key = "mock";
+                x.InitialSize = 0;
+                x.MaxSize = 10;
+                x.CreateWith(() =>
+                {
+                    mock.Setup(y => y.State).Returns(ConnectionState.Open);
+                    return mock.Object;
+                });
+                x.DestroyWith(y => y.Dispose());
+            });
             var connection = pool.Acquire();
             Assert.NotNull(poolManager.GetPool<IDbConnection>("mock"));
             poolManager.Destroy("mock");
@@ -745,7 +741,7 @@ namespace Commons.Test.Pool
                     .MaxSize(10)
                     .WithFactory(mockObjFactory)
                     .Instance();
-            Assert.Throws(typeof (ArgumentException), () => poolManager.Destroy("mock1"));
+            Assert.Throws<ArgumentException>(() => poolManager.Destroy("mock1"));
         }
 
         [Fact]
@@ -789,7 +785,7 @@ namespace Commons.Test.Pool
         public void TestPoolManagerDestroyEmptyKey()
         {
             var poolManager = new PoolManager();
-            Assert.Throws(typeof (ArgumentException), () => poolManager.Destroy("  "));
+            Assert.Throws<ArgumentException>(() => poolManager.Destroy("  "));
         }
 
         [Fact]
@@ -1400,6 +1396,56 @@ namespace Commons.Test.Pool
         private void Setup()
         {
             mockObjFactory = new MockConnectionFactory();
+        }
+
+        private void DoTestAcquireAgain(IObjectPool<IDbConnection> objectPool)
+        {
+            var tasks1 = new Task[30];
+            var connections = new List<IDbConnection>();
+            for (var i = 0; i < 30; i++)
+            {
+                tasks1[i] = new Task(() => Do(connections, objectPool));
+            }
+            Parallel.ForEach(tasks1, x => x.Start());
+            Task.WaitAll(tasks1);
+
+            Assert.Equal(0, objectPool.IdleCount);
+            Assert.Equal(30, objectPool.ActiveCount);
+            Assert.Equal(0, objectPool.InitialSize);
+            Assert.Equal(100, objectPool.Capacity);
+
+            var tasks2 = new Task[30];
+            for (var i = 0; i < 30; i++)
+            {
+                tasks2[i] = new Task(() => Do(connections, objectPool));
+            }
+            Parallel.ForEach(tasks2, x => x.Start());
+            Task.WaitAll(tasks2);
+
+            Assert.Equal(0, objectPool.IdleCount);
+            Assert.Equal(60, objectPool.ActiveCount);
+
+
+            var tasks3 = new Task[40];
+            for (var i = 0; i < 40; i++)
+            {
+                var conn = connections[i];
+                tasks3[i] = new Task(() => objectPool.Return(conn));
+            }
+            Parallel.ForEach(tasks3, x => x.Start());
+            Task.WaitAll(tasks3);
+
+            Assert.Equal(40, objectPool.IdleCount);
+            Assert.Equal(20, objectPool.ActiveCount);
+
+            for (var i = 0; i < 20; i++)
+            {
+                objectPool.Return(connections[i + 40]);
+            }
+            Assert.Equal(60, objectPool.IdleCount);
+            Assert.Equal(0, objectPool.ActiveCount);
+            objectPool.Dispose();
+
         }
     }
 
