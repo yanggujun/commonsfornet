@@ -71,9 +71,20 @@ namespace Commons.Json.Mapper
             {
                 serializer = SerializeNumber;
             }
-            else if (type == typeof(string) || type.IsEnum() || type == typeof(Guid) || type == typeof(char))
+            else if (type == typeof(string) || type == typeof(Guid) || type == typeof(char))
             {
                 serializer = SerializeString;
+            }
+            else if (type.IsEnum())
+            {
+                if (type.HasAttribute(typeof(FlagsAttribute)))
+                {
+                    serializer = SerializeFlagEnum;
+                }
+                else
+                {
+                    serializer = SerializeString;
+                }
             }
             else if (type == typeof(DateTime))
             {
@@ -252,6 +263,11 @@ namespace Commons.Json.Mapper
         private void SerializeString(object target, StringBuilder localBuffer)
         {
             localBuffer.Append(JsonTokens.Quoter).Append(target).Append(JsonTokens.Quoter);
+        }
+
+        private void SerializeFlagEnum(object target, StringBuilder localBuffer)
+        {
+            localBuffer.Append((long)target);
         }
 
         private void SerializeTime(object target, StringBuilder localBuffer)

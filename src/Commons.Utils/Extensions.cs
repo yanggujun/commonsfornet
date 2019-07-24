@@ -156,6 +156,23 @@ namespace Commons.Utils
 #endif
         }
 
+        public static bool HasAttribute(this Type type, Type attributeType)
+        {
+#if NET40 || NET45
+            return Attribute.IsDefined(type, attributeType);
+#else
+            var ti = type.GetTypeInfo();
+            var attributes = ti.GetCustomAttributes(typeof(FlagsAttribute), true);
+            var hasAttribute = false;
+            foreach (var a in attributes)
+            {
+                hasAttribute = true;
+                break;
+            }
+            return hasAttribute;
+#endif
+        }
+
         /// <summary>
         /// Converts the datetime to string format "MM/dd/yyyy HH:mm:ss.fff"
         /// </summary>

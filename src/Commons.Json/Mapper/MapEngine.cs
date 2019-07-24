@@ -169,7 +169,14 @@ namespace Commons.Json.Mapper
             }
             else if (type.IsEnum())
             {
-                deserializer = BuildEnum;
+                if (type.HasAttribute(typeof(FlagsAttribute)))
+                {
+                    deserializer = BuildFlagEnum;
+                }
+                else
+                {
+                    deserializer = BuildEnum;
+                }
             }
             else if (type == typeof(Guid))
             {
@@ -662,6 +669,21 @@ namespace Commons.Json.Mapper
                 throw new InvalidCastException(Messages.InvalidEnumValue);
             }
             return enumValue;
+        }
+
+        private object BuildFlagEnum(Type type, JValue jsonValue)
+        {
+            if (jsonValue == JNull.Null)
+            {
+                throw new InvalidCastException(Messages.CannotAssignNullToStruct);
+            }
+            JNumber number = null;
+            if (!jsonValue.Is<JNumber>(out number))
+            {
+                throw new InvalidCastException(Messages.InvalidEnumValue);
+            }
+            long enumValue = number.GetInt64();
+            return Enum.ToObject(type, enumValue);
         }
 
         private object BuildNullableEnum(Type type, JValue jsonValue)
