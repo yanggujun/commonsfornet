@@ -2143,7 +2143,87 @@ namespace Commons.Test.Json
             Assert.Equal(10, hasDate.Birthday.Month);
             Assert.Equal(5, hasDate.Birthday.Day);
 
-            Assert.Throws(typeof(ArgumentException), () => JsonMapper.NewContext().UseDateFormat("yyyy/mm/dd").To<HasDate>(json));
+            Assert.Throws<ArgumentException>(() => JsonMapper.NewContext().UseDateFormat("yyyy/mm/dd").To<HasDate>(json));
+        }
+
+        [Fact]
+        public void TestFlagsEnum01()
+        {
+            var f = IntFlag.Number0 | IntFlag.Number1;
+            var json = JsonMapper.ToJson(f);
+            Assert.Equal("3", json);
+        }
+
+        [Fact]
+        public void TestFlagsEnum02()
+        {
+            var f = IntFlag.Number0 & IntFlag.Number1;
+            var json = JsonMapper.ToJson(f);
+            Assert.Equal("0", json);
+        }
+
+        [Fact]
+        public void TestFlagsEnum03()
+        {
+            var color = Color.Red;
+            var json = JsonMapper.ToJson(color);
+            Assert.Equal("1", json);
+        }
+
+        [Fact]
+        public void TestFlagsEnum04()
+        {
+            var lo = LongOption.Option1;
+            var json = JsonMapper.ToJson(lo);
+            Assert.Equal("1", json);
+        }
+
+        [Fact]
+        public void TestFlagsEnum05()
+        {
+            var lo = ShortOption.Option1;
+            var json = JsonMapper.ToJson(lo);
+            Assert.Equal("1", json);
+        }
+
+        [Fact]
+        public void TestFlagsEnum06()
+        {
+            var lo = ByteOption.Option1;
+            var json = JsonMapper.ToJson(lo);
+            Assert.Equal("1", json);
+        }
+
+        [Fact]
+        public void TestFlagsEnum07()
+        {
+            var f = UIntFlag.Number0;
+            var json = JsonMapper.ToJson(f);
+            Assert.Equal("1", json);
+        }
+
+        [Fact]
+        public void TestFlagsEnum08()
+        {
+            var o = ULongOption.Option1;
+            var json = JsonMapper.ToJson(o);
+            Assert.Equal("1", json);
+        }
+
+        [Fact]
+        public void TestFlagsEnum09()
+        {
+            var o = UShortOption.Option1;
+            var json = JsonMapper.ToJson(o);
+            Assert.Equal("1", json);
+        }
+
+        [Fact]
+        public void TestFlagsEnum10()
+        {
+            var o = SByteOption.Option1;
+            var json = JsonMapper.ToJson(o);
+            Assert.Equal("1", json);
         }
     }
 }

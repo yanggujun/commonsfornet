@@ -423,7 +423,7 @@ namespace Commons.Test.Json
         {
             var engine = new ParseEngine();
             var json = "[[[[[[null]]]]]]]]]]";
-            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+            Assert.Throws<ArgumentException>(() => engine.Parse(json));
         }
 
         [Fact]
@@ -431,7 +431,7 @@ namespace Commons.Test.Json
         {
             var engine = new ParseEngine();
             var json = "[{}, {},{}}]";
-            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+            Assert.Throws<ArgumentException>(() => engine.Parse(json));
         }
 
         [Fact]
@@ -439,7 +439,7 @@ namespace Commons.Test.Json
         {
             var engine = new ParseEngine();
             var json = ",";
-            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+            Assert.Throws<ArgumentException>(() => engine.Parse(json));
         }
 
         [Fact]
@@ -447,7 +447,7 @@ namespace Commons.Test.Json
         {
             var engine = new ParseEngine();
             var json = "{,\"a\" : \"b\",}";
-            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+            Assert.Throws<ArgumentException>(() => engine.Parse(json));
         }
 
         [Fact]
@@ -455,7 +455,7 @@ namespace Commons.Test.Json
         {
             var engine = new ParseEngine();
             var json = "[,\"a\", ]";
-            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+            Assert.Throws<ArgumentException>(() => engine.Parse(json));
         }
 
         [Fact]
@@ -463,7 +463,7 @@ namespace Commons.Test.Json
         {
             var engine = new ParseEngine();
             var json = "{\"a\": \"b\", \"c\"}";
-            Assert.Throws(typeof(ArgumentException), () => engine.Parse(json));
+            Assert.Throws<ArgumentException>(() => engine.Parse(json));
         }
     }
 }

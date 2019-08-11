@@ -14,12 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Commons.Utils;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
+
+using Commons.Utils;
 
 namespace Commons.Json.Mapper
 {
@@ -267,7 +268,43 @@ namespace Commons.Json.Mapper
 
         private void SerializeFlagEnum(object target, StringBuilder localBuffer)
         {
-            localBuffer.Append((long)target);
+            var underlyingType = Enum.GetUnderlyingType(target.GetType());
+            if (underlyingType == typeof(int))
+            {
+                localBuffer.Append((int)target);
+            }
+            else if (underlyingType == typeof(long))
+            {
+                localBuffer.Append((long)target);
+            }
+            else if (underlyingType == typeof(short))
+            {
+                localBuffer.Append((short)target);
+            }
+            else if (underlyingType == typeof(byte))
+            {
+                localBuffer.Append((byte)target);
+            }
+            else if (underlyingType == typeof(uint))
+            {
+                localBuffer.Append((uint)target);
+            }
+            else if (underlyingType == typeof(ulong))
+            {
+                localBuffer.Append((ulong)target);
+            }
+            else if (underlyingType == typeof(ushort))
+            {
+                localBuffer.Append((ushort)target);
+            }
+            else if (underlyingType == typeof(sbyte))
+            {
+                localBuffer.Append((sbyte)target);
+            }
+            else
+            {
+                // never be here
+            }
         }
 
         private void SerializeTime(object target, StringBuilder localBuffer)

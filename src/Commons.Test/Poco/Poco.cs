@@ -287,4 +287,94 @@ namespace Commons.Test.Poco
         public int Reason { get; set; }
         public abstract string Name { get; set; }
     }
+
+    [Flags]
+    public enum Color
+    {
+        None = 0,
+        Red = 1,
+        Blue = 2,
+        Yellow = 4,
+        Green = 8
+    }
+
+    [Flags]
+    public enum IntFlag : int
+    {
+        Number0 = 1,
+        Number1 = 2,
+        Number2 = 4,
+        Number3 = 8,
+        Number4 = 16,
+        Number5 = 32,
+        Number6 = 64
+    }
+
+    [Flags]
+    public enum LongOption : long
+    {
+        None = 0,
+        Option1 = 1,
+        Option2 = 2,
+        Option3 = 4,
+        Option4 = 8
+    }
+
+    [Flags]
+    public enum ShortOption : short
+    {
+        None = 0,
+        Option1 = 1,
+        Option2 = 2,
+        Option3 = 4
+    }
+
+    [Flags]
+    public enum ByteOption : byte
+    {
+        None = 0,
+        Option1 = 1,
+        Option2 = 2,
+        Option3 = 4
+    }
+
+    [Flags]
+    public enum UIntFlag : uint
+    {
+        Number0 = 1,
+        Number1 = 2,
+        Number2 = 4,
+        Number3 = 8,
+        Number4 = 16,
+        Number5 = 32,
+        Number6 = 64
+    }
+
+    [Flags]
+    public enum ULongOption : ulong
+    {
+        None = 0,
+        Option1 = 1,
+        Option2 = 2,
+        Option3 = 4,
+        Option4 = 8
+    }
+
+    [Flags]
+    public enum UShortOption : ushort
+    {
+        None = 0,
+        Option1 = 1,
+        Option2 = 2,
+        Option3 = 4
+    }
+
+    [Flags]
+    public enum SByteOption : sbyte
+    {
+        None = 0,
+        Option1 = 1,
+        Option2 = 2,
+        Option3 = 4
+    }
 }

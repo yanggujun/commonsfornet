@@ -673,7 +673,7 @@ namespace Commons.Test.Json
         }
 
         [Fact]
-        public void TestSmaple02()
+        public void TestSample02()
         {
             var json =
                 "{\"Name\":\"A Clash of Kings\", \"Series\":\"A Song of Ice and Fire\", \"Author\": \"G.R.R.Martin\", \"Language\": \"English\"}";
