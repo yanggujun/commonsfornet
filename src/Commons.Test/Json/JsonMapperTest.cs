@@ -2155,6 +2155,13 @@ namespace Commons.Test.Json
         }
 
         [Fact]
+        public void TestFlagsEnum011()
+        {
+            var f = JsonMapper.To<IntFlag>("3");
+            Assert.Equal(IntFlag.Number0 | IntFlag.Number1, f);
+        }
+
+        [Fact]
         public void TestFlagsEnum02()
         {
             var f = IntFlag.Number0 & IntFlag.Number1;
@@ -2224,6 +2231,55 @@ namespace Commons.Test.Json
             var o = SByteOption.Option1;
             var json = JsonMapper.ToJson(o);
             Assert.Equal("1", json);
+        }
+
+        [Fact]
+        public void TestFlagsEnum11()
+        {
+            var o = JsonMapper.To<SByteOption>("1");
+            Assert.Equal(SByteOption.Option1, o);
+        }
+
+        [Fact]
+        public void TestFlagEnum12()
+        {
+            var o = JsonMapper.To<UShortOption>("1");
+            Assert.Equal(UShortOption.Option1, o);
+        }
+
+        [Fact]
+        public void TestFlagEnum13()
+        {
+            var o = JsonMapper.To<ULongOption>("1");
+            Assert.Equal(ULongOption.Option1, o);
+        }
+
+        [Fact]
+        public void TestFlagEnum14()
+        {
+            var o = JsonMapper.To<UIntFlag>("1");
+            Assert.Equal(UIntFlag.Number0, o);
+        }
+
+        [Fact]
+        public void TestFlagEnum15()
+        {
+            var o = JsonMapper.To<ByteOption>("1");
+            Assert.Equal(ByteOption.Option1, o);
+        }
+
+        [Fact]
+        public void TestFlagEnum16()
+        {
+            var o = JsonMapper.To<ShortOption>("1");
+            Assert.Equal(ShortOption.Option1, o);
+        }
+
+        [Fact]
+        public void TestFlagEnum17()
+        {
+            var o = JsonMapper.To<LongOption>("1");
+            Assert.Equal(LongOption.Option1, o);
         }
     }
 }
