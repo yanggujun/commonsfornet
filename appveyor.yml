@@ -1,4 +1,4 @@
-image: visual studio 2017
+image: visual studio 2019
 init:
   - git config --global core.autocrlf true
 branches:
