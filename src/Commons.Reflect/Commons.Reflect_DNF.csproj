@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <VersionPrefix>0.4.0.1347</VersionPrefix>
-    <TargetFrameworks>net40;net45;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>net40;net45</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AssemblyName>Commons.Collections</AssemblyName>
+    <AssemblyName>Commons.Reflect</AssemblyName>
     <OutputType>Library</OutputType>
     <AssemblyOriginatorKeyFile>../FullKey.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>Commons.Collections</PackageId>
+    <PackageId>Commons.Reflect</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
@@ -17,15 +17,11 @@
 
   <ItemGroup>
     <None Remove="*~" />
-    <None Remove="*.swp"/>
-    <None Remove="Commons.Collections.csproj.migration_in_place_backup" />
+    <None Remove="*.swp" />
     <None Remove="project.json" />
     <None Remove="project.lock.json" />
+    <None Remove="Commons.Reflect_NC.csproj" />
     <Compile Include="..\AssemblyInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
@@ -38,9 +34,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-    <PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
-    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
+  <ItemGroup>
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils_DNF.csproj" />
   </ItemGroup>
 
 </Project>

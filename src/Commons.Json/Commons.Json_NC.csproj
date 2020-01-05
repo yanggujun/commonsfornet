@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <VersionPrefix>0.4.0.1347</VersionPrefix>
-    <TargetFrameworks>net40;net45;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>Commons.Json</AssemblyName>
     <OutputType>Library</OutputType>
@@ -21,21 +21,12 @@
     <None Remove="Commons.Json.csproj.migration_in_place_backup" />
     <None Remove="project.json" />
     <None Remove="project.lock.json" />
+    <None Remove="Commons.Json_DNF.csproj" />
     <Compile Include="..\AssemblyInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils_NC.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">

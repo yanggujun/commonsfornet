@@ -23,11 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj" />
-    <ProjectReference Include="..\Commons.Collections\Commons.Collections.csproj" />
-    <ProjectReference Include="..\Commons.Json\Commons.Json.csproj" />
-    <ProjectReference Include="..\Commons.Test\Commons.Test.csproj" />
-    <ProjectReference Include="..\Commons.Reflect\Commons.Reflect.csproj" />
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils_NC.csproj" />
+    <ProjectReference Include="..\Commons.Collections\Commons.Collections_NC.csproj" />
+    <ProjectReference Include="..\Commons.Json\Commons.Json_NC.csproj" />
+    <ProjectReference Include="..\Commons.Test\Commons.Test_NC.csproj" />
+    <ProjectReference Include="..\Commons.Reflect\Commons.Reflect_NC.csproj" />
   </ItemGroup>
 
   <ItemGroup>

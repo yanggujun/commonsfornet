@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <VersionPrefix>0.2.3.506</VersionPrefix>
+    <TargetFrameworks>net40;net45</TargetFrameworks>
+    <AssemblyName>Commons.Test</AssemblyName>
+    <OutputType>Library</OutputType>
+    <PackageId>Commons.Test</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <RuntimeIdentifiers>win10-x64;win81-x64;ubuntu.14.04-x64;debian.8-x64;osx.10.10-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="*~" />
+    <None Remove="*.swp" />
+    <None Remove="Commons.Test.csproj.migration_in_place_backup" />
+    <None Remove="project.json" />
+    <None Remove="Commons.Test_NC.csproj" />
+    <None Update="Json\*.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils_DNF.csproj" />
+    <ProjectReference Include="..\Commons.Collections\Commons.Collections_DNF.csproj" />
+    <ProjectReference Include="..\Commons.Json\Commons.Json_DNF.csproj" />
+    <ProjectReference Include="..\Commons.Pool\Commons.Pool_DNF.csproj" />
+    <ProjectReference Include="..\Commons.Reflect\Commons.Reflect_DNF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <PackageReference Include="Moq" Version="4.2.1506.2515" />
+    <PackageReference Include="xunit.runner.console" Version="2.1.0" />
+    <PackageReference Include="xunit" version="1.9.2" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <PackageReference Include="Moq" Version="4.2.1506.2515" />
+    <PackageReference Include="xunit.runner.console" Version="2.1.0" />
+    <PackageReference Include="xunit" version="2.1.0" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+</Project>

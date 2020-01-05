@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>0.4.0.1347</VersionPrefix>
+    <VersionPrefix>0.3.0.775</VersionPrefix>
     <TargetFrameworks>net40;net45;netstandard1.3</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>Commons.Utils</AssemblyName>
+    <AssemblyName>Commons.Messaging</AssemblyName>
     <OutputType>Library</OutputType>
     <AssemblyOriginatorKeyFile>../FullKey.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>Commons.Utils</PackageId>
+    <PackageId>Commons.Messaging</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.3' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
   </PropertyGroup>
@@ -19,10 +19,20 @@
   <ItemGroup>
     <None Remove="*~" />
     <None Remove="*.swp"/>
-    <None Remove="Commons.Utils.csproj.migration_in_place_backup" />
+    <None Remove="Commons.Messaging.csproj.migration_in_place_backup" />
     <None Remove="project.json" />
     <None Remove="project.lock.json" />
     <Compile Include="..\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Commons.Json\Commons.Json.csproj" />
+    <ProjectReference Include="..\Commons.Utils\Commons.Utils.csproj" />
+    <ProjectReference Include="..\Commons.Collections\Commons.Collections.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NetMQ" Version="4.0.0.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
@@ -33,10 +43,6 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.4.0" />
   </ItemGroup>
 
 </Project>

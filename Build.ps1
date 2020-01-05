@@ -17,44 +17,48 @@ $BuildInfo = "Building project Commons, version: {0}" -f $version
 echo $BuildInfo
 
 dotnet --info
-dotnet restore $src\Commons.Utils\Commons.Utils.csproj
-dotnet restore $src\Commons.Collections\Commons.Collections.csproj
-dotnet restore $src\Commons.Reflect\Commons.Reflect.csproj
-dotnet restore $src\Commons.Pool\Commons.Pool.csproj
-dotnet restore $src\Commons.Json\Commons.Json.csproj
-dotnet restore $src\Commons.Messaging\Commons.Messaging.csproj
-dotnet restore $src\Commons.Test\Commons.Test.csproj
+dotnet restore $src\Commons.Utils\Commons.Utils_DNF.csproj
+dotnet restore $src\Commons.Collections\Commons.Collections_DNF.csproj
+dotnet restore $src\Commons.Reflect\Commons.Reflect_DNF.csproj
+dotnet restore $src\Commons.Pool\Commons.Pool_DNF.csproj
+dotnet restore $src\Commons.Json\Commons.Json_DNF.csproj
+dotnet restore $src\Commons.Test\Commons.Test_DNF.csproj
+dotnet restore $src\Commons.Perf\Commons.Perf.csproj
+
+dotnet restore $src\Commons.Utils\Commons.Utils_NC.csproj
+dotnet restore $src\Commons.Collections\Commons.Collections_NC.csproj
+dotnet restore $src\Commons.Reflect\Commons.Reflect_NC.csproj
+dotnet restore $src\Commons.Pool\Commons.Pool_NC.csproj
+dotnet restore $src\Commons.Json\Commons.Json_NC.csproj
+dotnet restore $src\Commons.Test\Commons.Test_NC.csproj
 dotnet restore $src\Commons.Perf\Commons.Perf.csproj
 
 
-dotnet build $src\Commons.Utils\Commons.Utils.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
-dotnet build $src\Commons.Collections\Commons.Collections.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
-dotnet build $src\Commons.Reflect\Commons.Reflect.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
-dotnet build $src\Commons.Pool\Commons.Pool.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
-dotnet build $src\Commons.Json\Commons.Json.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
-dotnet build $src\Commons.Messaging\Commons.Messaging.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
-dotnet build $src\Commons.Test\Commons.Test.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
+dotnet build $src\Commons.Utils\Commons.Utils_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
+dotnet build $src\Commons.Collections\Commons.Collections_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
+dotnet build $src\Commons.Reflect\Commons.Reflect_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
+dotnet build $src\Commons.Pool\Commons.Pool_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
+dotnet build $src\Commons.Json\Commons.Json_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
+dotnet build $src\Commons.Test\Commons.Test_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net40" -f net40 --no-incremental 
 
 
-dotnet build $src\Commons.Utils\Commons.Utils.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
-dotnet build $src\Commons.Collections\Commons.Collections.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
-dotnet build $src\Commons.Reflect\Commons.Reflect.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
-dotnet build $src\Commons.Pool\Commons.Pool.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
-dotnet build $src\Commons.Json\Commons.Json.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
-dotnet build $src\Commons.Messaging\Commons.Messaging.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
-dotnet build $src\Commons.Test\Commons.Test.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
+dotnet build $src\Commons.Utils\Commons.Utils_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
+dotnet build $src\Commons.Collections\Commons.Collections_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
+dotnet build $src\Commons.Reflect\Commons.Reflect_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
+dotnet build $src\Commons.Pool\Commons.Pool_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
+dotnet build $src\Commons.Json\Commons.Json_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
+dotnet build $src\Commons.Test\Commons.Test_DNF.csproj -c Release --no-dependencies -o "$OUTPUT\net45" -f net45 --no-incremental 
 
-dotnet build $src\Commons.Utils\Commons.Utils.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
-dotnet build $src\Commons.Collections\Commons.Collections.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
-dotnet build $src\Commons.Reflect\Commons.Reflect.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
-dotnet build $src\Commons.Pool\Commons.Pool.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
-dotnet build $src\Commons.Json\Commons.Json.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
-dotnet build $src\Commons.Messaging\Commons.Messaging.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
-dotnet build $src\Commons.Test\Commons.Test.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netcoreapp2.1 --no-incremental 
+dotnet build $src\Commons.Utils\Commons.Utils_NC.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
+dotnet build $src\Commons.Collections\Commons.Collections_NC.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
+dotnet build $src\Commons.Reflect\Commons.Reflect_NC.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
+dotnet build $src\Commons.Pool\Commons.Pool_NC.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
+dotnet build $src\Commons.Json\Commons.Json_NC.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netstandard1.3 --no-incremental 
+dotnet build $src\Commons.Test\Commons.Test_NC.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netcoreapp2.1 --no-incremental 
 dotnet build $src\Commons.Perf\Commons.Perf.csproj -c Release --no-dependencies -o "$OUTPUT\netstandard1.3" -f netcoreapp2.1 --no-incremental 
 
 pushd $OUTPUT\netstandard1.3
-dotnet test $src\Commons.Test\Commons.Test.csproj -o $OUTPUT\netstandard1.3 --no-build -f netcoreapp2.1 -p:ParallelizeTestCollections=false
+dotnet test $src\Commons.Test\Commons.Test_NC.csproj -o $OUTPUT\netstandard1.3 --no-build -f netcoreapp2.1 -p:ParallelizeTestCollections=false
 popd
 
 
