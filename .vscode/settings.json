@@ -2,5 +2,16 @@
     "omnisharp.defaultLaunchSolution": "src/Commons_NC.sln",
     "omnisharp.autoStart": true,
     "razor.disabled": true,
-    "editor.codeLens": false
+    "editor.codeLens": false,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/.nuget": true,
+        "**/artifacts/": true,
+        "**/bin/": true,
+        "**/obj/": true
+    }
 }
