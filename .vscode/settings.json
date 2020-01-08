@@ -1,0 +1,6 @@
+{
+    "omnisharp.defaultLaunchSolution": "src/Commons_NC.sln",
+    "omnisharp.autoStart": true,
+    "razor.disabled": true,
+    "editor.codeLens": false
+}
